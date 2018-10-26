@@ -17,7 +17,7 @@ public class StartNeighbor
 {
     public static void main( String[] args )
     {
-        //SpringApplication.run(StartCRMApp.class,args);
+        //SpringApplication.run(StartCRMApp.class,args); 
         SpringApplication app = new SpringApplication(StartNeighbor.class);
         app.addListeners(new ApplicationPidFileWriter());
         app.run(args);
