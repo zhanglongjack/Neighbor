@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.1.RELEASE</version>
+		<relativePath />
+	</parent>
+
+	<groupId>neighbor</groupId>
+	<artifactId>neighbor</artifactId>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+
+	<name>neighbor</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Dalston.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-config</artifactId>
+				<version>2.0.0.RC1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<!-- <dependency> <groupId>org.springframework.cloud</groupId> <artifactId>spring-cloud-starter-config</artifactId> 
+			</dependency> <dependency> <groupId>org.springframework.cloud</groupId> <artifactId>spring-cloud-starter-eureka</artifactId> 
+			</dependency> -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-security</artifactId> 
+			</dependency> -->
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+		<!-- excel 导入到出 -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.14</version>
+		</dependency>
+		<dependency>
+		    <groupId>commons-fileupload</groupId>
+		    <artifactId>commons-fileupload</artifactId>
+		    <version>1.3.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		    <version>2.6</version>
+		</dependency>
+
+		<!-- 引入json处理包 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.35</version>
+		</dependency>
+		
+		<!-- 支付宝依赖 -->
+		<dependency>
+		  <groupId>com.alipay.sdk</groupId>
+		  <artifactId>alipay-sdk-java</artifactId>
+		  <version>3.3.87.ALL</version>
+		</dependency>
+		
+		
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<overwrite>true</overwrite>
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/config/${package.environment}</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+						<inherited></inherited>
+					</execution>
+				</executions>
+			</plugin>
+
+
+		</plugins>
+		<resources>
+
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/mapper</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/config</directory>
+				<excludes>
+					<exclude>**/*</exclude>
+				</excludes>
+				<filtering>true</filtering>
+			</resource>
+
+			<resource>
+				<directory>src/main/config/${package.environment}</directory>
+			</resource>
+		</resources>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>prd</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<package.environment>prd</package.environment>
+			</properties>
+		</profile>
+		<profile>
+			<id>fat</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<package.environment>fat</package.environment>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<package.environment>dev</package.environment>
+			</properties>
+		</profile>
+	</profiles>
+
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/libs-milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+</project>

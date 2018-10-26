@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" 
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <body>
+	    <div th:fragment="copyright">
+           	<div class="clearfix"></div>
+			<footer>
+				<div class="container-fluid">
+					<p class="copyright">Copyright &copy; <span th:text="${#dates.year(#dates.createNow())}">2018</span>.Company name All rights reserved.</p>
+				</div>
+			</footer>
+        </div>
+    </body>
+</html>

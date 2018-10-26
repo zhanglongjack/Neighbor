@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neighbor.app.users.dao.UserInfoMapper">
+	<resultMap id="BaseResultMap" type="com.neighbor.app.users.entity.UserInfo">
+		<id column="u_id" jdbcType="BIGINT" property="uId" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="wechat_number" jdbcType="VARCHAR" property="wechatNumber" />
+		<result column="password" jdbcType="VARCHAR" property="password" />
+		<result column="level" jdbcType="INTEGER" property="uLevel" />
+		<result column="phone" jdbcType="BIGINT" property="phone" />
+		<result column="entry_date" jdbcType="VARCHAR" property="entryDate" />
+		<result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		u_id, name, wechat_number, password, level, phone,
+		entry_date, create_date
+	</sql>
+	<sql id="dynamicWhere">
+		<where>
+			<if test="uId != null">u_id=#{uId}</if>
+			<if test="wechatNumber != null and wechatNumber.length()>0">and wechat_number=#{wechatNumber}</if>
+			<if test="name != null and name.length()>0">and name=#{name}</if>
+			<if test="uLevel != null">and level=#{uLevel}</if>
+			<if test="phone != null">and phone=#{phone}</if>
+		</where>
+	</sql>
+	
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user_info
+		where u_id = #{uId,jdbcType=BIGINT}
+	</select>
+
+	<select id="selectByUserPhone" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user_info
+		where phone = #{phone,jdbcType=BIGINT}
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user_info
+		order by u_id
+	</select>
+  
+	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.users.entity.UserInfo"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user_info
+		<include refid="dynamicWhere" />
+		order by u_id desc
+		limit #{pageTools.rowIndex},#{pageTools.pageSize}
+	</select>
+	
+	<select id="selectPageTotalCount" parameterType="com.neighbor.app.users.entity.UserInfo"
+		resultType="Long">
+		select
+			count(1)
+		from user_info
+		<include refid="dynamicWhere" />
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		user_info
+		where u_id = #{uId,jdbcType=BIGINT}
+	</delete>
+	<insert id="insertSelective" parameterType="com.neighbor.app.users.entity.UserInfo">
+		insert into user_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="uId != null">
+				u_id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="wechatNumber != null">
+				wechat_number,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="uLevel != null">
+				level,
+			</if>
+			<if test="phone != null">
+				phone,
+			</if>
+			<if test="entryDate != null">
+				entry_date,
+			</if>
+			<if test="createDate != null">
+				create_date,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="uId != null">
+				#{uId,jdbcType=BIGINT},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="wechatNumber != null">
+				#{wechatNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="uLevel != null">
+				#{uLevel,jdbcType=INTEGER},
+			</if>
+			<if test="phone != null">
+				#{phone,jdbcType=BIGINT},
+			</if>
+			<if test="entryDate != null">
+				#{entryDate,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.users.entity.UserInfo">
+		update user_info
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="wechatNumber != null">
+				wechat_number = #{wechatNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="newPwd != null">
+				password = #{newPwd,jdbcType=VARCHAR},
+			</if>
+			<if test="uLevel != null">
+				level = #{uLevel,jdbcType=INTEGER},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=BIGINT},
+			</if>
+			<if test="entryDate != null">
+				entry_date = #{entryDate,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where u_id = #{uId,jdbcType=BIGINT}
+		<if test="password != null">and password=#{password}</if>
+	</update>
+</mapper>

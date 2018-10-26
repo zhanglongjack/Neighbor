@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" 
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <body>
+		<!-- NAVBAR -->
+		<div th:fragment="sidebar-nav" id="sidebar-nav" class="sidebar">
+			<div class="sidebar-scroll">
+				<nav>
+					<ul class="nav"> 
+						<li><a href="/index" id="menu-1"><i class="lnr lnr-home"></i> <span>主页</span></a></li>
+						<li><a href="/customer/custInfoView" id="menu-2"><i class="lnr lnr-users"></i> <span>客户信息</span></a></li>
+						<li><a href="/revisit/revisitView" id="menu-3"><i class="lnr lnr-bubble"></i> <span>回访记录</span></a></li>
+						<li><a href="/orders/ordersView" id="menu-4"><i class="lnr lnr-license"></i> <span>订单信息</span></a></li>
+						<li><a href="/consume/consumeView" id="menu-5"><i class="glyphicon glyphicon-credit-card"></i> <span>会员消费</span></a></li>
+						<li><a href="/sign/signView" id="menu-6"><i class="glyphicon glyphicon-heart"></i> <span>客服签到记录</span></a></li>
+						
+						<li th:if="${session.user.isAdmin()}" ><a href="/userList/userListView" id="menu-7"><i class="glyphicon glyphicon-headphones"></i> <span>客服管理</span></a></li>
+						<li th:if="${session.user.isAdmin()}"><a href="/serve/wechat/serveWechatView" id="menu-8"><i class="glyphicon glyphicon-phone"></i> <span>服务微信管理</span></a></li>
+						<!-- 
+						<li><a href="#" id="menu-6"><i class="lnr lnr-chart-bars"></i> <span>我的业绩</span></a></li>
+						
+						
+						<li><a href="/home" class=""><i class="lnr lnr-chart-bars"></i> <span>test</span></a></li>
+						<li><a href="/page/charts.html" class=""><i class="lnr lnr-earth"></i> <span>客服信息</span></a></li>
+						<li><a href="/page/panels.html" class=""><i class="lnr lnr-cog"></i> <span>Panels</span></a></li>
+						<li><a href="/page/notifications.html" class=""><i class="lnr lnr-alarm"></i> <span>Notifications</span></a></li>
+						<li>
+							<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Pages</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+							<div id="subPages" class="collapse ">
+								<ul class="nav">
+									<li><a href="/page/page-profile.html" class="">Profile</a></li>
+									<li><a href="/page/page-login.html" class="">Login</a></li>
+									<li><a href="/page/page-lockscreen.html" class="">Lockscreen</a></li>
+								</ul>
+							</div>
+						</li>
+						 
+						<li><a href="/page/tables.html" class=""><i class="lnr lnr-dice"></i> <span>Tables</span></a></li>
+						<li><a href="/page/typography.html" class=""><i class="lnr lnr-text-format"></i> <span>Typography</span></a></li>
+						<li><a href="/page/icons.html" class=""><i class="lnr lnr-linearicons"></i> <span>Icons</span></a></li>
+						-->
+					</ul>
+				</nav>
+			</div>
+		</div>
+		<!-- END NAVBAR -->
+    </body>
+</script>
+
+</html>
