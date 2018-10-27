@@ -8,10 +8,10 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;  
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;  
   
 @Configuration  
-public class WebConfig extends WebMvcConfigurerAdapter {  
+public class WebConfig implements WebMvcConfigurer {  
 	private static final Logger logger = LoggerFactory.getLogger(WebConfig.class);
     //@Autowired  
     //LogInterceptor logInterceptor;  
@@ -22,14 +22,33 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     /** 
      * 不需要登录拦截的url:登录注册和验证码 
      */  
-    final String[] notLoginInterceptPaths = {"/shutdown","/signin","/login/**","/register/**","/framework/**","/css/**","/js/**","/kaptcha.jpg/**","/kaptcha/**"};//"/", "/login/**", "/person/**", "/register/**", "/validcode", "/captchaCheck", "/file/**", "/contract/htmltopdf", "/questions/**", "/payLog/**", "/error/**" };  
+	final String[] notLoginInterceptPaths = 
+		{ 
+			"/error/**",
+			"/shutdown", 
+			"/signin", 
+			"/login/**", 
+			"/register/**", 
+			"/validcode",
+			"/framework/**",
+			"/neighbor/**",
+//			"/css/**", 
+//			"/js/**" 
+		};
+	
+	
+	// "/", "/login/**", "/person/**",
+									// "/register/**", "/validcode",
+									// "/captchaCheck", "/file/**",
+									// "/contract/htmltopdf", "/questions/**",
+									// "/payLog/**", "/error/**" };  
   
     @Override  
     public void addInterceptors(InterceptorRegistry registry) {  
         // 日志拦截器  
         //registry.addInterceptor(logInterceptor).addPathPatterns("/**");  
         // 登录拦截器  
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/**","","/").excludePathPatterns(notLoginInterceptPaths);  
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns(notLoginInterceptPaths);  
     }  
   
     @Override  
@@ -49,16 +68,15 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
     	registry.addRedirectViewController("/", "/index");
-//        registry.addViewController("/").setViewName("/page/index");
+        registry.addViewController("/index").setViewName("page/index");
+        registry.addViewController("/user").setViewName("page/user/UserCenter");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        super.addViewControllers(registry);
     }
     
 
 	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-        super.addResourceHandlers(registry);
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/**");
 	}
 
 }  

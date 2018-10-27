@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		
+		<link href="./neighbor/css/mui.min.css" rel="stylesheet" th:href="@{~/neighbor/css/mui.min.css}"/>
+		<link rel="stylesheet" type="text/css" href="./neighbor/css/font-awesome.min.css" th:href="@{~/neighbor/css/font-awesome.min.css}"/>
+		<link rel="stylesheet" type="text/css" href="./neighbor/css/app.css" th:href="@{~/neighbor/css/app.css}"/>
+		<link rel="stylesheet" type="text/css" href="./neighbor/js/swiper/css/swiper.css" th:href="@{~/neighbor/js/swiper/css/swiper.css}"/>
+
+		<script th:src="@{~/neighbor/js/mui.min.js}"></script>
+		<script th:src="@{~/neighbor/js/jquery-2.1.0.js}" src="./neighbor/js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+		<script th:src="@{~/neighbor/js/swiper/js/swiper.min.js}" src="./neighbor/js/swiper/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+	</head>
+
+	<body>
+		
+		<!--to 程序员-->
+		<!--a 标签如果需要加 链接跳转，加data-href属性。后面接链接。-->
+		<!--<a href="" data-href="#如果a链接跳转就把链接写到这里"></a>-->
+		<!--<div data-href="如果a链接跳转就把链接写到这里"></div>-->
+		
+		<header class="mui-bar mui-bar-nav">
+			
+			<h1 class="mui-title">好邻居</h1>
+			<a class="mui-btn-link mui-pull-right a-kefu" data-href="#如果a链接跳转就把链接写到这里">
+				<small>在线客服</small>
+			</a>
+		</header>
+		
+		<nav class="mui-bar mui-bar-tab">
+		    <a class="mui-tab-item" data-href="#如果a链接跳转就把链接写到这里">
+		        <span class="mui-icon icon-nav1"></span><span class="mui-icon icon-nav1-active"></span>
+		        <span class="mui-tab-label">聊天</span>
+		    </a>
+		    <a class="mui-tab-item" data-href="#如果a链接跳转就把链接写到这里">
+		        <span class="mui-icon icon-nav2"></span><span class="mui-icon icon-nav2-active"></span>
+		        <span class="mui-tab-label">通讯录</span>
+		    </a>
+		    <a class="mui-tab-item mui-active" data-href="index.html">
+		        <span class="mui-icon icon-nav3"></span><span class="mui-icon icon-nav3-active"></span>
+		        <span class="mui-tab-label">游戏</span>
+		    </a>
+		    <a class="mui-tab-item" data-href="商城.html">
+		        <span class="mui-icon icon-nav4"></span><span class="mui-icon icon-nav4-active"></span>
+		        <span class="mui-tab-label">商城</span>
+		    </a>
+		    <a class="mui-tab-item" data-href="个人中心.html">
+		        <span class="mui-icon icon-nav5"></span><span class="mui-icon icon-nav5-active"></span>
+		        <span class="mui-tab-label">个人中心</span>
+		    </a>
+		</nav>
+		<div class="mui-content">
+
+			<!--banner 轮播-->
+			<div class="banner-slider">
+				<!-- Swiper -->
+				<div class="swiper-container">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide">
+							<a href="#" data-href="#跳转链接写到这里才会生效">
+								<img src="img/750x310.jpg" /></a>
+						</div>
+						<div class="swiper-slide">
+							<a href="#" data-href="#跳转链接写到这里才会生效">
+								<img src="img/750x310.jpg" /></a>
+						</div>
+
+					</div>
+					<!-- Add Pagination -->
+					<div class="swiper-pagination"></div>
+				</div>
+			</div>
+
+			<!-- Initialize Swiper -->
+			<script>
+				var swiper = new Swiper('.banner-slider .swiper-container', {
+					autoplay: true,
+					loop: true,
+					pagination: {
+						el: '.swiper-pagination',
+					},
+				});
+			</script>
+
+			<!--消息-->
+			<div class="notice-row">
+				<div class="mui-table">
+					<div class="mui-table-cell left">
+						<i class="fa fa-volume-down"></i>
+					</div>
+					<div class="mui-table-cell right">
+						<!-- Swiper -->
+						<div class="swiper-container">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide mui-ellipsis">
+									<a href="#" data-href="#跳转链接写到这里才会生效">
+										恭喜玩家：<b>8888</b>通过加拿大28下注获得<b>1800.00</b>元
+									</a>
+								</div>
+								<div class="swiper-slide mui-ellipsis">
+									<a href="#" data-href="#跳转链接写到这里才会生效">
+										恭喜玩家：<b>8888</b>通过加拿大28下注获得<b>1800.00</b>元
+									</a>
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Initialize Swiper -->
+			<script>
+				var swiper = new Swiper('.notice-row .swiper-container', {
+					autoplay: true,
+					loop: true,
+					direction: 'vertical'
+
+				});
+			</script>
+
+			<!--游戏列表-->
+
+			<div class="game-lists">
+				<div id="slider" class="mui-slider">
+					<div  style="padding: 10px;">
+						<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control">
+							<a class="mui-control-item mui-active" href="#item1mobile">
+								红包游戏
+							</a>
+							<a class="mui-control-item" href="#item2mobile">
+								猜猜乐
+							</a>
+							<a class="mui-control-item" href="#item3mobile">
+								休闲游戏
+							</a>
+							<a class="mui-control-item" href="#item3mobile">
+								福利群
+							</a>
+						</div>
+					</div>
+					
+					<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-4"></div>
+					<div class="mui-slider-group">
+						<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+							<ul class="mui-table-view">
+										<li class="mui-table-view-cell">
+											<div class="mui-table">
+												<div class="mui-table-cell img">
+													 <img src="img/110x110.png"/>
+												</div>
+												<div class="mui-table-cell">
+													<button type="button" class="mui-btn-red mui-pull-right" data-href="#跳转链接写到这里才会生效">
+														打开
+													</button>
+													<h4>
+														扫雷游戏
+													</h4>
+													<p>
+														<a href="#" data-href="#跳转链接写到这里才会生效" class="link-red">
+															查看规则
+														</a>
+													</p>
+												</div>
+											</div>
+										</li>
+										<li class="mui-table-view-cell">
+											<div class="mui-table">
+												<div class="mui-table-cell img">
+													 <img src="img/110x110.png"/>
+												</div>
+												<div class="mui-table-cell">
+													<button type="button" class="mui-btn-red mui-pull-right" data-href="#跳转链接写到这里才会生效">
+														打开
+													</button>
+													<h4>
+														扫雷游戏
+													</h4>
+													<p>
+														<a href="#" data-href="#跳转链接写到这里才会生效" class="link-red">
+															查看规则
+														</a>
+													</p>
+												</div>
+											</div>
+										</li>
+										<li class="mui-table-view-cell">
+											<div class="mui-table">
+												<div class="mui-table-cell img">
+													 <img src="img/110x110.png"/>
+												</div>
+												<div class="mui-table-cell">
+													<button type="button" class="mui-btn-red mui-pull-right" data-href="#跳转链接写到这里才会生效">
+														打开
+													</button>
+													<h4>
+														扫雷游戏
+													</h4>
+													<p>
+														<a href="#" data-href="#跳转链接写到这里才会生效" class="link-red">
+															查看规则
+														</a>
+													</p>
+												</div>
+											</div>
+										</li>
+										
+							</ul>
+								
+						</div>
+						<div id="item2mobile" class="mui-slider-item mui-control-content">
+								<ul class="mui-table-view">
+										<li class="mui-table-view-cell">
+											<div class="mui-table">
+												<div class="mui-table-cell img">
+													 <img src="img/110x110.png"/>
+												</div>
+												<div class="mui-table-cell">
+													<button type="button" class="mui-btn-red mui-pull-right" data-href="#跳转链接写到这里才会生效">
+														打开
+													</button>
+													<h4>
+														猜猜乐
+													</h4>
+													<p>
+														<a href="#" data-href="#跳转链接写到这里才会生效" class="link-red">
+															查看规则
+														</a>
+													</p>
+												</div>
+											</div>
+										</li>
+									
+										
+							</ul>
+
+						</div>
+						<div id="item3mobile" class="mui-slider-item mui-control-content">
+							<ul class="mui-table-view">
+										<li class="mui-table-view-cell">
+											<div class="mui-table">
+												<div class="mui-table-cell img">
+													 <img src="img/110x110.png"/>
+												</div>
+												<div class="mui-table-cell">
+													<button type="button" class="mui-btn-red mui-pull-right" data-href="#跳转链接写到这里才会生效">
+														打开
+													</button>
+													<h4>
+														休闲游戏
+													</h4>
+													<p>
+														<a href="#" data-href="#跳转链接写到这里才会生效" class="link-red">
+															查看规则
+														</a>
+													</p>
+												</div>
+											</div>
+										</li>
+									
+										
+							</ul>
+
+						</div>
+						<div id="item3mobile" class="mui-slider-item mui-control-content">
+							<ul class="mui-table-view">
+										<li class="mui-table-view-cell">
+											<div class="mui-table">
+												<div class="mui-table-cell img">
+													 <img src="img/110x110.png"/>
+												</div>
+												<div class="mui-table-cell">
+													<button type="button" class="mui-btn-red mui-pull-right" data-href="#跳转链接写到这里才会生效">
+														打开
+													</button>
+													<h4>
+														福利群
+													</h4>
+													<p>
+														<a href="#" data-href="#跳转链接写到这里才会生效" class="link-red">
+															查看规则
+														</a>
+													</p>
+												</div>
+											</div>
+										</li>
+									
+										
+							</ul>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<script th:src="@{~/neighbor/js/config.js}" src="./neighbor/js/config.js" type="text/javascript" charset="utf-8"></script>
+	</body>
+
+</html>

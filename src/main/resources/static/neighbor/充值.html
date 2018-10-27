@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<script src="js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/swiper/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="js/swiper/css/swiper.css" />
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+	</head>
+
+	<body class="user-body">
+
+		<!--to 程序员-->
+		<!--a 标签如果需要加 链接跳转，加data-href属性。后面接链接。-->
+		<!--<a href="" data-href="#如果a链接跳转就把链接写到这里"></a>-->
+		<!--<div data-href="如果a链接跳转就把链接写到这里"></div>-->
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">充值中心</h1>
+
+		</header>
+
+		<div class="mui-content user-content">
+			
+			<div class="mui-content-padded">
+				<h5>
+					线下充值
+				</h5>
+			</div>
+			<ul class="mui-table-view under-recharge">
+			        <li class="mui-table-view-cell">
+			            <a class="" data-href="#如果a链接跳转就把链接写到这里">
+			                <img src="img/ailpy.png"/>
+			                <span>
+			                	支付宝转账（最低100起充值，赠送0.%）
+			                </span>
+			            </a>
+			        </li>
+			        <li class="mui-table-view-cell">
+			            <a class="" data-href="#如果a链接跳转就把链接写到这里">
+			                <img src="img/upay.png"/>
+			                <span>
+			                	银联转账（最低100元起，赠送0.5%）
+			                </span>
+			            </a>
+			        </li>
+			    </ul>
+			    
+			
+			
+			
+			
+			<div class="transfer-form">
+				<div class="mui-content-padded">
+					<h5>
+						线下充值
+					</h5>
+				</div>
+				<form class="mui-input-group">
+				    <div class="mui-input-row">
+				        <label>充值方式</label>
+				        <div class="mui-pull-right mui-navigate-right selectBox" id="btnSelect">
+				        	<span id="selectResult">支付宝1</span>
+				        </div>
+				    </div>
+				    <div class="mui-input-row">
+				        <label>提现金额</label>
+				        <input type="number" class="mui-text-right" placeholder="请输入转账金额">
+				    </div>
+				   
+				</form>
+				
+				<div class="mui-content-padded">
+					<h5>
+						支付金额
+					</h5>
+				</div>
+				<form class="mui-input-group">
+				    <div class="mui-input-row">
+				        <label>金额</label>
+				        <input type="text"  class="mui-text-right" placeholder="请填写充值金额"/>
+				    </div>
+				    
+				</form>
+				<div class="mui-content-padded">
+					<div class="mui-h5">
+						充值范围45.31-2258.76元，更大金额推荐线下充值！
+					</div>
+					
+					
+					
+					<div class="mui-row money-speed">
+						<div class="mui-col-xs-4">
+							<a href="" class="on">
+								45.31
+							</a>
+						</div>
+						<div class="mui-col-xs-4">
+							<a href="">
+								93.22
+							</a>
+						</div>
+						<div class="mui-col-xs-4">
+							<a href="">
+								147.12
+							</a>
+						</div>
+						<div class="mui-col-xs-4">
+							<a href="">
+								171.11
+							</a>
+						</div>
+						<div class="mui-col-xs-4">
+							<a href="">
+								997.91
+							</a>
+						</div>
+						<div class="mui-col-xs-4">
+							<a href="">
+								1284.78
+							</a>
+						</div>
+						<div class="mui-col-xs-4">
+							<a href="">
+								2258.76
+							</a>
+						</div>
+
+					</div>
+					
+					
+					
+				</div>
+				
+				
+				
+				<div class="mui-content-padded">
+					<button type="button" class="mui-btn mui-btn-red mui-btn-block">提交订单</button>
+				</div>
+			</div>
+			
+			
+			
+		</div>
+		
+		<!--select-->
+		<script src="js/select/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="js/select/mui.picker.min.css"/>
+		<script type="text/javascript">
+			(function($$, doc) {
+				$$.init();
+				$$.ready(function() {
+					//普通示例
+					var userPicker = new $$.PopPicker();
+					userPicker.setData([{
+						value: '1',
+						text: '支付宝'
+					}, {
+						value: '2',
+						text: '微信支付'
+					}, {
+						value: '3',
+						text: 'QQ支付'
+					}]);
+					var showUserPickerButton = doc.getElementById('btnSelect');
+					var userResult = doc.getElementById('selectResult');
+					showUserPickerButton.addEventListener('tap', function(event) {
+						userPicker.show(function(items) {
+							$(userResult).attr("value",items[0].value).text(items[0].text)
+							//返回 false 可以阻止选择框的关闭
+							//return false;
+						});
+					}, false);
+					//-----------------------------------------
+					
+				});
+			})(mui, document);
+		</script>
+		
+		
+		<script src="js/config.js" type="text/javascript" charset="utf-8"></script>
+	</body>
+
+</html>

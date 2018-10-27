@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<script src="js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/swiper/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="js/swiper/css/swiper.css" />
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+	</head>
+
+	<body class="user-body">
+		
+		<!--to 程序员-->
+		<!--a 标签如果需要加 链接跳转，加data-href属性。后面接链接。-->
+		<!--<a href="" data-href="#如果a链接跳转就把链接写到这里"></a>-->
+		<!--<div data-href="如果a链接跳转就把链接写到这里"></div>-->
+		
+		
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">性别</h1>
+		</header>
+		
+
+		
+		<div class="mui-content user-content">
+				
+			<ul class="mui-table-view mui-table-view-radio">
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						男
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-selected">
+					<a class="mui-navigate-right">
+						女
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+		
+		<script type="text/javascript">
+			document.querySelector('.mui-table-view.mui-table-view-radio').addEventListener('selected',function(e){
+				mui.toast("当前选中的为："+e.detail.el.innerText)
+			});
+		</script>
+		
+		
+		
+		
+		<script src="js/config.js" type="text/javascript" charset="utf-8"></script>
+	</body>
+
+</html>
