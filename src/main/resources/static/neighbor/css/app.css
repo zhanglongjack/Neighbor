@@ -231,9 +231,6 @@ body,
   background-size: contain;
 }
 /*login*/
-.login-body {
-  background: #F1F1F1;
-}
 .login-content {
   background: url(../img/loginbg.jpg) center 0 no-repeat;
   -webkit-background-size: cover;
@@ -676,5 +673,221 @@ body .layui-m-layerbtn span[yes] {
 .money-speed a:active {
   border-color: #F2395B;
   color: #666;
+}
+.tab-row {
+  padding: 0 10px;
+}
+.tab-row .mui-bar-tab {
+  background: 0;
+  -webkit-box-shadow: 0 0 0 0;
+  -moz-box-shadow: 0 0 0 0;
+  box-shadow: 0 0 0 0;
+}
+.tab-row .mui-tab-item {
+  border-bottom: 2px solid #E0E0E0;
+}
+.tab-row .mui-bar-tab .mui-tab-item.mui-active {
+  border-bottom-color: #F2395B;
+}
+.table-data {
+  color: #666;
+  text-align: center;
+}
+.table-data th {
+  color: #666;
+  font-weight: normal;
+  padding: 8px 2px;
+  background: #fff;
+  border-bottom: 1px solid #EFEFEF;
+}
+.table-data th span {
+  display: inline-block;
+  cursor: pointer;
+}
+.table-data td {
+  color: #666;
+  font-weight: normal;
+  padding: 8px 2px;
+  background: #fff;
+}
+.table-data tbody tr:nth-of-type(2n) td {
+  background: #F5F5F5;
+}
+.tj-list .mui-badge {
+  background: 0;
+  color: #666;
+}
+.bank-list {
+  padding: 10px;
+}
+.bank-item {
+  background: #fff;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+.bank-item .bank-logo {
+  padding: 10px;
+}
+.bank-item .bank-logo img {
+  height: 22px;
+}
+.bank-item .bank-number {
+  text-align: right;
+  padding: 10px;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 0 0 10px 10px;
+}
+@media all and (orientation: portrait) {
+  .bank-list {
+    padding-bottom: 70px;
+  }
+  .portrait {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+.inputPayPasswordBox {
+  margin: 15px;
+  text-align: center;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  padding-bottom: 20vh;
+}
+.inputPayPasswordBox p {
+  padding-top: 15px;
+  padding-bottom: 30px;
+}
+.inputNumber ul,
+.inputNumber li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.inputNumber ul {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+.inputNumber li {
+  display: table-cell;
+  height: 45px;
+}
+.inputNumber input {
+  border-radius: 0;
+  text-align: center;
+  border-right-width: 0;
+  height: 56px;
+  font-size: 25px;
+}
+.inputNumber li:nth-last-of-type(1) input {
+  border-right-width: 1px;
+}
+.layui-m-layer-skin {
+  width: 220px;
+  border-radius: 20px !important;
+  text-align: center;
+  padding: 20px;
+}
+.layui-m-layer-skin img {
+  margin: 0 auto 15px;
+}
+.layui-m-layer-skin p {
+  text-align: center;
+}
+.layui-m-layer-skin .layui-m-layercont {
+  text-align: center !important;
+}
+.img-block {
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+.mb10 {
+  margin-bottom: 10px !important;
+}
+.mui-table-view.nobg {
+  background: 0;
+}
+.mui-table-view.nobg li {
+  background: #fff;
+}
+.articleBox img {
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+.mui-navigate-right-info .mui-pull-right {
+  padding-right: 25px;
+}
+.mui-switch.mui-active {
+  border-color: #99B73D;
+  background-color: #99B73D;
+}
+.mui-table-view-cell {
+  color: #666;
+}
+#akefu {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  right: 5px;
+  bottom: 60px;
+  background: url(../img/img-kefu.png) center no-repeat;
+  width: 60px;
+  height: 60px;
+  text-indent: -9999px;
+  -webkit-background-size: contain;
+  background-size: contain;
+}
+.tel-form .mui-input-row .mui-btn ~ input {
+  width: 46%;
+}
+.tel-form .mui-input-row {
+  position: relative;
+}
+.tel-form .mui-input-row .mui-btn {
+  right: 15px;
+  top: 50%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.mui-input-row label ~ input,
+.mui-input-row label ~ select,
+.mui-input-row label ~ textarea {
+  font-size: 16px;
+}
+#indexpopover {
+  height: 280px;
+  width: 300px;
+  left: 50%;
+  margin-left: -150px;
+  top: 50%;
+  margin-top: -140px;
+  font-size: 14px;
+}
+#indexpopover .hd {
+  padding: 0 10px;
+  line-height: 36px;
+  border-bottom: 1px solid #FFB6C4;
+}
+#indexpopover .bd {
+  margin: 10px 10px 0;
+  height: 178px;
+  position: relative;
+  overflow: hidden;
+  overflow-y: auto;
+  color: #666;
+}
+#indexpopover .ft {
+  padding: 10px;
 }
 /*# sourceMappingURL=app.css.map */

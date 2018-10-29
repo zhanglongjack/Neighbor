@@ -19,56 +19,40 @@
 	</head>
 
 	<body>
-
+		
 		<!--to 程序员-->
 		<!--a 标签如果需要加 链接跳转，加data-href属性。后面接链接。-->
 		<!--<a href="" data-href="#如果a链接跳转就把链接写到这里"></a>-->
 		<!--<div data-href="如果a链接跳转就把链接写到这里"></div>-->
 		<style type="text/css">
-			body,
-			.user-content{
-				background: #EFEFEF;	
+			body{
+				background: #EFEFEF;
 			}
 		</style>
 		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">转账</h1>
-
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">添加银行卡</h1>
 		</header>
-
-		<div class="mui-content user-content">
+		
+		
+		<div class="mui-content user-content ">
 			
 			
-			<div class="transfer-form">
-				<form class="mui-input-group">
-				    <div class="mui-input-row">
-				        <label>转账给</label>
-				        <div class="mui-pull-right txtinfo">
-				        	<div class="avator-user" style="background-image: url(img/avator/female_04.png);"></div>
-				        	<span>
-				        		李四
-				        	</span>
-				        </div>
-				    </div>
-				    <div class="mui-input-row">
-				        <label>转账金额</label>
-				        <input type="text" class="mui-text-right" placeholder="请输入转账金额">
-				    </div>
-				    <div class="mui-input-row">
-				        <label>转账说明</label>
-				        <input type="text" class="mui-text-right" placeholder="请输入转账说明">
-				    </div>
-				</form>
-				<br /><br />
-				<div class="mui-content-padded">
-					<button type="button" class="mui-btn mui-btn-red mui-btn-block">转账</button>
-				</div>
-			</div>
 			
+			<script type="text/javascript">
+				//页面层
+				  layer.open({
+				    type: 1
+				    ,content: '<img src="img/success2.png" height="60"/><p>银行卡添加成功</p>'
+				    ,anim: 'up',
+				    skin:"skin"
+				  });
+			</script>
 			
 			
 		</div>
-
+		
+		
 		
 		<script src="js/config.js" type="text/javascript" charset="utf-8"></script>
 	</body>

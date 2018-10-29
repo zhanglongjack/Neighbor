@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<script src="js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/swiper/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="js/swiper/css/swiper.css" />
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+	</head>
+
+	<body>
+		
+		<!--to 程序员-->
+		<!--a 标签如果需要加 链接跳转，加data-href属性。后面接链接。-->
+		<!--<a href="" data-href="#如果a链接跳转就把链接写到这里"></a>-->
+		<!--<div data-href="如果a链接跳转就把链接写到这里"></div>-->
+		
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">我的收益</h1>
+		    <a class="mui-btn-link mui-pull-right" data-href="推荐列表.html">
+				推荐列表
+			</a>
+		</header>
+		
+
+		<div class="mui-content user-content">
+				
+			<div class="tab-row">
+				<nav class="mui-bar-tab">
+				
+				    <a class="mui-tab-item" data-href="我的推荐.html">
+				        <span class="mui-tab-label">佣金详情</span>
+				    </a>
+				    <a class="mui-tab-item mui-active" data-href="我的推荐-历史佣金.html">
+				        <span class="mui-tab-label">历史佣金</span>
+				    </a>
+				</nav>
+			</div>	
+			<div class="mui-text-center mui-h5" style="padding: 10px;">
+				收益总金额<b class="red">0.00</b>元    今天收益<b class="red">0.00</b>元
+			</div>
+			
+			
+			
+			
+			<div class="table-data">
+				<table border="0" cellspacing="0" cellpadding="0" width="100%">
+					<tr>
+						<th>昵称</th>
+						<th>佣金</th>
+						<th>
+							<div id="btnSelect1" click>
+					        	<span id="selectResult1">选择会员级别</span>
+					        	<i class="fa fa-angle-down"></i>
+					        </div>
+						</th>
+						<th>
+						
+							<div id="btnSelect2" click data-options='{"type":"month","beginYear":2014,"endYear":2019}' >
+					        	<span id="selectResult2">日期</span>
+					        	<i class="fa fa-angle-down"></i>
+					        </div>
+						</th>
+					</tr>
+					<tbody>
+						<tr>
+							<td>张三</td>
+							<td>
+								<span class="red">45403</span>
+							</td>
+							<td>
+								一级会员
+							</td>
+							<td>
+								2018-10-25
+							</td>
+						</tr>
+						<tr>
+							<td>张三</td>
+							<td>
+								<span class="red">45403</span>
+							</td>
+							<td>
+								一级会员
+							</td>
+							<td>
+								2018-10-25
+							</td>
+						</tr>
+						<tr>
+							<td>张三</td>
+							<td>
+								<span class="red">45403</span>
+							</td>
+							<td>
+								一级会员
+							</td>
+							<td>
+								2018-10-25
+							</td>
+						</tr>
+						<tr>
+							<td>张三</td>
+							<td>
+								<span class="red">45403</span>
+							</td>
+							<td>
+								一级会员
+							</td>
+							<td>
+								2018-10-25
+							</td>
+						</tr>
+						<tr>
+							<td>张三</td>
+							<td>
+								<span class="red">45403</span>
+							</td>
+							<td>
+								一级会员
+							</td>
+							<td>
+								2018-10-25
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			
+			
+			
+		</div>
+		
+		
+		
+		<!--select-->
+		<script src="js/select/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="js/select/mui.picker.min.css"/>
+		<script type="text/javascript">
+			;(function($$, doc) {
+//				 select 选择
+				$$.ready(function() {
+					//普通示例
+					var userPicker = new $$.PopPicker();
+					userPicker.setData([{
+						value: '1',
+						text: '一级会员'
+					}, {
+						value: '2',
+						text: '二级会员'
+					}, {
+						value: '3',
+						text: '三级会员'
+					}]);
+					var showUserPickerButton = doc.getElementById('btnSelect1');
+					var userResult = doc.getElementById('selectResult1');
+					showUserPickerButton.addEventListener('tap', function(event) {
+						userPicker.show(function(items) {
+							$(userResult).text(items[0].text)
+							//返回 false 可以阻止选择框的关闭
+							//return false;
+						});
+					}, false);
+				});
+			})(mui, document);
+			
+//			日历
+			;(function($) {
+				
+				var result =document.getElementById("selectResult2");
+				document.getElementById("btnSelect2").addEventListener('tap', function() {
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						var id = this.getAttribute('id');
+						/*
+						 * 首次显示时实例化组件
+						 * 示例为了简洁，将 options 放在了按钮的 dom 上
+						 * 也可以直接通过代码声明 optinos 用于实例化 DtPicker
+						 */
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs) {
+							/*
+							 * rs.value 拼合后的 value
+							 * rs.text 拼合后的 text
+							 * rs.y 年，可以通过 rs.y.vaue 和 rs.y.text 获取值和文本
+							 * rs.m 月，用法同年
+							 * rs.d 日，用法同年
+							 * rs.h 时，用法同年
+							 * rs.i 分（minutes 的第二个字母），用法同年
+							 */
+							result.innerText = rs.text;
+							/* 
+							 * 返回 false 可以阻止选择框的关闭
+							 * return false;
+							 */
+							/*
+							 * 释放组件资源，释放后将将不能再操作组件
+							 * 通常情况下，不需要示放组件，new DtPicker(options) 后，可以一直使用。
+							 * 当前示例，因为内容较多，如不进行资原释放，在某些设备上会较慢。
+							 * 所以每次用完便立即调用 dispose 进行释放，下次用时再创建新实例。
+							 */
+							picker.dispose();
+						});
+					}, false);
+				
+			})(mui);
+			
+		</script>
+		<script src="js/config.js" type="text/javascript" charset="utf-8"></script>
+	</body>
+
+</html>

@@ -10,7 +10,7 @@ import nz.net.ultraq.thymeleaf.decorators.strategies.GroupingStrategy;
 
 /**
  * Hello world!
- *
+ * 
  */
 @SpringBootApplication
 public class StartNeighbor

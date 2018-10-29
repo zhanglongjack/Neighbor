@@ -19,91 +19,105 @@
 	</head>
 
 	<body>
-
+		
 		<!--to 程序员-->
 		<!--a 标签如果需要加 链接跳转，加data-href属性。后面接链接。-->
 		<!--<a href="" data-href="#如果a链接跳转就把链接写到这里"></a>-->
 		<!--<div data-href="如果a链接跳转就把链接写到这里"></div>-->
-		
 		<style type="text/css">
-			body,
-			.user-content{
-				background: #EFEFEF;	
+			body{
+				background: #EFEFEF;
 			}
 		</style>
 		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">交易详情</h1>
-
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">设置</h1>
 		</header>
-
+		
+		
 		<div class="mui-content user-content ">
-
-			<div class="transaction-tips">
-				<img src="img/success.png" height="20px"/>
-				支付机构名称按实际为准
-			</div>
+			
+			
+			<ul class="mui-table-view mb10">
+			        <li class="mui-table-view-cell">
+			        	
+			            <a class="mui-navigate-right mui-navigate-right-info" data-href="账户安全.html">
+			            	<div class="mui-pull-right">
+			            		已保护
+			            	</div>
+			                <span>
+			                	账户安全
+			                </span>
+			            </a>
+			        </li>
+			        
+			    </ul>
+			
 			
 			
 			<ul class="mui-table-view">
 			        <li class="mui-table-view-cell">
-			            <a >
-			                <div class="mui-pull-right">
-			                	收入
-			                </div>
+			            <a class="mui-navigate-right"  data-href="新消息通知.html">
+			            	
 			                <span>
-			                	类型
+			                	新消息通知
 			                </span>
 			            </a>
 			        </li>
-			        <li class="mui-table-view-cell">
-			            <a >
-			                <div class="mui-pull-right">
-			                	<b class="red">
-			                		+100
-			                	</b>
-			                </div>
+			         <li class="mui-table-view-cell">
+			            <a class="mui-navigate-right"  data-href="新消息通知.html">
+			            	
 			                <span>
-			                	金额
+			                	当前版本（2.1.1）
 			                </span>
 			            </a>
 			        </li>
-			        <li class="mui-table-view-cell">
-			            <a >
-			                <div class="mui-pull-right">
-			                	100.00
-			                </div>
+			         <li class="mui-table-view-cell">
+			            <a class="mui-navigate-right" id="clearCache">
+			            	
 			                <span>
-			                	账户余额
+			                	清理缓存
 			                </span>
 			            </a>
 			        </li>
-			        
-			        <li class="mui-table-view-cell">
-			            <a >
-			                <div class="mui-pull-right">
-			                	好邻居充值
-			                </div>
+			         <li class="mui-table-view-cell">
+			            <a class="mui-navigate-right" id="clearChat">
+			            	
 			                <span>
-			                	转账交易
-			                </span>
-			            </a>
-			        </li>
-			        
-			        <li class="mui-table-view-cell">
-			            <a >
-			                <div class="mui-pull-right">
-			                	20181026_221028
-			                </div>
-			                <span>
-			                	交易时间
+			                	清理聊天记录
 			                </span>
 			            </a>
 			        </li>
 			    </ul>
-
+			
+			
+			
+			<div class="mui-content-padded portrait">
+				<div class="bank-action-row">
+					<button type="button" class="mui-btn mui-btn-red mui-btn-block">退出登录</button>
+				</div>
+			</div>
+			
+			
 		</div>
-
+		
+		
+		<script type="text/javascript">
+			mui(document).on('tap','#clearCache',function(){
+			  mui.toast("已清除缓存")
+			})
+			mui(document).on('tap','#clearChat',function(){
+			  var btnArray = ['确认', '取消'];
+				mui.confirm('是否清楚所有聊天记录', '温馨提示', btnArray, function(e) {
+					if (e.index == 0) {
+						mui.toast("清除开始")
+					} else {
+						mui.toast("已取消")
+					}
+				})
+			})
+		</script>
+		
 		
 		<script src="js/config.js" type="text/javascript" charset="utf-8"></script>
 	</body>
