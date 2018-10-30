@@ -1,11 +1,14 @@
-package com.neighbor.app.bankcard.entity;
+package com.neighbor.app.withdraw.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.neighbor.app.common.entity.PageEntity;
 
-public class BankCard extends PageEntity {
+public class Withdraw extends PageEntity {
     private Long id;
+
+    private String orderno;
 
     private Date createTime;
 
@@ -13,11 +16,17 @@ public class BankCard extends PageEntity {
 
     private Long uId;
 
+    private BigDecimal amount;
+
     private String bankCardNo;
 
     private String branchInfo;
 
     private String realName;
+
+    private String states;
+
+    private String remarks;
 
     public Long getId() {
         return id;
@@ -25,6 +34,14 @@ public class BankCard extends PageEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getOrderno() {
+        return orderno;
+    }
+
+    public void setOrderno(String orderno) {
+        this.orderno = orderno;
     }
 
     public Date getCreateTime() {
@@ -51,6 +68,14 @@ public class BankCard extends PageEntity {
         this.uId = uId;
     }
 
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
     public String getBankCardNo() {
         return bankCardNo;
     }
@@ -75,13 +100,28 @@ public class BankCard extends PageEntity {
         this.realName = realName;
     }
 
+    public String getStates() {
+        return states;
+    }
+
+    public void setStates(String states) {
+        this.states = states;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
 	@Override
 	public String toString() {
 		return String.format(
-				"BankCard [id=%s, createTime=%s, updateTime=%s, uId=%s, bankCardNo=%s, branchInfo=%s, realName=%s]", id,
-				createTime, updateTime, uId, bankCardNo, branchInfo, realName);
+				"Withdraw [id=%s, orderno=%s, createTime=%s, updateTime=%s, uId=%s, amount=%s, bankCardNo=%s, branchInfo=%s, realName=%s, states=%s, remarks=%s]",
+				id, orderno, createTime, updateTime, uId, amount, bankCardNo, branchInfo, realName, states, remarks);
 	}
-    
     
     
 }

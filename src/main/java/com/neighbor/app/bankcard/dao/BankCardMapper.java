@@ -1,5 +1,7 @@
 package com.neighbor.app.bankcard.dao;
 
+import java.util.List;
+
 import com.neighbor.app.bankcard.entity.BankCard;
 
 public interface BankCardMapper {
@@ -11,4 +13,10 @@ public interface BankCardMapper {
 
     int updateByPrimaryKeySelective(BankCard record);
  
+    
+	Long selectPageTotalCount(BankCard record);
+
+	List<BankCard> selectPageByObjectForList(BankCard record);
+
+	List<BankCard> selectAll();
 }

@@ -1,69 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.neighbor.app.bankcard.dao.BankCardMapper">
-  <resultMap id="BaseResultMap" type="com.neighbor.app.bankcard.entity.BankCard">
+<mapper namespace="com.neighbor.app.withdraw.dao.WithdrawMapper">
+  <resultMap id="BaseResultMap" type="com.neighbor.app.withdraw.entity.Withdraw">
     <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="orderNo" jdbcType="VARCHAR" property="orderno" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="u_id" jdbcType="BIGINT" property="uId" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
     <result column="bank_card_no" jdbcType="VARCHAR" property="bankCardNo" />
     <result column="branch_info" jdbcType="VARCHAR" property="branchInfo" />
     <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="states" jdbcType="CHAR" property="states" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, create_time, update_time, u_id, bank_card_no, branch_info, real_name
+    id, orderNo, create_time, update_time, u_id, amount, bank_card_no, branch_info, real_name, 
+    states, remarks
   </sql>
   
-  	<sql id="dynamicWhere">
+  <sql id="dynamicWhere">
 		<where>
 			<if test="id != null">id=#{id}</if>
 			<if test="uId != null">and u_id=#{uId}</if>
 			<if test="bankCardNo != null and bankCardNo.length()>0">and bank_card_no=#{bankCardNo}</if>
+			<if test="branchInfo != null and branchInfo.length()>0">and branch_info=#{branchInfo}</if>
 			<if test="realName != null and realName.length()>0">and real_name=#{realName}</if>
+		    <if test="states != null and states.length()>0">and states=#{states}</if>
+			<if test="orderno != null and orderno.length()>0">and orderNo=#{orderno}</if>
 		</where>
 	</sql>
 	
-	<select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectAll" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from k_bank_card
+		from k_withdraw
 		order by create_time
 	</select>
   
-	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.bankcard.entity.BankCard"
+	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.withdraw.entity.Withdraw"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from k_bank_card
+		from k_withdraw
 		<include refid="dynamicWhere" />
 		order by create_time desc
 		limit #{pageTools.rowIndex},#{pageTools.pageSize}
 	</select>
 	
-	<select id="selectPageTotalCount" parameterType="com.neighbor.app.bankcard.entity.BankCard"
+	<select id="selectPageTotalCount" parameterType="com.neighbor.app.withdraw.entity.Withdraw"
 		resultType="Long">
 		select
 			count(1)
-		from k_bank_card
+		from k_withdraw
 		<include refid="dynamicWhere" />
 	</select>
+  
+  
   
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from k_bank_card
+    from k_withdraw
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from k_bank_card
+    delete from k_withdraw
     where id = #{id,jdbcType=BIGINT}
   </delete>
  
-  <insert id="insertSelective" parameterType="com.neighbor.app.bankcard.entity.BankCard">
-    insert into k_bank_card
+  <insert id="insertSelective" parameterType="com.neighbor.app.withdraw.entity.Withdraw">
+    insert into k_withdraw
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
+      </if>
+      <if test="orderno != null">
+        orderNo,
       </if>
       <if test="createTime != null">
         create_time,
@@ -74,6 +87,9 @@
       <if test="uId != null">
         u_id,
       </if>
+      <if test="amount != null">
+        amount,
+      </if>
       <if test="bankCardNo != null">
         bank_card_no,
       </if>
@@ -83,10 +99,19 @@
       <if test="realName != null">
         real_name,
       </if>
+      <if test="states != null">
+        states,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderno != null">
+        #{orderno,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -97,6 +122,9 @@
       <if test="uId != null">
         #{uId,jdbcType=BIGINT},
       </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
       <if test="bankCardNo != null">
         #{bankCardNo,jdbcType=VARCHAR},
       </if>
@@ -106,11 +134,20 @@
       <if test="realName != null">
         #{realName,jdbcType=VARCHAR},
       </if>
+      <if test="states != null">
+        #{states,jdbcType=CHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.bankcard.entity.BankCard">
-    update k_bank_card
+  <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.withdraw.entity.Withdraw">
+    update k_withdraw
     <set>
+      <if test="orderno != null">
+        orderNo = #{orderno,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -120,6 +157,9 @@
       <if test="uId != null">
         u_id = #{uId,jdbcType=BIGINT},
       </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
       <if test="bankCardNo != null">
         bank_card_no = #{bankCardNo,jdbcType=VARCHAR},
       </if>
@@ -128,6 +168,12 @@
       </if>
       <if test="realName != null">
         real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="states != null">
+        states = #{states,jdbcType=CHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
