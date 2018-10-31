@@ -5,6 +5,7 @@ CREATE TABLE `users_info`  (
   `user_photo` varchar(100) COMMENT '头像',
   `nick_name` varchar(50) NOT NULL COMMENT '昵称',
   `user_account` varchar(50) NOT NULL COMMENT '账号',
+  `user_password` varchar(128) COMMENT '密码',
   `qr_code` varchar(100) COMMENT '二维码',
   `sex` varchar(1) COMMENT '性别(0:男,1:女,2:未知)',
   `mobile_phone` varchar(15) NOT NULL COMMENT '手机号',
@@ -30,7 +31,7 @@ CREATE TABLE `user_commision`  (
   `gain_date` varchar(16) COMMENT '获取日期',
   `gain_time` varchar(16) COMMENT '获取时间',
   `remarks` varchar(50) COMMENT '备注',
-  PRIMARY KEY (`id`) USING BTREE,
+  PRIMARY KEY (`id`),
   KEY `index_commision_u_id`(`u_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='佣金表';
 
