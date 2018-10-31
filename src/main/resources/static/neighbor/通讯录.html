@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<script src="js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/swiper/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="js/swiper/css/swiper.css" />
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+	</head>
+
+	<body>
+
+		<!--to 程序员-->
+		<!--a 标签如果需要加 链接跳转，加data-href属性。后面接链接。-->
+		<!--<a href="" data-href="#如果a链接跳转就把链接写到这里"></a>-->
+		<!--<div data-href="如果a链接跳转就把链接写到这里"></div>-->
+
+		<header class="mui-bar mui-bar-nav">
+			<a class=" mui-icon mui-icon-plusempty mui-pull-right" href="#plusMenuPopover"></a>
+			<h1 class="mui-title">通讯录</h1>
+
+		</header>
+
+		<div id="plusMenuPopover" class="mui-popover plusMenuPopover">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#" data-href="#跳转链接写到这里才会生效"><i class="mui-icon icon-add"></i>添加朋友</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a href="#"><i class="mui-icon icon-scan"></i>扫一扫</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a href="#" class="J-shareBtns"><i class="mui-icon icon-share "></i>分享</a>
+				</li>
+			</ul>
+		</div>
+
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item " data-href="#如果a链接跳转就把链接写到这里">
+				<span class="mui-icon icon-nav1"></span><span class="mui-icon icon-nav1-active"></span>
+				<span class="mui-tab-label">聊天</span>
+			</a>
+			<a class="mui-tab-item mui-active" data-href="#如果a链接跳转就把链接写到这里">
+				<span class="mui-icon icon-nav2"></span><span class="mui-icon icon-nav2-active"></span>
+				<span class="mui-tab-label">通讯录</span>
+			</a>
+			<a class="mui-tab-item" data-href="index.html">
+				<span class="mui-icon icon-nav3"></span><span class="mui-icon icon-nav3-active"></span>
+				<span class="mui-tab-label">游戏</span>
+			</a>
+			<a class="mui-tab-item" data-href="商城.html">
+				<span class="mui-icon icon-nav4"></span><span class="mui-icon icon-nav4-active"></span>
+				<span class="mui-tab-label">商城</span>
+			</a>
+			<a class="mui-tab-item" data-href="个人中心.html">
+				<span class="mui-icon icon-nav5"></span><span class="mui-icon icon-nav5-active"></span>
+				<span class="mui-tab-label">个人中心</span>
+			</a>
+		</nav>
+		
+		
+		<style type="text/css">
+		    	body{
+		    		overflow: hidden;
+		    	}
+		</style>
+		
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: false,
+				statusBarBackground: '#f7f7f7',
+				gestureConfig: {
+					doubletap: true
+				},
+				subpages: [{
+					id: 'Mail-list',
+					url: '通讯录列表.html',
+					styles: {
+						top: '44px',
+						bottom: '44px',
+						bounce: 'vertical'
+					}
+				}]
+			});
+		</script>
+		<!--分享-->
+		<script type="text/javascript">
+			mui(document).on('tap','.J-shareBtns',function(){
+			  layer.open({
+			    type: 1
+			    ,content: '<div class="shareBox"><p>选择要分享的平台</p><div class="shares-actions"><ul class="mui-list-unstyled"><li><a href="#" data-href="#跳转链接写到这里才会生效"><img src="img/img-weixin.png" /><p>微信</p></a></li><li><a href="#" data-href="#跳转链接写到这里才会生效"><img src="img/img-qq.png" /><p>QQ</p></a></li><li><a href="#" data-href="#跳转链接写到这里才会生效"><img src="img/img-pyq.png" /><p>朋友圈</p></a></li><li><a href="#" data-href="#跳转链接写到这里才会生效"><img src="img/img-qqzone.png" /><p>QQ空间</p></a></li></ul></div></div>'
+			    ,btn: '取消分享'
+			    ,anim: 'up'
+			    ,style: 'position:fixed; bottom:0; left:0; width: 100%;  border:none;'
+			  });
+			})
+		</script>
+		<script src="js/config.js" type="text/javascript" charset="utf-8"></script>
+	</body>
+
+</html>
