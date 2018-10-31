@@ -8,7 +8,7 @@ import com.neighbor.app.common.entity.PageEntity;
 public class Recharge  extends PageEntity{
     private Long id;
 
-    private String orderno;
+    private String orderNo;
 
     private Date createTime;
 
@@ -31,16 +31,17 @@ public class Recharge  extends PageEntity{
     public void setId(Long id) {
         this.id = id;
     }
+ 
 
-    public String getOrderno() {
-        return orderno;
-    }
+    public String getOrderNo() {
+		return orderNo;
+	}
 
-    public void setOrderno(String orderno) {
-        this.orderno = orderno;
-    }
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
 
-    public Date getCreateTime() {
+	public Date getCreateTime() {
         return createTime;
     }
 
@@ -99,9 +100,12 @@ public class Recharge  extends PageEntity{
 	@Override
 	public String toString() {
 		return String.format(
-				"Recharge [id=%s, orderno=%s, createTime=%s, updateTime=%s, uId=%s, channelType=%s, amount=%s, states=%s, remarks=%s]",
-				id, orderno, createTime, updateTime, uId, channelType, amount, states, remarks);
+				"Recharge [id=%s, orderNo=%s, createTime=%s, updateTime=%s, uId=%s, channelType=%s, amount=%s, states=%s, remarks=%s]",
+				id, orderNo, createTime, updateTime, uId, channelType, amount, states, remarks);
 	}
+
+
+    
     
    
     

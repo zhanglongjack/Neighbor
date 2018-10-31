@@ -1,6 +1,6 @@
 
-DROP TABLE IF EXISTS `k_user_wallet`;
-CREATE TABLE `k_user_wallet` (
+DROP TABLE IF EXISTS `user_wallet`;
+CREATE TABLE `user_wallet` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
@@ -12,10 +12,10 @@ CREATE TABLE `k_user_wallet` (
   KEY `index_user_wallet_u_id` (`u_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户钱包';
 
-DROP TABLE IF EXISTS `k_recharge`;
-CREATE TABLE `k_recharge` (
+DROP TABLE IF EXISTS `recharge`;
+CREATE TABLE `recharge` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `orderNo` varchar(50) DEFAULT NULL COMMENT '流水号',
+  `order_no` varchar(50) DEFAULT NULL COMMENT '流水号',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `u_id` bigint(20)  NOT NULL COMMENT '用户Id',
@@ -27,10 +27,10 @@ CREATE TABLE `k_recharge` (
   KEY `index_recharge_u_id` (`u_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='充值表';
 
-DROP TABLE IF EXISTS `k_transfer`;
-CREATE TABLE `k_transfer` (
+DROP TABLE IF EXISTS `transfer`;
+CREATE TABLE `transfer` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `orderNo` varchar(50) DEFAULT NULL COMMENT '流水号',
+  `order_no` varchar(50) DEFAULT NULL COMMENT '流水号',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `u_id` bigint(20)  NOT NULL COMMENT '用户Id',
@@ -44,10 +44,10 @@ CREATE TABLE `k_transfer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='转账记录表';
 
 
-DROP TABLE IF EXISTS `k_withdraw`;
-CREATE TABLE `k_withdraw` (
+DROP TABLE IF EXISTS `withdraw`;
+CREATE TABLE `withdraw` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `orderNo` varchar(50) DEFAULT NULL COMMENT '流水号',
+  `order_no` varchar(50) DEFAULT NULL COMMENT '流水号',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `u_id` bigint(20)  NOT NULL COMMENT '用户Id',
@@ -62,14 +62,14 @@ CREATE TABLE `k_withdraw` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='取现记录表';
 
 
-DROP TABLE IF EXISTS `k_balance_detail`;
-CREATE TABLE `k_balance_detail` (
+DROP TABLE IF EXISTS `balance_detail`;
+CREATE TABLE `balance_detail` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `u_id` bigint(20)  NOT NULL COMMENT '用户Id',
   `amount` decimal(20,4) NOT NULL default 0 COMMENT '交易金额',
-  `transaction_type` char(2) NOT NULL COMMENT '交易类型（1:充值，2：提现，3：转账转入，4：转账转出，5：返佣，6：抢红包，7：中雷收入，8：中雷支出）',,
+  `transaction_type` char(2) NOT NULL COMMENT '交易类型（1:充值，2：提现，3：转账转入，4：转账转出，5：返佣，6：抢红包，7：中雷收入，8：中雷支出）',
   `available_amount` decimal(20,4) NOT NULL default 0 COMMENT '余额',
   `transaction_id` bigint(20) DEFAULT NULL COMMENT '交易Id',
   `remarks` varchar(50) DEFAULT NULL COMMENT '备注',
@@ -78,8 +78,8 @@ CREATE TABLE `k_balance_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='余额明细表';
 
 
-DROP TABLE IF EXISTS `k_bank_card`;
-CREATE TABLE `k_bank_card` (
+DROP TABLE IF EXISTS `bank_card`;
+CREATE TABLE `bank_card` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
