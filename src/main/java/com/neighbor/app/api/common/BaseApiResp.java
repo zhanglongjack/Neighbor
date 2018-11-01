@@ -1,6 +1,7 @@
 package com.neighbor.app.api.common;
 
 public class BaseApiResp {
+	private String serviceName;
 	private int errorCode;
 	private String errorMessage;
 	public int getErrorCode() {
@@ -15,6 +16,13 @@ public class BaseApiResp {
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
+	public String getServiceName() {
+		return serviceName;
+	}
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+	
 	
 	
 }

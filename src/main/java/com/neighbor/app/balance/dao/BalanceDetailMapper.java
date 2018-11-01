@@ -2,8 +2,10 @@ package com.neighbor.app.balance.dao;
 
 import java.util.List;
 
-import com.neighbor.app.balance.entity.BalanceDetail;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.neighbor.app.balance.entity.BalanceDetail;
+@Mapper
 public interface BalanceDetailMapper {
     int deleteByPrimaryKey(Long id);
 

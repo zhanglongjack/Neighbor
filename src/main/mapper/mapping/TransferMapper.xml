@@ -3,7 +3,7 @@
 <mapper namespace="com.neighbor.app.transfer.dao.TransferMapper">
   <resultMap id="BaseResultMap" type="com.neighbor.app.transfer.entity.Transfer">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="orderNo" jdbcType="VARCHAR" property="orderno" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="u_id" jdbcType="BIGINT" property="uId" />
@@ -14,7 +14,7 @@
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, orderNo, create_time, update_time, u_id, transfer_way, transfer_user_id, amount, 
+    id, order_no, create_time, update_time, u_id, transfer_way, transfer_user_id, amount, 
     states, remarks
   </sql>
   
@@ -26,14 +26,14 @@
 			<if test="transferUserId != null ">and transfer_user_id=#{transferUserId}</if>
 			<if test="transferWay != null and transferWay.length()>0">and transfer_way=#{transferWay}</if>
 			<if test="states != null and states.length()>0">and states=#{states}</if>
-			<if test="orderno != null and orderno.length()>0">and orderNo=#{orderno}</if>
+			<if test="orderNo != null and orderNo.length()>0">and order_no=#{orderNo}</if>
 		</where>
 	</sql>
 	
   <select id="selectAll" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from k_transfer
+		from transfer
 		order by create_time
 	</select>
   
@@ -41,7 +41,7 @@
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from k_transfer
+		from transfer
 		<include refid="dynamicWhere" />
 		order by create_time desc
 		limit #{pageTools.rowIndex},#{pageTools.pageSize}
@@ -51,29 +51,29 @@
 		resultType="Long">
 		select
 			count(1)
-		from k_transfer
+		from transfer
 		<include refid="dynamicWhere" />
 	</select>
   
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from k_transfer
+    from transfer
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from k_transfer
+    delete from transfer
     where id = #{id,jdbcType=BIGINT}
   </delete>
  
   <insert id="insertSelective" parameterType="com.neighbor.app.transfer.entity.Transfer">
-    insert into k_transfer
+    insert into transfer
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="orderno != null">
-        orderNo,
+      <if test="orderNo != null">
+        order_no,
       </if>
       <if test="createTime != null">
         create_time,
@@ -104,8 +104,8 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="orderno != null">
-        #{orderno,jdbcType=VARCHAR},
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -134,10 +134,10 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.transfer.entity.Transfer">
-    update k_transfer
+    update transfer
     <set>
-      <if test="orderno != null">
-        orderNo = #{orderno,jdbcType=VARCHAR},
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},

@@ -2,8 +2,10 @@ package com.neighbor.app.withdraw.dao;
 
 import java.util.List;
 
-import com.neighbor.app.withdraw.entity.Withdraw;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.neighbor.app.withdraw.entity.Withdraw;
+@Mapper
 public interface WithdrawMapper {
     int deleteByPrimaryKey(Long id);
 
