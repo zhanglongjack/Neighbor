@@ -2,153 +2,203 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.neighbor.app.users.dao.UserInfoMapper">
 	<resultMap id="BaseResultMap" type="com.neighbor.app.users.entity.UserInfo">
-		<id column="u_id" jdbcType="BIGINT" property="uId" />
-		<result column="name" jdbcType="VARCHAR" property="name" />
-		<result column="wechat_number" jdbcType="VARCHAR" property="wechatNumber" />
-		<result column="password" jdbcType="VARCHAR" property="password" />
-		<result column="level" jdbcType="INTEGER" property="uLevel" />
-		<result column="phone" jdbcType="BIGINT" property="phone" />
-		<result column="entry_date" jdbcType="VARCHAR" property="entryDate" />
-		<result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="user_photo" jdbcType="VARCHAR" property="userPhoto" />
+		<result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+		<result column="user_account" jdbcType="VARCHAR" property="userAccount" />
+		<result column="user_password" jdbcType="VARCHAR" property="userPassword" />
+		<result column="qr_code" jdbcType="VARCHAR" property="qrCode" />
+		<result column="sex" jdbcType="VARCHAR" property="sex" />
+		<result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+		<result column="real_name" jdbcType="VARCHAR" property="realName" />
+		<result column="wechat" jdbcType="VARCHAR" property="wechat" />
+		<result column="qq" jdbcType="VARCHAR" property="qq" />
+		<result column="robot_sno" jdbcType="VARCHAR" property="robotSno" />
+		<result column="upuser_id" jdbcType="BIGINT" property="upuserId" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		u_id, name, wechat_number, password, level, phone,
-		entry_date, create_date
+		id, user_photo, nick_name, user_account, user_password, qr_code, sex,
+		mobile_phone,
+		real_name, wechat, qq, robot_sno, upuser_id, create_time, update_time, remark
 	</sql>
-	<sql id="dynamicWhere">
-		<where>
-			<if test="uId != null">u_id=#{uId}</if>
-			<if test="wechatNumber != null and wechatNumber.length()>0">and wechat_number=#{wechatNumber}</if>
-			<if test="name != null and name.length()>0">and name=#{name}</if>
-			<if test="uLevel != null">and level=#{uLevel}</if>
-			<if test="phone != null">and phone=#{phone}</if>
-		</where>
-	</sql>
-	
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from user_info
-		where u_id = #{uId,jdbcType=BIGINT}
+		from users_info
+		where id = #{id,jdbcType=BIGINT}
 	</select>
 
-	<select id="selectByUserPhone" parameterType="java.lang.Long"
+	<select id="selectByUserPhone" parameterType="String"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from user_info
-		where phone = #{phone,jdbcType=BIGINT}
+		from users_info
+		where mobile_phone = #{phone}
 	</select>
 
-	<select id="selectAll" resultMap="BaseResultMap">
-		select
-		<include refid="Base_Column_List" />
-		from user_info
-		order by u_id
-	</select>
-  
-	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.users.entity.UserInfo"
-		resultMap="BaseResultMap">
-		select
-		<include refid="Base_Column_List" />
-		from user_info
-		<include refid="dynamicWhere" />
-		order by u_id desc
-		limit #{pageTools.rowIndex},#{pageTools.pageSize}
-	</select>
 	
-	<select id="selectPageTotalCount" parameterType="com.neighbor.app.users.entity.UserInfo"
-		resultType="Long">
-		select
-			count(1)
-		from user_info
-		<include refid="dynamicWhere" />
-	</select>
-
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from
-		user_info
-		where u_id = #{uId,jdbcType=BIGINT}
+		delete from users_info
+		where id = #{id,jdbcType=BIGINT}
 	</delete>
+	 
 	<insert id="insertSelective" parameterType="com.neighbor.app.users.entity.UserInfo">
-		insert into user_info
+		insert into users_info
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="uId != null">
-				u_id,
+			<if test="id != null">
+				id,
 			</if>
-			<if test="name != null">
-				name,
+			<if test="userPhoto != null">
+				user_photo,
 			</if>
-			<if test="wechatNumber != null">
-				wechat_number,
+			<if test="nickName != null">
+				nick_name,
 			</if>
-			<if test="password != null">
-				password,
+			<if test="userAccount != null">
+				user_account,
 			</if>
-			<if test="uLevel != null">
-				level,
+			<if test="userPassword != null">
+				user_password,
 			</if>
-			<if test="phone != null">
-				phone,
+			<if test="qrCode != null">
+				qr_code,
 			</if>
-			<if test="entryDate != null">
-				entry_date,
+			<if test="sex != null">
+				sex,
 			</if>
-			<if test="createDate != null">
-				create_date,
+			<if test="mobilePhone != null">
+				mobile_phone,
+			</if>
+			<if test="realName != null">
+				real_name,
+			</if>
+			<if test="wechat != null">
+				wechat,
+			</if>
+			<if test="qq != null">
+				qq,
+			</if>
+			<if test="robotSno != null">
+				robot_sno,
+			</if>
+			<if test="upuserId != null">
+				upuser_id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="remark != null">
+				remark,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="uId != null">
-				#{uId,jdbcType=BIGINT},
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
 			</if>
-			<if test="name != null">
-				#{name,jdbcType=VARCHAR},
+			<if test="userPhoto != null">
+				#{userPhoto,jdbcType=VARCHAR},
 			</if>
-			<if test="wechatNumber != null">
-				#{wechatNumber,jdbcType=VARCHAR},
+			<if test="nickName != null">
+				#{nickName,jdbcType=VARCHAR},
 			</if>
-			<if test="password != null">
-				#{password,jdbcType=VARCHAR},
+			<if test="userAccount != null">
+				#{userAccount,jdbcType=VARCHAR},
 			</if>
-			<if test="uLevel != null">
-				#{uLevel,jdbcType=INTEGER},
+			<if test="userPassword != null">
+				#{userPassword,jdbcType=VARCHAR},
 			</if>
-			<if test="phone != null">
-				#{phone,jdbcType=BIGINT},
+			<if test="qrCode != null">
+				#{qrCode,jdbcType=VARCHAR},
 			</if>
-			<if test="entryDate != null">
-				#{entryDate,jdbcType=VARCHAR},
+			<if test="sex != null">
+				#{sex,jdbcType=VARCHAR},
 			</if>
-			<if test="createDate != null">
-				#{createDate,jdbcType=TIMESTAMP},
+			<if test="mobilePhone != null">
+				#{mobilePhone,jdbcType=VARCHAR},
+			</if>
+			<if test="realName != null">
+				#{realName,jdbcType=VARCHAR},
+			</if>
+			<if test="wechat != null">
+				#{wechat,jdbcType=VARCHAR},
+			</if>
+			<if test="qq != null">
+				#{qq,jdbcType=VARCHAR},
+			</if>
+			<if test="robotSno != null">
+				#{robotSno,jdbcType=VARCHAR},
+			</if>
+			<if test="upuserId != null">
+				#{upuserId,jdbcType=BIGINT},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.users.entity.UserInfo">
-		update user_info
+		update users_info
 		<set>
-			<if test="name != null">
-				name = #{name,jdbcType=VARCHAR},
+			<if test="userPhoto != null">
+				user_photo = #{userPhoto,jdbcType=VARCHAR},
 			</if>
-			<if test="wechatNumber != null">
-				wechat_number = #{wechatNumber,jdbcType=VARCHAR},
+			<if test="nickName != null">
+				nick_name = #{nickName,jdbcType=VARCHAR},
 			</if>
-			<if test="newPwd != null">
-				password = #{newPwd,jdbcType=VARCHAR},
+			<if test="userAccount != null">
+				user_account = #{userAccount,jdbcType=VARCHAR},
 			</if>
-			<if test="uLevel != null">
-				level = #{uLevel,jdbcType=INTEGER},
+			<if test="userPassword != null">
+				user_password = #{userPassword,jdbcType=VARCHAR},
 			</if>
-			<if test="phone != null">
-				phone = #{phone,jdbcType=BIGINT},
+			<if test="qrCode != null">
+				qr_code = #{qrCode,jdbcType=VARCHAR},
 			</if>
-			<if test="entryDate != null">
-				entry_date = #{entryDate,jdbcType=VARCHAR},
+			<if test="sex != null">
+				sex = #{sex,jdbcType=VARCHAR},
+			</if>
+			<if test="mobilePhone != null">
+				mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+			</if>
+			<if test="realName != null">
+				real_name = #{realName,jdbcType=VARCHAR},
+			</if>
+			<if test="wechat != null">
+				wechat = #{wechat,jdbcType=VARCHAR},
+			</if>
+			<if test="qq != null">
+				qq = #{qq,jdbcType=VARCHAR},
+			</if>
+			<if test="robotSno != null">
+				robot_sno = #{robotSno,jdbcType=VARCHAR},
+			</if>
+			<if test="upuserId != null">
+				upuser_id = #{upuserId,jdbcType=BIGINT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
 			</if>
 		</set>
-		where u_id = #{uId,jdbcType=BIGINT}
-		<if test="password != null">and password=#{password}</if>
+		where id = #{id,jdbcType=BIGINT}
 	</update>
+	 
 </mapper>

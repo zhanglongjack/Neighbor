@@ -2,118 +2,164 @@ package com.neighbor.app.users.entity;
 
 import java.util.Date;
 
-import com.neighbor.common.util.PageTools;
-
 public class UserInfo {
-    private Long uId;
+    private Long id;
 
-    private String name;
+    private String userPhoto;
 
-    private String wechatNumber;
+    private String nickName;
 
-    private String password;
-    private String newPwd;
+    private String userAccount;
 
-    private Integer uLevel;
+    private String userPassword;
 
-    private Long phone;
+    private String qrCode;
 
-    private String entryDate;
+    private String sex;
 
-    private Date createDate;
+    private String mobilePhone;
 
-	private PageTools pageTools;
-	
-    public Long getuId() {
-        return uId;
+    private String realName;
+
+    private String wechat;
+
+    private String qq;
+
+    private String robotSno;
+
+    private Long upuserId;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    private String remark;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setuId(Long uId) {
-        this.uId = uId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUserPhoto() {
+        return userPhoto;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserPhoto(String userPhoto) {
+        this.userPhoto = userPhoto;
     }
 
-    public String getWechatNumber() {
-        return wechatNumber;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setWechatNumber(String wechatNumber) {
-        this.wechatNumber = wechatNumber;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUserAccount() {
+        return userAccount;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUserAccount(String userAccount) {
+        this.userAccount = userAccount;
     }
 
-    public String getNewPwd() {
-		return newPwd;
-	}
-
-	public void setNewPwd(String newPwd) {
-		this.newPwd = newPwd;
-	}
-
-	public Integer getuLevel() {
-		return uLevel;
-	}
-
-	public void setuLevel(Integer uLevel) {
-		this.uLevel = uLevel;
-	}
-
-	public Long getPhone() {
-        return phone;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public void setPhone(Long phone) {
-        this.phone = phone;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
-    public String getEntryDate() {
-        return entryDate;
+    public String getQrCode() {
+        return qrCode;
     }
 
-    public void setEntryDate(String entryDate) {
-        this.entryDate = entryDate;
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public String getSex() {
+        return sex;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
-    
-	public boolean isAdmin() {
-		return this.uLevel==0;
-	}
-	
-	public PageTools getPageTools() {
-		return pageTools;
-	}
 
-	public void setPageTools(PageTools pageTools) {
-		this.pageTools = pageTools;
-	}
+    public String getMobilePhone() {
+        return mobilePhone;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(
-				"UserInfo [uId=%s, name=%s, wechatNumber=%s, password=%s, uLevel=%s, phone=%s, entryDate=%s, createDate=%s]",
-				uId, name, wechatNumber, password, uLevel, phone, entryDate, createDate);
-	}
+    public void setMobilePhone(String mobilePhone) {
+        this.mobilePhone = mobilePhone;
+    }
 
-    
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getWechat() {
+        return wechat;
+    }
+
+    public void setWechat(String wechat) {
+        this.wechat = wechat;
+    }
+
+    public String getQq() {
+        return qq;
+    }
+
+    public void setQq(String qq) {
+        this.qq = qq;
+    }
+
+    public String getRobotSno() {
+        return robotSno;
+    }
+
+    public void setRobotSno(String robotSno) {
+        this.robotSno = robotSno;
+    }
+
+    public Long getUpuserId() {
+        return upuserId;
+    }
+
+    public void setUpuserId(Long upuserId) {
+        this.upuserId = upuserId;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 }
