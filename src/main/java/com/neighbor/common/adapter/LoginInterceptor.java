@@ -94,7 +94,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			}
 			return false;
 		}
-		logger.info("用户已登录,userName:"+user.getName());
+		logger.info("用户已登录,userName:"+user.getNickName());
 		return true;
 	}
 

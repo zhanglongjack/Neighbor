@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.alibaba.fastjson.JSON;
 import com.neighbor.app.api.common.BaseApiResp;
@@ -23,7 +24,7 @@ import com.neighbor.app.api.handler.CommonHandler;
 public class ApiController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiController.class);
 
-	@RequestMapping(value = "/api")
+	@RequestMapping(value = "/api",method=RequestMethod.POST)
 	public void service(HttpServletRequest request, HttpServletResponse response) {
 		BaseApiResp baseApiResp = new BaseApiResp();
 		try {

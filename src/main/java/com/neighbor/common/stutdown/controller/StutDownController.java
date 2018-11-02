@@ -20,9 +20,9 @@ public class StutDownController {
 		logger.info("ordersView request");
 		HttpSession session = request.getSession();
 		UserInfo user = (UserInfo) session.getAttribute("user");
-		if(user!=null && user.isAdmin()){
-			System.exit(-1);
-		}
+//		if(user!=null && user.isAdmin()){
+//			System.exit(-1);
+//		}
 		throw new Exception("警报,有人想关闭系统");
 	}
 	

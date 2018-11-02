@@ -48,7 +48,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     	String infos[] = username.split(",");
     	
         // 从数据库中取出用户信息
-        UserInfo user = userService.selectByUserPhone(Long.parseLong(infos[0]));
+        UserInfo user = userService.selectByUserPhone(infos[0]);
         // 判断用户是否存在
         if(user == null && infos.length==1) {
             throw new UsernameNotFoundException("用户名不存在");
@@ -63,13 +63,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         	// 返回UserDetails实现类
             return new User(infos[0], EncodeData.encode(TencentSms.smsCache.get(infos[0])), authorities);
         }else{
-        	 List<SysUserRoleKey> userRoles = userRoleService.listByUserId(user.getuId());
+        	 List<SysUserRoleKey> userRoles = userRoleService.listByUserId(user.getId());
              for (SysUserRoleKey userRole : userRoles) {
                  SysRole role = roleService.selectByPrimaryKey(userRole.getRoleId());
                  authorities.add(new SimpleGrantedAuthority(role.getName()));
              }
             // 返回UserDetails实现类
-            return new User(user.getPhone()+"", user.getPassword(), authorities);
+            return new User(user.getMobilePhone() , user.getUserPassword(), authorities);
         }
         
 

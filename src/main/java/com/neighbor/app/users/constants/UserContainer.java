@@ -29,11 +29,11 @@ public class UserContainer  implements ApplicationListener<ContextRefreshedEvent
 	}
 
 	public void buildUserInfo() {
-		List<UserInfo> userList = userService.selectAllForMap();
-		logger.debug("userList:{}",userList);
-		for(UserInfo user : userList){
-			userMap.put(user.getuId(), user.getName());
-		}
+//		List<UserInfo> userList = userService.selectAllForMap();
+//		logger.debug("userList:{}",userList);
+//		for(UserInfo user : userList){
+////			userMap.put(user.getuId(), user.getName());
+//		}
 		 
 		logger.debug("userMap:{}",userMap);
 	}

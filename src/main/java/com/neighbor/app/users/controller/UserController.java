@@ -43,45 +43,45 @@ public class UserController {
 		return "page/user/ModifyModal";
 	}
 
-	@RequestMapping(value = "/userView")
-	public ModelAndView UserView(UserInfo userInfo, PageTools pageTools,
-			@ModelAttribute("user") UserInfo user) {
-		logger.info("userView request : " +user);
-		
-		if (!user.isAdmin()) {
-			userInfo.setuId(user.getuId());
-		}
-		Long size = userService.selectPageTotalCount(userInfo);
-		pageTools.setTotal(size);
-		ModelAndView mv = new ModelAndView("page/user/UserView");
-		userInfo.setPageTools(pageTools);
-		mv.addObject("pageTools", pageTools);
-		mv.addObject("pageTools", pageTools);
-		return mv;
-	}
-
-	@RequestMapping(value = "/loadPage")
-	public ModelAndView loadPage(UserInfo userInfo, PageTools pageTools,
-			@ModelAttribute("user") UserInfo user) throws Exception {
-		logger.info("loadPage User request:" + userInfo + " page info ===" + pageTools);
-		
-		if (!user.isAdmin()) {
-			userInfo.setuId(user.getuId());
-		}
-
-		userInfo.setPageTools(pageTools);
-		ModelAndView mv = new ModelAndView("page/user/UserContent :: container-fluid");
-		Long size = userService.selectPageTotalCount(userInfo);
-		pageTools.setTotal(size);
-		List<UserInfo> ciList = userService.selectPageByObjectForList(userInfo);
-		logger.info("loadPage User result list info =====:" + ciList);
-		
-		mv.addObject("resultList", ciList);
-		mv.addObject("pageTools", pageTools);
-		mv.addObject("queryObject", userInfo);
-
-		return mv;
-	}
+//	@RequestMapping(value = "/userView")
+//	public ModelAndView UserView(UserInfo userInfo, PageTools pageTools,
+//			@ModelAttribute("user") UserInfo user) {
+//		logger.info("userView request : " +user);
+//		
+//		if (!user.isAdmin()) {
+//			userInfo.setuId(user.getuId());
+//		}
+//		Long size = userService.selectPageTotalCount(userInfo);
+//		pageTools.setTotal(size);
+//		ModelAndView mv = new ModelAndView("page/user/UserView");
+//		userInfo.setPageTools(pageTools);
+//		mv.addObject("pageTools", pageTools);
+//		mv.addObject("pageTools", pageTools);
+//		return mv;
+//	}
+//
+//	@RequestMapping(value = "/loadPage")
+//	public ModelAndView loadPage(UserInfo userInfo, PageTools pageTools,
+//			@ModelAttribute("user") UserInfo user) throws Exception {
+//		logger.info("loadPage User request:" + userInfo + " page info ===" + pageTools);
+//		
+//		if (!user.isAdmin()) {
+//			userInfo.setuId(user.getuId());
+//		}
+//
+//		userInfo.setPageTools(pageTools);
+//		ModelAndView mv = new ModelAndView("page/user/UserContent :: container-fluid");
+//		Long size = userService.selectPageTotalCount(userInfo);
+//		pageTools.setTotal(size);
+//		List<UserInfo> ciList = userService.selectPageByObjectForList(userInfo);
+//		logger.info("loadPage User result list info =====:" + ciList);
+//		
+//		mv.addObject("resultList", ciList);
+//		mv.addObject("pageTools", pageTools);
+//		mv.addObject("queryObject", userInfo);
+//
+//		return mv;
+//	}
 	
 	@RequestMapping(value="/userEdit")
 	@ResponseBody
@@ -102,7 +102,7 @@ public class UserController {
 		UserInfo user = userService.selectByPrimaryKey(id);
 		
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("success", user!=null&&user.getPassword().equals(pwd));
+		map.put("success", user!=null&&user.getUserPassword().equals(pwd));
 		return map;
 	}
 	

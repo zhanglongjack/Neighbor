@@ -14,14 +14,14 @@ public interface UserService {
 
 	int updateByPrimaryKeySelective(UserInfo record);
 
-	UserInfo selectByUserPhone(Long phone);
-
-	Long selectPageTotalCount(UserInfo userInfo);
-
-	List<UserInfo> selectPageByObjectForList(UserInfo userInfo);
-
-	List<UserInfo> selectAllForMap();
-
-	UserInfo selectByName(String username);
+	UserInfo selectByUserPhone(String phone);
+//
+//	Long selectPageTotalCount(UserInfo userInfo);
+//
+//	List<UserInfo> selectPageByObjectForList(UserInfo userInfo);
+//
+//	List<UserInfo> selectAllForMap();
+//
+//	UserInfo selectByName(String username);
 
 }

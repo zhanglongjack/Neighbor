@@ -44,28 +44,28 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserInfo selectByUserPhone(Long phone) {
+	public UserInfo selectByUserPhone(String phone) {
 		return userInfoMapper.selectByUserPhone(phone);
 	}
-
-	@Override
-	public Long selectPageTotalCount(UserInfo userInfo) {
-		return userInfoMapper.selectPageTotalCount(userInfo);
-	}
-
-	@Override
-	public List<UserInfo> selectPageByObjectForList(UserInfo userInfo) {
-		return userInfoMapper.selectPageByObjectForList(userInfo);
-	}
-
-	@Override
-	public List<UserInfo> selectAllForMap() {
-		return userInfoMapper.selectAll();
-	}
-
-	@Override
-	public UserInfo selectByName(String username) {
-		return userInfoMapper.selectByName(username);
-	}
+//
+//	@Override
+//	public Long selectPageTotalCount(UserInfo userInfo) {
+//		return userInfoMapper.selectPageTotalCount(userInfo);
+//	}
+//
+//	@Override
+//	public List<UserInfo> selectPageByObjectForList(UserInfo userInfo) {
+//		return userInfoMapper.selectPageByObjectForList(userInfo);
+//	}
+//
+//	@Override
+//	public List<UserInfo> selectAllForMap() {
+//		return userInfoMapper.selectAll();
+//	}
+//
+//	@Override
+//	public UserInfo selectByName(String username) {
+//		return userInfoMapper.selectByName(username);
+//	}
 
 }

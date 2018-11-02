@@ -33,8 +33,8 @@ public class LoginController {
 	@ResponseBody
 	public Map<String,Object> login(String phone,String password,HttpServletRequest request,ModelMap model){
 		Map<String,Object> map = new HashMap<String,Object>();
-		UserInfo user  = userService.selectByUserPhone(Long.parseLong(phone));
-		if(user==null || !user.getPassword().equals(password)){
+		UserInfo user  = userService.selectByUserPhone( phone );
+		if(user==null || !user.getUserPassword().equals(password)){
 			logger.info("用户名或密码错误");
 			map.put("success", 0);
 			map.put("message", "用户名或密码错误!"); 
@@ -42,7 +42,7 @@ public class LoginController {
 		}
 		
 		HttpSession session = request.getSession();
-		user.setPassword("******");
+		user.setUserPassword(null);
 		logger.info("登录成功:"+user);
 		session.setAttribute("user", user);
 //		session.setAttribute("levelMap", CustomerLevelContainer.levelMap);
