@@ -2,8 +2,10 @@ package com.neighbor.app.transfer.dao;
 
 import java.util.List;
 
-import com.neighbor.app.transfer.entity.Transfer;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.neighbor.app.transfer.entity.Transfer;
+@Mapper
 public interface TransferMapper {
     int deleteByPrimaryKey(Long id);
 

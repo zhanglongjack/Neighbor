@@ -8,7 +8,7 @@ import com.neighbor.app.common.entity.PageEntity;
 public class Transfer extends PageEntity {
     private Long id;
 
-    private String orderno;
+    private String orderNo;
 
     private Date createTime;
 
@@ -33,14 +33,14 @@ public class Transfer extends PageEntity {
     public void setId(Long id) {
         this.id = id;
     }
+    public String getOrderNo() {
+		return orderNo;
+	}
 
-    public String getOrderno() {
-        return orderno;
-    }
-
-    public void setOrderno(String orderno) {
-        this.orderno = orderno;
-    }
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+ 
 
     public Date getCreateTime() {
         return createTime;
@@ -109,9 +109,11 @@ public class Transfer extends PageEntity {
 	@Override
 	public String toString() {
 		return String.format(
-				"Transfer [id=%s, orderno=%s, createTime=%s, updateTime=%s, uId=%s, transferWay=%s, transferUserId=%s, amount=%s, states=%s, remarks=%s]",
-				id, orderno, createTime, updateTime, uId, transferWay, transferUserId, amount, states, remarks);
+				"Transfer [id=%s, orderNo=%s, createTime=%s, updateTime=%s, uId=%s, transferWay=%s, transferUserId=%s, amount=%s, states=%s, remarks=%s]",
+				id, orderNo, createTime, updateTime, uId, transferWay, transferUserId, amount, states, remarks);
 	}
+
+ 
     
     
     

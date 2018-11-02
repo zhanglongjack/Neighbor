@@ -2,8 +2,10 @@ package com.neighbor.app.recharge.dao;
 
 import java.util.List;
 
-import com.neighbor.app.recharge.entity.Recharge;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.neighbor.app.recharge.entity.Recharge;
+@Mapper
 public interface RechargeMapper {
     int deleteByPrimaryKey(Long id);
 

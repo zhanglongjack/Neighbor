@@ -8,7 +8,7 @@ import com.neighbor.app.common.entity.PageEntity;
 public class Withdraw extends PageEntity {
     private Long id;
 
-    private String orderno;
+    private String orderNo;
 
     private Date createTime;
 
@@ -36,13 +36,13 @@ public class Withdraw extends PageEntity {
         this.id = id;
     }
 
-    public String getOrderno() {
-        return orderno;
-    }
+    public String getOrderNo() {
+		return orderNo;
+	}
 
-    public void setOrderno(String orderno) {
-        this.orderno = orderno;
-    }
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
 
     public Date getCreateTime() {
         return createTime;
@@ -119,9 +119,10 @@ public class Withdraw extends PageEntity {
 	@Override
 	public String toString() {
 		return String.format(
-				"Withdraw [id=%s, orderno=%s, createTime=%s, updateTime=%s, uId=%s, amount=%s, bankCardNo=%s, branchInfo=%s, realName=%s, states=%s, remarks=%s]",
-				id, orderno, createTime, updateTime, uId, amount, bankCardNo, branchInfo, realName, states, remarks);
+				"Withdraw [id=%s, orderNo=%s, createTime=%s, updateTime=%s, uId=%s, amount=%s, bankCardNo=%s, branchInfo=%s, realName=%s, states=%s, remarks=%s]",
+				id, orderNo, createTime, updateTime, uId, amount, bankCardNo, branchInfo, realName, states, remarks);
 	}
-    
+
+
     
 }

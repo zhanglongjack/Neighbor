@@ -26,7 +26,7 @@
 	<select id="selectAll" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from k_bank_card
+		from bank_card
 		order by create_time
 	</select>
   
@@ -34,7 +34,7 @@
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from k_bank_card
+		from bank_card
 		<include refid="dynamicWhere" />
 		order by create_time desc
 		limit #{pageTools.rowIndex},#{pageTools.pageSize}
@@ -44,23 +44,23 @@
 		resultType="Long">
 		select
 			count(1)
-		from k_bank_card
+		from bank_card
 		<include refid="dynamicWhere" />
 	</select>
   
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from k_bank_card
+    from bank_card
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from k_bank_card
+    delete from bank_card
     where id = #{id,jdbcType=BIGINT}
   </delete>
  
   <insert id="insertSelective" parameterType="com.neighbor.app.bankcard.entity.BankCard">
-    insert into k_bank_card
+    insert into bank_card
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -109,7 +109,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.bankcard.entity.BankCard">
-    update k_bank_card
+    update bank_card
     <set>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},

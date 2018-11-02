@@ -2,8 +2,10 @@ package com.neighbor.app.bankcard.dao;
 
 import java.util.List;
 
-import com.neighbor.app.bankcard.entity.BankCard;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.neighbor.app.bankcard.entity.BankCard;
+@Mapper
 public interface BankCardMapper {
     int deleteByPrimaryKey(Long id);
 
