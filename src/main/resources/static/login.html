@@ -11,15 +11,15 @@
 <link rel="stylesheet" type="text/css" href="./neighbor/css/font-awesome.min.css" />
 <link rel="stylesheet" type="text/css" href="./neighbor/css/app.css" />
 <link rel="stylesheet" type="text/css" href="./neighbor/js/swiper/css/swiper.css" />
-<link rel="stylesheet" th:href="@{~/framework/vendor/toastr/toastr.min.css}">
+<link rel="stylesheet" href="./framework/vendor/toastr/toastr.min.css">
 	
 	
 <script src="./neighbor/js/mui.min.js"></script>
 <script src="./neighbor/js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
 <script src="./neighbor/js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
 <script src="./neighbor/js/swiper/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
-<script th:src="@{~/framework/vendor/toastr/toastr.min.js}"></script>
-<script th:src="@{~/framework/scripts/custom-toastr.js}"></script>
+<script src="./framework/vendor/toastr/toastr.min.js"></script>
+<script src="./framework/scripts/custom-toastr.js"></script>
 	
 <script type="text/javascript" charset="utf-8">
 	mui.init();
@@ -71,7 +71,8 @@
 					location.href = "/index";
 				} else {
 					//错误消息提示，默认背景为浅红色 
-					toastr.error(data.message);
+					toastr.options.positionClass = "toast-top-full-width";
+					toastr.info(data.msg);
 					return false;
 				}
 
@@ -130,7 +131,7 @@
 								<input id="signin-password" name="password" type="password" class="mui-input-password" placeholder="请输入您的密码">
 							</div>
 						</form>
-						<button id="acctLoginSubmit" type="button" class="mui-btn mui-btn-red mui-btn-block border-raduis">点击登录</button>
+						<button id="acctLoginSubmit"  type="button" class="mui-btn mui-btn-red mui-btn-block border-raduis">点击登录</button>
 					</div>
 					<div id="item2mobile" class="mui-slider-item mui-control-content">
 						<form class="mui-input-group">

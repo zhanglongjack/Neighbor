@@ -21,7 +21,7 @@ import com.neighbor.app.users.entity.UserInfo;
  * 登录验证拦截
  * 
  */
-@Controller
+//@Controller
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
@@ -43,6 +43,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		logger.info("basePath:"+basePath+" -------  path:"+path);
 
 		if (!doLoginInterceptor(path, basePath)) {// 是否进行登陆拦截
+			logger.info("basePath:"+basePath+" ------- 不拦截  path:"+path);
 			return true;
 		}
 
@@ -117,6 +118,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		notLoginPaths.add("/register");
 		notLoginPaths.add("/kaptcha.jpg");
 		notLoginPaths.add("/kaptcha");
+		notLoginPaths.add("/api");
 		// notLoginPaths.add("/sys/logout");
 		// notLoginPaths.add("/loginTimeout");
 

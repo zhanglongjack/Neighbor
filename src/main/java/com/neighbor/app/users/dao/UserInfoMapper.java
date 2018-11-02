@@ -3,6 +3,7 @@ package com.neighbor.app.users.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import com.neighbor.app.users.entity.UserInfo;
 
@@ -23,5 +24,8 @@ public interface UserInfoMapper {
 	List<UserInfo> selectPageByObjectForList(UserInfo userInfo);
 
 	List<UserInfo> selectAll();
+
+	@Select("select * from user_info where name = #{name}")
+	UserInfo selectByName(String name);
 
 }

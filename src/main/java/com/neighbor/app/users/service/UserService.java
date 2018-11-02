@@ -22,4 +22,6 @@ public interface UserService {
 
 	List<UserInfo> selectAllForMap();
 
+	UserInfo selectByName(String username);
+
 }

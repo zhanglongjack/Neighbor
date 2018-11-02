@@ -13,8 +13,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration  
 public class WebConfig implements WebMvcConfigurer {  
 	private static final Logger logger = LoggerFactory.getLogger(WebConfig.class);
-    //@Autowired  
-    //LogInterceptor logInterceptor;  
   
     @Autowired  
     LoginInterceptor loginInterceptor;  

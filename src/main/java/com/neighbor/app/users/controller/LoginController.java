@@ -20,7 +20,7 @@ import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
 
 
-@Controller
+//@Controller
 public class LoginController {
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	@Autowired

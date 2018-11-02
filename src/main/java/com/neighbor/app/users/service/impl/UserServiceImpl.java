@@ -63,4 +63,9 @@ public class UserServiceImpl implements UserService{
 		return userInfoMapper.selectAll();
 	}
 
+	@Override
+	public UserInfo selectByName(String username) {
+		return userInfoMapper.selectByName(username);
+	}
+
 }
