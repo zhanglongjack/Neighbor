@@ -1,12 +1,11 @@
-package com.neighbor.app.bankcard.dao;
+package com.neighbor.app.bankcard.service;
+
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Mapper;
-
 import com.neighbor.app.bankcard.entity.BankCard;
-@Mapper
-public interface BankCardMapper {
+
+public interface BankCardService {
     int deleteByPrimaryKey(Long id);
 
     int insertSelective(BankCard record);
@@ -15,7 +14,7 @@ public interface BankCardMapper {
 
     int updateByPrimaryKeySelective(BankCard record);
     
-    BankCard selectBankCard(Long uId);    
+    BankCard selectBankCard(Long uId);
     
 	Long selectPageTotalCount(BankCard record);
 

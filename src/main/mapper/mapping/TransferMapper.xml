@@ -35,7 +35,7 @@
 		<include refid="Base_Column_List" />
 		from transfer
 		order by create_time
-	</select>
+  </select>
   
 	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.transfer.entity.Transfer"
 		resultMap="BaseResultMap">
