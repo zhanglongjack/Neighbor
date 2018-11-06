@@ -2,6 +2,7 @@ package com.neighbor.app.transfer.dao;
 
 import java.util.List;
 
+import com.neighbor.app.transfer.po.TransferRecord;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.neighbor.app.transfer.entity.Transfer;
@@ -17,8 +18,11 @@ public interface TransferMapper {
     
     
 	Long selectPageTotalCount(Transfer record);
+    Long selectPageTotalCountForApp(Transfer record);
 
 	List<Transfer> selectPageByObjectForList(Transfer record);
+
+    List<TransferRecord> selectPageForApp(Transfer record);
 
 	List<Transfer> selectAll();
 
