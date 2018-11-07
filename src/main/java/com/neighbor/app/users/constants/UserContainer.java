@@ -17,15 +17,15 @@ import com.neighbor.app.users.service.UserService;
 @Component
 public class UserContainer  implements ApplicationListener<ContextRefreshedEvent> {
 	private static final Logger logger = LoggerFactory.getLogger(UserContainer.class);
-	public Map<Long,String> userMap = new HashMap<Long,String>();
+	public Map<String,UserInfo> userMap = new HashMap<String,UserInfo>();
 	@Autowired
 	private UserService userService;
 	
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		if(userMap.size()==0){
-			buildUserInfo();
-		}
+//		if(userMap.size()==0){
+//			buildUserInfo();
+//		}
 	}
 
 	public void buildUserInfo() {
@@ -38,8 +38,12 @@ public class UserContainer  implements ApplicationListener<ContextRefreshedEvent
 		logger.debug("userMap:{}",userMap);
 	}
 	
-	public String get(Long key){
+	public UserInfo get(String key){
 		return userMap.get(key);
+	}
+	
+	public void put(String key,UserInfo user){
+		userMap.put(key, user);
 	}
 
 }

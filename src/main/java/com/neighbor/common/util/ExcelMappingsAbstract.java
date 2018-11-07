@@ -34,7 +34,7 @@ public abstract class ExcelMappingsAbstract {
 			return dictionaries.get(dictionarieName).get(Integer.parseInt(key));
 		}else if("userId".equals(dictionarieName)){
 //			logger.debug("userMap:{},",userContainer.userMap);
-			return userContainer.userMap.get(Long.parseLong(key));
+//			return userContainer.userMap.get(Long.parseLong(key));
 		} 
 		return key;
 	}

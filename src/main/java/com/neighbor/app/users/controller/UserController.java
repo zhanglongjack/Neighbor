@@ -1,7 +1,6 @@
 package com.neighbor.app.users.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -11,13 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.neighbor.common.util.PageTools;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
+import com.neighbor.common.util.ResponseResult;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -43,22 +42,16 @@ public class UserController {
 		return "page/user/ModifyModal";
 	}
 
-//	@RequestMapping(value = "/userView")
-//	public ModelAndView UserView(UserInfo userInfo, PageTools pageTools,
-//			@ModelAttribute("user") UserInfo user) {
-//		logger.info("userView request : " +user);
-//		
-//		if (!user.isAdmin()) {
-//			userInfo.setuId(user.getuId());
-//		}
-//		Long size = userService.selectPageTotalCount(userInfo);
-//		pageTools.setTotal(size);
-//		ModelAndView mv = new ModelAndView("page/user/UserView");
-//		userInfo.setPageTools(pageTools);
-//		mv.addObject("pageTools", pageTools);
-//		mv.addObject("pageTools", pageTools);
-//		return mv;
-//	}
+	@RequestMapping(value = "/userInfoShow.req",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseResult userInfoShow(@ModelAttribute("user") UserInfo user) {
+		logger.info("userView request : " +user);
+		UserInfo resultUser = userService.selectByPrimaryKey(user.getId());
+		
+		ResponseResult result = new ResponseResult();
+		result.addBody("user", resultUser);
+		return result;
+	}
 //
 //	@RequestMapping(value = "/loadPage")
 //	public ModelAndView loadPage(UserInfo userInfo, PageTools pageTools,

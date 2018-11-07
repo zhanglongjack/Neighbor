@@ -162,4 +162,47 @@ public class UserInfo {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserInfo [id=");
+		builder.append(id);
+		builder.append(", userPhoto=");
+		builder.append(userPhoto);
+		builder.append(", nickName=");
+		builder.append(nickName);
+		builder.append(", userAccount=");
+		builder.append(userAccount);
+		builder.append(", userPassword=");
+		builder.append(userPassword);
+		builder.append(", qrCode=");
+		builder.append(qrCode);
+		builder.append(", sex=");
+		builder.append(sex);
+		builder.append(", mobilePhone=");
+		builder.append(mobilePhone);
+		builder.append(", realName=");
+		builder.append(realName);
+		builder.append(", wechat=");
+		builder.append(wechat);
+		builder.append(", qq=");
+		builder.append(qq);
+		builder.append(", robotSno=");
+		builder.append(robotSno);
+		builder.append(", upuserId=");
+		builder.append(upuserId);
+		builder.append(", createTime=");
+		builder.append(createTime);
+		builder.append(", updateTime=");
+		builder.append(updateTime);
+		builder.append(", remark=");
+		builder.append(remark);
+		builder.append("]");
+		return builder.toString();
+	}
+    
+    
+    
+    
 }

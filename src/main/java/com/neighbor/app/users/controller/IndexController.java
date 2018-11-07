@@ -13,7 +13,7 @@ public class IndexController {
 	private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 //	public void login(String userName,String pwd,String code){
 	
-//	@RequestMapping(value="/index")
+	@RequestMapping(value="/index")
 	public ModelAndView index(){
 		logger.info("index request");
 		ModelAndView mv = new ModelAndView("page/index"); 

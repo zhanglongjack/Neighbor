@@ -8,14 +8,19 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;  
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.neighbor.common.security.TokenLoginInterceptor;  
   
 @Configuration  
 public class WebConfig implements WebMvcConfigurer {  
 	private static final Logger logger = LoggerFactory.getLogger(WebConfig.class);
   
-    @Autowired  
-    LoginInterceptor loginInterceptor;  
+//    @Autowired  
+//    private LoginInterceptor loginInterceptor;  
+    
+	@Autowired  
+    private TokenLoginInterceptor tokenLoginInterceptor;
   
     /** 
      * 不需要登录拦截的url:登录注册和验证码 
@@ -30,10 +35,11 @@ public class WebConfig implements WebMvcConfigurer {
 			"/validcode",
 			"/framework/**",
 			"/neighbor/**",
+			"/login.req"
 //			"/css/**", 
 //			"/js/**" 
 		};
-	
+	  
 	
 	// "/", "/login/**", "/person/**",
 									// "/register/**", "/validcode",
@@ -44,9 +50,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override  
     public void addInterceptors(InterceptorRegistry registry) {  
         // 日志拦截器  
-        //registry.addInterceptor(logInterceptor).addPathPatterns("/**");  
+//        registry.addInterceptor(loginInterceptor).addPathPatterns("/**");  
         // 登录拦截器  
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns(notLoginInterceptPaths);  
+        registry.addInterceptor(tokenLoginInterceptor).addPathPatterns("/*.req","/**/*.req","/").excludePathPatterns(notLoginInterceptPaths);  
     }  
   
     @Override  
@@ -65,9 +71,9 @@ public class WebConfig implements WebMvcConfigurer {
   
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-    	registry.addRedirectViewController("/", "/index");
-        registry.addViewController("/index").setViewName("page/index");
-        registry.addViewController("/user").setViewName("page/user/UserCenter");
+    	registry.addRedirectViewController("/", "/index.req");
+        registry.addViewController("/index.req").setViewName("page/index");
+        registry.addViewController("/user.req").setViewName("page/user/UserCenter");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
     
