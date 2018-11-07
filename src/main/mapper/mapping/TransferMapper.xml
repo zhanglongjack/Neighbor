@@ -13,53 +13,82 @@
     <result column="states" jdbcType="CHAR" property="states" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
   </resultMap>
+  <resultMap id="TransferRecordMap" type="com.neighbor.app.transfer.po.TransferRecord">
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="transfer_way" jdbcType="CHAR" property="transferWay" />
+    <result column="transferUserName" jdbcType="VARCHAR" property="transferUserName" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="states" jdbcType="CHAR" property="states" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
   <sql id="Base_Column_List">
-    id, order_no, create_time, update_time, u_id, transfer_way, transfer_user_id, amount, 
-    states, remarks
+     t.id,  t.order_no,  t.create_time,  t.update_time,  t.u_id,  t.transfer_way,  t.transfer_user_id,  t.amount,
+     t.states,  t.remarks
   </sql>
-  
-    
+
   <sql id="dynamicWhere">
 		<where>
-			<if test="id != null">id=#{id}</if>
-			<if test="uId != null">and u_id=#{uId}</if>
-			<if test="transferUserId != null ">and transfer_user_id=#{transferUserId}</if>
-			<if test="transferWay != null and transferWay.length()>0">and transfer_way=#{transferWay}</if>
-			<if test="states != null and states.length()>0">and states=#{states}</if>
-			<if test="orderNo != null and orderNo.length()>0">and order_no=#{orderNo}</if>
-		</where>
+			<if test="id != null"> t.id=#{id}</if>
+			<if test="uId != null">and  t.u_id=#{uId}</if>
+			<if test="transferUserId != null ">and  t.transfer_user_id=#{transferUserId}</if>
+			<if test="transferWay != null and transferWay.length()>0">and  t.transfer_way=#{transferWay}</if>
+			<if test="states != null and states.length()>0">and  t.states=#{states}</if>
+			<if test="orderNo != null and orderNo.length()>0">and  t.order_no=#{orderNo}</if>
+          <if test="beginTime != null"> <![CDATA[ and  t.create_time >= str_to_date(#{beginTime}, '%Y-%m-%d %H:%i:%s') ]]> </if>
+          <if test="endTime != null"> <![CDATA[ and  t.create_time <=  str_to_date(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]> </if>
+        </where>
 	</sql>
 	
   <select id="selectAll" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from transfer
-		order by create_time
+		from  transfer t
+		order by  t.create_time
   </select>
   
 	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.transfer.entity.Transfer"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from transfer
+		from transfer  t
 		<include refid="dynamicWhere" />
-		order by create_time desc
+		order by  t.create_time desc
 		limit #{pageTools.rowIndex},#{pageTools.pageSize}
 	</select>
+
+  <select id="selectPageTotalCountForApp" parameterType="com.neighbor.app.transfer.entity.Transfer"
+          resultType="Long">
+    select
+    count(1)
+    from transfer t inner join users_info u on (t.transfer_user_id = u.id)
+    <include refid="dynamicWhere" />
+  </select>
+
+  <select id="selectPageForApp" parameterType="com.neighbor.app.transfer.entity.Transfer"
+          resultMap="TransferRecordMap">
+    select
+    t.id,  t.order_no,  t.create_time,  t.update_time,  t.u_id,  t.transfer_way, u.real_name as transferUserName,  t.amount,
+    t.states,  t.remarks
+    from transfer t inner join users_info u on (t.transfer_user_id = u.id)
+    <include refid="dynamicWhere" />
+    order by t.create_time desc
+    limit #{pageTools.rowIndex},#{pageTools.pageSize}
+  </select>
 	
 	<select id="selectPageTotalCount" parameterType="com.neighbor.app.transfer.entity.Transfer"
 		resultType="Long">
 		select
 			count(1)
-		from transfer
+		from transfer t
 		<include refid="dynamicWhere" />
 	</select>
   
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from transfer
-    where id = #{id,jdbcType=BIGINT}
+    from transfer t
+    where t.id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from transfer

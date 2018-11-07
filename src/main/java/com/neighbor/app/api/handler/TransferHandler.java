@@ -21,7 +21,7 @@ public class TransferHandler implements CommonHandler {
 		TransferResp transferResp = new TransferResp();
 		TransferReq req = JSON.parseObject(requsetBody,TransferReq.class);
 		//TODO 这里写业务逻辑
-	    transferResp.setOrderNo("no.1111111 + "+transferService.queryAll().size());
+	    transferResp.setOrderNo("no.1111111 + ");
 		return transferResp;
 	}
 	
