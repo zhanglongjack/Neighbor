@@ -1,13 +1,9 @@
 package com.neighbor.app.users.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,22 +22,6 @@ public class UserController {
 	@Autowired
 	private UserService userService; 
 
-	@RequestMapping(value = "/primaryModalView")
-	public String primaryModalView(Long id, String modifyModel, Model model) throws Exception {
-		logger.info("primaryModalView request:" + id + ",model:" + model);
-		if (id != null) {
-			UserInfo user = userService.selectByPrimaryKey(id);
-			model.addAttribute("modifyInfo", user);
-		} else {
-
-		}
-
-		model.addAttribute("modifyModel", modifyModel);
-		logger.info("primaryModalView model : " + model);
-
-		return "page/user/ModifyModal";
-	}
-
 	@RequestMapping(value = "/userInfoShow.req",method=RequestMethod.POST)
 	@ResponseBody
 	public ResponseResult userInfoShow(@ModelAttribute("user") UserInfo user) {
@@ -52,51 +32,24 @@ public class UserController {
 		result.addBody("user", resultUser);
 		return result;
 	}
-//
-//	@RequestMapping(value = "/loadPage")
-//	public ModelAndView loadPage(UserInfo userInfo, PageTools pageTools,
-//			@ModelAttribute("user") UserInfo user) throws Exception {
-//		logger.info("loadPage User request:" + userInfo + " page info ===" + pageTools);
-//		
-//		if (!user.isAdmin()) {
-//			userInfo.setuId(user.getuId());
-//		}
-//
-//		userInfo.setPageTools(pageTools);
-//		ModelAndView mv = new ModelAndView("page/user/UserContent :: container-fluid");
-//		Long size = userService.selectPageTotalCount(userInfo);
-//		pageTools.setTotal(size);
-//		List<UserInfo> ciList = userService.selectPageByObjectForList(userInfo);
-//		logger.info("loadPage User result list info =====:" + ciList);
-//		
-//		mv.addObject("resultList", ciList);
-//		mv.addObject("pageTools", pageTools);
-//		mv.addObject("queryObject", userInfo);
-//
-//		return mv;
-//	}
-	
-	@RequestMapping(value="/userEdit")
+
+	@RequestMapping(value="/userEdit.req")
 	@ResponseBody
-	public Map<String,Object> userEdit(UserInfo userInfo){
+	public ResponseResult userEdit(UserInfo userInfo){
 		logger.info("userEdit request:{}",userInfo);
-		int num = userService.updateByPrimaryKeySelective(userInfo);
-		
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("success", true);
-		map.put("editNumber", num);
-		return map;
+		userService.updateByPrimaryKeySelective(userInfo);
+		return new ResponseResult();
 	}
 	
-	@RequestMapping(value="/checkPwd")
+	@RequestMapping(value="/checkPwd.req")
 	@ResponseBody
-	public Map<String,Object> checkPwd(Long id,String pwd){
+	public ResponseResult checkPwd(Long id,String pwd){
 		logger.info("checkPwd request:uid={},pwd={}",id,pwd);
 		UserInfo user = userService.selectByPrimaryKey(id);
 		
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("success", user!=null&&user.getUserPassword().equals(pwd));
-		return map;
+		ResponseResult result = new ResponseResult();
+		result.addBody("user", user);
+		return result;
 	}
 	
 }
