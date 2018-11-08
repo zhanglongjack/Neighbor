@@ -1,17 +1,23 @@
 package com.neighbor.app.api.common;
 
 public enum ErrorCodeDesc {
-	成功(0),失败(1);
+	success(0,"成功"),failed(1,"失败");
 
-    public int value;
+    private int value;
+    private String des;
 
-    private ErrorCodeDesc(int value) {
+    private ErrorCodeDesc(int value,String des) {
         this.value = value;
+        this.des = des;
     }
 
     public int getValue() {
         return value;
     }
-
+    
+    @Override
+    public String toString() {
+    	return des;
+    }
  
 }
