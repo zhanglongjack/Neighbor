@@ -3,10 +3,12 @@ package com.neighbor.common.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.neighbor.app.api.common.ErrorCodeDesc;
+
 public class ResponseResult {
 	private Map<String, Object> body = new HashMap<String, Object>();
 
-	private int errorCode = 0;
+	private int errorCode = ErrorCodeDesc.success.getValue();
 	private String errorMessage = null;
 	private String serviceURL = null;
 

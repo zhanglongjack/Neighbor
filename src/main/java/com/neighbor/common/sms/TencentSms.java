@@ -29,8 +29,16 @@ public class TencentSms {
 	 * 缓存短信验证码,后期优化可以自动删除过期验证码
 	 */
 	public static final Map<String,String> smsCache = new HashMap<String,String>();
+	public static String createVerifyCode(){
+		return  (int)(Math.random()*100000)+"";
+	}
 	
-	public static void smsSend(String code,String phone){
+	
+	public static void smsSend(String code ,String phone){
+		if(code==null){
+			smsCache.put(phone, "123456");
+			return;
+		}
 		smsCache.put(phone, code);
 		try {
 		    String[] params = {code};//数组具体的元素个数和模板中变量个数必须一致，例如事例中templateId:5678对应一个变量，参数数组中元素个数也必须是一个

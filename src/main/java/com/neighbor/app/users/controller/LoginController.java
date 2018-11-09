@@ -6,21 +6,31 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.users.constants.UserContainer;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
+import com.neighbor.app.wallet.entity.UserWallet;
+import com.neighbor.app.wallet.service.UserWalletService;
+import com.neighbor.common.security.EncodeData;
+import com.neighbor.common.sms.TencentSms;
+import com.neighbor.common.util.ResponseResult;
 
 
 @Controller
+@Validated
 public class LoginController {
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	@Autowired
@@ -29,30 +39,74 @@ public class LoginController {
 	@Autowired
 	private UserContainer userContainer;
 	
-	
 //	mv.setViewName("forward:/login.html");
 //	mv.setViewName("redirect:/login.html");
 //	mv.addObject("message", "用户名或密码错误");
 	@RequestMapping(value="/accountLogin.req",method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String,Object> login(String phone,String password){
-		Map<String,Object> map = new HashMap<String,Object>();
+	public ResponseResult login(String phone,@NotNull(message = "密码不能为空") String password){
 		UserInfo user  = userService.selectByUserPhone( phone );
-		if(user==null || !user.getUserPassword().equals(password)){
-			logger.info("用户名或密码错误");
-			map.put("errorCode", 1);
-			map.put("message", "用户名或密码错误!"); 
-			return map;
+		
+		ResponseResult result = new ResponseResult();
+		if(user==null || user.getUserPassword()==null || !EncodeData.matches(password, user.getUserPassword())){
+			logger.info("用户名或密码错误"); 
+			result.setErrorCode(ErrorCodeDesc.failed.getValue());
+			result.setErrorMessage("用户名或密码错误!");
+			return result;
 		}
 		user.setUserPassword(null);
 		
-		String token = UUID.randomUUID().toString();
-		map.put("errorCode", 0); 
-		map.put("user", user); 
-		map.put("token", token);
+		String token = UUID.randomUUID().toString(); 
 		userContainer.put(token, user);
-		logger.info("登录成功:{},result :{}",user,map); 
-		return map;
+		
+		result.addBody("user", user);
+		result.addBody("token", token);
+		
+		logger.info("登录成功:{},result :{}",user,result); 
+		return result;
+	}
+	
+	@RequestMapping(value="/registerLogin.req",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseResult registerLogin(@NotNull(message = "手机号不能为空")String phone,@NotNull(message = "验证码不能为空") String verfiyCode,Long upUserId){
+		UserInfo user  = userService.selectByUserPhone( phone );
+		boolean isValid = verfiyCode.equals(TencentSms.smsCache.get(phone));
+		ResponseResult result = new ResponseResult();
+		if(user==null && isValid){
+			
+			UserInfo record = new UserInfo();
+			record.setMobilePhone(phone);
+			record.setUserAccount(phone);
+			record.setUpuserId(upUserId);  
+			
+			user = userService.createUser(record);
+
+		}else if(!isValid){
+			logger.info("验证吗输入错误"); 
+			result.setErrorCode(ErrorCodeDesc.failed.getValue());
+			result.setErrorMessage("验证码错误");
+			return result;
+		}
+		
+		user.setUserPassword(null);
+		
+		String token = UUID.randomUUID().toString(); 
+		userContainer.put(token, user);
+		
+		result.addBody("user", user);
+		result.addBody("token", token);
+		
+		logger.info("登录成功:{},result :{}",user,result); 
+		return result;
+	}
+	
+	@RequestMapping(value="/sendSMS.req",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseResult sendSMS(@Length(message = "手机长度最少11位",min=11)@NotNull(message = "手机号不能为空")String phone){
+//		String code = TencentSms.createVerifyCode()
+		logger.info("发送验证码:"+phone);
+		TencentSms.smsSend(null,phone);  
+		return new ResponseResult();
 	}
 	
 	@RequestMapping(value="/logout.req")

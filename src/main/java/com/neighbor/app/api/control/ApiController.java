@@ -29,7 +29,7 @@ public class ApiController {
 		BaseApiResp baseApiResp = new BaseApiResp();
 		try {
 			if(!"post".equals(request.getMethod().toLowerCase())) {
-				baseApiResp.setErrorCode(ErrorCodeDesc.失败.getValue());
+				baseApiResp.setErrorCode(ErrorCodeDesc.failed.getValue());
 				baseApiResp.setErrorMessage("接口暂时只支持POST请求方式");
 				sendMessage(response, baseApiResp);
 				return;
@@ -37,7 +37,7 @@ public class ApiController {
 			InputStream inputStream = request.getInputStream();
 			String reqPostBody = IOUtils.toString(inputStream, "UTF-8");
 			if(StringUtils.isEmpty(reqPostBody)) {
-				baseApiResp.setErrorCode(ErrorCodeDesc.失败.getValue());
+				baseApiResp.setErrorCode(ErrorCodeDesc.failed.getValue());
 				baseApiResp.setErrorMessage("消息内容(body)不可以为空!");
 				sendMessage(response, baseApiResp);
 				return;
@@ -49,7 +49,7 @@ public class ApiController {
 
 			String serviceName = JSON.parseObject(reqPostBody, BaseApiResp.class).getServiceName();
 			if (StringUtils.isEmpty(serviceName)) {
-				baseApiResp.setErrorCode(ErrorCodeDesc.失败.getValue());
+				baseApiResp.setErrorCode(ErrorCodeDesc.failed.getValue());
 				baseApiResp.setErrorMessage("serviceName 不能为空");
 				sendMessage(response, baseApiResp);
 				return;
@@ -60,14 +60,14 @@ public class ApiController {
 				CommonHandler handler = (CommonHandler) obj;
 				baseApiResp = handler.service(reqPostBody);
 			} else {
-				baseApiResp.setErrorCode(ErrorCodeDesc.失败.getValue());
+				baseApiResp.setErrorCode(ErrorCodeDesc.failed.getValue());
 				baseApiResp.setErrorMessage("serviceName 不能为空");
 			}
 			sendMessage(response, baseApiResp);
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
-			baseApiResp.setErrorCode(ErrorCodeDesc.失败.getValue());
+			baseApiResp.setErrorCode(ErrorCodeDesc.failed.getValue());
 			baseApiResp.setErrorMessage("系统开小差~请联系管理员！");
 			try {
 				sendMessage(response, baseApiResp);

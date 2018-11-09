@@ -24,4 +24,6 @@ public interface UserService {
 //
 //	UserInfo selectByName(String username);
 
+	UserInfo createUser(UserInfo record);
+
 }

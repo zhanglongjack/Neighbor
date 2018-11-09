@@ -33,7 +33,7 @@ public class UserController {
 		return result;
 	}
 
-	@RequestMapping(value="/userEdit.req")
+	@RequestMapping(value="/userEdit.req",method=RequestMethod.POST)
 	@ResponseBody
 	public ResponseResult userEdit(UserInfo userInfo){
 		logger.info("userEdit request:{}",userInfo);
@@ -41,7 +41,7 @@ public class UserController {
 		return new ResponseResult();
 	}
 	
-	@RequestMapping(value="/checkPwd.req")
+	@RequestMapping(value="/checkPwd.req",method=RequestMethod.POST)
 	@ResponseBody
 	public ResponseResult checkPwd(Long id,String pwd){
 		logger.info("checkPwd request:uid={},pwd={}",id,pwd);

@@ -45,7 +45,8 @@ public class TokenLoginInterceptor implements HandlerInterceptor {
 		Set<String> notLoginPaths = new HashSet<>();
 		// 设置不进行登录拦截的路径：登录注册和验证码
 		notLoginPaths.add("/accountLogin.req");
-		notLoginPaths.add("/register.req");  
+		notLoginPaths.add("/registerLogin.req");  
+		notLoginPaths.add("/sendSMS.req");  
 
 		if (notLoginPaths.contains(path))
 			return false;

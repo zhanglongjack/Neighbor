@@ -1,24 +1,32 @@
 package com.neighbor.app.users.service.impl;
 
-
-import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.neighbor.app.users.constants.UserContainer;
+import com.neighbor.app.users.controller.LoginController;
 import com.neighbor.app.users.dao.UserInfoMapper;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
+import com.neighbor.app.wallet.entity.UserWallet;
+import com.neighbor.app.wallet.service.UserWalletService;
 
 @Service
 public class UserServiceImpl implements UserService{
+
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private UserContainer userContainer;
     @Autowired
     private UserInfoMapper userInfoMapper;
-
+	@Autowired
+	private UserWalletService userWalletService; 
+	
 	@Override
 	public int deleteByPrimaryKey(Long uId) {
 		return userInfoMapper.deleteByPrimaryKey(uId);
@@ -67,5 +75,21 @@ public class UserServiceImpl implements UserService{
 //	public UserInfo selectByName(String username) {
 //		return userInfoMapper.selectByName(username);
 //	}
+
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED,rollbackFor=Exception.class)
+	public UserInfo createUser(UserInfo record) { 
+		insertSelective(record);
+		record.setNickName(record.getId()+"");
+		record.setUserAccount(record.getId()+"");
+		updateByPrimaryKeySelective(record);
+		
+		UserWallet wallet = new UserWallet();
+		wallet.setuId(record.getId());
+		
+		userWalletService.insertSelective(wallet);
+		logger.debug("user============:{}",record);
+		return record;
+	}
 
 }

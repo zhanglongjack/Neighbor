@@ -46,12 +46,9 @@
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
 	 
-	<insert id="insertSelective" parameterType="com.neighbor.app.users.entity.UserInfo">
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.neighbor.app.users.entity.UserInfo">
 		insert into users_info
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				id,
-			</if>
 			<if test="userPhoto != null">
 				user_photo,
 			</if>
@@ -99,9 +96,6 @@
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				#{id,jdbcType=BIGINT},
-			</if>
 			<if test="userPhoto != null">
 				#{userPhoto,jdbcType=VARCHAR},
 			</if>
