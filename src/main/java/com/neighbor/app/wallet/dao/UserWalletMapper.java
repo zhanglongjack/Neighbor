@@ -15,5 +15,5 @@ public interface UserWalletMapper {
 	int updateByPrimaryKeySelective(UserWallet record);
 
 	UserWallet selectByPrimaryUserId(Long userId);
-
+    UserWallet lockUserWalletByUserId(Long uid);
 }

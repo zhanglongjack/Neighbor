@@ -18,11 +18,10 @@ public interface TransferMapper {
     
     
 	Long selectPageTotalCount(Transfer record);
-    Long selectPageTotalCountForApp(Transfer record);
+
 
 	List<Transfer> selectPageByObjectForList(Transfer record);
 
-    List<TransferRecord> selectPageForApp(Transfer record);
 
 	List<Transfer> selectAll();
 

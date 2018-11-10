@@ -10,6 +10,7 @@
     <result column="transfer_way" jdbcType="CHAR" property="transferWay" />
     <result column="transfer_user_id" jdbcType="BIGINT" property="transferUserId" />
     <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="available_amount" jdbcType="DECIMAL" property="availableAmount" />
     <result column="states" jdbcType="CHAR" property="states" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
   </resultMap>
@@ -19,11 +20,12 @@
     <result column="transfer_way" jdbcType="CHAR" property="transferWay" />
     <result column="transferUserName" jdbcType="VARCHAR" property="transferUserName" />
     <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="available_amount" jdbcType="DECIMAL" property="availableAmount" />
     <result column="states" jdbcType="CHAR" property="states" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
   </resultMap>
   <sql id="Base_Column_List">
-     t.id,  t.order_no,  t.create_time,  t.update_time,  t.u_id,  t.transfer_way,  t.transfer_user_id,  t.amount,
+     t.id,  t.order_no,  t.create_time,  t.update_time,  t.u_id,  t.transfer_way,  t.transfer_user_id,  t.amount,t.available_amount,
      t.states,  t.remarks
   </sql>
 
@@ -68,7 +70,7 @@
   <select id="selectPageForApp" parameterType="com.neighbor.app.transfer.entity.Transfer"
           resultMap="TransferRecordMap">
     select
-    t.id,  t.order_no,  t.create_time,  t.update_time,  t.u_id,  t.transfer_way, u.real_name as transferUserName,  t.amount,
+    t.id,  t.order_no,  t.create_time,  t.update_time,  t.u_id,  t.transfer_way, u.real_name as transferUserName,  t.amount,t.available_amount,
     t.states,  t.remarks
     from transfer t inner join users_info u on (t.transfer_user_id = u.id)
     <include refid="dynamicWhere" />
@@ -122,6 +124,9 @@
       <if test="amount != null">
         amount,
       </if>
+      <if test="availableAmount != null">
+        available_amount,
+      </if>
       <if test="states != null">
         states,
       </if>
@@ -154,6 +159,9 @@
       <if test="amount != null">
         #{amount,jdbcType=DECIMAL},
       </if>
+      <if test="availableAmount != null">
+        #{availableAmount,jdbcType=DECIMAL},
+      </if>
       <if test="states != null">
         #{states,jdbcType=CHAR},
       </if>
@@ -185,6 +193,9 @@
       </if>
       <if test="amount != null">
         amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="availableAmount != null">
+        available_amount = #{availableAmount,jdbcType=DECIMAL},
       </if>
       <if test="states != null">
         states = #{states,jdbcType=CHAR},

@@ -29,7 +29,12 @@
 		from user_wallet
 		where u_id = #{userId,jdbcType=BIGINT}
 	</select>
-	
+	<select id="lockUserWalletByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+		select
+		<include refid="Base_Column_List" />
+		from user_wallet
+		where u_id = #{uid,jdbcType=BIGINT} for update
+	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from user_wallet
 		where id = #{id,jdbcType=BIGINT}

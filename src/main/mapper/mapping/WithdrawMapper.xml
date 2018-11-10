@@ -3,11 +3,12 @@
 <mapper namespace="com.neighbor.app.withdraw.dao.WithdrawMapper">
   <resultMap id="BaseResultMap" type="com.neighbor.app.withdraw.entity.Withdraw">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="orderNo" jdbcType="VARCHAR" property="orderno" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="u_id" jdbcType="BIGINT" property="uId" />
     <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="available_amount" jdbcType="DECIMAL" property="availableAmount" />
     <result column="bank_card_no" jdbcType="VARCHAR" property="bankCardNo" />
     <result column="branch_info" jdbcType="VARCHAR" property="branchInfo" />
     <result column="real_name" jdbcType="VARCHAR" property="realName" />
@@ -15,7 +16,7 @@
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, orderNo, create_time, update_time, u_id, amount, bank_card_no, branch_info, real_name, 
+    id, order_no, create_time, update_time, u_id, amount,available_amount, bank_card_no, branch_info, real_name,
     states, remarks
   </sql>
   
@@ -27,14 +28,14 @@
 			<if test="branchInfo != null and branchInfo.length()>0">and branch_info=#{branchInfo}</if>
 			<if test="realName != null and realName.length()>0">and real_name=#{realName}</if>
 		    <if test="states != null and states.length()>0">and states=#{states}</if>
-			<if test="orderno != null and orderno.length()>0">and orderNo=#{orderno}</if>
+			<if test="orderNo != null and orderNo.length()>0">and order_no=#{orderNo}</if>
 		</where>
 	</sql>
 	
   <select id="selectAll" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from k_withdraw
+		from withdraw
 		order by create_time
 	</select>
   
@@ -42,7 +43,7 @@
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from k_withdraw
+		from withdraw
 		<include refid="dynamicWhere" />
 		order by create_time desc
 		limit #{pageTools.rowIndex},#{pageTools.pageSize}
@@ -52,7 +53,7 @@
 		resultType="Long">
 		select
 			count(1)
-		from k_withdraw
+		from withdraw
 		<include refid="dynamicWhere" />
 	</select>
   
@@ -61,22 +62,22 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from k_withdraw
+    from withdraw
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from k_withdraw
+    delete from withdraw
     where id = #{id,jdbcType=BIGINT}
   </delete>
  
   <insert id="insertSelective" parameterType="com.neighbor.app.withdraw.entity.Withdraw">
-    insert into k_withdraw
+    insert into withdraw
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="orderno != null">
-        orderNo,
+      <if test="orderNo != null">
+        order_no,
       </if>
       <if test="createTime != null">
         create_time,
@@ -89,6 +90,9 @@
       </if>
       <if test="amount != null">
         amount,
+      </if>
+      <if test="availableAmount != null">
+        available_amount,
       </if>
       <if test="bankCardNo != null">
         bank_card_no,
@@ -110,8 +114,8 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="orderno != null">
-        #{orderno,jdbcType=VARCHAR},
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -124,6 +128,9 @@
       </if>
       <if test="amount != null">
         #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="availableAmount != null">
+        #{availableAmount,jdbcType=DECIMAL},
       </if>
       <if test="bankCardNo != null">
         #{bankCardNo,jdbcType=VARCHAR},
@@ -143,10 +150,10 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.withdraw.entity.Withdraw">
-    update k_withdraw
+    update withdraw
     <set>
-      <if test="orderno != null">
-        orderNo = #{orderno,jdbcType=VARCHAR},
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -159,6 +166,9 @@
       </if>
       <if test="amount != null">
         amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="availableAmount != null">
+        available_amount = #{availableAmount,jdbcType=DECIMAL},
       </if>
       <if test="bankCardNo != null">
         bank_card_no = #{bankCardNo,jdbcType=VARCHAR},

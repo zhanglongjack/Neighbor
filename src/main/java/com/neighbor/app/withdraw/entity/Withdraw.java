@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.neighbor.app.common.entity.PageEntity;
+import com.neighbor.common.util.DateFormateType;
+import com.neighbor.common.util.DateUtils;
 
 public class Withdraw extends PageEntity {
     private Long id;
@@ -27,6 +29,9 @@ public class Withdraw extends PageEntity {
     private String states;
 
     private String remarks;
+
+    private BigDecimal availableAmount;
+    private String createTimeStr;
 
     public Long getId() {
         return id;
@@ -116,7 +121,30 @@ public class Withdraw extends PageEntity {
         this.remarks = remarks;
     }
 
-	@Override
+    public BigDecimal getAvailableAmount() {
+        return availableAmount;
+    }
+
+    public void setAvailableAmount(BigDecimal availableAmount) {
+        this.availableAmount = availableAmount;
+    }
+
+    public String getCreateTimeStr() {
+        if(createTime!=null){
+            try {
+                return DateUtils.formatDateStr(createTime, DateFormateType.LANG_FORMAT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return createTimeStr;
+    }
+
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
+    }
+
+    @Override
 	public String toString() {
 		return String.format(
 				"Withdraw [id=%s, orderNo=%s, createTime=%s, updateTime=%s, uId=%s, amount=%s, bankCardNo=%s, branchInfo=%s, realName=%s, states=%s, remarks=%s]",

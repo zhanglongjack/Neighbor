@@ -715,4 +715,9 @@ public class DateUtils {
 		return dateString;
 	}
 
+	public static String formatDateStr(Date date ,String dateFormateStr){
+		SimpleDateFormat formatter = new SimpleDateFormat(dateFormateStr);
+		return formatter.format(date);
+	}
+
 }

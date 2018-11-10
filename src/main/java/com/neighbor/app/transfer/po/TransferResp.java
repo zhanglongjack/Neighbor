@@ -1,8 +1,6 @@
 package com.neighbor.app.transfer.po;
 
-import com.neighbor.app.api.common.BaseApiResp;
-
-public class TransferResp extends BaseApiResp {
+public class TransferResp {
 	private String orderNo;
 
 	public String getOrderNo() {

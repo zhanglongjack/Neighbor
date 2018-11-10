@@ -24,6 +24,8 @@ public class Recharge  extends PageEntity{
 
     private String remarks;
 
+    private BigDecimal availableAmount;
+
     public Long getId() {
         return id;
     }
@@ -31,7 +33,15 @@ public class Recharge  extends PageEntity{
     public void setId(Long id) {
         this.id = id;
     }
- 
+
+
+    public BigDecimal getAvailableAmount() {
+        return availableAmount;
+    }
+
+    public void setAvailableAmount(BigDecimal availableAmount) {
+        this.availableAmount = availableAmount;
+    }
 
     public String getOrderNo() {
 		return orderNo;

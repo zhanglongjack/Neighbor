@@ -36,6 +36,11 @@ public class UserWalletServiceImpl implements UserWalletService {
 	@Override
 	public UserWallet selectByPrimaryUserId(Long userId) {
 		return userWalletMapper.selectByPrimaryUserId(userId);
-	} 
+	}
+	@Override
+	public UserWallet lockUserWalletByUserId(Long uid) {
+		return userWalletMapper.lockUserWalletByUserId(uid);
+	}
+
 
 }

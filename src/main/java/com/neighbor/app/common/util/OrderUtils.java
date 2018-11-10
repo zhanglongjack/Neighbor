@@ -13,7 +13,9 @@ import java.util.*;
  */
 public class OrderUtils {
     private static Log logger = LogFactory.getLog(OrderUtils.class);
-
+    public static String TRANSFER="transfer";
+    public static String RECHARGE="recharge";
+    public static String WITHDRAW="withdraw";
     /**
      * 专门为高并发获取唯一ID使用
      *
@@ -24,7 +26,7 @@ public class OrderUtils {
         StringBuffer orderNo = new StringBuffer();
         try {
             orderNo.append(logic)
-                    .append(DateUtils.getUserDate(DateFormateType.MOST_TIGHT_LONG_FORMAT)).
+                    .append(DateUtils.getUserDate(DateFormateType.MOST_TIGHT_LONG_S_FORMAT)).
                     append(fixStringToLengthNew
                             (String.valueOf(Thread.currentThread().getId()), 4, "0") +
                             getRandomChar(3));

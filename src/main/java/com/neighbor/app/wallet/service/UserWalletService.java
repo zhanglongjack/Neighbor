@@ -12,5 +12,5 @@ public interface UserWalletService {
     int updateByPrimaryKeySelective(UserWallet record);
 
 	UserWallet selectByPrimaryUserId(Long userId);
-
+    public UserWallet lockUserWalletByUserId(Long uid);
 }

@@ -28,6 +28,11 @@ public class DateFormateType {
 	public static final String MOST_TIGHT_LONG_FORMAT = "yyyyMMddhhmmss";
 
 	/**
+	 * 无空格紧凑长时间格式 yyyyMMddHHmmss
+	 */
+	public static final String MOST_TIGHT_LONG_S_FORMAT = "yyyyMMddhhmmssSSS";
+
+	/**
 	 * 时间 HH:mm:ss
 	 */
 	public static final String TIME_FORMAT = "HH:mm:ss";

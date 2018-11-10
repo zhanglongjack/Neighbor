@@ -2,6 +2,7 @@ package com.neighbor.common.aspect;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSON;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -31,6 +32,6 @@ public class ControllerAspect {
 		HttpServletRequest request = attributes.getRequest();
 		result.setServiceURL((String)request.getParameter("serviceURL"));
 		
-		System.out.println("return之后处理: " + result);
+		System.out.println("return之后处理: " + JSON.toJSONString(result));
 	}
 }

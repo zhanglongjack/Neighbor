@@ -1,13 +1,13 @@
 package com.neighbor.app.transfer.po;
 
-import com.neighbor.app.api.common.BaseApiReq;
+import java.util.StringJoiner;
 
-public class TransferReq extends BaseApiReq {
+public class TransferReq  {
 
 	private long uId;
 	private String payPwd;
 	private String amount;
-	private String transferUserId;
+	private Long transferUserId;
 	private String remarks;
 
 	public long getuId() {
@@ -34,11 +34,11 @@ public class TransferReq extends BaseApiReq {
 		this.amount = amount;
 	}
 
-	public String getTransferUserId() {
+	public Long getTransferUserId() {
 		return transferUserId;
 	}
 
-	public void setTransferUserId(String transferUserId) {
+	public void setTransferUserId(Long transferUserId) {
 		this.transferUserId = transferUserId;
 	}
 
@@ -50,4 +50,15 @@ public class TransferReq extends BaseApiReq {
 		this.remarks = remarks;
 	}
 
+
+	@Override
+	public String toString() {
+		return new StringJoiner(", ", TransferReq.class.getSimpleName() + "[", "]")
+				.add("uId=" + uId)
+				.add("payPwd='" + payPwd + "'")
+				.add("amount='" + amount + "'")
+				.add("transferUserId='" + transferUserId + "'")
+				.add("remarks='" + remarks + "'")
+				.toString();
+	}
 }

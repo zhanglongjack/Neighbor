@@ -1,12 +1,77 @@
 package com.neighbor.app.recharge.po;
 
+import com.neighbor.common.util.DateFormateType;
+import com.neighbor.common.util.DateUtils;
+import java.util.Date;
+import java.math.BigDecimal;
+
 public class RechargeRecord {
+    private Long id;
     private String orderNo;
-    private String createTime;
-    private String amount;
+    private Date createTime;
+    private BigDecimal amount;
+    private BigDecimal availableAmount;
     private String channelType;
     private String states;
     private String remarks;
+    private String channelTypeDesc;
+    private String createTimeStr;
+    private String statesDesc;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCreateTimeStr() {
+        if(createTime!=null){
+            try {
+                return DateUtils.formatDateStr(createTime,DateFormateType.LANG_FORMAT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return createTimeStr;
+    }
+
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
+    }
+
+    public String getStatesDesc() {
+        if(states!=null){
+            try {
+                return RechargeStatusDesc.getDesByValue(Integer.valueOf(states));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return statesDesc;
+    }
+
+    public void setStatesDesc(String statesDesc) {
+        this.statesDesc = statesDesc;
+    }
+
+    public String getChannelTypeDesc() {
+        if(channelType!=null){
+            try {
+               return ChannelTypeDesc.getDesByValue(Integer.valueOf(channelType));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return channelTypeDesc;
+    }
+
+
+
+    public void setChannelTypeDesc(String channelTypeDesc) {
+        this.channelTypeDesc = channelTypeDesc;
+    }
 
     public String getOrderNo() {
         return orderNo;
@@ -16,19 +81,20 @@ public class RechargeRecord {
         this.orderNo = orderNo;
     }
 
-    public String getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    public String getAmount() {
+
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -54,5 +120,13 @@ public class RechargeRecord {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public BigDecimal getAvailableAmount() {
+        return availableAmount;
+    }
+
+    public void setAvailableAmount(BigDecimal availableAmount) {
+        this.availableAmount = availableAmount;
     }
 }

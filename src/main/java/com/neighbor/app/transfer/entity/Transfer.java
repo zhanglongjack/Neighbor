@@ -1,9 +1,13 @@
 package com.neighbor.app.transfer.entity;
 
+import com.neighbor.app.common.entity.PageEntity;
+import com.neighbor.app.transfer.po.TransferStatusDesc;
+import com.neighbor.app.transfer.po.TransferWayDesc;
+import com.neighbor.common.util.DateFormateType;
+import com.neighbor.common.util.DateUtils;
+
 import java.math.BigDecimal;
 import java.util.Date;
-
-import com.neighbor.app.common.entity.PageEntity;
 
 public class Transfer extends PageEntity {
     private Long id;
@@ -12,22 +16,36 @@ public class Transfer extends PageEntity {
 
     private Date createTime;
 
+    private String createTimeStr;
+
     private Date updateTime;
 
     private Long uId;
 
     private String transferWay;
+    private String transferWayStr;
 
     private Long transferUserId;
 
     private BigDecimal amount;
 
     private String states;
+    private String statesStr;
 
     private String remarks;
 
     private String beginTime;
     private String endTime;
+
+    private BigDecimal availableAmount;
+
+    public BigDecimal getAvailableAmount() {
+        return availableAmount;
+    }
+
+    public void setAvailableAmount(BigDecimal availableAmount) {
+        this.availableAmount = availableAmount;
+    }
 
     public String getBeginTime() {
         return beginTime;
@@ -124,8 +142,51 @@ public class Transfer extends PageEntity {
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
+    public String getCreateTimeStr() {
+        if(createTime!=null){
+            try {
+                return DateUtils.formatDateStr(createTime, DateFormateType.LANG_FORMAT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return createTimeStr;
+    }
 
-	@Override
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
+    }
+    public String getTransferWayStr() {
+        if(transferWay!=null){
+            try {
+                return TransferWayDesc.getDesByValue(Integer.valueOf(transferWay));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return transferWayStr;
+    }
+
+    public void setTransferWayStr(String transferWayStr) {
+        this.transferWayStr = transferWayStr;
+    }
+
+    public String getStatesStr() {
+        if(states!=null){
+            try {
+                return TransferStatusDesc.getDesByValue(Integer.valueOf(states));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return statesStr;
+    }
+
+    public void setStatesStr(String statesStr) {
+        this.statesStr = statesStr;
+    }
+
+    @Override
 	public String toString() {
 		return String.format(
 				"Transfer [id=%s, orderNo=%s, createTime=%s, updateTime=%s, uId=%s, transferWay=%s, transferUserId=%s, amount=%s, states=%s, remarks=%s]",
