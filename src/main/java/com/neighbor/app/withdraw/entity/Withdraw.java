@@ -33,6 +33,10 @@ public class Withdraw extends PageEntity {
     private BigDecimal availableAmount;
     private String createTimeStr;
 
+    private BigDecimal actualAmount; //实际到账金额
+
+    private BigDecimal cost; //提现费用
+
     public Long getId() {
         return id;
     }
@@ -144,13 +148,41 @@ public class Withdraw extends PageEntity {
         this.createTimeStr = createTimeStr;
     }
 
+    public BigDecimal getActualAmount() {
+        return actualAmount;
+    }
+
+    public void setActualAmount(BigDecimal actualAmount) {
+        this.actualAmount = actualAmount;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
     @Override
-	public String toString() {
-		return String.format(
-				"Withdraw [id=%s, orderNo=%s, createTime=%s, updateTime=%s, uId=%s, amount=%s, bankCardNo=%s, branchInfo=%s, realName=%s, states=%s, remarks=%s]",
-				id, orderNo, createTime, updateTime, uId, amount, bankCardNo, branchInfo, realName, states, remarks);
-	}
-
-
-    
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Withdraw{");
+        sb.append("id=").append(id);
+        sb.append(", orderNo='").append(orderNo).append('\'');
+        sb.append(", createTime=").append(createTime);
+        sb.append(", updateTime=").append(updateTime);
+        sb.append(", uId=").append(uId);
+        sb.append(", amount=").append(amount);
+        sb.append(", bankCardNo='").append(bankCardNo).append('\'');
+        sb.append(", branchInfo='").append(branchInfo).append('\'');
+        sb.append(", realName='").append(realName).append('\'');
+        sb.append(", states='").append(states).append('\'');
+        sb.append(", remarks='").append(remarks).append('\'');
+        sb.append(", availableAmount=").append(availableAmount);
+        sb.append(", createTimeStr='").append(createTimeStr).append('\'');
+        sb.append(", actualAmount=").append(actualAmount);
+        sb.append(", cost=").append(cost);
+        sb.append('}');
+        return sb.toString();
+    }
 }

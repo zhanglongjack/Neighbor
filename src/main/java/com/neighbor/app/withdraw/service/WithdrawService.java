@@ -10,4 +10,6 @@ public interface WithdrawService {
     ResponseResult withdrawRecord(UserInfo user, Withdraw withdraw) throws Exception;
 
     ResponseResult withdrawInfo(Withdraw withdraw)  throws Exception;
+
+    ResponseResult preWithdraw(UserInfo user, Withdraw withdraw)  throws Exception;
 }

@@ -93,3 +93,6 @@ CREATE TABLE `bank_card` (
   PRIMARY KEY (`id`),
   KEY `index_k_bank_card_u_id` (`u_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='银行卡';
+
+alter table withdraw  add  actual_amount decimal(20,4) COMMENT '实际到账金额';
+alter table withdraw  add  cost decimal(20,4) COMMENT '提现手续费';

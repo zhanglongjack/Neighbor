@@ -20,6 +20,15 @@ public class WithdrawController {
     @Autowired
     private WithdrawService withdrawService;
 
+    @RequestMapping(value = "/preWithdraw.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult preWithdraw(@ModelAttribute("user") UserInfo user, Withdraw withdraw) throws Exception{
+        logger.info("recharge request >>>> " + withdraw);
+        logger.info("user info >>>> " + user);
+        ResponseResult result = withdrawService.preWithdraw(user,withdraw);
+        return result;
+    }
+
     @RequestMapping(value = "/withdraw.req",method= RequestMethod.POST)
     @ResponseBody
     public ResponseResult withdraw(@ModelAttribute("user") UserInfo user, Withdraw withdraw) throws Exception{
