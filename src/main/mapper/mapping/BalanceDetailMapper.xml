@@ -14,7 +14,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, create_time, update_time, u_id, amount, transaction_type, available_amount, transaction_id, 
-    remarks
+    remarks 
   </sql>
   
   	<sql id="dynamicWhere">
