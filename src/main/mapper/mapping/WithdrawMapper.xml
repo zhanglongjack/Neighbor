@@ -72,7 +72,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
  
-  <insert id="insertSelective" parameterType="com.neighbor.app.withdraw.entity.Withdraw">
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.neighbor.app.withdraw.entity.Withdraw">
     insert into withdraw
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

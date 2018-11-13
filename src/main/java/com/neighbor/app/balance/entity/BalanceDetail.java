@@ -18,6 +18,8 @@ public class BalanceDetail extends PageEntity {
 
     private String transactionType;
 
+    private String transactionSubType;
+
     private BigDecimal availableAmount;
 
     private Long transactionId;
@@ -96,11 +98,19 @@ public class BalanceDetail extends PageEntity {
         this.remarks = remarks;
     }
 
-	@Override
+    public String getTransactionSubType() {
+        return transactionSubType;
+    }
+
+    public void setTransactionSubType(String transactionSubType) {
+        this.transactionSubType = transactionSubType;
+    }
+
+    @Override
 	public String toString() {
 		return String.format(
-				"BalanceDetail [id=%s, createTime=%s, updateTime=%s, uId=%s, amount=%s, transactionType=%s, availableAmount=%s, transactionId=%s, remarks=%s]",
-				id, createTime, updateTime, uId, amount, transactionType, availableAmount, transactionId, remarks);
+				"BalanceDetail [id=%s, createTime=%s, updateTime=%s, uId=%s, amount=%s, transactionType=%s,transactionSubType=%s, availableAmount=%s, transactionId=%s, remarks=%s]",
+				id, createTime, updateTime, uId, amount, transactionType,transactionSubType, availableAmount, transactionId, remarks);
 	}
 
  

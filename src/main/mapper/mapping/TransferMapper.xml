@@ -97,7 +97,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
  
-  <insert id="insertSelective" parameterType="com.neighbor.app.transfer.entity.Transfer">
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.neighbor.app.transfer.entity.Transfer">
     insert into transfer
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

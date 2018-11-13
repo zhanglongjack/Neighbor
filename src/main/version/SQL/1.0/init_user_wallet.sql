@@ -96,3 +96,5 @@ CREATE TABLE `bank_card` (
 
 alter table withdraw  add  actual_amount decimal(20,4) COMMENT '实际到账金额';
 alter table withdraw  add  cost decimal(20,4) COMMENT '提现手续费';
+
+alter table balance_detail  add  transaction_sub_type varchar(2) DEFAULT NULL COMMENT '实际到账金额';

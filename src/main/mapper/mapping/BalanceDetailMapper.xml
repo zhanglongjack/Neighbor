@@ -11,10 +11,11 @@
     <result column="available_amount" jdbcType="DECIMAL" property="availableAmount" />
     <result column="transaction_id" jdbcType="BIGINT" property="transactionId" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+      <result column="transaction_sub_type" jdbcType="CHAR" property="transactionSubType" />
   </resultMap>
   <sql id="Base_Column_List">
     id, create_time, update_time, u_id, amount, transaction_type, available_amount, transaction_id, 
-    remarks 
+    remarks,transaction_sub_type
   </sql>
   
   	<sql id="dynamicWhere">
@@ -23,6 +24,7 @@
 			<if test="uId != null">and u_id=#{uId}</if>
 			<if test="transactionType != null and transactionType.length()>0">and transaction_type=#{transactionType}</if>
 			<if test="transactionId != null">and transaction_id=#{transactionId}</if>
+            <if test="transactionSubType != null and transactionSubType.length()>0">and transaction_sub_type=#{transactionSubType}</if>
 		</where>
 	</sql>
 	
@@ -92,6 +94,9 @@
       <if test="remarks != null">
         remarks,
       </if>
+      <if test="transactionSubType != null">
+          transaction_sub_type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -121,6 +126,9 @@
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
       </if>
+      <if test="transactionSubType != null">
+        #{transactionSubType,jdbcType=CHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.balance.entity.BalanceDetail">
@@ -149,6 +157,9 @@
       </if>
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionSubType != null">
+        transaction_sub_type = #{transactionSubType,jdbcType=CHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

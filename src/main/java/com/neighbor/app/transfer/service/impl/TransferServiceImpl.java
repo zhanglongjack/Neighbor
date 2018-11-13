@@ -5,12 +5,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.neighbor.app.balance.entity.BalanceDetail;
+import com.neighbor.app.balance.po.TransactionItemDesc;
+import com.neighbor.app.balance.po.TransactionSubTypeDesc;
+import com.neighbor.app.balance.po.TransactionTypeDesc;
+import com.neighbor.app.balance.service.BalanceDetailService;
 import com.neighbor.app.common.util.OrderUtils;
 import com.neighbor.app.transfer.po.*;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.util.*;
+import org.apache.ibatis.transaction.Transaction;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +35,10 @@ public class TransferServiceImpl implements TransferService {
 
     @Autowired
 	private UserWalletService userWalletService;
+
+    @Autowired
+    private BalanceDetailService balanceDetailService;
+
 
 
 	/**
@@ -64,6 +74,7 @@ public class TransferServiceImpl implements TransferService {
 		userWalletService.updateByPrimaryKeySelective(user);
 		userWalletService.updateByPrimaryKeySelective(transferUser);
 		Date date = new Date();
+		//转出交易
 		Transfer transfer = new Transfer();
 		BeanUtils.copyProperties(req,transfer);
 		transfer.setuId(userInfo.getId());
@@ -75,9 +86,23 @@ public class TransferServiceImpl implements TransferService {
 		transfer.setTransferWay(TransferWayDesc.out.getValue()+"");
 		transfer.setStates(TransferStatusDesc.success.getValue()+"");
 		transferMapper.insertSelective(transfer);
+		//转出交易明细
+		BalanceDetail balanceDetailOut = new BalanceDetail();
+		balanceDetailOut.setAmount(amount);
+		balanceDetailOut.setAvailableAmount(transfer.getAvailableAmount());
+		balanceDetailOut.setuId(transfer.getuId());
+		balanceDetailOut.setTransactionType(TransactionTypeDesc.payment.getValue());
+		balanceDetailOut.setTransactionSubType(TransactionSubTypeDesc.transferOut.getValue());
+		balanceDetailOut.setRemarks(TransactionItemDesc.transfer.getDes()+StringUtil.split_
+				+TransactionSubTypeDesc.transferOut.getDes()+transferUser.getuId());
+		balanceDetailOut.setTransactionId(transfer.getId());
+		balanceDetailService.insertSelective(balanceDetailOut);
 
+
+		//转入交易
 		Transfer transferIn = new Transfer();
 		BeanUtils.copyProperties(transfer,transferIn);
+		transferIn.setId(null);
 		transferIn.setuId(transferUser.getuId());
 		transferIn.setAvailableAmount(transferUser.getAvailableAmount());
 		transferIn.setTransferWay(TransferWayDesc.in.getValue()+"");
@@ -85,6 +110,17 @@ public class TransferServiceImpl implements TransferService {
         transferIn.setTransferUserId(userInfo.getId());
 		transferMapper.insertSelective(transferIn);
 
+		//转入交易明细
+		BalanceDetail balanceDetailIn = new BalanceDetail();
+		balanceDetailIn.setAmount(amount);
+		balanceDetailIn.setAvailableAmount(transferUser.getAvailableAmount());
+		balanceDetailIn.setuId(transferUser.getuId());
+		balanceDetailIn.setTransactionType(TransactionTypeDesc.receipt.getValue());
+		balanceDetailIn.setTransactionSubType(TransactionSubTypeDesc.transferIn.getValue());
+		balanceDetailIn.setRemarks(TransactionItemDesc.transfer.getDes()+StringUtil.split_
+				+TransactionSubTypeDesc.transferIn.getDes()+transfer.getuId());
+		balanceDetailIn.setTransactionId(transferIn.getId());
+		balanceDetailService.insertSelective(balanceDetailIn);
 		TransferResp transferResp = new TransferResp();
 		transferResp.setOrderNo(transfer.getOrderNo());
 		responseResult.addBody("resp",transferResp);

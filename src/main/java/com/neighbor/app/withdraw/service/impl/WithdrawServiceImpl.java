@@ -1,5 +1,10 @@
 package com.neighbor.app.withdraw.service.impl;
 
+import com.neighbor.app.balance.entity.BalanceDetail;
+import com.neighbor.app.balance.po.TransactionItemDesc;
+import com.neighbor.app.balance.po.TransactionSubTypeDesc;
+import com.neighbor.app.balance.po.TransactionTypeDesc;
+import com.neighbor.app.balance.service.BalanceDetailService;
 import com.neighbor.app.common.util.OrderUtils;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
@@ -10,6 +15,7 @@ import com.neighbor.app.withdraw.po.WithdrawStatusDesc;
 import com.neighbor.app.withdraw.service.WithdrawService;
 import com.neighbor.common.util.PageResp;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +41,9 @@ public class WithdrawServiceImpl implements WithdrawService {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private BalanceDetailService balanceDetailService;
 
     @Override
     @Transactional(readOnly = false,rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
@@ -70,6 +79,35 @@ public class WithdrawServiceImpl implements WithdrawService {
 
         userWalletService.updateByPrimaryKeySelective(user);
         withdrawMapper.insertSelective(withdraw);
+
+        //提现交易明细
+        BalanceDetail balanceDetail = new BalanceDetail();
+        balanceDetail.setAmount(withdraw.getAmount());
+        balanceDetail.setAvailableAmount(withdraw.getAvailableAmount());
+        balanceDetail.setuId(withdraw.getuId());
+        balanceDetail.setTransactionType(TransactionTypeDesc.expenditure.getValue());
+        balanceDetail.setTransactionSubType(TransactionSubTypeDesc.withdraw.getValue());
+        if(withdraw.getRemarks()!=null){
+            balanceDetail.setRemarks(TransactionItemDesc.withdraw.getDes()+ StringUtil.split_
+                    +withdraw.getRemarks());
+        }else{
+            balanceDetail.setRemarks(TransactionItemDesc.withdraw.getDes());
+        }
+
+        balanceDetail.setTransactionId(withdraw.getId());
+        balanceDetailService.insertSelective(balanceDetail);
+
+        //提现手续费交易明细
+        BalanceDetail balanceDetailCost = new BalanceDetail();
+        balanceDetailCost.setAmount(cost);
+        balanceDetailCost.setAvailableAmount(withdraw.getAvailableAmount());
+        balanceDetailCost.setuId(withdraw.getuId());
+        balanceDetailCost.setTransactionType(TransactionTypeDesc.expenditure.getValue());
+        balanceDetailCost.setTransactionSubType(TransactionSubTypeDesc.withdrawCost.getValue());
+        balanceDetailCost.setRemarks(TransactionSubTypeDesc.withdrawCost.getDes());
+        balanceDetailCost.setTransactionId(withdraw.getId());
+        balanceDetailService.insertSelective(balanceDetailCost);
+
         return responseResult;
     }
 
