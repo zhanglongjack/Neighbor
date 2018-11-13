@@ -22,8 +22,7 @@ import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.users.constants.UserContainer;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
-import com.neighbor.app.wallet.entity.UserWallet;
-import com.neighbor.app.wallet.service.UserWalletService;
+import com.neighbor.common.exception.ParamsCheckException;
 import com.neighbor.common.security.EncodeData;
 import com.neighbor.common.sms.TencentSms;
 import com.neighbor.common.util.ResponseResult;
@@ -44,15 +43,16 @@ public class LoginController {
 //	mv.addObject("message", "用户名或密码错误");
 	@RequestMapping(value="/accountLogin.req",method=RequestMethod.POST)
 	@ResponseBody
-	public ResponseResult login(String phone,@NotNull(message = "密码不能为空") String password){
+	public ResponseResult login(String phone,@NotNull(message = "密码不能为空") String password) throws Exception{
 		UserInfo user  = userService.selectByUserPhone( phone );
 		
 		ResponseResult result = new ResponseResult();
 		if(user==null || user.getUserPassword()==null || !EncodeData.matches(password, user.getUserPassword())){
 			logger.info("用户名或密码错误"); 
-			result.setErrorCode(ErrorCodeDesc.failed.getValue());
-			result.setErrorMessage("用户名或密码错误!");
-			return result;
+			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"用户名或密码错误!");
+//			result.setErrorCode(ErrorCodeDesc.failed.getValue());
+//			result.setErrorMessage("用户名或密码错误!");
+//			return result;
 		}
 		user.setUserPassword(null);
 		
@@ -68,7 +68,7 @@ public class LoginController {
 	
 	@RequestMapping(value="/registerLogin.req",method=RequestMethod.POST)
 	@ResponseBody
-	public ResponseResult registerLogin(@NotNull(message = "手机号不能为空")String phone,@NotNull(message = "验证码不能为空") String verfiyCode,Long upUserId){
+	public ResponseResult registerLogin(@NotNull(message = "手机号不能为空")String phone,@NotNull(message = "验证码不能为空") String verfiyCode,Long upUserId) throws Exception{
 		UserInfo user  = userService.selectByUserPhone( phone );
 		boolean isValid = verfiyCode.equals(TencentSms.smsCache.get(phone));
 		ResponseResult result = new ResponseResult();
@@ -83,9 +83,10 @@ public class LoginController {
 
 		}else if(!isValid){
 			logger.info("验证吗输入错误"); 
-			result.setErrorCode(ErrorCodeDesc.failed.getValue());
-			result.setErrorMessage("验证码错误");
-			return result;
+			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"验证码错误");
+//			result.setErrorCode(ErrorCodeDesc.failed.getValue());
+//			result.setErrorMessage("验证码错误");
+//			return result;
 		}
 		
 		user.setUserPassword(null);

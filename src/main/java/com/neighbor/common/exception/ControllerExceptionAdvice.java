@@ -12,12 +12,6 @@ import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.users.controller.LoginController;
 import com.neighbor.common.util.ResponseResult;
  
-/**
- * controller 增强器
- *
- * @author sam
- * @since 2017/7/17
- */
 @ControllerAdvice
 public class ControllerExceptionAdvice {
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
@@ -36,13 +30,48 @@ public class ControllerExceptionAdvice {
     	result.setErrorCode(ErrorCodeDesc.failed.getValue());
     	result.setErrorMessage(ex.getMessage()); 
     	
-    	if(ex instanceof ConstraintViolationException){
-    		String msg = ex.getMessage();
-    		String msgs[] = msg.split(":");
-    		result.setErrorMessage(msgs.length==2 ? msgs[1]:msg); 
-    	}
+		String msg = ex.getMessage();
+		String msgs[] = msg.split(":");
+		result.setErrorMessage(msgs.length==2 ? msgs[1]:msg); 
     	
-    	logger.info("统一异常处理:"+JSON.toJSONString(result));
+    	logger.error("统一异常处理:"+JSON.toJSONString(result));
+    	logger.error(ex.getMessage(),ex);
+    	return result;
+    }
+    
+    /**
+     * spring 验证框架异常
+     * @param ex
+     * @return
+     */
+    @ResponseBody
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public ResponseResult constraintViolationHandler(Exception ex) {
+    	
+    	ResponseResult result = new ResponseResult();
+    	result.setErrorCode(ErrorCodeDesc.failed.getValue()); 
+		String msg = ex.getMessage();
+		String msgs[] = msg.split(":");
+		result.setErrorMessage(msgs.length==2 ? msgs[1]:msg); 
+    	
+    	logger.error("统一验证框架异常处理:"+JSON.toJSONString(result));
+    	logger.error(ex.getMessage(),ex);
+    	return result;
+    }
+    
+    /**
+     * 全局参数检查异常捕捉处理
+     * @param ex
+     * @return
+     */
+    @ResponseBody
+    @ExceptionHandler(value = ParamsCheckException.class)
+    public ResponseResult paramsCheckHandler(ParamsCheckException ex) {
+    	
+    	ResponseResult result = new ResponseResult();
+    	result.setErrorCode(ex.getErrorCode());
+    	result.setErrorMessage(ex.getErrorMessage());  
+    	logger.error("统一参数检查异常处理:"+JSON.toJSONString(result));
     	logger.error(ex.getMessage(),ex);
     	return result;
     }

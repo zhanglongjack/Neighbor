@@ -201,8 +201,7 @@ public class UserInfo {
 		builder.append("]");
 		return builder.toString();
 	}
-    
-    
+
     
     
 }

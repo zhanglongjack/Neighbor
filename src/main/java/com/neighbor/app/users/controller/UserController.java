@@ -35,7 +35,7 @@ public class UserController {
 
 	@RequestMapping(value="/userEdit.req",method=RequestMethod.POST)
 	@ResponseBody
-	public ResponseResult userEdit(UserInfo userInfo){
+	public ResponseResult userEdit(UserInfo userInfo,@ModelAttribute("user") UserInfo user){
 		logger.info("userEdit request:{}",userInfo);
 		userService.updateByPrimaryKeySelective(userInfo);
 		return new ResponseResult();
