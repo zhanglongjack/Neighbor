@@ -13,12 +13,14 @@ import com.neighbor.common.util.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -30,6 +32,9 @@ public class WithdrawServiceImpl implements WithdrawService {
     private WithdrawMapper withdrawMapper;
     @Autowired
     private UserWalletService userWalletService;
+
+    @Autowired
+    private Environment env;
 
     @Override
     @Transactional(readOnly = false,rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
@@ -56,6 +61,13 @@ public class WithdrawServiceImpl implements WithdrawService {
         withdraw.setAvailableAmount(user.getAvailableAmount());
         withdraw.setStates(WithdrawStatusDesc.initial.getValue()+"");
         user.setUpdateTime(date);
+
+        BigDecimal withdrawRate = new BigDecimal(env.getProperty("withdraw_rate"));
+        BigDecimal cost =  amount.multiply(withdrawRate);
+        BigDecimal actualAmount = amount.subtract(cost);
+        withdraw.setActualAmount(actualAmount);
+        withdraw.setCost(cost);
+
         userWalletService.updateByPrimaryKeySelective(user);
         withdrawMapper.insertSelective(withdraw);
         return responseResult;
@@ -81,6 +93,23 @@ public class WithdrawServiceImpl implements WithdrawService {
         ResponseResult responseResult = new ResponseResult();
         withdraw = withdrawMapper.selectByPrimaryKey(withdraw.getId());
         responseResult.addBody("withdraw",withdraw);
+        return responseResult;
+    }
+
+    @Override
+    public ResponseResult preWithdraw(UserInfo userInfo, Withdraw withdraw) throws Exception {
+        ResponseResult responseResult = new ResponseResult();
+        UserWallet userWallet = userWalletService.lockUserWalletByUserId(userInfo.getId());
+        if(userWallet==null){
+            responseResult.setErrorCode(1);//失败
+            responseResult.setErrorMessage("用户不存在！");
+            logger.info("用户信息不存在！");
+            return responseResult;
+        }
+        HashMap<String,Object> body = new HashMap<String,Object>();
+        body.put("availableAmount",userWallet.getAvailableAmount());
+        body.put("withdrawRate",env.getProperty("withdraw_rate"));
+        responseResult.addBody("resp",body);
         return responseResult;
     }
 
