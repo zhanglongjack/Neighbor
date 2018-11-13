@@ -21,8 +21,8 @@
 		<where>
 		    <if test="id != null">and id=#{id}</if>
 			<if test="uId != null">and u_id=#{uId}</if>
-			<if test="transaction_type != null and transaction_type.length()>0">and transaction_type=#{transactionType}</if>
-			<if test="transaction_id != null">and transaction_id=#{transactionId}</if>
+			<if test="transactionType != null and transactionType.length()>0">and transaction_type=#{transactionType}</if>
+			<if test="transactionId != null">and transaction_id=#{transactionId}</if>
 		</where>
 	</sql>
 	

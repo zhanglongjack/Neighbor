@@ -2,7 +2,8 @@ package com.neighbor.common.util;
 
 public class PageTools {
 	private Integer index = 1;
-	private Integer pageSize = 50;
+	private Integer pageSize = 20;
+	private Integer totalPage = 0;
 	private Integer rowIndex;
 	private Long total;
 	public Integer getIndex() {
@@ -28,17 +29,23 @@ public class PageTools {
 	public Long getTotal() {
 		return total;
 	}
+	
+	public Integer getTotalPage() {
+		return totalPage;
+	} 
 	public void setTotal(Long total) {
 		this.total = total;
-		int totalPage = (int) ((this.total-1)/this.pageSize+1);
-		if(this.index>totalPage){
-			this.index=totalPage;
-		}
+		this.totalPage = (int) ((this.total-1)/this.pageSize+1);
+//		if(this.index>totalPage){
+//			this.index=totalPage;
+//		}
 	}
 	@Override
 	public String toString() {
-		return String.format("PageTools [index=%s, pageSize=%s, rowIndex=%s, total=%s]", index, pageSize, rowIndex,
-				total);
+		return String.format("PageTools [index=%s, pageSize=%s, totalPage=%s, rowIndex=%s, total=%s]", index, pageSize,
+				totalPage, rowIndex, total);
 	}
+
+
 
 }

@@ -3,7 +3,7 @@ package com.neighbor.app.common.entity;
 import com.neighbor.common.util.PageTools;
 
 public class PageEntity {
-	private PageTools pageTools;
+	private PageTools pageTools = new PageTools();
 
 	public PageTools getPageTools() {
 		return pageTools;

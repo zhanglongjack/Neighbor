@@ -12,11 +12,11 @@ public class UserWallet {
 
 	private Long uId;
 
-	private String score = "0.00";
+	private BigDecimal score =  new BigDecimal("0.00");
 
-	private BigDecimal availableAmount = new BigDecimal("0.00");;
+	private BigDecimal availableAmount = new BigDecimal("0.00");
 
-	private BigDecimal freezeAmount = new BigDecimal("0.00");;
+	private BigDecimal freezeAmount = new BigDecimal("0.00");
 
 	public Long getId() {
 		return id;
@@ -50,11 +50,11 @@ public class UserWallet {
 		this.uId = uId;
 	}
 
-	public String getScore() {
+	public BigDecimal getScore() {
 		return score;
 	}
 
-	public void setScore(String score) {
+	public void setScore(BigDecimal score) {
 		this.score = score;
 	}
 
