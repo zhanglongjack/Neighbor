@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.neighbor.app.common.entity.PageEntity;
+import com.neighbor.app.recharge.po.ChannelTypeDesc;
+import com.neighbor.app.recharge.po.RechargeStatusDesc;
+import com.neighbor.common.util.DateFormateType;
+import com.neighbor.common.util.DateUtils;
 
 public class Recharge  extends PageEntity{
     private Long id;
@@ -25,6 +29,43 @@ public class Recharge  extends PageEntity{
     private String remarks;
 
     private BigDecimal availableAmount;
+    
+    private String createTimeStr ;
+    private String statesDesc ;
+    private String channelTypeDesc ;
+    
+    public String getCreateTimeStr() {
+        if(createTime!=null){
+            try {
+                return DateUtils.formatDateStr(createTime,DateFormateType.LANG_FORMAT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return createTimeStr;
+    }
+    
+    public String getStatesDesc() {
+        if(states!=null){
+            try {
+                return RechargeStatusDesc.getDesByValue(Integer.valueOf(states));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return statesDesc;
+    }
+    
+    public String getChannelTypeDesc() {
+        if(channelType!=null){
+            try {
+               return ChannelTypeDesc.getDesByValue(Integer.valueOf(channelType));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return channelTypeDesc;
+    }
 
     public Long getId() {
         return id;

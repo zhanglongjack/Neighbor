@@ -81,28 +81,28 @@ public class RechargeServiceImpl implements RechargeService {
         return responseResult;
     }
 
-    @Override
-    public RechargeRecordResp rechargeRecord(UserInfo user,Recharge recharge) throws Exception {
-        RechargeRecordResp rechargeRecordResp = new RechargeRecordResp();
-        recharge.setuId(user.getId());
-        Long total = rechargeMapper.selectPageTotalCount(recharge);
-        List<Recharge> recharges = rechargeMapper.selectPageByObjectForList(recharge);
-        List<RechargeRecord> pageList = new ArrayList<RechargeRecord>();
-        if(recharges!=null&&recharges.size()>0){
-            for(Recharge rec : recharges){
-                RechargeRecord rechargeRecord = new RechargeRecord();
-                BeanUtils.copyProperties(rec,rechargeRecord);
-                pageList.add(rechargeRecord);
-            }
-        }
-
-        rechargeRecordResp.setTotalNum(total);
-        rechargeRecordResp.setPageList(pageList);
-        rechargeRecordResp.setPageIndex(recharge.getPageTools().getIndex().longValue());
-        rechargeRecordResp.setPageSize(recharge.getPageTools().getPageSize().longValue());
-        return rechargeRecordResp;
-
-    }
+//    @Override
+//    public RechargeRecordResp rechargeRecord(UserInfo user,Recharge recharge) throws Exception {
+//        RechargeRecordResp rechargeRecordResp = new RechargeRecordResp();
+//        recharge.setuId(user.getId());
+//        Long total = rechargeMapper.selectPageTotalCount(recharge);
+//        List<Recharge> recharges = rechargeMapper.selectPageByObjectForList(recharge);
+//        List<RechargeRecord> pageList = new ArrayList<RechargeRecord>();
+//        if(recharges!=null&&recharges.size()>0){
+//            for(Recharge rec : recharges){
+//                RechargeRecord rechargeRecord = new RechargeRecord();
+//                BeanUtils.copyProperties(rec,rechargeRecord);
+//                pageList.add(rechargeRecord);
+//            }
+//        }
+//
+//        rechargeRecordResp.setTotalNum(total);
+//        rechargeRecordResp.setPageList(pageList);
+//        rechargeRecordResp.setPageIndex(recharge.getPageTools().getIndex().longValue());
+//        rechargeRecordResp.setPageSize(recharge.getPageTools().getPageSize().longValue());
+//        return rechargeRecordResp;
+//
+//    }
 
     @Override
     public ResponseResult rechargeInfo(Recharge recharge) throws Exception {
@@ -113,4 +113,14 @@ public class RechargeServiceImpl implements RechargeService {
         responseResult.addBody("rechargeInfo",rechargeRecord);
         return responseResult;
     }
+
+	@Override
+	public Long selectPageTotalCount(Recharge record) {
+		return rechargeMapper.selectPageTotalCount(record);
+	}
+
+	@Override
+	public List<Recharge> selectPageByObjectForList(Recharge record) {
+		return rechargeMapper.selectPageByObjectForList(record);
+	}
 }

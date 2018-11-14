@@ -27,6 +27,8 @@ public class UserInfo {
 
     private String robotSno;
 
+    private String regional;
+    
     private Long upuserId;
 
     private Date createTime;
@@ -163,44 +165,23 @@ public class UserInfo {
         this.remark = remark;
     }
 
+	public String getRegional() {
+		return regional;
+	}
+
+	public void setRegional(String regional) {
+		this.regional = regional;
+	}
+
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("UserInfo [id=");
-		builder.append(id);
-		builder.append(", userPhoto=");
-		builder.append(userPhoto);
-		builder.append(", nickName=");
-		builder.append(nickName);
-		builder.append(", userAccount=");
-		builder.append(userAccount);
-		builder.append(", userPassword=");
-		builder.append(userPassword);
-		builder.append(", qrCode=");
-		builder.append(qrCode);
-		builder.append(", sex=");
-		builder.append(sex);
-		builder.append(", mobilePhone=");
-		builder.append(mobilePhone);
-		builder.append(", realName=");
-		builder.append(realName);
-		builder.append(", wechat=");
-		builder.append(wechat);
-		builder.append(", qq=");
-		builder.append(qq);
-		builder.append(", robotSno=");
-		builder.append(robotSno);
-		builder.append(", upuserId=");
-		builder.append(upuserId);
-		builder.append(", createTime=");
-		builder.append(createTime);
-		builder.append(", updateTime=");
-		builder.append(updateTime);
-		builder.append(", remark=");
-		builder.append(remark);
-		builder.append("]");
-		return builder.toString();
+		return String.format(
+				"UserInfo [id=%s, userPhoto=%s, nickName=%s, userAccount=%s, userPassword=%s, qrCode=%s, sex=%s, mobilePhone=%s, realName=%s, wechat=%s, qq=%s, robotSno=%s, regional=%s, upuserId=%s, createTime=%s, updateTime=%s, remark=%s]",
+				id, userPhoto, nickName, userAccount, userPassword, qrCode, sex, mobilePhone, realName, wechat, qq,
+				robotSno, regional, upuserId, createTime, updateTime, remark);
 	}
+
+
 
     
     

@@ -18,11 +18,12 @@
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
 		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="regional" jdbcType="VARCHAR" property="regional" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, user_photo, nick_name, user_account, user_password, qr_code, sex,
 		mobile_phone,
-		real_name, wechat, qq, robot_sno, upuser_id, create_time, update_time, remark
+		real_name, wechat, qq, robot_sno, upuser_id, create_time, update_time, remark,regional
 	</sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
@@ -94,6 +95,9 @@
 			<if test="remark != null">
 				remark,
 			</if>
+			<if test="regional != null">
+				regional,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="userPhoto != null">
@@ -140,6 +144,9 @@
 			</if>
 			<if test="remark != null">
 				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="regional != null">
+				#{regional,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
@@ -190,6 +197,9 @@
 			</if>
 			<if test="remark != null">
 				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="regional != null">
+				regional = #{regional,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}

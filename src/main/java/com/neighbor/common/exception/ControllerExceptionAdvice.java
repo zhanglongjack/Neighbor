@@ -55,7 +55,6 @@ public class ControllerExceptionAdvice {
 		result.setErrorMessage(msgs.length==2 ? msgs[1]:msg); 
     	
     	logger.error("统一验证框架异常处理:"+JSON.toJSONString(result));
-    	logger.error(ex.getMessage(),ex);
     	return result;
     }
     
@@ -72,7 +71,6 @@ public class ControllerExceptionAdvice {
     	result.setErrorCode(ex.getErrorCode());
     	result.setErrorMessage(ex.getErrorMessage());  
     	logger.error("统一参数检查异常处理:"+JSON.toJSONString(result));
-    	logger.error(ex.getMessage(),ex);
     	return result;
     }
  
