@@ -3,11 +3,14 @@ package com.neighbor.app.recharge.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.neighbor.app.balance.po.TransactionItemDesc;
+import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.common.entity.PageEntity;
 import com.neighbor.app.recharge.po.ChannelTypeDesc;
 import com.neighbor.app.recharge.po.RechargeStatusDesc;
 import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
+import com.neighbor.common.util.StringUtil;
 
 public class Recharge  extends PageEntity{
     private Long id;
@@ -33,7 +36,18 @@ public class Recharge  extends PageEntity{
     private String createTimeStr ;
     private String statesDesc ;
     private String channelTypeDesc ;
-    
+
+    private String transactionTypeDesc;
+
+
+    public String getTransactionTypeDesc() {
+        return TransactionTypeDesc.receipt.getDes();
+    }
+
+    public void setTransactionTypeDesc(String transactionTypeDesc) {
+        this.transactionTypeDesc = transactionTypeDesc;
+    }
+
     public String getCreateTimeStr() {
         if(createTime!=null){
             try {
@@ -47,22 +61,14 @@ public class Recharge  extends PageEntity{
     
     public String getStatesDesc() {
         if(states!=null){
-            try {
-                return RechargeStatusDesc.getDesByValue(Integer.valueOf(states));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
+            return RechargeStatusDesc.getDesByValue(states);
         }
         return statesDesc;
     }
     
     public String getChannelTypeDesc() {
         if(channelType!=null){
-            try {
-               return ChannelTypeDesc.getDesByValue(Integer.valueOf(channelType));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
+            ChannelTypeDesc.getDesByValue(channelType);
         }
         return channelTypeDesc;
     }
@@ -141,7 +147,10 @@ public class Recharge  extends PageEntity{
     }
 
     public String getRemarks() {
-        return remarks;
+        if(channelType!=null){
+            return ChannelTypeDesc.getDesByValue(channelType)+TransactionItemDesc.recharge.getDes();
+        }
+        return TransactionItemDesc.transfer.getDes();
     }
 
     public void setRemarks(String remarks) {

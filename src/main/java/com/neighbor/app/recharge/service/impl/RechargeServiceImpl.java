@@ -56,7 +56,7 @@ public class RechargeServiceImpl implements RechargeService {
         recharge.setOrderNo(OrderUtils.getOrderNo(OrderUtils.RECHARGE));
         recharge.setuId(user.getId());
         recharge.setAvailableAmount(userWallet.getAvailableAmount());
-        recharge.setStates(RechargeStatusDesc.success.getValue()+"");
+        recharge.setStates(RechargeStatusDesc.success.toString());
         rechargeMapper.insertSelective(recharge);
 
         //充值交易明细
@@ -64,8 +64,8 @@ public class RechargeServiceImpl implements RechargeService {
         balanceDetail.setAmount(recharge.getAmount());
         balanceDetail.setAvailableAmount(recharge.getAvailableAmount());
         balanceDetail.setuId(recharge.getuId());
-        balanceDetail.setTransactionType(TransactionTypeDesc.receipt.getValue());
-        balanceDetail.setTransactionSubType(TransactionSubTypeDesc.recharge.getValue());
+        balanceDetail.setTransactionType(TransactionTypeDesc.receipt.toString());
+        balanceDetail.setTransactionSubType(TransactionSubTypeDesc.recharge.toString());
         if(recharge.getRemarks()!=null){
             balanceDetail.setRemarks(TransactionItemDesc.recharge.getDes()+ StringUtil.split_
                     +recharge.getRemarks());

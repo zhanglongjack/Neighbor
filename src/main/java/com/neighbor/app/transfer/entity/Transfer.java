@@ -1,10 +1,14 @@
 package com.neighbor.app.transfer.entity;
 
+import com.neighbor.app.balance.po.TransactionItemDesc;
+import com.neighbor.app.balance.po.TransactionSubTypeDesc;
+import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.common.entity.PageEntity;
 import com.neighbor.app.transfer.po.TransferStatusDesc;
 import com.neighbor.app.transfer.po.TransferWayDesc;
 import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
+import com.neighbor.common.util.StringUtil;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -38,6 +42,20 @@ public class Transfer extends PageEntity {
     private String endTime;
 
     private BigDecimal availableAmount;
+
+    private String transactionTypeDesc;
+
+    public String getTransactionTypeDesc() {
+        if(TransferWayDesc.in.toString().equals(transferWay)){
+            return TransactionTypeDesc.receipt.getDes();
+        }else{
+            return TransactionTypeDesc.payment.getDes();
+        }
+    }
+
+    public void setTransactionTypeDesc(String transactionTypeDesc) {
+        this.transactionTypeDesc = transactionTypeDesc;
+    }
 
     public BigDecimal getAvailableAmount() {
         return availableAmount;
@@ -136,7 +154,13 @@ public class Transfer extends PageEntity {
     }
 
     public String getRemarks() {
-        return remarks;
+        if(TransferWayDesc.in.toString().equals(transferWay)){
+            return TransactionItemDesc.transfer.getDes()+StringUtil.split_
+                    +TransactionSubTypeDesc.transferIn.getDes()+transferUserId;
+        }else{
+            return TransactionItemDesc.transfer.getDes()+StringUtil.split_
+                    +TransactionSubTypeDesc.transferOut.getDes()+transferUserId;
+        }
     }
 
     public void setRemarks(String remarks) {
@@ -158,11 +182,7 @@ public class Transfer extends PageEntity {
     }
     public String getTransferWayStr() {
         if(transferWay!=null){
-            try {
-                return TransferWayDesc.getDesByValue(Integer.valueOf(transferWay));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
+            return TransferWayDesc.getDesByValue(transferWay);
         }
         return transferWayStr;
     }
@@ -173,11 +193,7 @@ public class Transfer extends PageEntity {
 
     public String getStatesStr() {
         if(states!=null){
-            try {
-                return TransferStatusDesc.getDesByValue(Integer.valueOf(states));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
+            return TransferStatusDesc.getDesByValue(states);
         }
         return statesStr;
     }

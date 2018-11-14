@@ -14,6 +14,7 @@ import com.neighbor.app.withdraw.entity.Withdraw;
 import com.neighbor.app.withdraw.po.WithdrawStatusDesc;
 import com.neighbor.app.withdraw.service.WithdrawService;
 import com.neighbor.common.util.PageResp;
+import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.util.StringUtil;
 import org.slf4j.Logger;
@@ -68,15 +69,15 @@ public class WithdrawServiceImpl implements WithdrawService {
         withdraw.setOrderNo(OrderUtils.getOrderNo(OrderUtils.WITHDRAW));
         withdraw.setCreateTime(date);
         withdraw.setAvailableAmount(user.getAvailableAmount());
-        withdraw.setStates(WithdrawStatusDesc.initial.getValue()+"");
+        withdraw.setStates(WithdrawStatusDesc.initial.toString());
         user.setUpdateTime(date);
 
         BigDecimal withdrawRate = new BigDecimal(env.getProperty("withdraw_rate"));
         BigDecimal cost =  amount.multiply(withdrawRate);
         BigDecimal actualAmount = amount.subtract(cost);
         withdraw.setActualAmount(actualAmount);
-        withdraw.setCost(cost);
-
+        withdraw.setCost(cost.negate());
+        withdraw.setAmount(amount.negate());
         userWalletService.updateByPrimaryKeySelective(user);
         withdrawMapper.insertSelective(withdraw);
 
@@ -85,8 +86,8 @@ public class WithdrawServiceImpl implements WithdrawService {
         balanceDetail.setAmount(withdraw.getAmount());
         balanceDetail.setAvailableAmount(withdraw.getAvailableAmount());
         balanceDetail.setuId(withdraw.getuId());
-        balanceDetail.setTransactionType(TransactionTypeDesc.expenditure.getValue());
-        balanceDetail.setTransactionSubType(TransactionSubTypeDesc.withdraw.getValue());
+        balanceDetail.setTransactionType(TransactionTypeDesc.expenditure.toString());
+        balanceDetail.setTransactionSubType(TransactionSubTypeDesc.withdraw.toString());
         if(withdraw.getRemarks()!=null){
             balanceDetail.setRemarks(TransactionItemDesc.withdraw.getDes()+ StringUtil.split_
                     +withdraw.getRemarks());
@@ -99,11 +100,11 @@ public class WithdrawServiceImpl implements WithdrawService {
 
         //提现手续费交易明细
         BalanceDetail balanceDetailCost = new BalanceDetail();
-        balanceDetailCost.setAmount(cost);
+        balanceDetailCost.setAmount(cost.negate());
         balanceDetailCost.setAvailableAmount(withdraw.getAvailableAmount());
         balanceDetailCost.setuId(withdraw.getuId());
-        balanceDetailCost.setTransactionType(TransactionTypeDesc.expenditure.getValue());
-        balanceDetailCost.setTransactionSubType(TransactionSubTypeDesc.withdrawCost.getValue());
+        balanceDetailCost.setTransactionType(TransactionTypeDesc.expenditure.toString());
+        balanceDetailCost.setTransactionSubType(TransactionSubTypeDesc.withdrawCost.toString());
         balanceDetailCost.setRemarks(TransactionSubTypeDesc.withdrawCost.getDes());
         balanceDetailCost.setTransactionId(withdraw.getId());
         balanceDetailService.insertSelective(balanceDetailCost);
@@ -117,12 +118,15 @@ public class WithdrawServiceImpl implements WithdrawService {
         withdraw.setuId(user.getId());
         Long total = withdrawMapper.selectPageTotalCount(withdraw);
         List<Withdraw> pageList = withdrawMapper.selectPageByObjectForList(withdraw);
-        PageResp pageResp = new PageResp();
+        /*PageResp pageResp = new PageResp();
         pageResp.setTotalNum(total);
         pageResp.setPageList(pageList);
         pageResp.setPageIndex(withdraw.getPageTools().getIndex().longValue());
-        pageResp.setPageSize(withdraw.getPageTools().getPageSize().longValue());
-        result.addBody("resp", pageResp);
+        pageResp.setPageSize(withdraw.getPageTools().getPageSize().longValue());*/
+        PageTools pageTools = withdraw.getPageTools();
+        pageTools.setTotal(total);
+        result.addBody("resultList", pageList);
+        result.addBody("pageTools", pageTools);
         return result;
     }
 

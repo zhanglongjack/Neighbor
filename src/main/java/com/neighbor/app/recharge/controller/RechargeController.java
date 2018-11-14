@@ -62,8 +62,8 @@ public class RechargeController {
 	@RequestMapping(value = "/recharge.req", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseResult recharge(@ModelAttribute("user") UserInfo user, Recharge recharge) throws Exception {
-		logger.info("recharge request >>>> " + JSON.toJSONString(recharge));
-		logger.info("user info >>>> " + JSON.toJSONString(recharge));
+		logger.info("recharge request >>>> " + recharge);
+		logger.info("user info >>>> " + user);
 		ResponseResult result = rechargeService.recharge(user, recharge);
 		return result;
 	}
@@ -71,7 +71,7 @@ public class RechargeController {
 	@RequestMapping(value = "/rechargeInfo.req", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseResult rechargeInfo(Recharge recharge) throws Exception {
-		logger.info("recharge request >>>> " + JSON.toJSONString(recharge));
+		logger.info("recharge request >>>> " + recharge);
 		ResponseResult result = rechargeService.rechargeInfo(recharge);
 		return result;
 	}

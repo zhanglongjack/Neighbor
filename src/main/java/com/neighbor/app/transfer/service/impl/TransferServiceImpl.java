@@ -83,16 +83,16 @@ public class TransferServiceImpl implements TransferService {
 		transfer.setCreateTime(date);
 		transfer.setBeginTime(DateUtils.formatDateStr(date, DateFormateType.LANG_FORMAT));
 		transfer.setOrderNo(OrderUtils.getOrderNo(OrderUtils.TRANSFER));
-		transfer.setTransferWay(TransferWayDesc.out.getValue()+"");
-		transfer.setStates(TransferStatusDesc.success.getValue()+"");
+		transfer.setTransferWay(TransferWayDesc.out.toString());
+		transfer.setStates(TransferStatusDesc.success.toString());
 		transferMapper.insertSelective(transfer);
 		//转出交易明细
 		BalanceDetail balanceDetailOut = new BalanceDetail();
 		balanceDetailOut.setAmount(amount);
 		balanceDetailOut.setAvailableAmount(transfer.getAvailableAmount());
 		balanceDetailOut.setuId(transfer.getuId());
-		balanceDetailOut.setTransactionType(TransactionTypeDesc.payment.getValue());
-		balanceDetailOut.setTransactionSubType(TransactionSubTypeDesc.transferOut.getValue());
+		balanceDetailOut.setTransactionType(TransactionTypeDesc.payment.toString());
+		balanceDetailOut.setTransactionSubType(TransactionSubTypeDesc.transferOut.toString());
 		balanceDetailOut.setRemarks(TransactionItemDesc.transfer.getDes()+StringUtil.split_
 				+TransactionSubTypeDesc.transferOut.getDes()+transferUser.getuId());
 		balanceDetailOut.setTransactionId(transfer.getId());
@@ -105,7 +105,7 @@ public class TransferServiceImpl implements TransferService {
 		transferIn.setId(null);
 		transferIn.setuId(transferUser.getuId());
 		transferIn.setAvailableAmount(transferUser.getAvailableAmount());
-		transferIn.setTransferWay(TransferWayDesc.in.getValue()+"");
+		transferIn.setTransferWay(TransferWayDesc.in.toString());
 		transferIn.setOrderNo(OrderUtils.getOrderNo(OrderUtils.TRANSFER));
         transferIn.setTransferUserId(userInfo.getId());
 		transferMapper.insertSelective(transferIn);
@@ -115,8 +115,8 @@ public class TransferServiceImpl implements TransferService {
 		balanceDetailIn.setAmount(amount);
 		balanceDetailIn.setAvailableAmount(transferUser.getAvailableAmount());
 		balanceDetailIn.setuId(transferUser.getuId());
-		balanceDetailIn.setTransactionType(TransactionTypeDesc.receipt.getValue());
-		balanceDetailIn.setTransactionSubType(TransactionSubTypeDesc.transferIn.getValue());
+		balanceDetailIn.setTransactionType(TransactionTypeDesc.receipt.toString());
+		balanceDetailIn.setTransactionSubType(TransactionSubTypeDesc.transferIn.toString());
 		balanceDetailIn.setRemarks(TransactionItemDesc.transfer.getDes()+StringUtil.split_
 				+TransactionSubTypeDesc.transferIn.getDes()+transfer.getuId());
 		balanceDetailIn.setTransactionId(transferIn.getId());
@@ -133,12 +133,10 @@ public class TransferServiceImpl implements TransferService {
 		transfer.setuId(user.getId());
 		Long total = transferMapper.selectPageTotalCount(transfer);
 		List<Transfer> pageList = transferMapper.selectPageByObjectForList(transfer);
-		PageResp pageResp = new PageResp();
-		pageResp.setTotalNum(total);
-		pageResp.setPageList(pageList);
-		pageResp.setPageIndex(transfer.getPageTools().getIndex().longValue());
-		pageResp.setPageSize(transfer.getPageTools().getPageSize().longValue());
-		result.addBody("resp", pageResp);
+		PageTools pageTools = transfer.getPageTools();
+		pageTools.setTotal(total);
+		result.addBody("resultList", pageList);
+		result.addBody("pageTools", pageTools);
         return result;
     }
 

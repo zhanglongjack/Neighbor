@@ -1,32 +1,18 @@
 package com.neighbor.app.transfer.po;
 
-import com.neighbor.app.recharge.po.ChannelTypeDesc;
 
 public enum TransferWayDesc {
-    in(1,"转入"),out(2,"转出");
-
-    private int value;
+    in("转入"),out("转出");
     private String des;
 
-    private TransferWayDesc(int value, String des) {
-        this.value = value;
+    private TransferWayDesc( String des) {
         this.des = des;
     }
-
-    public int getValue() {
-        return value;
-    }
-
     public String getDes() {
         return des;
     }
 
-    public static String getDesByValue(int value){
-        for(TransferWayDesc transferWayDesc : TransferWayDesc.values()){
-            if(transferWayDesc.getValue()==value){
-                return transferWayDesc.getDes();
-            }
-        }
-        return null;
+    public static String getDesByValue(String value){
+        return TransferWayDesc.valueOf(value).getDes();
     }
 }

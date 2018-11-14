@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.withdraw.entity.Withdraw;
 import com.neighbor.app.withdraw.service.WithdrawService;
+import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +41,10 @@ public class WithdrawController {
 
     @RequestMapping(value = "/withdrawRecord.req",method= RequestMethod.POST)
     @ResponseBody
-    public ResponseResult withdrawRecord(@ModelAttribute("user") UserInfo user, Withdraw withdraw) throws Exception{
+    public ResponseResult withdrawRecord(@ModelAttribute("user") UserInfo user, PageTools pageTools) throws Exception{
         logger.info("withdrawRecord request user >>>> " + JSON.toJSONString(user));
+        Withdraw withdraw = new Withdraw();
+        withdraw.setPageTools(pageTools);
         logger.info("withdrawRecord request withdraw >>>> " + JSON.toJSONString(withdraw));
         ResponseResult result  = withdrawService.withdrawRecord(user,withdraw);
         return result;

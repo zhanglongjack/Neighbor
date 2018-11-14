@@ -5,6 +5,7 @@ import com.neighbor.app.transfer.entity.Transfer;
 import com.neighbor.app.transfer.po.TransferReq;
 import com.neighbor.app.transfer.service.TransferService;
 import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +31,11 @@ public class TransferController {
 
     @RequestMapping(value = "/transferRecord.req",method= RequestMethod.POST)
     @ResponseBody
-    public ResponseResult transferRecord(@ModelAttribute("user") UserInfo user, Transfer transfer) throws Exception{
-        logger.info("transferRecord request user >>>> " + JSON.toJSONString(user));
-        logger.info("transferRecord request transfer >>>> " + JSON.toJSONString(transfer));
+    public ResponseResult transferRecord(@ModelAttribute("user") UserInfo user, PageTools pageTools) throws Exception{
+        logger.info("transferRecord request user >>>> " + user);
+        Transfer transfer = new Transfer();
+        transfer.setPageTools(pageTools);
+        logger.info("transferRecord request transfer >>>> " + transfer);
         ResponseResult result  = transferService.transferRecord(user,transfer);
         return result;
     }

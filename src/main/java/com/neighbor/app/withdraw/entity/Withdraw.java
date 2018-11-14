@@ -3,6 +3,8 @@ package com.neighbor.app.withdraw.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.neighbor.app.balance.po.TransactionItemDesc;
+import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.common.entity.PageEntity;
 import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
@@ -36,6 +38,16 @@ public class Withdraw extends PageEntity {
     private BigDecimal actualAmount; //实际到账金额
 
     private BigDecimal cost; //提现费用
+
+    private String transactionTypeDesc;
+
+    public String getTransactionTypeDesc() {
+        return TransactionTypeDesc.payment.getDes();
+    }
+
+    public void setTransactionTypeDesc(String transactionTypeDesc) {
+        this.transactionTypeDesc = transactionTypeDesc;
+    }
 
     public Long getId() {
         return id;
@@ -118,7 +130,7 @@ public class Withdraw extends PageEntity {
     }
 
     public String getRemarks() {
-        return remarks;
+        return TransactionItemDesc.withdraw.getDes();
     }
 
     public void setRemarks(String remarks) {

@@ -43,11 +43,7 @@ public class RechargeRecord {
 
     public String getStatesDesc() {
         if(states!=null){
-            try {
-                return RechargeStatusDesc.getDesByValue(Integer.valueOf(states));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
+            return RechargeStatusDesc.getDesByValue(states);
         }
         return statesDesc;
     }
@@ -58,11 +54,7 @@ public class RechargeRecord {
 
     public String getChannelTypeDesc() {
         if(channelType!=null){
-            try {
-               return ChannelTypeDesc.getDesByValue(Integer.valueOf(channelType));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
+            return ChannelTypeDesc.getDesByValue(channelType);
         }
         return channelTypeDesc;
     }

@@ -1,22 +1,17 @@
 package com.neighbor.app.withdraw.po;
 
 public enum WithdrawStatusDesc {
-    initial(1,"初始"),processing(2,"出款中"),success(3,"成功"),failed(4,"失败");
+    initial("初始"),processing("出款中"),success("成功"),failed("失败");
 
-    private int value;
     private String des;
 
-    private WithdrawStatusDesc(int value, String des) {
-        this.value = value;
+    private WithdrawStatusDesc(String des) {
         this.des = des;
     }
-
-    public int getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
+    public String getDes() {
         return des;
+    }
+    public static String getDesByValue(String value){
+        return WithdrawStatusDesc.valueOf(value).getDes();
     }
 }
