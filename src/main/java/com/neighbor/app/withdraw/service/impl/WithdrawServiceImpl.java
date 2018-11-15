@@ -13,10 +13,7 @@ import com.neighbor.app.withdraw.dao.WithdrawMapper;
 import com.neighbor.app.withdraw.entity.Withdraw;
 import com.neighbor.app.withdraw.po.WithdrawStatusDesc;
 import com.neighbor.app.withdraw.service.WithdrawService;
-import com.neighbor.common.util.PageResp;
-import com.neighbor.common.util.PageTools;
-import com.neighbor.common.util.ResponseResult;
-import com.neighbor.common.util.StringUtil;
+import com.neighbor.common.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,13 +53,16 @@ public class WithdrawServiceImpl implements WithdrawService {
             responseResult.setErrorMessage("用户不存在！");
             return responseResult;
         }
-        BigDecimal amount = withdraw.getAmount();
-        if(user.getAvailableAmount().compareTo(amount)<0){
+        BigDecimal amount = BigDecimalUtil.rounding(withdraw.getAmount());
+        BigDecimal withdrawRate = new BigDecimal(env.getProperty("withdraw_rate"));
+        BigDecimal cost = BigDecimalUtil.rounding(amount.multiply(withdrawRate));
+        BigDecimal payAmount = BigDecimalUtil.rounding(amount.add(cost));
+        if(user.getAvailableAmount().compareTo(payAmount)<0){
             responseResult.setErrorCode(1);//失败
-            responseResult.setErrorMessage("可用余额不足！当前余额："+user.getAvailableAmount());
+            responseResult.setErrorMessage("可用余额不足："+payAmount+"！当前余额："+user.getAvailableAmount());
             return responseResult;
         }
-        user.setAvailableAmount(user.getAvailableAmount().subtract(amount));
+        user.setAvailableAmount(user.getAvailableAmount().subtract(payAmount));
         Date date = new Date();
         withdraw.setId(null);
         withdraw.setuId(userInfo.getId());
@@ -72,9 +72,8 @@ public class WithdrawServiceImpl implements WithdrawService {
         withdraw.setStates(WithdrawStatusDesc.initial.toString());
         user.setUpdateTime(date);
 
-        BigDecimal withdrawRate = new BigDecimal(env.getProperty("withdraw_rate"));
-        BigDecimal cost =  amount.multiply(withdrawRate);
-        BigDecimal actualAmount = amount.subtract(cost);
+
+        BigDecimal actualAmount = amount;
         withdraw.setActualAmount(actualAmount);
         withdraw.setCost(cost.negate());
         withdraw.setAmount(amount.negate());
@@ -84,7 +83,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         //提现交易明细
         BalanceDetail balanceDetail = new BalanceDetail();
         balanceDetail.setAmount(withdraw.getAmount());
-        balanceDetail.setAvailableAmount(withdraw.getAvailableAmount());
+        balanceDetail.setAvailableAmount(withdraw.getAvailableAmount().add(cost));
         balanceDetail.setuId(withdraw.getuId());
         balanceDetail.setTransactionType(TransactionTypeDesc.expenditure.toString());
         balanceDetail.setTransactionSubType(TransactionSubTypeDesc.withdraw.toString());
