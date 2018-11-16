@@ -14,23 +14,42 @@
 		<result column="wechat" jdbcType="VARCHAR" property="wechat" />
 		<result column="qq" jdbcType="VARCHAR" property="qq" />
 		<result column="robot_sno" jdbcType="VARCHAR" property="robotSno" />
-		<result column="upuser_id" jdbcType="BIGINT" property="upuserId" />
+		<result column="upuser_id" jdbcType="BIGINT" property="upUserId" />
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
 		<result column="remark" jdbcType="VARCHAR" property="remark" />
 		<result column="regional" jdbcType="VARCHAR" property="regional" />
+		<collection property="downNumber" column="id" select="com.neighbor.app.users.dao.UserInfoMapper.countDownNumber">
+        </collection>
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, user_photo, nick_name, user_account, user_password, qr_code, sex,
 		mobile_phone,
 		real_name, wechat, qq, robot_sno, upuser_id, create_time, update_time, remark,regional
 	</sql>
+	
+  	<sql id="dynamicWhere">
+		<where>
+		    <if test="upUserId != null">and upuser_id=#{upUserId}</if>
+		    <if test="id != null">and id=#{id}</if>
+		</where>
+	</sql>
+	
+	
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from users_info
 		where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="countDownNumber" parameterType="java.lang.Long"
+		resultType="java.lang.Long">
+		select
+		count(1)
+		from users_info
+		where upuser_id = #{id,jdbcType=BIGINT}
 	</select>
 
 	<select id="selectByUserPhone" parameterType="String"
@@ -41,6 +60,23 @@
 		where mobile_phone = #{phone}
 	</select>
 
+	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.users.entity.UserInfo"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from users_info
+		<include refid="dynamicWhere" />
+		order by create_time desc
+		limit #{pageTools.rowIndex},#{pageTools.pageSize}
+	</select>
+	
+	<select id="selectPageTotalCount" parameterType="com.neighbor.app.users.entity.UserInfo"
+		resultType="Long">
+		select
+			count(1)
+		from users_info
+		<include refid="dynamicWhere" />
+	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from users_info
@@ -83,7 +119,7 @@
 			<if test="robotSno != null">
 				robot_sno,
 			</if>
-			<if test="upuserId != null">
+			<if test="upUserId != null">
 				upuser_id,
 			</if>
 			<if test="createTime != null">
@@ -133,8 +169,8 @@
 			<if test="robotSno != null">
 				#{robotSno,jdbcType=VARCHAR},
 			</if>
-			<if test="upuserId != null">
-				#{upuserId,jdbcType=BIGINT},
+			<if test="upUserId != null">
+				#{upUserId,jdbcType=BIGINT},
 			</if>
 			<if test="createTime != null">
 				#{createTime,jdbcType=TIMESTAMP},
@@ -186,8 +222,8 @@
 			<if test="robotSno != null">
 				robot_sno = #{robotSno,jdbcType=VARCHAR},
 			</if>
-			<if test="upuserId != null">
-				upuser_id = #{upuserId,jdbcType=BIGINT},
+			<if test="upUserId != null">
+				upuser_id = #{upUserId,jdbcType=BIGINT},
 			</if>
 			<if test="createTime != null">
 				create_time = #{createTime,jdbcType=TIMESTAMP},

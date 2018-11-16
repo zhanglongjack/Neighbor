@@ -1,5 +1,7 @@
 package com.neighbor.app.users.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.neighbor.app.users.entity.UserInfo;
@@ -15,5 +17,9 @@ public interface UserInfoMapper {
     int updateByPrimaryKeySelective(UserInfo record);
 
 	UserInfo selectByUserPhone(String phone);
+
+	Long selectPageTotalCount(UserInfo userInfo);
+
+	List<UserInfo> selectPageByObjectForList(UserInfo userInfo);
     
 }

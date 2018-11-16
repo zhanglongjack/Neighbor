@@ -1,5 +1,7 @@
 package com.neighbor.app.users.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +10,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.neighbor.app.users.constants.UserContainer;
-import com.neighbor.app.users.controller.LoginController;
 import com.neighbor.app.users.dao.UserInfoMapper;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
@@ -55,16 +56,16 @@ public class UserServiceImpl implements UserService{
 	public UserInfo selectByUserPhone(String phone) {
 		return userInfoMapper.selectByUserPhone(phone);
 	}
-//
-//	@Override
-//	public Long selectPageTotalCount(UserInfo userInfo) {
-//		return userInfoMapper.selectPageTotalCount(userInfo);
-//	}
-//
-//	@Override
-//	public List<UserInfo> selectPageByObjectForList(UserInfo userInfo) {
-//		return userInfoMapper.selectPageByObjectForList(userInfo);
-//	}
+
+	@Override
+	public Long selectPageTotalCount(UserInfo userInfo) {
+		return userInfoMapper.selectPageTotalCount(userInfo);
+	}
+
+	@Override
+	public List<UserInfo> selectPageByObjectForList(UserInfo userInfo) {
+		return userInfoMapper.selectPageByObjectForList(userInfo);
+	}
 //
 //	@Override
 //	public List<UserInfo> selectAllForMap() {

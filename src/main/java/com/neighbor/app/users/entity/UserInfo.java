@@ -2,7 +2,11 @@ package com.neighbor.app.users.entity;
 
 import java.util.Date;
 
-public class UserInfo {
+import com.neighbor.app.common.entity.PageEntity;
+import com.neighbor.common.util.DateFormateType;
+import com.neighbor.common.util.DateUtils;
+
+public class UserInfo extends PageEntity {
     private Long id;
 
     private String userPhoto;
@@ -29,14 +33,27 @@ public class UserInfo {
 
     private String regional;
     
-    private Long upuserId;
+    private Long upUserId;
 
     private Date createTime;
 
     private Date updateTime;
 
     private String remark;
-
+    private String createTimeStr ;
+    private Long downNumber ;
+    
+    public String getCreateTimeStr() {
+        if(createTime!=null){
+            try {
+                return DateUtils.formatDateStr(createTime,DateFormateType.LANG_FORMAT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return createTimeStr;
+    }
+    
     public Long getId() {
         return id;
     }
@@ -133,15 +150,15 @@ public class UserInfo {
         this.robotSno = robotSno;
     }
 
-    public Long getUpuserId() {
-        return upuserId;
-    }
+    public Long getUpUserId() {
+		return upUserId;
+	}
 
-    public void setUpuserId(Long upuserId) {
-        this.upuserId = upuserId;
-    }
+	public void setUpUserId(Long upUserId) {
+		this.upUserId = upUserId;
+	}
 
-    public Date getCreateTime() {
+	public Date getCreateTime() {
         return createTime;
     }
 
@@ -173,16 +190,20 @@ public class UserInfo {
 		this.regional = regional;
 	}
 
+	public Long getDownNumber() {
+		return downNumber;
+	}
+
+	public void setDownNumber(Long downNumber) {
+		this.downNumber = downNumber;
+	}
+
 	@Override
 	public String toString() {
 		return String.format(
-				"UserInfo [id=%s, userPhoto=%s, nickName=%s, userAccount=%s, userPassword=%s, qrCode=%s, sex=%s, mobilePhone=%s, realName=%s, wechat=%s, qq=%s, robotSno=%s, regional=%s, upuserId=%s, createTime=%s, updateTime=%s, remark=%s]",
+				"UserInfo [id=%s, userPhoto=%s, nickName=%s, userAccount=%s, userPassword=%s, qrCode=%s, sex=%s, mobilePhone=%s, realName=%s, wechat=%s, qq=%s, robotSno=%s, regional=%s, upUserId=%s, createTime=%s, updateTime=%s, remark=%s, createTimeStr=%s, downNumber=%s]",
 				id, userPhoto, nickName, userAccount, userPassword, qrCode, sex, mobilePhone, realName, wechat, qq,
-				robotSno, regional, upuserId, createTime, updateTime, remark);
+				robotSno, regional, upUserId, createTime, updateTime, remark, createTimeStr, downNumber);
 	}
 
-
-
-    
-    
 }

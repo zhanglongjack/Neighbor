@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neighbor.app.commission.dao.UserCommissionMapper">
+	<resultMap id="BaseResultMap"
+		type="com.neighbor.app.commission.entity.UserCommission">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="own_user" jdbcType="BIGINT" property="ownUser" />
+		<result column="d_user_id" jdbcType="BIGINT" property="downUserId" />
+		<result column="commision_amt" jdbcType="DECIMAL" property="commisionAmt" />
+		<result column="down_level" jdbcType="VARCHAR" property="downLevel" />
+		<result column="gain_proportion" jdbcType="VARCHAR" property="gainProportion" />
+		<result column="gain_date" jdbcType="VARCHAR" property="gainDate" />
+		<result column="gain_time" jdbcType="VARCHAR" property="gainTime" />
+		<result column="remarks" jdbcType="VARCHAR" property="remarks" />
+		<collection property="downUser" column="d_user_id" select="com.neighbor.app.users.dao.UserInfoMapper.selectByPrimaryKey">
+        </collection>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, own_user,d_user_id, commision_amt, down_level, gain_proportion, gain_date,
+		gain_time, remarks
+	</sql>
+	<sql id="dynamicWhere">
+		<where>
+			<if test="id != null">id=#{id}</if>
+			<if test="ownUser != null">and own_user=#{ownUser}</if>
+			<if test="downUserId != null">and d_user_id=#{downUserId}</if>
+			<if test="downLevel != null and downLevel.length()>0">and down_level=#{downLevel}</if>
+			<if test="gainDate != null and gainDate.length()>0">and gain_date=#{gainDate}</if>
+			<if test="gainTime != null and gainTime.length()>0">and gain_time=#{gainTime}</if>
+			<if test="greaterGainDate != null and greaterGainDate.length()>0">and gain_date<![CDATA[<]]>#{greaterGainDate}</if>
+		</where>
+	</sql>
+
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user_commision
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.commission.entity.UserCommission"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user_commision
+		<include refid="dynamicWhere" />
+		order by gain_date desc,gain_time desc
+		limit #{pageTools.rowIndex},#{pageTools.pageSize}
+	</select>
+
+	<select id="selectPageTotalCount" parameterType="com.neighbor.app.commission.entity.UserCommission"
+		resultType="Long">
+		select
+		count(1)
+		from user_commision
+		<include refid="dynamicWhere" />
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from user_commision
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+
+	<insert id="insertSelective" parameterType="com.neighbor.app.commission.entity.UserCommission">
+		insert into user_commision
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="ownUser != null">
+				own_user,
+			</if>
+			<if test="downUserId != null">
+				d_user_id,
+			</if>
+			<if test="commisionAmt != null">
+				commision_amt,
+			</if>
+			<if test="downLevel != null">
+				down_level,
+			</if>
+			<if test="gainProportion != null">
+				gain_proportion,
+			</if>
+			<if test="gainDate != null">
+				gain_date,
+			</if>
+			<if test="gainTime != null">
+				gain_time,
+			</if>
+			<if test="remarks != null">
+				remarks,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="ownUser != null">
+				#{ownUser,jdbcType=BIGINT},
+			</if>
+			<if test="downUserId != null">
+				#{downUserId,jdbcType=BIGINT},
+			</if>
+			<if test="commisionAmt != null">
+				#{commisionAmt,jdbcType=DECIMAL},
+			</if>
+			<if test="downLevel != null">
+				#{downLevel,jdbcType=VARCHAR},
+			</if>
+			<if test="gainProportion != null">
+				#{gainProportion,jdbcType=VARCHAR},
+			</if>
+			<if test="gainDate != null">
+				#{gainDate,jdbcType=VARCHAR},
+			</if>
+			<if test="gainTime != null">
+				#{gainTime,jdbcType=VARCHAR},
+			</if>
+			<if test="remarks != null">
+				#{remarks,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.commission.entity.UserCommission">
+		update user_commision
+		<set>
+			<if test="ownUser != null">
+				own_user = #{ownUser,jdbcType=BIGINT},
+			</if>
+			<if test="downUserId != null">
+				d_user_id = #{downUserId,jdbcType=BIGINT},
+			</if>
+			<if test="commisionAmt != null">
+				commision_amt = #{commisionAmt,jdbcType=DECIMAL},
+			</if>
+			<if test="downLevel != null">
+				down_level = #{downLevel,jdbcType=VARCHAR},
+			</if>
+			<if test="gainProportion != null">
+				gain_proportion = #{gainProportion,jdbcType=VARCHAR},
+			</if>
+			<if test="gainDate != null">
+				gain_date = #{gainDate,jdbcType=VARCHAR},
+			</if>
+			<if test="gainTime != null">
+				gain_time = #{gainTime,jdbcType=VARCHAR},
+			</if>
+			<if test="remarks != null">
+				remarks = #{remarks,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

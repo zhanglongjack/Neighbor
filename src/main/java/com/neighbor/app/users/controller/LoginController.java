@@ -77,7 +77,7 @@ public class LoginController {
 			UserInfo record = new UserInfo();
 			record.setMobilePhone(phone);
 			record.setUserAccount(phone);
-			record.setUpuserId(upUserId);  
+			record.setUpUserId(upUserId);  
 			
 			user = userService.createUser(record);
 
