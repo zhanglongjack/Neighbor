@@ -88,12 +88,23 @@ CREATE TABLE `balance_detail` (
 DROP TABLE IF EXISTS `bank_card`;
 CREATE TABLE `bank_card` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `bind_date` varchar(16) COMMENT '绑定日期',
+  `bind_time` varchar(16) COMMENT '绑定时间',
   `u_id` bigint(20)  NOT NULL COMMENT '用户Id',
+  `bank_code` varchar(50) COMMENT '银行卡代号',
+  `bank_name` varchar(50) COMMENT '银行卡名称',
+  `card_type` varchar(50) COMMENT '银行卡类型',
+  `card_type_name` varchar(50) COMMENT '银行卡类型名称',
   `bank_card_no` varchar(50) DEFAULT NULL COMMENT '银行卡号',
+  `bank_card_end_no` varchar(10) DEFAULT NULL COMMENT '银行卡号尾号4位',
   `branch_info` varchar(50) DEFAULT NULL COMMENT '支行信息',
   `real_name` varchar(20) DEFAULT NULL COMMENT '真实姓名',
+  `remarks` varchar(50) COMMENT '备注',
   PRIMARY KEY (`id`),
   KEY `index_k_bank_card_u_id` (`u_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='银行卡';
+
+
+alter table user_wallet add pay_password varchar(20) DEFAULT NULL COMMENT '支付密码';

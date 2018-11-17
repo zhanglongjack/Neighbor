@@ -18,6 +18,16 @@ public class UserWallet {
 
 	private BigDecimal freezeAmount = new BigDecimal("0.00");
 
+	private String payPassword;//支付密码
+
+	public String getPayPassword() {
+		return payPassword;
+	}
+
+	public void setPayPassword(String payPassword) {
+		this.payPassword = payPassword;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -74,11 +84,13 @@ public class UserWallet {
 		this.freezeAmount = freezeAmount;
 	}
 
+
+
 	@Override
 	public String toString() {
 		return String.format(
-				"UserWallet [id=%s, createTime=%s, updateTime=%s, uId=%s, score=%s, availableAmount=%s, freezeAmount=%s]",
-				id, createTime, updateTime, uId, score, availableAmount, freezeAmount);
+				"UserWallet [id=%s, createTime=%s, updateTime=%s, uId=%s, score=%s, availableAmount=%s, freezeAmount=%s, payPassword=%s]",
+				id, createTime, updateTime, uId, score, availableAmount, freezeAmount,payPassword);
 	}
 	
 	
