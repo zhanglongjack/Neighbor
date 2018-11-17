@@ -26,4 +26,8 @@ public interface UserService {
 
 	UserInfo createUser(UserInfo record);
 
+	Long selectPageTotalCount(UserInfo queryUser);
+
+	List<UserInfo> selectPageByObjectForList(UserInfo queryUser);
+
 }

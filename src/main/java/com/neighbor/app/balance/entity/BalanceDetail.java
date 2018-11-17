@@ -3,7 +3,11 @@ package com.neighbor.app.balance.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.common.entity.PageEntity;
+import com.neighbor.app.transfer.po.TransferWayDesc;
+import com.neighbor.common.util.DateFormateType;
+import com.neighbor.common.util.DateUtils;
 
 public class BalanceDetail extends PageEntity {
     private Long id;
@@ -25,7 +29,25 @@ public class BalanceDetail extends PageEntity {
     private Long transactionId;
 
     private String remarks;
+    private String createTimeStr ;
 
+    
+    public String getCreateTimeStr() {
+        if(createTime!=null){
+            try {
+                return DateUtils.formatDateStr(createTime,DateFormateType.LANG_FORMAT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return createTimeStr;
+    }
+    
+    public String getTransactionTypeDesc() {
+    	return TransactionTypeDesc.valueOf(transactionType).getDes(); 
+    }
+    
+    
     public Long getId() {
         return id;
     }
@@ -106,15 +128,13 @@ public class BalanceDetail extends PageEntity {
         this.transactionSubType = transactionSubType;
     }
 
-    @Override
+	@Override
 	public String toString() {
 		return String.format(
-				"BalanceDetail [id=%s, createTime=%s, updateTime=%s, uId=%s, amount=%s, transactionType=%s,transactionSubType=%s, availableAmount=%s, transactionId=%s, remarks=%s]",
-				id, createTime, updateTime, uId, amount, transactionType,transactionSubType, availableAmount, transactionId, remarks);
+				"BalanceDetail [id=%s, createTime=%s, updateTime=%s, uId=%s, amount=%s, transactionType=%s, transactionSubType=%s, availableAmount=%s, transactionId=%s, remarks=%s, createTimeStr=%s]",
+				id, createTime, updateTime, uId, amount, transactionType, transactionSubType, availableAmount,
+				transactionId, remarks, createTimeStr);
 	}
 
- 
-    
-    
-    
+
 }
