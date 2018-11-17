@@ -181,7 +181,7 @@
 						</goals>
 					</execution>
 				</executions>
-				 -->
+				 --> 
 				<dependencies>
 					<dependency>
 						<groupId>org.mybatis.generator</groupId>
