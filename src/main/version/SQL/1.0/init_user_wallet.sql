@@ -107,4 +107,4 @@ CREATE TABLE `bank_card` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='银行卡';
 
 
-alter table user_wallet add pay_password varchar(20) DEFAULT NULL COMMENT '支付密码';
+alter table user_wallet add pay_password varchar(50) DEFAULT NULL COMMENT '支付密码';

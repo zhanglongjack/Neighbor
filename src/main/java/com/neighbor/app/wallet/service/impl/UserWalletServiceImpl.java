@@ -33,7 +33,12 @@ public class UserWalletServiceImpl implements UserWalletService {
 		return userWalletMapper.updateByPrimaryKeySelective(record);
 	}
 
-	@Override
+    @Override
+    public int payPasswordEdit(UserWallet record) {
+		return userWalletMapper.payPasswordEdit(record);
+    }
+
+    @Override
 	public UserWallet selectByPrimaryUserId(Long userId) {
 		return userWalletMapper.selectByPrimaryUserId(userId);
 	}

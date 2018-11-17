@@ -10,7 +10,7 @@ public interface UserWalletService {
     UserWallet selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(UserWallet record);
-
+    int payPasswordEdit(UserWallet record);
 	UserWallet selectByPrimaryUserId(Long userId);
     public UserWallet lockUserWalletByUserId(Long uid);
 }

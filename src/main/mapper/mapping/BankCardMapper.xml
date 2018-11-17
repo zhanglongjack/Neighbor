@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neighbor.app.bankcard.dao.BankCardMapper" >
+  <resultMap id="BaseResultMap" type="com.neighbor.app.bankcard.entity.BankCard" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="bind_date" property="bindDate" jdbcType="VARCHAR" />
+    <result column="bind_time" property="bindTime" jdbcType="VARCHAR" />
+    <result column="u_id" property="uId" jdbcType="BIGINT" />
+    <result column="bank_code" property="bankCode" jdbcType="VARCHAR" />
+    <result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+    <result column="card_type" property="cardType" jdbcType="VARCHAR" />
+    <result column="card_type_name" property="cardTypeName" jdbcType="VARCHAR" />
+    <result column="bank_card_no" property="bankCardNo" jdbcType="VARCHAR" />
+    <result column="bank_card_end_no" property="bankCardEndNo" jdbcType="VARCHAR" />
+    <result column="branch_info" property="branchInfo" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, bind_date, bind_time, u_id, bank_code, bank_name, card_type, 
+    card_type_name, bank_card_no, bank_card_end_no, branch_info, real_name, remarks
+  </sql>
+  <sql id="dynamicWhere">
+    <where>
+      <if test="id != null">id=#{id}</if>
+      <if test="uId != null">and u_id=#{uId}</if>
+      <if test="bindDate != null and bindDate.length()>0">and bind_date=#{bindDate}</if>
+      <if test="bindTime != null and bindTime.length()>0">and bind_time=#{bindTime}</if>
+      <if test="bankCode != null and bankCode.length()>0">and bank_code=#{bankCode}</if>
+      <if test="bankName != null and bankName.length()>0">and bank_name=#{bankName}</if>
+      <if test="cardType != null and cardType.length()>0">and card_type=#{cardType}</if>
+      <if test="cardTypeName != null and cardTypeName.length()>0">and card_type_name=#{cardTypeName}</if>
+      <if test="bankCardNo != null and bankCardNo.length()>0">and bank_card_no=#{bankCardNo}</if>
+      <if test="bankCardEndNo != null and bankCardEndNo.length()>0">and bank_card_end_no=#{bankCardEndNo}</if>
+      <if test="branchInfo != null and branchInfo.length()>0">and branch_info=#{branchInfo}</if>
+      <if test="realName != null and realName.length()>0">and real_name=#{realName}</if>
+      <if test="remarks != null and remarks.length()>0">and remarks=#{remarks}</if>
+    </where>
+  </sql>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bank_card
+    order by create_time
+  </select>
+
+  <select id="selectPageByObjectForList" parameterType="com.neighbor.app.bankcard.entity.BankCard"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from bank_card
+    <include refid="dynamicWhere" />
+    order by create_time desc
+    limit #{pageTools.rowIndex},#{pageTools.pageSize}
+  </select>
+
+  <select id="selectPageTotalCount" parameterType="com.neighbor.app.bankcard.entity.BankCard"
+          resultType="Long">
+    select
+    count(1)
+    from bank_card
+    <include refid="dynamicWhere" />
+  </select>
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from bank_card
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByBankCardNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from bank_card
+    where bank_card_no = #{bankCardNo,jdbcType=VARCHAR} limit 1
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from bank_card
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.neighbor.app.bankcard.entity.BankCard" >
+    insert into bank_card
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="bindDate != null" >
+        bind_date,
+      </if>
+      <if test="bindTime != null" >
+        bind_time,
+      </if>
+      <if test="uId != null" >
+        u_id,
+      </if>
+      <if test="bankCode != null" >
+        bank_code,
+      </if>
+      <if test="bankName != null" >
+        bank_name,
+      </if>
+      <if test="cardType != null" >
+        card_type,
+      </if>
+      <if test="cardTypeName != null" >
+        card_type_name,
+      </if>
+      <if test="bankCardNo != null" >
+        bank_card_no,
+      </if>
+      <if test="bankCardEndNo != null" >
+        bank_card_end_no,
+      </if>
+      <if test="branchInfo != null" >
+        branch_info,
+      </if>
+      <if test="realName != null" >
+        real_name,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bindDate != null" >
+        #{bindDate,jdbcType=VARCHAR},
+      </if>
+      <if test="bindTime != null" >
+        #{bindTime,jdbcType=VARCHAR},
+      </if>
+      <if test="uId != null" >
+        #{uId,jdbcType=BIGINT},
+      </if>
+      <if test="bankCode != null" >
+        #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null" >
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="cardType != null" >
+        #{cardType,jdbcType=VARCHAR},
+      </if>
+      <if test="cardTypeName != null" >
+        #{cardTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCardNo != null" >
+        #{bankCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCardEndNo != null" >
+        #{bankCardEndNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchInfo != null" >
+        #{branchInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null" >
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.bankcard.entity.BankCard" >
+    update bank_card
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bindDate != null" >
+        bind_date = #{bindDate,jdbcType=VARCHAR},
+      </if>
+      <if test="bindTime != null" >
+        bind_time = #{bindTime,jdbcType=VARCHAR},
+      </if>
+      <if test="uId != null" >
+        u_id = #{uId,jdbcType=BIGINT},
+      </if>
+      <if test="bankCode != null" >
+        bank_code = #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null" >
+        bank_name = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="cardType != null" >
+        card_type = #{cardType,jdbcType=VARCHAR},
+      </if>
+      <if test="cardTypeName != null" >
+        card_type_name = #{cardTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCardNo != null" >
+        bank_card_no = #{bankCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCardEndNo != null" >
+        bank_card_end_no = #{bankCardEndNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchInfo != null" >
+        branch_info = #{branchInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null" >
+        real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>
