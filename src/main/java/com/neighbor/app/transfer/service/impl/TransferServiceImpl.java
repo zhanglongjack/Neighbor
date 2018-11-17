@@ -49,8 +49,8 @@ public class TransferServiceImpl implements TransferService {
 	@Transactional(readOnly = false,rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
 	public ResponseResult transfer(UserInfo userInfo , TransferReq req) throws Exception {
 		ResponseResult responseResult = new ResponseResult();
-		UserWallet user = userWalletService.lockUserWalletByUserId(userInfo.getId());
-		if(user==null){
+		UserWallet userWallet = userWalletService.lockUserWalletByUserId(userInfo.getId());
+		if(userWallet==null){
 			responseResult.setErrorCode(1);//失败
 			responseResult.setErrorMessage("用户不存在！");
 			return responseResult;
@@ -62,14 +62,14 @@ public class TransferServiceImpl implements TransferService {
 			return responseResult;
 		}
 		BigDecimal amount = new BigDecimal(req.getAmount());
-		if(user.getAvailableAmount().compareTo(amount)<0){
+		if(userWallet.getAvailableAmount().compareTo(amount)<0){
 			responseResult.setErrorCode(1);//失败
-			responseResult.setErrorMessage("可用余额不足！当前余额："+user.getAvailableAmount());
+			responseResult.setErrorMessage("可用余额不足！当前余额："+userWallet.getAvailableAmount());
 			return responseResult;
 		}
-		user.setAvailableAmount(user.getAvailableAmount().subtract(amount));
+		userWallet.setAvailableAmount(userWallet.getAvailableAmount().subtract(amount));
 		transferUser.setAvailableAmount(transferUser.getAvailableAmount().add(amount));
-		userWalletService.updateByPrimaryKeySelective(user);
+		userWalletService.updateByPrimaryKeySelective(userWallet);
 		userWalletService.updateByPrimaryKeySelective(transferUser);
 		Date date = new Date();
 		//转出交易
@@ -77,7 +77,7 @@ public class TransferServiceImpl implements TransferService {
 		BeanUtils.copyProperties(req,transfer);
 		transfer.setuId(userInfo.getId());
 		transfer.setAmount(amount);
-		transfer.setAvailableAmount(user.getAvailableAmount());
+		transfer.setAvailableAmount(userWallet.getAvailableAmount());
 		transfer.setCreateTime(date);
 		transfer.setBeginTime(DateUtils.formatDateStr(date, DateFormateType.LANG_FORMAT));
 		transfer.setOrderNo(OrderUtils.getOrderNo(OrderUtils.TRANSFER));
@@ -122,6 +122,7 @@ public class TransferServiceImpl implements TransferService {
 		TransferResp transferResp = new TransferResp();
 		transferResp.setOrderNo(transfer.getOrderNo());
 		responseResult.addBody("resp",transferResp);
+		responseResult.addBody("userWallet",userWallet);
 		return responseResult;
 	}
 

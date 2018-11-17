@@ -78,6 +78,8 @@ public class RechargeServiceImpl implements RechargeService {
 
 
         userWalletService.updateByPrimaryKeySelective(userWallet);
+        
+        responseResult.addBody("userWallet", userWallet);
         return responseResult;
     }
 

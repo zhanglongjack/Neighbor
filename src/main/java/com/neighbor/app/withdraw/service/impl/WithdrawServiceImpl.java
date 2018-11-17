@@ -47,8 +47,8 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Transactional(readOnly = false,rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     public ResponseResult withdraw(UserInfo userInfo, Withdraw withdraw) throws Exception {
         ResponseResult responseResult = new ResponseResult();
-        UserWallet user = userWalletService.lockUserWalletByUserId(userInfo.getId());
-        if(user==null){
+        UserWallet userWallet = userWalletService.lockUserWalletByUserId(userInfo.getId());
+        if(userWallet==null){
             responseResult.setErrorCode(1);//失败
             responseResult.setErrorMessage("用户不存在！");
             return responseResult;
@@ -57,27 +57,27 @@ public class WithdrawServiceImpl implements WithdrawService {
         BigDecimal withdrawRate = new BigDecimal(env.getProperty("withdraw_rate"));
         BigDecimal cost = BigDecimalUtil.rounding(amount.multiply(withdrawRate));
         BigDecimal payAmount = BigDecimalUtil.rounding(amount.add(cost));
-        if(user.getAvailableAmount().compareTo(payAmount)<0){
+        if(userWallet.getAvailableAmount().compareTo(payAmount)<0){
             responseResult.setErrorCode(1);//失败
-            responseResult.setErrorMessage("可用余额不足："+payAmount+"！当前余额："+user.getAvailableAmount());
+            responseResult.setErrorMessage("可用余额不足："+payAmount+"！当前余额："+userWallet.getAvailableAmount());
             return responseResult;
         }
-        user.setAvailableAmount(user.getAvailableAmount().subtract(payAmount));
+        userWallet.setAvailableAmount(userWallet.getAvailableAmount().subtract(payAmount));
         Date date = new Date();
         withdraw.setId(null);
         withdraw.setuId(userInfo.getId());
         withdraw.setOrderNo(OrderUtils.getOrderNo(OrderUtils.WITHDRAW));
         withdraw.setCreateTime(date);
-        withdraw.setAvailableAmount(user.getAvailableAmount());
+        withdraw.setAvailableAmount(userWallet.getAvailableAmount());
         withdraw.setStates(WithdrawStatusDesc.initial.toString());
-        user.setUpdateTime(date);
+        userWallet.setUpdateTime(date);
 
 
         BigDecimal actualAmount = amount;
         withdraw.setActualAmount(actualAmount);
         withdraw.setCost(cost.negate());
         withdraw.setAmount(amount.negate());
-        userWalletService.updateByPrimaryKeySelective(user);
+        userWalletService.updateByPrimaryKeySelective(userWallet);
         withdrawMapper.insertSelective(withdraw);
 
         //提现交易明细
@@ -108,6 +108,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         balanceDetailCost.setTransactionId(withdraw.getId());
         balanceDetailService.insertSelective(balanceDetailCost);
 
+        responseResult.addBody("userWallet", userWallet);
         return responseResult;
     }
 
