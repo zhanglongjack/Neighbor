@@ -16,4 +16,6 @@ public interface UserWalletMapper {
 
 	UserWallet selectByPrimaryUserId(Long userId);
     UserWallet lockUserWalletByUserId(Long uid);
+	int payPasswordEdit(UserWallet record);
+
 }

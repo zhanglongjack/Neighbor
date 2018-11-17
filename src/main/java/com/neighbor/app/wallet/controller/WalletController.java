@@ -51,7 +51,7 @@ public class WalletController {
 		UserWallet update = new UserWallet();
 		update.setuId(user.getId());
 		update.setPayPassword(EncodeData.encode(userWallet.getPayPassword()));
-		userWalletService.updateByPrimaryKeySelective(update);
+		userWalletService.payPasswordEdit(update);
 		return new ResponseResult();
 	}
 

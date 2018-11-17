@@ -1,24 +1,12 @@
 package com.neighbor.app.bankcard.service;
 
-
-import java.util.List;
-
 import com.neighbor.app.bankcard.entity.BankCard;
+import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.common.util.ResponseResult;
 
 public interface BankCardService {
-    int deleteByPrimaryKey(Long id);
 
-    int insertSelective(BankCard record);
+    public ResponseResult addCard(UserInfo user, BankCard bankCard) throws Exception;
 
-    BankCard selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(BankCard record);
-    
-    BankCard selectBankCard(Long uId);
-    
-	Long selectPageTotalCount(BankCard record);
-
-	List<BankCard> selectPageByObjectForList(BankCard record);
-
-	List<BankCard> selectAll();
+    public ResponseResult listRecord(UserInfo user, BankCard bankCard)throws Exception;
 }

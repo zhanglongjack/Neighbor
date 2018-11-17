@@ -65,7 +65,7 @@
 			<if test="freezeAmount != null">
 				freeze_amount,
 			</if>
-			<if test="freezeAmount != null">
+			<if test="payPassword != null">
 				pay_password,
 			</if>
 		</trim>
@@ -122,5 +122,18 @@
 			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
-	</update> 
+	</update>
+	<update id="payPasswordEdit" parameterType="com.neighbor.app.wallet.entity.UserWallet">
+		update user_wallet
+		<set>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="payPassword != null">
+				pay_password = #{payPassword,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where u_id = #{uId,jdbcType=BIGINT}
+	</update>
+
 </mapper>
