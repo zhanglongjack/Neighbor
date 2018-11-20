@@ -33,7 +33,7 @@ public class WalletController {
 	public ResponseResult userInfoShow(@ModelAttribute("user") UserInfo user) {
 		logger.info("userView request : " +user);
 		UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
-		
+		wallet.setPayPassword(wallet.getPayPassword()==null?null:"******");
 		ResponseResult result = new ResponseResult();
 		result.addBody("wallet", wallet);
 		return result;
