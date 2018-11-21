@@ -28,7 +28,7 @@ public class ControllerExceptionAdvice {
     	
     	ResponseResult result = new ResponseResult();
     	result.setErrorCode(ErrorCodeDesc.failed.getValue());
-    	result.setErrorMessage(ex.getMessage()); 
+    	result.setErrorMessage("服务器出了个小差~"); 
     	
 		String msg = ex.getMessage();
 		String msgs[] = msg.split(":");

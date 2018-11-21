@@ -22,6 +22,8 @@ import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.users.constants.UserContainer;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
+import com.neighbor.app.wallet.entity.UserWallet;
+import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.exception.ParamsCheckException;
 import com.neighbor.common.security.EncodeData;
 import com.neighbor.common.sms.TencentSms;
@@ -37,6 +39,8 @@ public class LoginController {
 	
 	@Autowired
 	private UserContainer userContainer;
+	@Autowired
+	private UserWalletService userWalletService; 
 	
 //	mv.setViewName("forward:/login.html");
 //	mv.setViewName("redirect:/login.html");
@@ -50,9 +54,6 @@ public class LoginController {
 		if(user==null || user.getUserPassword()==null || !EncodeData.matches(password, user.getUserPassword())){
 			logger.info("用户名或密码错误"); 
 			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"用户名或密码错误!");
-//			result.setErrorCode(ErrorCodeDesc.failed.getValue());
-//			result.setErrorMessage("用户名或密码错误!");
-//			return result;
 		}
 		user.setUserPassword(null);
 		
@@ -84,17 +85,17 @@ public class LoginController {
 		}else if(!isValid){
 			logger.info("验证吗输入错误"); 
 			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"验证码错误");
-//			result.setErrorCode(ErrorCodeDesc.failed.getValue());
-//			result.setErrorMessage("验证码错误");
-//			return result;
 		}
+		UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
 		
-		user.setUserPassword(null);
+		wallet.setPayPassword(wallet.getPayPassword()==null?null:"***");
+		user.setUserPassword(user.getUserPassword()==null?null:"***");
 		
 		String token = UUID.randomUUID().toString(); 
 		userContainer.put(token, user);
 		
 		result.addBody("user", user);
+		result.addBody("wallet", wallet);
 		result.addBody("token", token);
 		
 		logger.info("登录成功:{},result :{}",user,result); 
