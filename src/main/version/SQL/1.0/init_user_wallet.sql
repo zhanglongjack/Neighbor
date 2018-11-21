@@ -108,3 +108,20 @@ CREATE TABLE `bank_card` (
 
 
 alter table user_wallet add pay_password varchar(50) DEFAULT NULL COMMENT '支付密码';
+
+
+DROP TABLE IF EXISTS `friend`;
+CREATE TABLE `friend` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `contact_date` varchar(16) COMMENT '日期',
+  `contact_time` varchar(16) COMMENT '时间',
+  `user_id` bigint(20)  NOT NULL COMMENT '用户Id',
+  `friend_user_id` bigint(20)  NOT NULL COMMENT '好友ID',
+  `friend_desc` varchar(50) COMMENT '好友备注',
+  `states` varchar(50) NOT NULL COMMENT '状态',
+  `code` varchar(50) NOT NULL COMMENT '状态',
+  PRIMARY KEY (`id`),
+  KEY `index_friend_u_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='好友表';

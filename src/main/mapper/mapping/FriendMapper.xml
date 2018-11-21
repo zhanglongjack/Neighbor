@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neighbor.app.friend.dao.FriendMapper" >
+  <resultMap id="BaseResultMap" type="com.neighbor.app.friend.entity.Friend" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="contact_date" property="contactDate" jdbcType="VARCHAR" />
+    <result column="contact_time" property="contactTime" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="friend_user_id" property="friendUserId" jdbcType="BIGINT" />
+    <result column="friend_desc" property="friendDesc" jdbcType="VARCHAR" />
+    <result column="states" property="states" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="FullResultMap" type="com.neighbor.app.friend.entity.Friend" extends="BaseResultMap" >
+    <result column="friendName" property="friendName" jdbcType="VARCHAR" />
+    <result column="friendNickName" property="friendNickName" jdbcType="VARCHAR" />
+    <result column="userPhoto" property="userPhoto" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, contact_date, contact_time, user_id, friend_user_id, 
+    friend_desc, states,code
+  </sql>
+
+  <sql id="dynamicWhere">
+    <where>
+      <if test="id != null">id=#{id}</if>
+      <if test="userId != null">and user_id=#{userId}</if>
+      <if test="contactDate != null and contactDate.length()>0">and contact_date=#{contactDate}</if>
+      <if test="contactTime != null and contactTime.length()>0">and contact_time=#{contactTime}</if>
+      <if test="friendUserId != null and friendUserId.length()>0">and friend_user_id=#{friendUserId}</if>
+      <if test="friendDesc != null and friendDesc.length()>0">and friend_desc=#{friendDesc}</if>
+      <if test="states != null and states.length()>0">and states=#{states}</if>
+      <if test="code != null and code.length()>0">and code=#{code}</if>
+    </where>
+  </sql>
+
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from friend
+    order by create_time
+  </select>
+
+  <select id="selectFullInfoPageForList" parameterType="com.neighbor.app.friend.entity.Friend" resultMap="FullResultMap">
+    select
+    t.id, t.create_time, t.update_time, t.contact_date, t.contact_time, t.user_id, t.friend_user_id,
+    t.friend_desc, t.states,t.code,u.real_name as friendName,u.nick_name friendNickName,u.user_photo userPhoto
+    from friend t inner join users_info u on t.friend_user_id = u.id
+    <include refid="dynamicWhere" />
+    order by t.code,t.create_time
+    limit #{pageTools.rowIndex},#{pageTools.pageSize}
+  </select>
+
+  <select id="selectPageByObjectForList" parameterType="com.neighbor.app.friend.entity.Friend"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from friend
+    <include refid="dynamicWhere" />
+    order by create_time
+    limit #{pageTools.rowIndex},#{pageTools.pageSize}
+  </select>
+
+  <select id="selectPageTotalCount" parameterType="com.neighbor.app.friend.entity.Friend"
+          resultType="Long">
+    select
+    count(1)
+    from friend
+    <include refid="dynamicWhere" />
+  </select>
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from friend
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from friend
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" parameterType="com.neighbor.app.friend.entity.Friend" >
+    insert into friend
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="contactDate != null" >
+        contact_date,
+      </if>
+      <if test="contactTime != null" >
+        contact_time,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="friendUserId != null" >
+        friend_user_id,
+      </if>
+      <if test="friendDesc != null" >
+        friend_desc,
+      </if>
+      <if test="states != null" >
+        states,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contactDate != null" >
+        #{contactDate,jdbcType=VARCHAR},
+      </if>
+      <if test="contactTime != null" >
+        #{contactTime,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="friendUserId != null" >
+        #{friendUserId,jdbcType=BIGINT},
+      </if>
+      <if test="friendDesc != null" >
+        #{friendDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="states != null" >
+        #{states,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.friend.entity.Friend" >
+    update friend
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contactDate != null" >
+        contact_date = #{contactDate,jdbcType=VARCHAR},
+      </if>
+      <if test="contactTime != null" >
+        contact_time = #{contactTime,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="friendUserId != null" >
+        friend_user_id = #{friendUserId,jdbcType=BIGINT},
+      </if>
+      <if test="friendDesc != null" >
+        friend_desc = #{friendDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="states != null" >
+        states = #{states,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>
