@@ -121,7 +121,7 @@ CREATE TABLE `friend` (
   `friend_user_id` bigint(20)  NOT NULL COMMENT '好友ID',
   `friend_desc` varchar(50) COMMENT '好友备注',
   `states` varchar(50) NOT NULL COMMENT '状态',
-  `addDirection` varchar(50) NOT NULL COMMENT '添加方向，1:主动添加；2：被动添加',
+  `add_direction` varchar(50) NOT NULL COMMENT '添加方向，1:主动添加；2：被动添加',
   `code` varchar(50) NOT NULL COMMENT '通讯录排序code',
   PRIMARY KEY (`id`),
   KEY `index_friend_u_id` (`user_id`)
