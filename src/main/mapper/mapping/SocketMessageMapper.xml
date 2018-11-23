@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neighbor.common.websoket.dao.SocketMessageMapper">
+	<resultMap id="BaseResultMap" type="com.neighbor.common.websoket.po.SocketMessage">
+		<id column="msg_id" jdbcType="BIGINT" property="msgId" />
+		<result column="header" jdbcType="VARCHAR" property="header" />
+		<result column="chat_type" jdbcType="VARCHAR" property="chatType" />
+		<result column="msg_type" jdbcType="VARCHAR" property="msgType" />
+		<result column="status" jdbcType="VARCHAR" property="status" />
+		<result column="send_user_id" jdbcType="BIGINT" property="sendUserId" />
+		<result column="target_user_id" jdbcType="BIGINT" property="targetUserId" />
+		<result column="target_group_id" jdbcType="BIGINT" property="targetGroupId" />
+		<result column="amount" jdbcType="DECIMAL" property="amount" />
+		<result column="number" jdbcType="DECIMAL" property="number" />
+		<result column="hit_amount_number" jdbcType="DECIMAL" property="hitAmountNumber" />
+		<result column="content" jdbcType="VARCHAR" property="content" />
+		<result column="date" jdbcType="VARCHAR" property="date" />
+		<result column="time" jdbcType="VARCHAR" property="time" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		msg_id, header, chat_type, msg_type, status, send_user_id, target_user_id,
+		target_group_id,
+		amount, number, hit_amount_number, content, date, time
+	</sql>
+
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from chat_message
+		where msg_id = #{msgId,jdbcType=BIGINT}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from chat_message
+		where msg_id = #{msgId,jdbcType=BIGINT}
+	</delete>
+
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="msgId"  parameterType="com.neighbor.common.websoket.po.SocketMessage">
+		insert into chat_message
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+			<if test="header != null">
+				header,
+			</if>
+			<if test="chatType != null">
+				chat_type,
+			</if>
+			<if test="msgType != null">
+				msg_type,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="sendUserId != null">
+				send_user_id,
+			</if>
+			<if test="targetUserId != null">
+				target_user_id,
+			</if>
+			<if test="targetGroupId != null">
+				target_group_id,
+			</if>
+			<if test="amount != null">
+				amount,
+			</if>
+			<if test="number != null">
+				number,
+			</if>
+			<if test="hitAmountNumber != null">
+				hit_amount_number,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+			<if test="date != null">
+				date,
+			</if>
+			<if test="time != null">
+				time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=","> 
+			<if test="header != null">
+				#{header,jdbcType=VARCHAR},
+			</if>
+			<if test="chatType != null">
+				#{chatType,jdbcType=VARCHAR},
+			</if>
+			<if test="msgType != null">
+				#{msgType,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=VARCHAR},
+			</if>
+			<if test="sendUserId != null">
+				#{sendUserId,jdbcType=BIGINT},
+			</if>
+			<if test="targetUserId != null">
+				#{targetUserId,jdbcType=BIGINT},
+			</if>
+			<if test="targetGroupId != null">
+				#{targetGroupId,jdbcType=BIGINT},
+			</if>
+			<if test="amount != null">
+				#{amount,jdbcType=DECIMAL},
+			</if>
+			<if test="number != null">
+				#{number,jdbcType=DECIMAL},
+			</if>
+			<if test="hitAmountNumber != null">
+				#{hitAmountNumber,jdbcType=DECIMAL},
+			</if>
+			<if test="content != null">
+				#{content,jdbcType=VARCHAR},
+			</if>
+			<if test="date != null">
+				#{date,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				#{time,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.neighbor.common.websoket.po.SocketMessage">
+		update chat_message
+		<set>
+			<if test="header != null">
+				header = #{header,jdbcType=VARCHAR},
+			</if>
+			<if test="chatType != null">
+				chat_type = #{chatType,jdbcType=VARCHAR},
+			</if>
+			<if test="msgType != null">
+				msg_type = #{msgType,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="sendUserId != null">
+				send_user_id = #{sendUserId,jdbcType=BIGINT},
+			</if>
+			<if test="targetUserId != null">
+				target_user_id = #{targetUserId,jdbcType=BIGINT},
+			</if>
+			<if test="targetGroupId != null">
+				target_group_id = #{targetGroupId,jdbcType=BIGINT},
+			</if>
+			<if test="amount != null">
+				amount = #{amount,jdbcType=DECIMAL},
+			</if>
+			<if test="number != null">
+				number = #{number,jdbcType=DECIMAL},
+			</if>
+			<if test="hitAmountNumber != null">
+				hit_amount_number = #{hitAmountNumber,jdbcType=DECIMAL},
+			</if>
+			<if test="content != null">
+				content = #{content,jdbcType=VARCHAR},
+			</if>
+			<if test="date != null">
+				date = #{date,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				time = #{time,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where msg_id = #{msgId,jdbcType=BIGINT}
+	</update>
+</mapper>

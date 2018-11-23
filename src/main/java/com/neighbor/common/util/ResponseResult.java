@@ -11,6 +11,7 @@ public class ResponseResult {
 	private int errorCode = ErrorCodeDesc.success.getValue();
 	private String errorMessage = null;
 	private String serviceURL = null;
+	private String requestID = null;
 
 	public Map<String, Object> getBody() {
 		return body;
@@ -44,6 +45,12 @@ public class ResponseResult {
 		this.serviceURL = serviceURL;
 	}
 
+	public String getRequestID() {
+		return requestID;
+	}
 
+	public void setRequestID(String requestID) {
+		this.requestID = requestID;
+	}
 
 }
