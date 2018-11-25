@@ -1,5 +1,7 @@
 package com.neighbor.common.websoket.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.neighbor.common.websoket.po.SocketMessage;
@@ -12,5 +14,9 @@ public interface SocketMessageMapper {
     SocketMessage selectByPrimaryKey(Long msgId);
 
     int updateByPrimaryKeySelective(SocketMessage record);
+
+	List<SocketMessage> selectByStatus(String status);
+
+	List<SocketMessage> selectbySelective(SocketMessage msg);
 
 }

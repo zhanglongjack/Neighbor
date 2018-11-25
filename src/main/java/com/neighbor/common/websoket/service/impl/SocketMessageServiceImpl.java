@@ -1,5 +1,7 @@
 package com.neighbor.common.websoket.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,25 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	@Override
 	public int updateByPrimaryKeySelective(SocketMessage record) {
 		return socketMessageMapper.updateByPrimaryKeySelective(record);
+	}
+
+	@Override
+	public List<SocketMessage> selectByStatus(String status) {
+		return socketMessageMapper.selectByStatus(status);
+	}
+
+	@Override
+	public List<SocketMessage> selectbySelective(SocketMessage msg) { 
+		return socketMessageMapper.selectbySelective(msg);
+	} 
+	
+	@Override
+	public List<SocketMessage> selectByTargetUserIdStatus(Long targetUserId, String status, String chatType) {
+		SocketMessage msg = new SocketMessage();
+		msg.setTargetUserId(targetUserId);
+		msg.setStatus(status);
+		msg.setChatType(chatType);
+		return selectbySelective(msg);
 	} 
 
 }

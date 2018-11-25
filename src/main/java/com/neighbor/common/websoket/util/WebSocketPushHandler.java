@@ -6,8 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
@@ -24,16 +28,21 @@ import com.neighbor.common.websoket.constants.WebSocketChatType;
 import com.neighbor.common.websoket.constants.WebSocketMsgType;
 import com.neighbor.common.websoket.handler.WebSocketMessageHandler;
 import com.neighbor.common.websoket.po.SocketMessage;
+import com.neighbor.common.websoket.service.SocketMessageService;
 
+@Component
 public class WebSocketPushHandler implements WebSocketHandler {
-	private static final Logger logger = LoggerFactory.getLogger(WebSocketPushHandler.class);
+	private final Logger logger =  LoggerFactory.getLogger(getClass());
+//	private static final Logger logger = LoggerFactory.getLogger(WebSocketPushHandler.class);
 	private static final Map<Long, WebSocketSession> userSessions = new ConcurrentHashMap<Long, WebSocketSession>();
 	private static final Map<Long, Map<Long, WebSocketSession>> groupSessions = new ConcurrentHashMap<Long, Map<Long, WebSocketSession>>();
 
+	@Autowired
+	private SocketMessageService socketMessageService;
+	
 	// 用户进入系统监听
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-
 		UserInfo user = (UserInfo) session.getAttributes().get("user");
 		if (user == null) {
 			ResponseResult result = new ResponseResult();
@@ -45,11 +54,38 @@ public class WebSocketPushHandler implements WebSocketHandler {
 			// handleTransportError(session, null);
 			return;
 		}
-
+		
 		logger.info("成功进入了系统。。。" + session.getAttributes().get("user"));
 		userSessions.put(user.getId(), session);
+		List<SocketMessage> msgList = socketMessageService.selectByTargetUserIdStatus(user.getId(),MessageStatus.pushed_response + "",WebSocketChatType.single+"");
+		sendPushedResponseMessage(msgList);
+		
 	}
 
+	public void sendPushedResponseMessage(List<SocketMessage> msgList){
+		for(SocketMessage msgInfo : msgList){
+			WebSocketMsgType msgType = WebSocketMsgType.valueOf(msgInfo.getMsgType());
+			WebSocketChatType chatType = WebSocketChatType.valueOf(msgInfo.getChatType());
+
+			WebSocketMessageHandler handler = (WebSocketMessageHandler) SpringUtil.getBean(msgType.getImplClass());
+			ResponseResult handleResult = new ResponseResult(); // 消息已接收
+			handleResult.setRequestID(msgInfo.getWebSocketHeader().getRequestId());
+			handleResult.addBody("msgType", msgType);
+			handleResult.addBody("chatType", chatType);
+			handleResult.addBody("msgInfo", msgInfo);
+			
+			boolean isSend = sendMessageToUser(msgInfo.getTargetUserId(), handleResult);
+			if (isSend) {
+				msgInfo.setStatus(MessageStatus.pushed + "");
+				handler.successCallBack(msgInfo);
+			}else{
+				// 按顺序推送消息,有一条异常,后面则不推,可能是推送异常或者用户断开连接
+				logger.info("按顺序推送消息,有一条异常可能是推送异常或者用户断开连接");
+				break;
+			}
+		}
+	}
+	
 	//
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
