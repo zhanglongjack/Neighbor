@@ -1,5 +1,6 @@
 package com.neighbor.app.chatlist.entity;
 
+import com.neighbor.app.chatlist.po.ChatHistorySetDesc;
 import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.PageTools;
@@ -42,11 +43,26 @@ public class ChatList {
 
     private String chatHistorySet;
 
+    private String chatHistorySetText;
+
     private String friendNickName;
     private String friendHeadUrl;
 
     private String friendDesc;
     private String friendName;
+
+
+    public String getChatHistorySetText() {
+        if(chatHistorySet==null){
+            return ChatHistorySetDesc.save.getDes();
+        }else {
+            return ChatHistorySetDesc.getDesByValue(chatHistorySet);
+        }
+    }
+
+    public void setChatHistorySetText(String chatHistorySetText) {
+        this.chatHistorySetText = chatHistorySetText;
+    }
 
     public String getFriendName() {
         return friendName;

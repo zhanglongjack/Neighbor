@@ -23,4 +23,6 @@ public interface ChatListMapper {
     List<ChatList> selectAll();
 
     int delChat(ChatList chatList);
+
+    void updateByFriendKeySelective(ChatList chatList);
 }

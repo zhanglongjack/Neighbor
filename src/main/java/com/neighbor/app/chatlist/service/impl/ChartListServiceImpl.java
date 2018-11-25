@@ -10,6 +10,7 @@ import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +66,7 @@ public class ChartListServiceImpl implements ChatListService {
     public ResponseResult chatSetting(ChatList chatList) throws Exception {
         logger.info("查询聊天好友设置界面...");
         ResponseResult responseResult = new ResponseResult();
-        chatListMapper.updateByPrimaryKeySelective(chatList);
+        chatListMapper.updateByFriendKeySelective(chatList);
         Long userId = chatList.getUserId();
         Long friendId = chatList.getFriendId();
         ChatList chat = queryChatListInfo(chatList, userId, friendId);
@@ -100,6 +101,11 @@ public class ChartListServiceImpl implements ChatListService {
             createChat.setLastChatDateTime(date);
             createChat.setLastChatTime(createChat.getCreTime());
             chatListMapper.insertSelective(createChat);
+            ChatList friendChat = new ChatList();
+            BeanUtils.copyProperties(createChat,friendChat);
+            friendChat.setUserId(friendId);
+            friendChat.setFriendId(userId);
+            chatListMapper.insertSelective(friendChat);
         }
         return responseResult;
     }

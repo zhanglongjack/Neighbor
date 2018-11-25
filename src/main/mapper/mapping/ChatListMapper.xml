@@ -254,4 +254,52 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
+  <update id="updateByFriendKeySelective" parameterType="com.neighbor.app.chatlist.entity.ChatList" >
+    update chat_list
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creDate != null" >
+        cre_date = #{creDate,jdbcType=VARCHAR},
+      </if>
+      <if test="creTime != null" >
+        cre_time = #{creTime,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatDateTime != null" >
+        last_chat_date_time = #{lastChatDateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastChatDate != null" >
+        last_chat_date = #{lastChatDate,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatTime != null" >
+        last_chat_time = #{lastChatTime,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatMessageId != null" >
+        last_chat_message_id = #{lastChatMessageId,jdbcType=BIGINT},
+      </if>
+      <if test="lastChatMessageType != null" >
+        last_chat_message_type = #{lastChatMessageType,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatMessageContent != null" >
+        last_chat_message_content = #{lastChatMessageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="unreadMessageNum != null" >
+        unread_message_num = #{unreadMessageNum,jdbcType=BIGINT},
+      </if>
+      <if test="toppingFlag != null" >
+        topping_flag = #{toppingFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="showMsgSwitch != null" >
+        show_msg_switch = #{showMsgSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="chatHistorySet != null" >
+        chat_history_set = #{chatHistorySet,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where  user_id = #{userId,jdbcType=BIGINT} and  friend_id = #{friendId,jdbcType=BIGINT}
+  </update>
 </mapper>
