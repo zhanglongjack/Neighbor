@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neighbor.app.group.dao.GroupMapper" >
+  <resultMap id="BaseResultMap" type="com.neighbor.app.group.entity.Group" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="cre_date" property="creDate" jdbcType="VARCHAR" />
+    <result column="cre_time" property="creTime" jdbcType="VARCHAR" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="user_num" property="userNum" jdbcType="BIGINT" />
+    <result column="online_num" property="onlineNum" jdbcType="BIGINT" />
+    <result column="group_notice" property="groupNotice" jdbcType="VARCHAR" />
+    <result column="group_head_img_url" property="groupHeadImgUrl" jdbcType="VARCHAR" />
+    <result column="states" property="states" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, cre_date, cre_time, group_name, user_num, online_num, 
+    group_notice, group_head_img_url, states
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from group
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from group
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.neighbor.app.group.entity.Group" >
+    insert into group (id, create_time, update_time, 
+      cre_date, cre_time, group_name, 
+      user_num, online_num, group_notice, 
+      group_head_img_url, states)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{creDate,jdbcType=VARCHAR}, #{creTime,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR}, 
+      #{userNum,jdbcType=BIGINT}, #{onlineNum,jdbcType=BIGINT}, #{groupNotice,jdbcType=VARCHAR}, 
+      #{groupHeadImgUrl,jdbcType=VARCHAR}, #{states,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.neighbor.app.group.entity.Group" >
+    insert into group
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="creDate != null" >
+        cre_date,
+      </if>
+      <if test="creTime != null" >
+        cre_time,
+      </if>
+      <if test="groupName != null" >
+        group_name,
+      </if>
+      <if test="userNum != null" >
+        user_num,
+      </if>
+      <if test="onlineNum != null" >
+        online_num,
+      </if>
+      <if test="groupNotice != null" >
+        group_notice,
+      </if>
+      <if test="groupHeadImgUrl != null" >
+        group_head_img_url,
+      </if>
+      <if test="states != null" >
+        states,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creDate != null" >
+        #{creDate,jdbcType=VARCHAR},
+      </if>
+      <if test="creTime != null" >
+        #{creTime,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null" >
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="userNum != null" >
+        #{userNum,jdbcType=BIGINT},
+      </if>
+      <if test="onlineNum != null" >
+        #{onlineNum,jdbcType=BIGINT},
+      </if>
+      <if test="groupNotice != null" >
+        #{groupNotice,jdbcType=VARCHAR},
+      </if>
+      <if test="groupHeadImgUrl != null" >
+        #{groupHeadImgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="states != null" >
+        #{states,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.group.entity.Group" >
+    update group
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creDate != null" >
+        cre_date = #{creDate,jdbcType=VARCHAR},
+      </if>
+      <if test="creTime != null" >
+        cre_time = #{creTime,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null" >
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="userNum != null" >
+        user_num = #{userNum,jdbcType=BIGINT},
+      </if>
+      <if test="onlineNum != null" >
+        online_num = #{onlineNum,jdbcType=BIGINT},
+      </if>
+      <if test="groupNotice != null" >
+        group_notice = #{groupNotice,jdbcType=VARCHAR},
+      </if>
+      <if test="groupHeadImgUrl != null" >
+        group_head_img_url = #{groupHeadImgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="states != null" >
+        states = #{states,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.neighbor.app.group.entity.Group" >
+    update group
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      cre_date = #{creDate,jdbcType=VARCHAR},
+      cre_time = #{creTime,jdbcType=VARCHAR},
+      group_name = #{groupName,jdbcType=VARCHAR},
+      user_num = #{userNum,jdbcType=BIGINT},
+      online_num = #{onlineNum,jdbcType=BIGINT},
+      group_notice = #{groupNotice,jdbcType=VARCHAR},
+      group_head_img_url = #{groupHeadImgUrl,jdbcType=VARCHAR},
+      states = #{states,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
