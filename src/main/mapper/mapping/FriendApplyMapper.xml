@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.neighbor.app.friend.dao.FriendMapper" >
-  <resultMap id="BaseResultMap" type="com.neighbor.app.friend.entity.Friend" >
+<mapper namespace="com.neighbor.app.friend.dao.FriendApplyMapper" >
+  <resultMap id="BaseResultMap" type="com.neighbor.app.friend.entity.FriendApply" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
@@ -14,10 +14,9 @@
     <result column="add_direction" property="addDirection" jdbcType="VARCHAR" />
     <result column="add_type" property="addType" jdbcType="VARCHAR" />
 
-    <result column="code" property="code" jdbcType="VARCHAR" />
   </resultMap>
 
-  <resultMap id="FullResultMap" type="com.neighbor.app.friend.entity.Friend" extends="BaseResultMap" >
+  <resultMap id="FullResultMap" type="com.neighbor.app.friend.entity.FriendApply" extends="BaseResultMap" >
     <result column="friendName" property="friendName" jdbcType="VARCHAR" />
     <result column="friendNickName" property="friendNickName" jdbcType="VARCHAR" />
     <result column="userPhoto" property="userPhoto" jdbcType="VARCHAR" />
@@ -25,85 +24,45 @@
 
   <sql id="Base_Column_List" >
     id, create_time, update_time, contact_date, contact_time, user_id, friend_user_id, 
-    friend_desc, states,code,add_direction,add_type
+    friend_desc, states,add_direction,add_type
   </sql>
 
   <sql id="dynamicWhere">
-    <where>
-      <if test="id != null">id=#{id}</if>
+    <where> 1=1
+      <if test="id != null">and id=#{id}</if>
       <if test="userId != null">and user_id=#{userId}</if>
       <if test="contactDate != null and contactDate.length()>0">and contact_date=#{contactDate}</if>
       <if test="contactTime != null and contactTime.length()>0">and contact_time=#{contactTime}</if>
-      <if test="friendUserId != null and friendUserId.length()>0">and friend_user_id=#{friendUserId}</if>
+      <if test="friendUserId != null ">and friend_user_id=#{friendUserId}</if>
       <if test="friendDesc != null and friendDesc.length()>0">and friend_desc=#{friendDesc}</if>
       <if test="states != null and states.length()>0">and states=#{states}</if>
-      <if test="code != null and code.length()>0">and code=#{code}</if>
     </where>
   </sql>
 
-
-  <select id="selectAll" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from friend
-    order by create_time
-  </select>
-
-  <select id="selectFullInfoPageForList" parameterType="com.neighbor.app.friend.entity.Friend" resultMap="FullResultMap">
-    select
-    t.id, t.create_time, t.update_time, t.contact_date, t.contact_time, t.user_id, t.friend_user_id,
-    t.friend_desc, t.states,t.code,u.real_name as friendName,u.nick_name friendNickName,u.user_photo userPhoto
-    from friend t inner join users_info u on t.friend_user_id = u.id
-    <include refid="dynamicWhere" />
-    order by t.code,t.create_time
-    limit #{pageTools.rowIndex},#{pageTools.pageSize}
-  </select>
-
-  <select id="selectPageByObjectForList" parameterType="com.neighbor.app.friend.entity.Friend"
-          resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from friend
-    <include refid="dynamicWhere" />
-    order by create_time
-    limit #{pageTools.rowIndex},#{pageTools.pageSize}
-  </select>
-
-  <select id="selectPageTotalCount" parameterType="com.neighbor.app.friend.entity.Friend"
+  <select id="selectPageTotalCount" parameterType="com.neighbor.app.friend.entity.FriendApply"
           resultType="Long">
     select
     count(1)
-    from friend
+    from friend_apply
     <include refid="dynamicWhere" />
   </select>
 
-
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from friend
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-
-  <select id="selectByMap" resultMap="BaseResultMap" parameterType="com.neighbor.app.friend.entity.Friend" >
+  <select id="selectFullInfoPageForList" parameterType="com.neighbor.app.friend.entity.FriendApply" resultMap="FullResultMap">
     select
-    <include refid="Base_Column_List" />
-    from friend
-    where 1=1
-    <if test="userId !=null">
-    and user_id = #{userId,jdbcType=BIGINT}
-    </if>
-    <if test="friendUserId !=null">
-    and friend_user_id = #{friendUserId,jdbcType=BIGINT}
-    </if>
+    t.id, t.create_time, t.update_time, t.contact_date, t.contact_time, t.user_id, t.friend_user_id,
+    t.friend_desc, t.states,u.real_name as friendName,u.nick_name friendNickName,u.user_photo userPhoto
+    from friend_apply t inner join users_info u on t.user_id = u.id
+    <include refid="dynamicWhere" />
+    order by t.create_time
+    limit #{pageTools.rowIndex},#{pageTools.pageSize}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from friend
+    delete from friend_apply
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insertSelective" parameterType="com.neighbor.app.friend.entity.Friend" >
-    insert into friend
+  <insert id="insertFriendApply" parameterType="com.neighbor.app.friend.entity.FriendApply" >
+    insert into friend_apply
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -131,9 +90,6 @@
       </if>
       <if test="states != null" >
         states,
-      </if>
-      <if test="code != null" >
-        code,
       </if>
       <if test="addDirection != null" >
         add_direction,
@@ -170,9 +126,6 @@
       <if test="states != null" >
         #{states,jdbcType=VARCHAR},
       </if>
-      <if test="code != null" >
-        #{code,jdbcType=VARCHAR},
-      </if>
       <if test="addDirection != null" >
         #{addDirection,jdbcType=VARCHAR},
       </if>
@@ -181,8 +134,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.friend.entity.Friend" >
-    update friend
+  <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.friend.entity.FriendApply" >
+    update friend_apply
     <set >
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -196,20 +149,8 @@
       <if test="contactTime != null" >
         contact_time = #{contactTime,jdbcType=VARCHAR},
       </if>
-      <if test="userId != null" >
-        user_id = #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="friendUserId != null" >
-        friend_user_id = #{friendUserId,jdbcType=BIGINT},
-      </if>
-      <if test="friendDesc != null" >
-        friend_desc = #{friendDesc,jdbcType=VARCHAR},
-      </if>
       <if test="states != null" >
         states = #{states,jdbcType=VARCHAR},
-      </if>
-      <if test="code != null" >
-        code = #{code,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

@@ -1,6 +1,7 @@
 package com.neighbor.app.friend.dao;
 
 import com.neighbor.app.friend.entity.Friend;
+import com.neighbor.app.friend.entity.FriendApply;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -11,6 +12,8 @@ public interface FriendMapper {
     int insertSelective(Friend record);
 
     Friend selectByPrimaryKey(Long id);
+
+    Friend selectByMap(Friend friend);
 
     int updateByPrimaryKeySelective(Friend record);
 

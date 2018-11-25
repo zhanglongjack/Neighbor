@@ -4,10 +4,8 @@ import com.neighbor.app.common.entity.PageEntity;
 
 import java.util.Date;
 
-public class Friend extends PageEntity {
+public class FriendApply extends PageEntity {
     private Long id;
-    private String code;
-
     private Date createTime;
 
     private Date updateTime;
@@ -33,6 +31,45 @@ public class Friend extends PageEntity {
     private String friendNickName;
     private String userPhoto;
 
+
+    public static enum StatesDesc {
+        申请中("1"), 审核通过("2"), 审核拒绝("3");
+        public String value;
+
+        private StatesDesc(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public static enum AddDirectionDesc {
+        主动添加("1"), 被动添加("2");
+        public String value;
+
+        private AddDirectionDesc(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public static enum AddTypeDesc {
+        链接添加("1"), APP添加("2");
+        public String value;
+
+        private AddTypeDesc(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 
     public String getFriendName() {
         return friendName;
@@ -128,14 +165,6 @@ public class Friend extends PageEntity {
 
     public void setStates(String states) {
         this.states = states;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getAddDirection() {

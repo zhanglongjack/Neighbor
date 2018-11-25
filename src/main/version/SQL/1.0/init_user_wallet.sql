@@ -121,8 +121,27 @@ CREATE TABLE `friend` (
   `friend_user_id` bigint(20)  NOT NULL COMMENT '好友ID',
   `friend_desc` varchar(50) COMMENT '好友备注',
   `states` varchar(50) NOT NULL COMMENT '状态',
-  `add_direction` varchar(50) NOT NULL COMMENT '添加方向，1:主动添加；2：被动添加',
+  `add_direction` varchar(1) NOT NULL COMMENT '添加方向，1:主动添加；2：被动添加',
   `code` varchar(50) NOT NULL COMMENT '通讯录排序code',
+  `add_type` varchar(50) NOT NULL COMMENT '添加类型，1：链接添加；2：APP添加',
   PRIMARY KEY (`id`),
   KEY `index_friend_u_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='好友表';
+
+
+DROP TABLE IF EXISTS `friend_apply`;
+CREATE TABLE `friend_apply` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `contact_date` varchar(16) COMMENT '日期',
+  `contact_time` varchar(16) COMMENT '时间',
+  `user_id` bigint(20)  NOT NULL COMMENT '用户Id',
+  `friend_user_id` bigint(20)  NOT NULL COMMENT '好友ID',
+  `friend_desc` varchar(50) COMMENT '好友备注',
+  `states` varchar(50) NOT NULL COMMENT '状态，1：申请；2：审核通过；3：审核拒绝；',
+  `add_direction` varchar(1) NOT NULL COMMENT '添加方向，1:主动添加；2：被动添加',
+  `add_type` varchar(50) NOT NULL COMMENT '添加类型，1：链接添加；2：APP添加',
+  PRIMARY KEY (`id`),
+  KEY `index_friend_apply_u_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='好友申请表';
