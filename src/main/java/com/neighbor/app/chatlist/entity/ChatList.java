@@ -1,5 +1,7 @@
 package com.neighbor.app.chatlist.entity;
 
+import com.neighbor.common.util.DateFormateType;
+import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.PageTools;
 import org.springframework.util.StringUtils;
 
@@ -168,6 +170,9 @@ public class ChatList {
     }
 
     public String getLastChatTime() {
+        if(StringUtils.isEmpty(lastChatTime)&&createTime!=null){
+            return DateUtils.formatDateStr(createTime, DateFormateType.TIME_FORMAT);
+        }
         return lastChatTime;
     }
 
