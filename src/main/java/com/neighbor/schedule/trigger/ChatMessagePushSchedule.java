@@ -22,7 +22,7 @@ public class ChatMessagePushSchedule {
 	
 	@Scheduled(cron="0/30 * * * * *") 
     public void breakCheck() {
-		logger.info("每30秒执行一次定时任务推送消息");
+		//logger.info("每30秒执行一次定时任务推送消息");
 		List<SocketMessage> msgList = socketMessageService.selectByStatus("pushed_response");
 		webSocketPushHandler.sendPushedResponseMessage(msgList);
     }

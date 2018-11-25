@@ -77,7 +77,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 			boolean isSend = sendMessageToUser(msgInfo.getTargetUserId(), handleResult);
 			if (isSend) {
 				msgInfo.setStatus(MessageStatus.pushed + "");
-				handler.successCallBack(msgInfo);
+				handler.successCallBack(msgInfo,chatType,msgType);
 			}else{
 				// 按顺序推送消息,有一条异常,后面则不推,可能是推送异常或者用户断开连接
 				logger.info("按顺序推送消息,有一条异常可能是推送异常或者用户断开连接");
@@ -99,7 +99,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 		WebSocketChatType chatType = WebSocketChatType.valueOf(msgInfo.getChatType());
 
 		WebSocketMessageHandler handler = (WebSocketMessageHandler) SpringUtil.getBean(msgType.getImplClass());
-		ResponseResult handleResult = handler.handleMessage(msgInfo); // 消息已接收
+		ResponseResult handleResult = handler.handleMessage(msgInfo,chatType,msgType); // 消息已接收
 		handleResult.setRequestID(msgInfo.getWebSocketHeader().getRequestId());
 		handleResult.addBody("msgType", msgType);
 		handleResult.addBody("chatType", chatType);
@@ -110,12 +110,12 @@ public class WebSocketPushHandler implements WebSocketHandler {
 			logger.info("收到单发消息:" + msgInfo.getContent());
 			// 消息消息发回,表示消息已接收
 			msgInfo.setStatus(MessageStatus.pushed_response + "");
-			handler.successCallBack(msgInfo);
+			handler.successCallBack(msgInfo,chatType,msgType);
 			// 消息推送
 			isSend = sendMessageToUser(msgInfo.getTargetUserId(), handleResult);
 			if (isSend) {
 				msgInfo.setStatus(MessageStatus.pushed + "");
-				handler.successCallBack(msgInfo);
+				handler.successCallBack(msgInfo,chatType,msgType);
 			}
 
 			// sendResponseMessage(msgInfo.getSendUserId(),result);
@@ -123,16 +123,16 @@ public class WebSocketPushHandler implements WebSocketHandler {
 			logger.info("收到群发消息:" + msgInfo.getContent());
 			// 消息消息发回,表示消息已接收
 			msgInfo.setStatus(MessageStatus.pushed_response + "");
-			handler.successCallBack(msgInfo);
+			handler.successCallBack(msgInfo,chatType,msgType);
 			// 消息推送
 			List<Long> pushedUsers = sendMessagesToGroup(msgInfo.getSendUserId(), msgInfo.getTargetGroupId(), handleResult);
 			// 成功推送的用户
 			msgInfo.setPushedUsers(pushedUsers);
-			handler.successCallBack(msgInfo);
+			handler.successCallBack(msgInfo,chatType,msgType);
 			
 		}else{
-			msgInfo.setStatus(MessageStatus.push_failed+"");
-			handler.failedCallBack(msgInfo);
+			msgInfo.setStatus(MessageStatus.response_failed+"");
+			handler.failedCallBack(msgInfo,chatType,msgType);
 		}
 		logger.info("消息处理结束" +msgInfo);
 	}
