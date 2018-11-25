@@ -23,13 +23,42 @@
 		target_group_id,
 		amount, number, hit_amount_number, content, date, time
 	</sql>
-
+  	<sql id="dynamicWhere">
+		<where>
+		    <if test="msgId != null">and msg_id=#{msgId}</if>
+		    <if test="chatType != null and chatType.length>0">and chat_type=#{chatType}</if>
+		    <if test="msgType != null and msgType.length>0">and msg_type=#{msgType}</if>
+		    <if test="status != null and status.length>0">and status=#{status}</if>
+		    <if test="sendUserId != null">and send_user_id=#{sendUserId}</if>
+		    <if test="targetUserId != null">and target_user_id=#{targetUserId}</if>
+		    <if test="targetGroupId != null">and chat_type=#{targetGroupId}</if>
+		    <if test="date != null and date.length>0">and date=#{date}</if>
+		</where>
+	</sql>
+	
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from chat_message
 		where msg_id = #{msgId,jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectByStatus" parameterType="String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from chat_message
+		where status = #{status,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectbySelective" parameterType="String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from chat_message
+		<include refid="dynamicWhere" />
+		order by date,time
 	</select>
 
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

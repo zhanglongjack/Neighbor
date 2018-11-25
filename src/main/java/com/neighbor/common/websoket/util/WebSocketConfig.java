@@ -2,15 +2,11 @@ package com.neighbor.common.websoket.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-
-import com.neighbor.app.users.controller.LoginController;
 
 @SuppressWarnings("deprecation")
 @Configuration
@@ -20,19 +16,22 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
 	
 	@Autowired
 	private WebSocketInterceptor webSocketInterceptor;
+	
+	@Autowired
+	private WebSocketPushHandler webSocketPushHandler;
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
     	logger.info("初始化websoket");
-        registry.addHandler(WebSocketPushHandler(), "/chatServer")
+        registry.addHandler(webSocketPushHandler, "/chatServer")
         		.addInterceptors(webSocketInterceptor).setAllowedOrigins("*");
         
-        registry.addHandler(WebSocketPushHandler(), "/sockjs/chatServer")
+        registry.addHandler(webSocketPushHandler, "/sockjs/chatServer")
                 .addInterceptors(webSocketInterceptor).withSockJS();
     }
-
-    @Bean
-    public WebSocketHandler WebSocketPushHandler() {
-        return new WebSocketPushHandler();
-    }
+//
+//    @Bean
+//    public WebSocketHandler webSocketPushHandler() {
+//        return new WebSocketPushHandler();
+//    }
 
 }

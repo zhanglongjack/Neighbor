@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neighbor.app.group.dao.GroupMemberMapper" >
+  <resultMap id="BaseResultMap" type="com.neighbor.app.group.entity.GroupMember" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="group_id" property="groupId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="member_type" property="memberType" jdbcType="VARCHAR" />
+    <result column="show_msg_switch" property="showMsgSwitch" jdbcType="VARCHAR" />
+    <result column="show_nick_name_switch" property="showNickNameSwitch" jdbcType="VARCHAR" />
+    <result column="unread_message_num" property="unreadMessageNum" jdbcType="BIGINT" />
+    <result column="states" property="states" jdbcType="VARCHAR" />
+    <result column="automatic_grab_switch" property="automaticGrabSwitch" jdbcType="VARCHAR" />
+    <result column="topping_flag" property="toppingFlag" jdbcType="VARCHAR" />
+    <result column="last_chat_date_time" property="lastChatDateTime" jdbcType="TIMESTAMP" />
+    <result column="last_chat_date" property="lastChatDate" jdbcType="VARCHAR" />
+    <result column="last_chat_time" property="lastChatTime" jdbcType="VARCHAR" />
+    <result column="last_chat_message_id" property="lastChatMessageId" jdbcType="BIGINT" />
+    <result column="last_chat_message_type" property="lastChatMessageType" jdbcType="VARCHAR" />
+    <result column="last_chat_message_content" property="lastChatMessageContent" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, group_id, user_id, member_type, show_msg_switch, show_nick_name_switch, 
+    unread_message_num, states, automatic_grab_switch, topping_flag, last_chat_date_time, 
+    last_chat_date, last_chat_time, last_chat_message_id, last_chat_message_type, last_chat_message_content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from group_member
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from group_member
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.neighbor.app.group.entity.GroupMember" >
+    insert into group_member
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="groupId != null" >
+        group_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="memberType != null" >
+        member_type,
+      </if>
+      <if test="showMsgSwitch != null" >
+        show_msg_switch,
+      </if>
+      <if test="showNickNameSwitch != null" >
+        show_nick_name_switch,
+      </if>
+      <if test="unreadMessageNum != null" >
+        unread_message_num,
+      </if>
+      <if test="states != null" >
+        states,
+      </if>
+      <if test="automaticGrabSwitch != null" >
+        automatic_grab_switch,
+      </if>
+      <if test="toppingFlag != null" >
+        topping_flag,
+      </if>
+      <if test="lastChatDateTime != null" >
+        last_chat_date_time,
+      </if>
+      <if test="lastChatDate != null" >
+        last_chat_date,
+      </if>
+      <if test="lastChatTime != null" >
+        last_chat_time,
+      </if>
+      <if test="lastChatMessageId != null" >
+        last_chat_message_id,
+      </if>
+      <if test="lastChatMessageType != null" >
+        last_chat_message_type,
+      </if>
+      <if test="lastChatMessageContent != null" >
+        last_chat_message_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groupId != null" >
+        #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="memberType != null" >
+        #{memberType,jdbcType=VARCHAR},
+      </if>
+      <if test="showMsgSwitch != null" >
+        #{showMsgSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="showNickNameSwitch != null" >
+        #{showNickNameSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="unreadMessageNum != null" >
+        #{unreadMessageNum,jdbcType=BIGINT},
+      </if>
+      <if test="states != null" >
+        #{states,jdbcType=VARCHAR},
+      </if>
+      <if test="automaticGrabSwitch != null" >
+        #{automaticGrabSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="toppingFlag != null" >
+        #{toppingFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatDateTime != null" >
+        #{lastChatDateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastChatDate != null" >
+        #{lastChatDate,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatTime != null" >
+        #{lastChatTime,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatMessageId != null" >
+        #{lastChatMessageId,jdbcType=BIGINT},
+      </if>
+      <if test="lastChatMessageType != null" >
+        #{lastChatMessageType,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatMessageContent != null" >
+        #{lastChatMessageContent,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.group.entity.GroupMember" >
+    update group_member
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groupId != null" >
+        group_id = #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="memberType != null" >
+        member_type = #{memberType,jdbcType=VARCHAR},
+      </if>
+      <if test="showMsgSwitch != null" >
+        show_msg_switch = #{showMsgSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="showNickNameSwitch != null" >
+        show_nick_name_switch = #{showNickNameSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="unreadMessageNum != null" >
+        unread_message_num = #{unreadMessageNum,jdbcType=BIGINT},
+      </if>
+      <if test="states != null" >
+        states = #{states,jdbcType=VARCHAR},
+      </if>
+      <if test="automaticGrabSwitch != null" >
+        automatic_grab_switch = #{automaticGrabSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="toppingFlag != null" >
+        topping_flag = #{toppingFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatDateTime != null" >
+        last_chat_date_time = #{lastChatDateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastChatDate != null" >
+        last_chat_date = #{lastChatDate,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatTime != null" >
+        last_chat_time = #{lastChatTime,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatMessageId != null" >
+        last_chat_message_id = #{lastChatMessageId,jdbcType=BIGINT},
+      </if>
+      <if test="lastChatMessageType != null" >
+        last_chat_message_type = #{lastChatMessageType,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatMessageContent != null" >
+        last_chat_message_content = #{lastChatMessageContent,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

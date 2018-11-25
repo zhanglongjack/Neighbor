@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import nz.net.ultraq.thymeleaf.decorators.strategies.GroupingStrategy;
@@ -15,6 +16,7 @@ import nz.net.ultraq.thymeleaf.decorators.strategies.GroupingStrategy;
  */
 @SpringBootApplication
 @EnableAspectJAutoProxy
+@EnableScheduling
 public class StartNeighbor {
 	public static void main(String[] args) {
 		// SpringApplication.run(StartCRMApp.class,args);

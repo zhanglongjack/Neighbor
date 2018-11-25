@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neighbor.app.chatlist.dao.ChatListMapper" >
+  <resultMap id="BaseResultMap" type="com.neighbor.app.chatlist.entity.ChatList" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="cre_date" property="creDate" jdbcType="VARCHAR" />
+    <result column="cre_time" property="creTime" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="friend_id" property="friendId" jdbcType="BIGINT" />
+    <result column="last_chat_date_time" property="lastChatDateTime" jdbcType="TIMESTAMP" />
+    <result column="last_chat_date" property="lastChatDate" jdbcType="VARCHAR" />
+    <result column="last_chat_time" property="lastChatTime" jdbcType="VARCHAR" />
+    <result column="last_chat_message_id" property="lastChatMessageId" jdbcType="BIGINT" />
+    <result column="last_chat_message_type" property="lastChatMessageType" jdbcType="VARCHAR" />
+    <result column="last_chat_message_content" property="lastChatMessageContent" jdbcType="VARCHAR" />
+    <result column="unread_message_num" property="unreadMessageNum" jdbcType="BIGINT" />
+    <result column="topping_flag" property="toppingFlag" jdbcType="VARCHAR" />
+    <result column="show_msg_switch" property="showMsgSwitch" jdbcType="VARCHAR" />
+    <result column="chat_history_set" property="chatHistorySet" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="FullResultMap" type="com.neighbor.app.chatlist.entity.ChatList" extends="BaseResultMap" >
+    <result column="friendNickName" property="friendNickName" jdbcType="VARCHAR" />
+    <result column="friendDesc" property="friendDesc" jdbcType="VARCHAR" />
+    <result column="friendName" property="friendName" jdbcType="VARCHAR" />
+    <result column="friendHeadUrl" property="friendHeadUrl" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, cre_date, cre_time, user_id, friend_id, last_chat_date_time, 
+    last_chat_date, last_chat_time, last_chat_message_id, last_chat_message_type, last_chat_message_content, 
+    unread_message_num, topping_flag, show_msg_switch, chat_history_set
+  </sql>
+  <sql id="dynamicWhere">
+    <where>
+      <if test="id != null">t.id=#{id}</if>
+      <if test="userId != null">and t.user_id=#{userId}</if>
+      <if test="creDate != null and creDate.length()>0">and t.cre_date=#{creDate}</if>
+      <if test="creTime != null and creTime.length()>0">and t.cre_time=#{creTime}</if>
+      <if test="friendId != null ">and t.friend_id=#{friendId}</if>
+      <if test="lastChatDateTime != null ">and t.last_chat_date_time=#{lastChatDateTime}</if>
+      <if test="lastChatMessageId != null ">and t.last_chat_message_id=#{lastChatMessageId}</if>
+      <if test="lastChatMessageType != null and lastChatMessageType.length()>0">and t.last_chat_message_type=#{lastChatMessageType}</if>
+      <if test="lastChatMessageContent != null and lastChatMessageContent.length()>0">and t.last_chat_message_content=#{lastChatMessageContent}</if>
+      <if test="unreadMessageNum != null">and t.unread_message_num=#{unreadMessageNum}</if>
+      <if test="toppingFlag != null and toppingFlag.length()>0">and t.topping_flag=#{toppingFlag}</if>
+      <if test="showMsgSwitch != null and showMsgSwitch.length()>0">and t.show_msg_switch=#{showMsgSwitch}</if>
+      <if test="chatHistorySet != null and chatHistorySet.length()>0">and t.chat_history_set=#{chatHistorySet}</if>
+    </where>
+  </sql>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from chat_list t
+    order by create_time
+  </select>
+
+  <select id="selectPageByObjectForList" parameterType="com.neighbor.app.chatlist.entity.ChatList"
+          resultMap="FullResultMap">
+    select t.*,u.nick_name as friendNickName,f.friend_desc as friendDesc,u.real_name as friendName,u.user_photo as friendHeadUrl
+    from chat_list t inner join users_info u on t.user_id = u.id
+    INNER JOIN friend f on t.user_id = f.user_id and t.friend_id = f.friend_user_id
+    <include refid="dynamicWhere" />
+    order by t.create_time desc
+    limit #{pageTools.rowIndex},#{pageTools.pageSize}
+  </select>
+
+  <select id="selectPageTotalCount" parameterType="com.neighbor.app.chatlist.entity.ChatList"
+          resultType="Long">
+    select
+    count(1)
+    from chat_list t
+    <include refid="dynamicWhere" />
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from chat_list
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from chat_list
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="delChat" parameterType="com.neighbor.app.chatlist.entity.ChatList" >
+    delete from chat_list
+    where user_id = #{userId,jdbcType=BIGINT} and friend_id = #{friendId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" parameterType="com.neighbor.app.chatlist.entity.ChatList" >
+    insert into chat_list
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="creDate != null" >
+        cre_date,
+      </if>
+      <if test="creTime != null" >
+        cre_time,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="friendId != null" >
+        friend_id,
+      </if>
+      <if test="lastChatDateTime != null" >
+        last_chat_date_time,
+      </if>
+      <if test="lastChatDate != null" >
+        last_chat_date,
+      </if>
+      <if test="lastChatTime != null" >
+        last_chat_time,
+      </if>
+      <if test="lastChatMessageId != null" >
+        last_chat_message_id,
+      </if>
+      <if test="lastChatMessageType != null" >
+        last_chat_message_type,
+      </if>
+      <if test="lastChatMessageContent != null" >
+        last_chat_message_content,
+      </if>
+      <if test="unreadMessageNum != null" >
+        unread_message_num,
+      </if>
+      <if test="toppingFlag != null" >
+        topping_flag,
+      </if>
+      <if test="showMsgSwitch != null" >
+        show_msg_switch,
+      </if>
+      <if test="chatHistorySet != null" >
+        chat_history_set,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creDate != null" >
+        #{creDate,jdbcType=VARCHAR},
+      </if>
+      <if test="creTime != null" >
+        #{creTime,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="friendId != null" >
+        #{friendId,jdbcType=BIGINT},
+      </if>
+      <if test="lastChatDateTime != null" >
+        #{lastChatDateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastChatDate != null" >
+        #{lastChatDate,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatTime != null" >
+        #{lastChatTime,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatMessageId != null" >
+        #{lastChatMessageId,jdbcType=BIGINT},
+      </if>
+      <if test="lastChatMessageType != null" >
+        #{lastChatMessageType,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatMessageContent != null" >
+        #{lastChatMessageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="unreadMessageNum != null" >
+        #{unreadMessageNum,jdbcType=BIGINT},
+      </if>
+      <if test="toppingFlag != null" >
+        #{toppingFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="showMsgSwitch != null" >
+        #{showMsgSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="chatHistorySet != null" >
+        #{chatHistorySet,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.chatlist.entity.ChatList" >
+    update chat_list
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creDate != null" >
+        cre_date = #{creDate,jdbcType=VARCHAR},
+      </if>
+      <if test="creTime != null" >
+        cre_time = #{creTime,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="friendId != null" >
+        friend_id = #{friendId,jdbcType=BIGINT},
+      </if>
+      <if test="lastChatDateTime != null" >
+        last_chat_date_time = #{lastChatDateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastChatDate != null" >
+        last_chat_date = #{lastChatDate,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatTime != null" >
+        last_chat_time = #{lastChatTime,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatMessageId != null" >
+        last_chat_message_id = #{lastChatMessageId,jdbcType=BIGINT},
+      </if>
+      <if test="lastChatMessageType != null" >
+        last_chat_message_type = #{lastChatMessageType,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatMessageContent != null" >
+        last_chat_message_content = #{lastChatMessageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="unreadMessageNum != null" >
+        unread_message_num = #{unreadMessageNum,jdbcType=BIGINT},
+      </if>
+      <if test="toppingFlag != null" >
+        topping_flag = #{toppingFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="showMsgSwitch != null" >
+        show_msg_switch = #{showMsgSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="chatHistorySet != null" >
+        chat_history_set = #{chatHistorySet,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateByFriendKeySelective" parameterType="com.neighbor.app.chatlist.entity.ChatList" >
+    update chat_list
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creDate != null" >
+        cre_date = #{creDate,jdbcType=VARCHAR},
+      </if>
+      <if test="creTime != null" >
+        cre_time = #{creTime,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatDateTime != null" >
+        last_chat_date_time = #{lastChatDateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastChatDate != null" >
+        last_chat_date = #{lastChatDate,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatTime != null" >
+        last_chat_time = #{lastChatTime,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatMessageId != null" >
+        last_chat_message_id = #{lastChatMessageId,jdbcType=BIGINT},
+      </if>
+      <if test="lastChatMessageType != null" >
+        last_chat_message_type = #{lastChatMessageType,jdbcType=VARCHAR},
+      </if>
+      <if test="lastChatMessageContent != null" >
+        last_chat_message_content = #{lastChatMessageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="unreadMessageNum != null" >
+        unread_message_num = #{unreadMessageNum,jdbcType=BIGINT},
+      </if>
+      <if test="toppingFlag != null" >
+        topping_flag = #{toppingFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="showMsgSwitch != null" >
+        show_msg_switch = #{showMsgSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="chatHistorySet != null" >
+        chat_history_set = #{chatHistorySet,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where  user_id = #{userId,jdbcType=BIGINT} and  friend_id = #{friendId,jdbcType=BIGINT}
+  </update>
+</mapper>
