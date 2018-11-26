@@ -11,7 +11,7 @@ import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.app.withdraw.dao.WithdrawMapper;
 import com.neighbor.app.withdraw.entity.Withdraw;
-import com.neighbor.app.withdraw.po.WithdrawStatusDesc;
+import com.neighbor.app.withdraw.constants.WithdrawStatusDesc;
 import com.neighbor.app.withdraw.service.WithdrawService;
 import com.neighbor.common.util.*;
 import org.slf4j.Logger;

@@ -10,6 +10,8 @@ import com.neighbor.app.balance.po.TransactionSubTypeDesc;
 import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.balance.service.BalanceDetailService;
 import com.neighbor.app.common.util.OrderUtils;
+import com.neighbor.app.transfer.constants.TransferStatusDesc;
+import com.neighbor.app.transfer.constants.TransferWayDesc;
 import com.neighbor.app.transfer.po.*;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;

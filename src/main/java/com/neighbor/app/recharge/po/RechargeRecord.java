@@ -1,5 +1,7 @@
 package com.neighbor.app.recharge.po;
 
+import com.neighbor.app.recharge.constants.ChannelTypeDesc;
+import com.neighbor.app.recharge.constants.RechargeStatusDesc;
 import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
 import java.util.Date;

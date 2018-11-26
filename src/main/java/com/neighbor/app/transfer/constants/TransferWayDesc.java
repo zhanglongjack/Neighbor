@@ -1,4 +1,4 @@
-package com.neighbor.app.transfer.po;
+package com.neighbor.app.transfer.constants;
 
 
 public enum TransferWayDesc {

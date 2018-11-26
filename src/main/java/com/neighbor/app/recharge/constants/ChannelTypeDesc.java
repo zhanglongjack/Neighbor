@@ -1,6 +1,4 @@
-package com.neighbor.app.recharge.po;
-
-import com.neighbor.app.balance.po.TransactionItemDesc;
+package com.neighbor.app.recharge.constants;
 
 public enum ChannelTypeDesc {
     alipay("支付宝"),wxpay("微信支付");

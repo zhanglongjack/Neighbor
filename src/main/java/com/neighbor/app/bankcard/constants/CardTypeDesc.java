@@ -1,4 +1,4 @@
-package com.neighbor.app.bankcard.po;
+package com.neighbor.app.bankcard.constants;
 
 public enum CardTypeDesc {
     DC("储蓄卡"),CC("信用卡"),SCC("准贷记卡"),PC("预付费卡");

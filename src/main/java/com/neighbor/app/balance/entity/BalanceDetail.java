@@ -5,7 +5,6 @@ import java.util.Date;
 
 import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.common.entity.PageEntity;
-import com.neighbor.app.transfer.po.TransferWayDesc;
 import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
 

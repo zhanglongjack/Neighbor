@@ -5,7 +5,7 @@ import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.bankcard.dao.BankCardMapper;
 import com.neighbor.app.bankcard.entity.BankCard;
 import com.neighbor.app.bankcard.po.BankNameJson;
-import com.neighbor.app.bankcard.po.CardTypeDesc;
+import com.neighbor.app.bankcard.constants.CardTypeDesc;
 import com.neighbor.app.bankcard.po.ValidBankCard;
 import com.neighbor.app.bankcard.service.BankCardService;
 import com.neighbor.app.users.entity.UserInfo;

@@ -6,11 +6,10 @@ import java.util.Date;
 import com.neighbor.app.balance.po.TransactionItemDesc;
 import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.common.entity.PageEntity;
-import com.neighbor.app.recharge.po.ChannelTypeDesc;
-import com.neighbor.app.recharge.po.RechargeStatusDesc;
+import com.neighbor.app.recharge.constants.ChannelTypeDesc;
+import com.neighbor.app.recharge.constants.RechargeStatusDesc;
 import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
-import com.neighbor.common.util.StringUtil;
 
 public class Recharge  extends PageEntity{
     private Long id;

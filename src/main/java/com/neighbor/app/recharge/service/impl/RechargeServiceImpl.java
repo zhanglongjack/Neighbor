@@ -9,14 +9,12 @@ import com.neighbor.app.common.util.OrderUtils;
 import com.neighbor.app.recharge.controller.RechargeController;
 import com.neighbor.app.recharge.dao.RechargeMapper;
 import com.neighbor.app.recharge.entity.Recharge;
-import com.neighbor.app.recharge.po.RechargeStatusDesc;
+import com.neighbor.app.recharge.constants.RechargeStatusDesc;
 import com.neighbor.app.recharge.po.RechargeRecord;
-import com.neighbor.app.recharge.po.RechargeRecordResp;
 import com.neighbor.app.recharge.service.RechargeService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
-import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.util.StringUtil;
 import org.slf4j.Logger;
@@ -27,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

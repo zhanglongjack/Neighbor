@@ -1,5 +1,7 @@
 package com.neighbor.app.friend.controller;
 
+import com.neighbor.app.chatlist.entity.ChatList;
+import com.neighbor.app.chatlist.service.ChatListService;
 import com.neighbor.app.friend.entity.Friend;
 import com.neighbor.app.friend.entity.FriendApply;
 import com.neighbor.app.friend.service.FriendService;
@@ -28,6 +30,9 @@ public class FriendController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ChatListService chatListService;
 
     @RequestMapping(value = "/listRecord.req", method = RequestMethod.POST)
     @ResponseBody
@@ -94,6 +99,10 @@ public class FriendController {
             friendApplyNew.setAddType(FriendApply.AddTypeDesc.APP添加.getValue());
 
             friendService.insertFriendApply(friendApplyNew);
+            ChatList chatList = new ChatList();
+            chatList.setFriendId(friend.getFriendUserId());
+            chatListService.createChat(user,chatList);
+
             result = new ResponseResult();
 
         } catch (Exception e) {

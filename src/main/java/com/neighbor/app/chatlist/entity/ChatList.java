@@ -1,6 +1,6 @@
 package com.neighbor.app.chatlist.entity;
 
-import com.neighbor.app.chatlist.po.ChatHistorySetDesc;
+import com.neighbor.app.chatlist.constants.ChatHistorySetDesc;
 import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.PageTools;
