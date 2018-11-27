@@ -22,12 +22,12 @@ public class UserConfig {
     private String haveShock;
 
     public UserConfig() {
-        setCustomerWindowShow(CustomerWindowShowDesc.notShow.getValue());
-        setNoPasswordPay(NoPasswordPayDesc.needPwd.getValue());
-        setReceiveNewMsg(ReceiveNewMsgDesc.receive.getValue());
-        setShowMsgDetail(ShowMsgDetailDesc.notShow.getValue());
-        setHaveVoice(HaveVoiceDesc.noVoice.getValue());
-        setHaveShock(HaveShockDesc.noShock.getValue());
+//        setCustomerWindowShow(CustomerWindowShowDesc.notShow.getValue());
+//        setNoPasswordPay(NoPasswordPayDesc.needPwd.getValue());
+//        setReceiveNewMsg(ReceiveNewMsgDesc.receive.getValue());
+//        setShowMsgDetail(ShowMsgDetailDesc.notShow.getValue());
+//        setHaveVoice(HaveVoiceDesc.noVoice.getValue());
+//        setHaveShock(HaveShockDesc.noShock.getValue());
     }
 
     public static enum CustomerWindowShowDesc {
