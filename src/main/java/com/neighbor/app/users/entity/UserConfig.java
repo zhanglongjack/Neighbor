@@ -22,16 +22,16 @@ public class UserConfig {
     private String haveShock;
 
     public UserConfig() {
-        setCustomerWindowShow(CustomerWindowShowDesc.不显示客服窗口.getValue());
-        setNoPasswordPay(UserConfig.NoPasswordPayDesc.需要支付密码.getValue());
-        setReceiveNewMsg(UserConfig.ReceiveNewMsgDesc.接收新消息.getValue());
-        setShowMsgDetail(UserConfig.ShowMsgDetailDesc.不显示消息详情.getValue());
-        setHaveVoice(UserConfig.HaveVoiceDesc.没有声音.getValue());
-        setHaveShock(UserConfig.HaveShockDesc.没有震动.getValue());
+        setCustomerWindowShow(CustomerWindowShowDesc.notShow.getValue());
+        setNoPasswordPay(NoPasswordPayDesc.needPwd.getValue());
+        setReceiveNewMsg(ReceiveNewMsgDesc.receive.getValue());
+        setShowMsgDetail(ShowMsgDetailDesc.notShow.getValue());
+        setHaveVoice(HaveVoiceDesc.noVoice.getValue());
+        setHaveShock(HaveShockDesc.noShock.getValue());
     }
 
     public static enum CustomerWindowShowDesc {
-        不显示客服窗口("0"), 显示客服窗口("1");
+        notShow("0"), show("1");
         public String value;
 
         private CustomerWindowShowDesc(String value) {
@@ -44,7 +44,7 @@ public class UserConfig {
     }
 
     public static enum NoPasswordPayDesc {
-        需要支付密码("0"), 不需要支付密码("1");
+        needPwd("0"), noNeedPwd("1");
         public String value;
 
         private NoPasswordPayDesc(String value) {
@@ -57,7 +57,7 @@ public class UserConfig {
     }
 
     public static enum ReceiveNewMsgDesc {
-        不接收新消息("0"), 接收新消息("1");
+        notReceive("0"), receive("1");
         public String value;
 
         private ReceiveNewMsgDesc(String value) {
@@ -70,7 +70,7 @@ public class UserConfig {
     }
 
     public static enum ShowMsgDetailDesc {
-        不显示消息详情("0"), 显示消息详情("1");
+        notShow("0"), show("1");
         public String value;
 
         private ShowMsgDetailDesc(String value) {
@@ -83,7 +83,7 @@ public class UserConfig {
     }
 
     public static enum HaveVoiceDesc {
-        没有声音("0"), 有声音("1");
+        noVoice("0"), haveVoice("1");
         public String value;
 
         private HaveVoiceDesc(String value) {
@@ -96,7 +96,7 @@ public class UserConfig {
     }
 
     public static enum HaveShockDesc {
-        没有震动("0"), 有震动("1");
+        noShock("0"), haveShock("1");
         public String value;
 
         private HaveShockDesc(String value) {
