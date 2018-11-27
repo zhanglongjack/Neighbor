@@ -1,5 +1,6 @@
 package com.neighbor.app.friend.controller;
 
+import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.chatlist.entity.ChatList;
 import com.neighbor.app.chatlist.service.ChatListService;
 import com.neighbor.app.friend.entity.Friend;
@@ -67,7 +68,7 @@ public class FriendController {
                 Friend f = new Friend();
                 f.setUserId(user.getId());
                 f.setFriendUserId(userFriend.getId());
-                friendReturn = friendService.viewByUserIdAndFriendId(f);
+                friendReturn = friendService.viewFriendByUserIdAndFriendId(f);
             }
             result = new ResponseResult();
             result.addBody("user", userFriend);
@@ -84,29 +85,41 @@ public class FriendController {
     public ResponseResult addFriend(@ModelAttribute("user") UserInfo user,Friend friend) {
         logger.info("addFriend begin ......");
 
-        ResponseResult result = null;
+        ResponseResult result = new ResponseResult();
         try {
-            Date currentTime = new Date();
-            FriendApply friendApplyNew = new FriendApply();
-            friendApplyNew.setCreateTime(currentTime);
-            friendApplyNew.setUpdateTime(currentTime);
-            friendApplyNew.setContactDate(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
-            friendApplyNew.setContactTime(DateUtils.formatDateStr(currentTime, DateFormateType.TIME_FORMAT));
-            friendApplyNew.setUserId(user.getId());
-            friendApplyNew.setFriendUserId(friend.getFriendUserId());
-            friendApplyNew.setStates(FriendApply.StatesDesc.申请中.getValue());
-            friendApplyNew.setAddDirection(FriendApply.AddDirectionDesc.主动添加.getValue());
-            friendApplyNew.setAddType(FriendApply.AddTypeDesc.APP添加.getValue());
 
-            friendService.insertFriendApply(friendApplyNew);
-            ChatList chatList = new ChatList();
-            chatList.setFriendId(friend.getFriendUserId());
-            chatListService.createChat(user,chatList);
+            Long userId = user.getId();
+            Long friendUserId = friend.getFriendUserId();
 
-            result = new ResponseResult();
+            FriendApply friendApplyCheck = new FriendApply();
+            friendApplyCheck.setUserId(userId);
+            friendApplyCheck.setFriendUserId(friendUserId);
+            FriendApply friendApplyOld = friendService.viewFriendApplyByUserIdAndFriendId(friendApplyCheck);
+
+            if(friendApplyOld!=null){
+                result.setErrorCode(2);
+            }else{
+                Date currentTime = new Date();
+                FriendApply friendApplyNew = new FriendApply();
+                friendApplyNew.setCreateTime(currentTime);
+                friendApplyNew.setUpdateTime(currentTime);
+                friendApplyNew.setContactDate(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
+                friendApplyNew.setContactTime(DateUtils.formatDateStr(currentTime, DateFormateType.TIME_FORMAT));
+                friendApplyNew.setUserId(userId);
+                friendApplyNew.setFriendUserId(friendUserId);
+                friendApplyNew.setStates(FriendApply.StatesDesc.申请中.getValue());
+                friendApplyNew.setAddDirection(FriendApply.AddDirectionDesc.主动添加.getValue());
+                friendApplyNew.setAddType(FriendApply.AddTypeDesc.APP添加.getValue());
+
+                friendService.insertFriendApply(friendApplyNew);
+                ChatList chatList = new ChatList();
+                chatList.setFriendId(friendUserId);
+                chatListService.createChat(user,chatList);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            result.setErrorCode(ErrorCodeDesc.failed.getValue());
         }
 
         return result;

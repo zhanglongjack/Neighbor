@@ -39,7 +39,6 @@ CREATE TABLE `users_config`  (
   `user_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '用户id,主键',
   `create_time` datetime COMMENT '创建时间',
   `update_time` datetime COMMENT '更新时间',
-  `pay_password` varchar(128) COMMENT '支付密码',
   `customer_window_show` char(1) COMMENT '客服悬浮窗口(0:不显示；1:显示)',
   `no_password_pay` char(1) COMMENT '支付密码(0:需要密码；1:不需要密码)',
   `receive_new_msg` char(1) COMMENT '接受新消息通知(0:不接收；1:接收)',

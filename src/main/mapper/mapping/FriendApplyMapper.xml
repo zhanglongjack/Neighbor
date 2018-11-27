@@ -57,6 +57,19 @@
     limit #{pageTools.rowIndex},#{pageTools.pageSize}
   </select>
 
+  <select id="selectByMap" resultMap="BaseResultMap" parameterType="com.neighbor.app.friend.entity.FriendApply" >
+    select
+    <include refid="Base_Column_List" />
+    from friend_apply
+    where 1=1
+    <if test="userId !=null">
+      and user_id = #{userId,jdbcType=BIGINT}
+    </if>
+    <if test="friendUserId !=null">
+      and friend_user_id = #{friendUserId,jdbcType=BIGINT}
+    </if>
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from friend_apply
     where id = #{id,jdbcType=BIGINT}
