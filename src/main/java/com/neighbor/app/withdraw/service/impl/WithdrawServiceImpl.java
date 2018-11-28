@@ -13,6 +13,7 @@ import com.neighbor.app.withdraw.dao.WithdrawMapper;
 import com.neighbor.app.withdraw.entity.Withdraw;
 import com.neighbor.app.withdraw.constants.WithdrawStatusDesc;
 import com.neighbor.app.withdraw.service.WithdrawService;
+import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class WithdrawServiceImpl implements WithdrawService {
             return responseResult;
         }
         BigDecimal amount = BigDecimalUtil.rounding(withdraw.getAmount());
-        BigDecimal withdrawRate = new BigDecimal(env.getProperty("withdraw_rate"));
+        BigDecimal withdrawRate = new BigDecimal(env.getProperty(EnvConstants.WITHDRAW_RATE));
         BigDecimal cost = BigDecimalUtil.rounding(amount.multiply(withdrawRate));
         BigDecimal payAmount = BigDecimalUtil.rounding(amount.add(cost));
         if(userWallet.getAvailableAmount().compareTo(payAmount)<0){
@@ -150,7 +151,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         }
         HashMap<String,Object> body = new HashMap<String,Object>();
         body.put("availableAmount",userWallet.getAvailableAmount());
-        body.put("withdrawRate",env.getProperty("withdraw_rate"));
+        body.put("withdrawRate",env.getProperty(EnvConstants.WITHDRAW_RATE));
         responseResult.addBody("resp",body);
         return responseResult;
     }

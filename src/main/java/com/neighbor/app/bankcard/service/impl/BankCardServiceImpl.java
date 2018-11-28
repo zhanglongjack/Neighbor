@@ -9,6 +9,7 @@ import com.neighbor.app.bankcard.constants.CardTypeDesc;
 import com.neighbor.app.bankcard.po.ValidBankCard;
 import com.neighbor.app.bankcard.service.BankCardService;
 import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.exception.ParamsCheckException;
 import com.neighbor.common.util.*;
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ public class BankCardServiceImpl implements BankCardService {
         if(data>0){
             throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"该银行卡已添加过，请勿重复添加!");
         }
-        String respStr = HttpClientUtils.doGet(String.format(env.getProperty("ali_bank_card_url"),bankCard.getBankCardNo())) ;
+        String respStr = HttpClientUtils.doGet(String.format(env.getProperty(EnvConstants.ALI_BANK_CARD_URL),bankCard.getBankCardNo())) ;
         ValidBankCard validBankCard = JSON.parseObject(respStr,ValidBankCard.class);
         if(validBankCard==null||validBankCard.getValidated()==null||!validBankCard.getValidated().booleanValue()){
             throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"暂不支持该银行卡!");

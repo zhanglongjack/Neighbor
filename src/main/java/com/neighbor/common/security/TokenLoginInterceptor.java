@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.alibaba.fastjson.JSONObject;
+import com.neighbor.common.exception.UploaderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +60,10 @@ public class TokenLoginInterceptor implements HandlerInterceptor {
 		String basePath = request.getContextPath();
 		String path = request.getRequestURI();
 		logger.info("basePath:"+basePath+" -------  path:"+path);
-
+		//打印param
+		String requestParams = JSONObject.toJSONString(getRequestParams(request));
+		logger.info("requestParams : "+requestParams);
+		logger.info("--------------------------------------------------------");
 		if (!doLoginInterceptor(path, basePath)) {// 是否进行登陆拦截
 			logger.info("不需要拦截的路径:{}",path);
 			return true;
@@ -67,6 +72,10 @@ public class TokenLoginInterceptor implements HandlerInterceptor {
 		// 检查token是否为空
 		if (!StringUtils.hasLength(token)) {
 			logger.info("token 不存在");
+			if(path.indexOf("/uploader/saveImg.req")!=-1){
+				//因为上传文件发生错误时需要返回非200状态码
+				throw new UploaderException();
+			}
 			printJson(response, "");
 			return false;
 		}
@@ -75,6 +84,10 @@ public class TokenLoginInterceptor implements HandlerInterceptor {
 		
 		if (user == null) {
 			logger.info("token:{},用户 不存在:{}",token,userContainer.userMap);
+			if(path.indexOf("/uploader/saveImg.req")!=-1){
+				//因为上传文件发生错误时需要返回非200状态码
+				throw new UploaderException();
+			}
 			printJson(response, "");
 			return false;
 		}
@@ -144,6 +157,19 @@ public class TokenLoginInterceptor implements HandlerInterceptor {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	public static Map<String, String> getRequestParams(HttpServletRequest req) {
+		Map<String, String> requestParams = new HashMap<String, String>();
+		Map<String, String[]> paramters = req.getParameterMap();
+		if (paramters != null && !paramters.isEmpty()) {
+			for (String paramterName : paramters.keySet()) {
+				String paramValue = paramters.get(paramterName)[0].toString();
+				requestParams.put(paramterName, paramValue);
+			}
+		}
+		return requestParams;
 	}
 
 }
