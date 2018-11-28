@@ -16,6 +16,4 @@ public interface UserWalletService {
     
     int updateWalletAmount(UserWallet record);
 
-	UserWallet sendPacket(UserWallet userWallet);
-     
 }

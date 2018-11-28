@@ -1,6 +1,7 @@
 package com.neighbor.app.wallet.controller;
 
 import com.neighbor.app.api.common.ErrorCodeDesc;
+import com.neighbor.app.packet.service.PacketService;
 import com.neighbor.common.exception.ParamsCheckException;
 import com.neighbor.common.security.EncodeData;
 import org.slf4j.Logger;
@@ -27,20 +28,6 @@ public class WalletController {
 	@Autowired
 	private UserWalletService userWalletService; 
 
-	@RequestMapping(value = "/sendPacket.req",method=RequestMethod.POST)
-	@ResponseBody
-	public ResponseResult sendPacket(@ModelAttribute("user") UserInfo user,UserWallet userWallet) {
-		logger.info("sendPacket request : " +user);
-		
-		userWallet.setuId(user.getId());
-		
-		UserWallet wallet = userWalletService.sendPacket(userWallet);
-		wallet.setPayPassword(wallet.getPayPassword()==null?null:"******");
-		ResponseResult result = new ResponseResult();
-		result.addBody("wallet", wallet);
-		return result;
-	}
-	
 	@RequestMapping(value = "/walletShow.req",method=RequestMethod.POST)
 	@ResponseBody
 	public ResponseResult userInfoShow(@ModelAttribute("user") UserInfo user) {

@@ -10,9 +10,6 @@
 		<result column="send_user_id" jdbcType="BIGINT" property="sendUserId" />
 		<result column="target_user_id" jdbcType="BIGINT" property="targetUserId" />
 		<result column="target_group_id" jdbcType="BIGINT" property="targetGroupId" />
-		<result column="amount" jdbcType="DECIMAL" property="amount" />
-		<result column="number" jdbcType="DECIMAL" property="number" />
-		<result column="hit_amount_number" jdbcType="DECIMAL" property="hitAmountNumber" />
 		<result column="content" jdbcType="VARCHAR" property="content" />
 		<result column="date" jdbcType="VARCHAR" property="date" />
 		<result column="time" jdbcType="VARCHAR" property="time" />
@@ -20,8 +17,7 @@
 
 	<sql id="Base_Column_List">
 		msg_id, header, chat_type, msg_type, status, send_user_id, target_user_id,
-		target_group_id,
-		amount, number, hit_amount_number, content, date, time
+		target_group_id, content, date, time
 	</sql>
   	<sql id="dynamicWhere">
 		<where>
@@ -95,15 +91,6 @@
 			<if test="targetGroupId != null">
 				target_group_id,
 			</if>
-			<if test="amount != null">
-				amount,
-			</if>
-			<if test="number != null">
-				number,
-			</if>
-			<if test="hitAmountNumber != null">
-				hit_amount_number,
-			</if>
 			<if test="content != null">
 				content,
 			</if>
@@ -135,15 +122,6 @@
 			</if>
 			<if test="targetGroupId != null">
 				#{targetGroupId,jdbcType=BIGINT},
-			</if>
-			<if test="amount != null">
-				#{amount,jdbcType=DECIMAL},
-			</if>
-			<if test="number != null">
-				#{number,jdbcType=DECIMAL},
-			</if>
-			<if test="hitAmountNumber != null">
-				#{hitAmountNumber,jdbcType=DECIMAL},
 			</if>
 			<if test="content != null">
 				#{content,jdbcType=VARCHAR},
@@ -179,15 +157,6 @@
 			</if>
 			<if test="targetGroupId != null">
 				target_group_id = #{targetGroupId,jdbcType=BIGINT},
-			</if>
-			<if test="amount != null">
-				amount = #{amount,jdbcType=DECIMAL},
-			</if>
-			<if test="number != null">
-				number = #{number,jdbcType=DECIMAL},
-			</if>
-			<if test="hitAmountNumber != null">
-				hit_amount_number = #{hitAmountNumber,jdbcType=DECIMAL},
 			</if>
 			<if test="content != null">
 				content = #{content,jdbcType=VARCHAR},
