@@ -1,8 +1,6 @@
 package com.neighbor.app.friend.controller;
 
 import com.neighbor.app.api.common.ErrorCodeDesc;
-import com.neighbor.app.chatlist.entity.ChatList;
-import com.neighbor.app.chatlist.service.ChatListService;
 import com.neighbor.app.friend.entity.Friend;
 import com.neighbor.app.friend.entity.FriendApply;
 import com.neighbor.app.friend.service.FriendService;
@@ -31,9 +29,6 @@ public class FriendController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private ChatListService chatListService;
 
     @RequestMapping(value = "/listRecord.req", method = RequestMethod.POST)
     @ResponseBody
@@ -107,14 +102,44 @@ public class FriendController {
                 friendApplyNew.setContactTime(DateUtils.formatDateStr(currentTime, DateFormateType.TIME_FORMAT));
                 friendApplyNew.setUserId(userId);
                 friendApplyNew.setFriendUserId(friendUserId);
-                friendApplyNew.setStates(FriendApply.StatesDesc.申请中.getValue());
-                friendApplyNew.setAddDirection(FriendApply.AddDirectionDesc.主动添加.getValue());
-                friendApplyNew.setAddType(FriendApply.AddTypeDesc.APP添加.getValue());
+                friendApplyNew.setStates(FriendApply.StatesDesc.applyIng.getValue());
+                friendApplyNew.setAddDirection(FriendApply.AddDirectionDesc.activeAdd.getValue());
+                friendApplyNew.setAddType(FriendApply.AddTypeDesc.appAdd.getValue());
 
                 friendService.insertFriendApply(friendApplyNew);
-                ChatList chatList = new ChatList();
-                chatList.setFriendId(friendUserId);
-                chatListService.createChat(user,chatList);
+
+            }
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            result.setErrorCode(ErrorCodeDesc.failed.getValue());
+        }
+
+        return result;
+    }
+
+    @RequestMapping(value = "/acceptFriend.req", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult acceptFriend(@ModelAttribute("user") UserInfo user,Friend friend) {
+        logger.info("acceptFriend begin ......");
+
+        ResponseResult result = new ResponseResult();
+        try {
+
+            Long friendUserId = user.getId();
+            Long userId = friend.getUserId();
+
+            FriendApply friendApplyCheck = new FriendApply();
+            friendApplyCheck.setUserId(userId);
+            friendApplyCheck.setFriendUserId(friendUserId);
+            FriendApply friendApplyOld = friendService.viewFriendApplyByUserIdAndFriendId(friendApplyCheck);
+
+            if(friendApplyOld!=null){
+
+                friendService.acceptFriend(friendApplyOld);
+
+            }else{
+                result.setErrorCode(ErrorCodeDesc.failed.getValue());
             }
 
         } catch (Exception e) {

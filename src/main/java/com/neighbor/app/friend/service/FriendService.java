@@ -12,7 +12,11 @@ public interface FriendService {
 
    public FriendApply viewFriendApplyByUserIdAndFriendId(FriendApply friendApply) throws Exception;
 
+   public void insertFriend(Friend friend) throws Exception;
+
    public void insertFriendApply(FriendApply friendApply)throws Exception;
+
+   public void acceptFriend(FriendApply friendApply) throws Exception;
 
    public ResponseResult listFriendApplyRecord(UserInfo user, FriendApply friendApply) throws Exception;
 

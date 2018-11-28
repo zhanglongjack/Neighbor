@@ -13,6 +13,7 @@ CREATE TABLE `friend` (
   `code` varchar(50) NOT NULL COMMENT '通讯录排序code',
   `add_type` varchar(50) NOT NULL COMMENT '添加类型，1：链接添加；2：APP添加',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `unit_key` (`user_id`,`friend_user_id`) COMMENT '唯一组合键',
   KEY `index_friend_u_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='好友表';
 
