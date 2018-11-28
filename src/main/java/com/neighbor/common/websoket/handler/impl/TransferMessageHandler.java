@@ -16,25 +16,13 @@ import com.neighbor.common.websoket.handler.WebSocketMessageHandler;
 import com.neighbor.common.websoket.po.SocketMessage;
 
 @Component
-public class TransferMessageHandler implements WebSocketMessageHandler {
-	private static final Logger logger = LoggerFactory.getLogger(TransferMessageHandler.class);
+public class TransferMessageHandler extends AbstractMessageHandler {
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
-	public ResponseResult handleMessage(SocketMessage msgInfo, WebSocketChatType chatType, WebSocketMsgType msgType) {
+	public ResponseResult handle() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void successCallBack(SocketMessage msgInfo, WebSocketChatType chatType, WebSocketMsgType msgType) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void failedCallBack(SocketMessage msgInfo, WebSocketChatType chatType, WebSocketMsgType msgType) {
-		// TODO Auto-generated method stub
-		
 	}
  
 }

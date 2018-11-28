@@ -5,7 +5,7 @@ import java.util.List;
 import com.alibaba.fastjson.JSON;
 
 public class SocketMessage {
-	private String msgId;
+	private Long msgId;
 	private String header;
 	private String chatType;
 	private String msgType;
@@ -23,11 +23,11 @@ public class SocketMessage {
 	private List<Long> pushedUsers;
 	
 	
-	public String getMsgId() {
+	public Long getMsgId() {
 		return msgId;
 	}
 
-	public void setMsgId(String msgId) {
+	public void setMsgId(Long msgId) {
 		this.msgId = msgId;
 	}
 

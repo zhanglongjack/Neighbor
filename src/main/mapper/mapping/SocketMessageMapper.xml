@@ -66,6 +66,11 @@
 		where msg_id = #{msgId,jdbcType=BIGINT}
 	</delete>
 
+	<insert id="insertRelationShipSelective" parameterType="Map">
+		insert into msg_group_menber_relationship (r_msg_id,r_user_id)
+		values(#{msgId},#{userId})
+	</insert>
+
 	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="msgId"  parameterType="com.neighbor.common.websoket.po.SocketMessage">
 		insert into chat_message
 		<trim prefix="(" suffix=")" suffixOverrides=","> 

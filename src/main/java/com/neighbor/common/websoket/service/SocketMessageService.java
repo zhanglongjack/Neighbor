@@ -1,6 +1,7 @@
 package com.neighbor.common.websoket.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.neighbor.common.websoket.po.SocketMessage;
 
@@ -18,5 +19,7 @@ public interface SocketMessageService {
 	List<SocketMessage> selectByTargetUserIdStatus(Long targetUserId, String status,String chatType);
 
 	List<SocketMessage> selectbySelective(SocketMessage msg);
+
+	void insertRelationShipSelective(Map<String, Long> relationShip);
 
 }

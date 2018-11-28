@@ -13,4 +13,9 @@ public interface UserWalletService {
     int payPasswordEdit(UserWallet record);
 	UserWallet selectByPrimaryUserId(Long userId);
     public UserWallet lockUserWalletByUserId(Long uid);
+    
+    int updateWalletAmount(UserWallet record);
+
+	UserWallet sendPacket(UserWallet userWallet);
+     
 }

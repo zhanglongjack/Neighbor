@@ -1,6 +1,7 @@
 package com.neighbor.common.websoket.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -18,5 +19,7 @@ public interface SocketMessageMapper {
 	List<SocketMessage> selectByStatus(String status);
 
 	List<SocketMessage> selectbySelective(SocketMessage msg);
+
+	void insertRelationShipSelective(Map<String, Long> relationShip);
 
 }

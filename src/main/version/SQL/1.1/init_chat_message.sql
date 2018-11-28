@@ -15,3 +15,7 @@ CREATE TABLE chat_message (
     `time` VARCHAR(15) NOT NULL COMMENT '发送时间',
     PRIMARY KEY (msg_id)
 )
+
+
+ALTER TABLE `user_wallet` 
+ADD UNIQUE INDEX `u_id_UNIQUE` (`u_id` ASC);
