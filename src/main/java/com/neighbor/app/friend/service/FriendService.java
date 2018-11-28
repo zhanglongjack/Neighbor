@@ -8,7 +8,9 @@ import com.neighbor.common.util.ResponseResult;
 public interface FriendService {
    public ResponseResult listRecord(UserInfo user, Friend friend) throws Exception;
 
-   public Friend viewByUserIdAndFriendId(Friend record)throws Exception;
+   public Friend viewFriendByUserIdAndFriendId(Friend record)throws Exception;
+
+   public FriendApply viewFriendApplyByUserIdAndFriendId(FriendApply friendApply) throws Exception;
 
    public void insertFriendApply(FriendApply friendApply)throws Exception;
 

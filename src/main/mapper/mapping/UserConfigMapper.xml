@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neighbor.app.users.dao.UserConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.neighbor.app.users.entity.UserConfig" >
+    <id column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="customer_window_show" property="customerWindowShow" jdbcType="CHAR" />
+    <result column="no_password_pay" property="noPasswordPay" jdbcType="CHAR" />
+    <result column="receive_new_msg" property="receiveNewMsg" jdbcType="CHAR" />
+    <result column="show_msg_detail" property="showMsgDetail" jdbcType="CHAR" />
+    <result column="have_voice" property="haveVoice" jdbcType="CHAR" />
+    <result column="have_shock" property="haveShock" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    user_id, create_time, update_time, customer_window_show, no_password_pay, receive_new_msg, 
+    show_msg_detail, have_voice, have_shock
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from users_config
+    where user_id = #{userId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from users_config
+    where user_id = #{userId,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.neighbor.app.users.entity.UserConfig" >
+    insert into users_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="customerWindowShow != null" >
+        customer_window_show,
+      </if>
+      <if test="noPasswordPay != null" >
+        no_password_pay,
+      </if>
+      <if test="receiveNewMsg != null" >
+        receive_new_msg,
+      </if>
+      <if test="showMsgDetail != null" >
+        show_msg_detail,
+      </if>
+      <if test="haveVoice != null" >
+        have_voice,
+      </if>
+      <if test="haveShock != null" >
+        have_shock,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerWindowShow != null" >
+        #{customerWindowShow,jdbcType=CHAR},
+      </if>
+      <if test="noPasswordPay != null" >
+        #{noPasswordPay,jdbcType=CHAR},
+      </if>
+      <if test="receiveNewMsg != null" >
+        #{receiveNewMsg,jdbcType=CHAR},
+      </if>
+      <if test="showMsgDetail != null" >
+        #{showMsgDetail,jdbcType=CHAR},
+      </if>
+      <if test="haveVoice != null" >
+        #{haveVoice,jdbcType=CHAR},
+      </if>
+      <if test="haveShock != null" >
+        #{haveShock,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.users.entity.UserConfig" >
+    update users_config
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerWindowShow != null" >
+        customer_window_show = #{customerWindowShow,jdbcType=CHAR},
+      </if>
+      <if test="noPasswordPay != null" >
+        no_password_pay = #{noPasswordPay,jdbcType=CHAR},
+      </if>
+      <if test="receiveNewMsg != null" >
+        receive_new_msg = #{receiveNewMsg,jdbcType=CHAR},
+      </if>
+      <if test="showMsgDetail != null" >
+        show_msg_detail = #{showMsgDetail,jdbcType=CHAR},
+      </if>
+      <if test="haveVoice != null" >
+        have_voice = #{haveVoice,jdbcType=CHAR},
+      </if>
+      <if test="haveShock != null" >
+        have_shock = #{haveShock,jdbcType=CHAR},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=BIGINT}
+  </update>
+
+</mapper>

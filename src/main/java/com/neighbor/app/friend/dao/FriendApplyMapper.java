@@ -13,6 +13,8 @@ public interface FriendApplyMapper {
 
     Long selectPageTotalCount(FriendApply record);
 
-    List<Friend> selectFullInfoPageForList(FriendApply record);
+    List<FriendApply> selectFullInfoPageForList(FriendApply record);
+
+    FriendApply selectByMap(FriendApply friend);
 
 }
