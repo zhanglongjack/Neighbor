@@ -61,7 +61,7 @@
   <select id="selectPageByObjectForList" parameterType="com.neighbor.app.chatlist.entity.ChatList"
           resultMap="FullResultMap">
     select t.*,u.nick_name as friendNickName,f.friend_desc as friendDesc,u.real_name as friendName,u.user_photo as friendHeadUrl
-    from chat_list t inner join users_info u on t.user_id = u.id
+    from chat_list t inner join users_info u on t.friend_id = u.id
     INNER JOIN friend f on t.user_id = f.user_id and t.friend_id = f.friend_user_id
     <include refid="dynamicWhere" />
     order by t.create_time desc
