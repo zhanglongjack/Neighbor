@@ -1,9 +1,9 @@
 package com.neighbor.app.wallet.controller;
 
 import com.neighbor.app.api.common.ErrorCodeDesc;
+import com.neighbor.app.packet.service.PacketService;
 import com.neighbor.common.exception.ParamsCheckException;
 import com.neighbor.common.security.EncodeData;
-import com.neighbor.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

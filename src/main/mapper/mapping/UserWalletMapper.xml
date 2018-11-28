@@ -136,4 +136,14 @@
 		where u_id = #{uId,jdbcType=BIGINT}
 	</update>
 
+	<update id="updateWalletAmount" parameterType="com.neighbor.app.wallet.entity.UserWallet">
+		update user_wallet 
+		set available_amount = available_amount + #{availableAmount}
+		<if test="freezeAmount != null and freezeAmount > 0">
+				,freeze_amount = freeze_amount + #{freezeAmount}
+		</if>
+		where u_id = #{uId}
+	</update>
+	
+	
 </mapper>

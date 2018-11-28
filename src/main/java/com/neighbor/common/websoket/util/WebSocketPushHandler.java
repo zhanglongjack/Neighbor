@@ -1,13 +1,10 @@
 package com.neighbor.common.websoket.util;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,20 +107,18 @@ public class WebSocketPushHandler implements WebSocketHandler {
 			logger.info("收到单发消息:" + msgInfo.getContent());
 			// 消息消息发回,表示消息已接收
 			msgInfo.setStatus(MessageStatus.pushed_response + "");
-			handler.successCallBack(msgInfo,chatType,msgType);
 			// 消息推送
 			isSend = sendMessageToUser(msgInfo.getTargetUserId(), handleResult);
 			if (isSend) {
 				msgInfo.setStatus(MessageStatus.pushed + "");
-				handler.successCallBack(msgInfo,chatType,msgType);
 			}
-
+			
+			handler.successCallBack(msgInfo,chatType,msgType);
 			// sendResponseMessage(msgInfo.getSendUserId(),result);
 		} else if(WebSocketChatType.multiple == chatType && isSend){
 			logger.info("收到群发消息:" + msgInfo.getContent());
 			// 消息消息发回,表示消息已接收
 			msgInfo.setStatus(MessageStatus.pushed_response + "");
-			handler.successCallBack(msgInfo,chatType,msgType);
 			// 消息推送
 			List<Long> pushedUsers = sendMessagesToGroup(msgInfo.getSendUserId(), msgInfo.getTargetGroupId(), handleResult);
 			// 成功推送的用户
@@ -231,7 +226,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 				session.sendMessage(message);
 				return true;
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("消息推送异常", e);
 		}
 		return false;

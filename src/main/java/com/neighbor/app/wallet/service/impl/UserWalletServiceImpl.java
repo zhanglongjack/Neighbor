@@ -2,8 +2,6 @@ package com.neighbor.app.wallet.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.dao.UserWalletMapper;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
@@ -12,7 +10,8 @@ import com.neighbor.app.wallet.service.UserWalletService;
 public class UserWalletServiceImpl implements UserWalletService {
 
 	@Autowired
-	private UserWalletMapper userWalletMapper;
+	private UserWalletMapper userWalletMapper; 
+	
 	@Override
 	public int deleteByPrimaryKey(Long id) {
 		return userWalletMapper.deleteByPrimaryKey(id);
@@ -47,5 +46,9 @@ public class UserWalletServiceImpl implements UserWalletService {
 		return userWalletMapper.lockUserWalletByUserId(uid);
 	}
 
+	@Override
+	public int updateWalletAmount(UserWallet record) {
+		return userWalletMapper.updateWalletAmount(record);
+	}
 
 }

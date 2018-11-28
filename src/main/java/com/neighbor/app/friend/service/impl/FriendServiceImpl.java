@@ -48,7 +48,7 @@ public class FriendServiceImpl implements FriendService {
         ResponseResult result = new ResponseResult();
         friendApply.setFriendUserId(user.getId());
         Long total = friendApplyMapper.selectPageTotalCount(friendApply);
-        List<Friend> pageList = friendApplyMapper.selectFullInfoPageForList(friendApply);
+        List<FriendApply> pageList = friendApplyMapper.selectFullInfoPageForList(friendApply);
         PageTools pageTools = friendApply.getPageTools();
         pageTools.setTotal(total);
         result.addBody("resultList", pageList);
@@ -56,8 +56,12 @@ public class FriendServiceImpl implements FriendService {
         return result;
     }
 
-    public Friend viewByUserIdAndFriendId(Friend friend) throws Exception {
+    public Friend viewFriendByUserIdAndFriendId(Friend friend) throws Exception {
         return friendMapper.selectByMap(friend);
+    }
+
+    public FriendApply viewFriendApplyByUserIdAndFriendId(FriendApply friendApply) throws Exception {
+        return friendApplyMapper.selectByMap(friendApply);
     }
 
     public void insertFriendApply(FriendApply friendApply) throws Exception {

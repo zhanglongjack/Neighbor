@@ -18,4 +18,6 @@ public interface UserWalletMapper {
     UserWallet lockUserWalletByUserId(Long uid);
 	int payPasswordEdit(UserWallet record);
 
+	int updateWalletAmount(UserWallet record);
+
 }

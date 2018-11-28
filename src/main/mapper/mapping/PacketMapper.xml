@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neighbor.app.packet.dao.PacketMapper">
+	<resultMap id="BaseResultMap" type="com.neighbor.app.packet.entity.Packet">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="s_user_id" jdbcType="VARCHAR" property="userId" />
+		<result column="receive_user_id" jdbcType="BIGINT" property="receiveUserId" />
+		<result column="group_id" jdbcType="BIGINT" property="groupId" />
+		<result column="amount" jdbcType="DECIMAL" property="amount" />
+		<result column="packet_num" jdbcType="INTEGER" property="packetNum" />
+		<result column="hit_num" jdbcType="INTEGER" property="hitNum" />
+		<result column="send_date" jdbcType="VARCHAR" property="sendDate" />
+		<result column="send_time" jdbcType="VARCHAR" property="sendTime" />
+		<result column="remarke" jdbcType="VARCHAR" property="remarke" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, s_user_id, receive_user_id, group_id, amount, packet_num, hit_num,
+		send_date,
+		send_time, remarke
+	</sql>
+	
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from packet
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from packet
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="msgId"  parameterType="com.neighbor.app.packet.entity.Packet">
+		insert into packet
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="userId != null">
+				s_user_id,
+			</if>
+			<if test="receiveUserId != null">
+				receive_user_id,
+			</if>
+			<if test="groupId != null">
+				group_id,
+			</if>
+			<if test="amount != null">
+				amount,
+			</if>
+			<if test="packetNum != null">
+				packet_num,
+			</if>
+			<if test="hitNum != null">
+				hit_num,
+			</if>
+			<if test="sendDate != null">
+				send_date,
+			</if>
+			<if test="sendTime != null">
+				send_time,
+			</if>
+			<if test="remarke != null">
+				remarke,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=VARCHAR},
+			</if>
+			<if test="receiveUserId != null">
+				#{receiveUserId,jdbcType=BIGINT},
+			</if>
+			<if test="groupId != null">
+				#{groupId,jdbcType=BIGINT},
+			</if>
+			<if test="amount != null">
+				#{amount,jdbcType=DECIMAL},
+			</if>
+			<if test="packetNum != null">
+				#{packetNum,jdbcType=INTEGER},
+			</if>
+			<if test="hitNum != null">
+				#{hitNum,jdbcType=INTEGER},
+			</if>
+			<if test="sendDate != null">
+				#{sendDate,jdbcType=VARCHAR},
+			</if>
+			<if test="sendTime != null">
+				#{sendTime,jdbcType=VARCHAR},
+			</if>
+			<if test="remarke != null">
+				#{remarke,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.packet.entity.Packet">
+		update packet
+		<set>
+			<if test="userId != null">
+				s_user_id = #{userId,jdbcType=VARCHAR},
+			</if>
+			<if test="receiveUserId != null">
+				receive_user_id = #{receiveUserId,jdbcType=BIGINT},
+			</if>
+			<if test="groupId != null">
+				group_id = #{groupId,jdbcType=BIGINT},
+			</if>
+			<if test="amount != null">
+				amount = #{amount,jdbcType=DECIMAL},
+			</if>
+			<if test="packetNum != null">
+				packet_num = #{packetNum,jdbcType=INTEGER},
+			</if>
+			<if test="hitNum != null">
+				hit_num = #{hitNum,jdbcType=INTEGER},
+			</if>
+			<if test="sendDate != null">
+				send_date = #{sendDate,jdbcType=VARCHAR},
+			</if>
+			<if test="sendTime != null">
+				send_time = #{sendTime,jdbcType=VARCHAR},
+			</if>
+			<if test="remarke != null">
+				remarke = #{remarke,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+
+</mapper>
