@@ -17,4 +17,6 @@ public interface FriendApplyMapper {
 
     FriendApply selectByMap(FriendApply friend);
 
+    int updateByPrimaryKeySelective(FriendApply record);
+
 }

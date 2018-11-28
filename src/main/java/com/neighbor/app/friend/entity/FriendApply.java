@@ -33,7 +33,7 @@ public class FriendApply extends PageEntity {
 
 
     public static enum StatesDesc {
-        申请中("1"), 审核通过("2"), 审核拒绝("3");
+        applyIng("1"), pass("2"), notPass("3");
         public String value;
 
         private StatesDesc(String value) {
@@ -46,7 +46,7 @@ public class FriendApply extends PageEntity {
     }
 
     public static enum AddDirectionDesc {
-        主动添加("1"), 被动添加("2");
+        activeAdd("1"), acceptAdd("2");
         public String value;
 
         private AddDirectionDesc(String value) {
@@ -59,7 +59,7 @@ public class FriendApply extends PageEntity {
     }
 
     public static enum AddTypeDesc {
-        链接添加("1"), APP添加("2");
+        linkAdd("1"), appAdd("2");
         public String value;
 
         private AddTypeDesc(String value) {

@@ -1,19 +1,26 @@
 package com.neighbor.app.friend.service.impl;
 
-import com.neighbor.app.bankcard.entity.BankCard;
+import com.neighbor.app.chatlist.entity.ChatList;
+import com.neighbor.app.chatlist.service.ChatListService;
 import com.neighbor.app.friend.dao.FriendApplyMapper;
 import com.neighbor.app.friend.dao.FriendMapper;
 import com.neighbor.app.friend.entity.Friend;
 import com.neighbor.app.friend.entity.FriendApply;
 import com.neighbor.app.friend.service.FriendService;
 import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.app.users.service.UserService;
+import com.neighbor.common.util.DateFormateType;
+import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,6 +33,11 @@ public class FriendServiceImpl implements FriendService {
     @Autowired
     private FriendApplyMapper friendApplyMapper;
 
+    @Autowired
+    private ChatListService chatListService;
+
+    @Autowired
+    private UserService userService;
 
 
     @Override
@@ -64,8 +76,58 @@ public class FriendServiceImpl implements FriendService {
         return friendApplyMapper.selectByMap(friendApply);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void insertFriendApply(FriendApply friendApply) throws Exception {
         friendApplyMapper.insertFriendApply(friendApply);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void insertFriend(Friend friend) throws Exception {
+        friendMapper.insertSelective(friend);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void acceptFriend(FriendApply friendApply) throws Exception {
+
+        Date currentTime = new Date();
+        friendApply.setStates(FriendApply.StatesDesc.pass.getValue());
+        friendApply.setUpdateTime(currentTime);
+        friendApplyMapper.updateByPrimaryKeySelective(friendApply);
+
+        Long userId = friendApply.getUserId();
+        Long friendUserId = friendApply.getFriendUserId();
+
+        Friend friendActive = new Friend();
+        friendActive.setCreateTime(currentTime);
+        friendActive.setUpdateTime(currentTime);
+        friendActive.setContactDate(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
+        friendActive.setContactTime(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
+        friendActive.setUserId(userId);
+        friendActive.setFriendUserId(friendUserId);
+        friendActive.setStates(FriendApply.StatesDesc.pass.getValue());
+        friendActive.setAddDirection(FriendApply.AddDirectionDesc.activeAdd.getValue());
+        friendActive.setAddType(FriendApply.AddTypeDesc.appAdd.getValue());
+        friendActive.setCode(String.valueOf(userId));
+        insertFriend(friendActive);
+
+        Friend friendAccept = new Friend();
+        friendAccept.setCreateTime(currentTime);
+        friendAccept.setUpdateTime(currentTime);
+        friendAccept.setContactDate(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
+        friendAccept.setContactTime(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
+        friendAccept.setUserId(friendUserId);
+        friendAccept.setFriendUserId(userId);
+        friendAccept.setStates(FriendApply.StatesDesc.pass.getValue());
+        friendAccept.setAddDirection(FriendApply.AddDirectionDesc.acceptAdd.getValue());
+        friendAccept.setAddType(FriendApply.AddTypeDesc.appAdd.getValue());
+        friendAccept.setCode(String.valueOf(friendUserId));
+        insertFriend(friendAccept);
+
+        UserInfo user = userService.selectByPrimaryKey(userId);
+        ChatList chatList = new ChatList();
+        chatList.setFriendId(friendUserId);
+        chatListService.createChat(user, chatList);
+
     }
 
 
