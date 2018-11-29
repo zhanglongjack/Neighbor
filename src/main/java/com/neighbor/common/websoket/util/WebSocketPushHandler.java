@@ -87,6 +87,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
 		logger.info("收到消息:" + message.getPayload());
+		
 		SocketMessage msgInfo = JSON.parseObject((String) message.getPayload(), SocketMessage.class);
 		msgInfo.setStatus(MessageStatus.received + "");
 		msgInfo.setDate(DateUtils.getStringDateShort());
@@ -94,39 +95,43 @@ public class WebSocketPushHandler implements WebSocketHandler {
 		
 		WebSocketMsgType msgType = WebSocketMsgType.valueOf(msgInfo.getMsgType());
 		WebSocketChatType chatType = WebSocketChatType.valueOf(msgInfo.getChatType());
-
 		WebSocketMessageHandler handler = (WebSocketMessageHandler) SpringUtil.getBean(msgType.getImplClass());
-		ResponseResult handleResult = handler.handleMessage(msgInfo,chatType,msgType); // 消息已接收
-		handleResult.setRequestID(msgInfo.getWebSocketHeader().getRequestId());
-		handleResult.addBody("msgType", msgType);
-		handleResult.addBody("chatType", chatType);
-		handleResult.addBody("msgInfo", msgInfo);
-		
-		boolean isSend = sendMessageToUser(msgInfo.getSendUserId(), handleResult);
-		if (WebSocketChatType.single == chatType && isSend) {
-			logger.info("收到单发消息:" + msgInfo.getContent());
-			// 消息消息发回,表示消息已接收
-			msgInfo.setStatus(MessageStatus.pushed_response + "");
-			// 消息推送
-			isSend = sendMessageToUser(msgInfo.getTargetUserId(), handleResult);
-			if (isSend) {
-				msgInfo.setStatus(MessageStatus.pushed + "");
+		try {
+			ResponseResult handleResult = handler.handleMessage(msgInfo,chatType,msgType); // 消息已接收
+			handleResult.setRequestID(msgInfo.getWebSocketHeader().getRequestId());
+			handleResult.addBody("msgType", msgType);
+			handleResult.addBody("chatType", chatType);
+			handleResult.addBody("msgInfo", msgInfo);
+			
+			boolean isResponse = sendMessageToUser(msgInfo.getSendUserId(), handleResult);
+			if (WebSocketChatType.single == chatType && isResponse) {
+				logger.info("收到单发消息:" + msgInfo.getContent());
+				// 消息消息发回,表示消息已接收
+				msgInfo.setStatus(MessageStatus.pushed_response + "");
+				// 消息推送
+				boolean isSend  = sendMessageToUser(msgInfo.getTargetUserId(), handleResult);
+				if (isSend) {
+					msgInfo.setStatus(MessageStatus.pushed + "");
+				}
+				
+				handler.successCallBack(msgInfo,chatType,msgType);
+				// sendResponseMessage(msgInfo.getSendUserId(),result);
+			} else if(WebSocketChatType.multiple == chatType && isResponse){
+				logger.info("收到群发消息:" + msgInfo.getContent());
+				// 消息消息发回,表示消息已接收
+				msgInfo.setStatus(MessageStatus.pushed_response + "");
+				// 消息推送
+				List<Long> pushedUsers = sendMessagesToGroup(msgInfo.getSendUserId(), msgInfo.getTargetGroupId(), handleResult);
+				// 成功推送的用户
+				msgInfo.setPushedUsers(pushedUsers);
+				handler.successCallBack(msgInfo,chatType,msgType);
+				
+			}else{
+				msgInfo.setStatus(MessageStatus.response_failed+"");
+				handler.failedCallBack(msgInfo,chatType,msgType);
 			}
-			
-			handler.successCallBack(msgInfo,chatType,msgType);
-			// sendResponseMessage(msgInfo.getSendUserId(),result);
-		} else if(WebSocketChatType.multiple == chatType && isSend){
-			logger.info("收到群发消息:" + msgInfo.getContent());
-			// 消息消息发回,表示消息已接收
-			msgInfo.setStatus(MessageStatus.pushed_response + "");
-			// 消息推送
-			List<Long> pushedUsers = sendMessagesToGroup(msgInfo.getSendUserId(), msgInfo.getTargetGroupId(), handleResult);
-			// 成功推送的用户
-			msgInfo.setPushedUsers(pushedUsers);
-			handler.successCallBack(msgInfo,chatType,msgType);
-			
-		}else{
-			msgInfo.setStatus(MessageStatus.response_failed+"");
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
 			handler.failedCallBack(msgInfo,chatType,msgType);
 		}
 		logger.info("消息处理结束" +msgInfo);

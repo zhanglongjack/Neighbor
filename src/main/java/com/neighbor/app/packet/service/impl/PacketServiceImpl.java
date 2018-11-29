@@ -53,8 +53,8 @@ public class PacketServiceImpl implements PacketService {
 		UserWallet userWallet = new UserWallet();
 		userWallet.setuId(record.getUserId());
 		userWallet.setAvailableAmount(record.getAmount());
-		userWallet.setFreezeAmount(record.getAmount().negate());
-		logger.info("减少钱包可用,增加冻结");
+//		userWallet.setFreezeAmount(record.getAmount().negate());
+		logger.info("减少钱包可用");
 		userWalletService.updateWalletAmount(userWallet);
 		UserWallet lastWallet = userWalletService.selectByPrimaryUserId(userWallet.getuId());
 		// 转出交易明细

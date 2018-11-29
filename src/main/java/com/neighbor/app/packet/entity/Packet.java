@@ -20,6 +20,10 @@ public class Packet {
     private String sendDate;
 
     private String sendTime;
+    
+    private String status;
+    
+    private Integer collectedNum;
 
     private String remarke;
 
@@ -95,7 +99,23 @@ public class Packet {
         this.sendTime = sendTime;
     }
 
-    public String getRemarke() {
+    public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Integer getCollectedNum() {
+		return collectedNum;
+	}
+
+	public void setCollectedNum(Integer collectedNum) {
+		this.collectedNum = collectedNum;
+	}
+
+	public String getRemarke() {
         return remarke;
     }
 
@@ -106,9 +126,10 @@ public class Packet {
 	@Override
 	public String toString() {
 		return String.format(
-				"Packet [id=%s, userId=%s, receiveUserId=%s, groupId=%s, amount=%s, packetNum=%s, hitNum=%s, sendDate=%s, sendTime=%s, remarke=%s]",
-				id, userId, receiveUserId, groupId, amount, packetNum, hitNum, sendDate, sendTime, remarke);
+				"Packet [id=%s, userId=%s, receiveUserId=%s, groupId=%s, amount=%s, packetNum=%s, hitNum=%s, sendDate=%s, sendTime=%s, status=%s, collectedNum=%s, remarke=%s]",
+				id, userId, receiveUserId, groupId, amount, packetNum, hitNum, sendDate, sendTime, status, collectedNum,
+				remarke);
 	}
-    
+
     
 }

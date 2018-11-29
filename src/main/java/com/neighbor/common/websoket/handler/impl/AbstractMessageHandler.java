@@ -34,6 +34,7 @@ public abstract class AbstractMessageHandler implements WebSocketMessageHandler{
 	@Override
 	public void successCallBack(SocketMessage msgInfo, WebSocketChatType chatType, WebSocketMsgType msgType) {
 		logger.info("成功,更新消息状态:{}",msgInfo);
+		handle();
 		socketMessageService.updateByPrimaryKeySelective(msgInfo);
 		Map<String,Long> relationShip = new HashMap<String,Long>();
 		relationShip.put("msgId", msgInfo.getMsgId());
@@ -46,7 +47,7 @@ public abstract class AbstractMessageHandler implements WebSocketMessageHandler{
 			}
 		}
 		
-		handle();
+		
 	}
 
 	@Override
