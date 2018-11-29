@@ -2,6 +2,7 @@ package com.neighbor.app.users.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neighbor.app.common.entity.PageEntity;
 import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
@@ -15,6 +16,7 @@ public class UserInfo extends PageEntity {
 
     private String userAccount;
 
+    @JsonIgnore
     private String userPassword;
 
     private String qrCode;

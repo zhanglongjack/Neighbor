@@ -1,6 +1,7 @@
 package com.neighbor.app.users.service.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.neighbor.app.users.dao.UserConfigMapper;
 import com.neighbor.app.users.entity.UserConfig;
@@ -90,17 +91,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public UserInfo createUser(UserInfo record) {
+    public UserInfo builderUserInfo(UserInfo record) {
+    	logger.info("创建用户信息:"+record);
         insertSelective(record);
         record.setNickName(record.getId() + "");
         record.setUserAccount(record.getId() + "");
         updateByPrimaryKeySelective(record);
-
+        
+        logger.info("创建用户设置信息:"+record);
+        UserConfig config = new UserConfig();
+        config.setNoPasswordPay("0");
+        insertUserConfigSelective(config);
+        
+        logger.info("创建钱包信息:"+record);
         UserWallet wallet = new UserWallet();
         wallet.setuId(record.getId());
-
         userWalletService.insertSelective(wallet);
-        logger.debug("user============:{}", record);
+		
         return record;
     }
 

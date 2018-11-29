@@ -74,28 +74,25 @@ public class LoginController {
 		boolean isValid = verfiyCode.equals(TencentSms.smsCache.get(phone));
 		ResponseResult result = new ResponseResult();
 		if(user==null && isValid){
-			
 			UserInfo record = new UserInfo();
 			record.setMobilePhone(phone);
 			record.setUserAccount(phone);
 			record.setUpUserId(upUserId);  
 			
-			user = userService.createUser(record);
+			user = userService.builderUserInfo(record);
 
 		}else if(!isValid){
 			logger.info("验证吗输入错误"); 
 			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"验证码错误");
 		}
-		UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
+        String token = UUID.randomUUID().toString(); 
+        userContainer.put(token, user);
 		
-		wallet.setPayPassword(wallet.getPayPassword()==null?null:"***");
-		user.setUserPassword(user.getUserPassword()==null?null:"***");
-		
-		String token = UUID.randomUUID().toString(); 
-		userContainer.put(token, user);
-		
+        UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
+        
 		result.addBody("user", user);
 		result.addBody("wallet", wallet);
+//		result.addBody("config", config);
 		result.addBody("token", token);
 		
 		logger.info("登录成功:{},result :{}",user,result); 
