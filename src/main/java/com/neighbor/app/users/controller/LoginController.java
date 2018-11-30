@@ -89,7 +89,7 @@ public class LoginController {
         userContainer.put(token, user);
 		
         UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
-        
+         
 		result.addBody("user", user);
 		result.addBody("wallet", wallet);
 //		result.addBody("config", config);

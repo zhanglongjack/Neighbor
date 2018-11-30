@@ -23,7 +23,7 @@ public class UserWallet {
 	@JsonIgnore
 	private String payPassword;//支付密码
 	
-	private Boolean isSetPassword;
+	private Boolean isSetPassword = false;
 
 	public String getPayPassword() {
 		return payPassword;

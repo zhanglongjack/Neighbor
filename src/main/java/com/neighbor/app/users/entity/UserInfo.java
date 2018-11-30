@@ -8,7 +8,7 @@ import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
 
 public class UserInfo extends PageEntity {
-    private Long id;
+    private Long userID;
 
     private String userPhoto;
 
@@ -57,11 +57,14 @@ public class UserInfo extends PageEntity {
     }
     
     public Long getId() {
-        return id;
+        return userID;
     }
-
-    public void setId(Long id) {
-        this.id = id;
+    
+    public Long getUserID() {
+        return userID;
+    }
+    public void setUserID(Long userID) {
+        this.userID = userID;
     }
 
     public String getUserPhoto() {
@@ -203,8 +206,8 @@ public class UserInfo extends PageEntity {
 	@Override
 	public String toString() {
 		return String.format(
-				"UserInfo [id=%s, userPhoto=%s, nickName=%s, userAccount=%s, userPassword=%s, qrCode=%s, sex=%s, mobilePhone=%s, realName=%s, wechat=%s, qq=%s, robotSno=%s, regional=%s, upUserId=%s, createTime=%s, updateTime=%s, remark=%s, createTimeStr=%s, downNumber=%s]",
-				id, userPhoto, nickName, userAccount, userPassword, qrCode, sex, mobilePhone, realName, wechat, qq,
+				"UserInfo [userID=%s, userPhoto=%s, nickName=%s, userAccount=%s, userPassword=%s, qrCode=%s, sex=%s, mobilePhone=%s, realName=%s, wechat=%s, qq=%s, robotSno=%s, regional=%s, upUserId=%s, createTime=%s, updateTime=%s, remark=%s, createTimeStr=%s, downNumber=%s]",
+				userID, userPhoto, nickName, userAccount, userPassword, qrCode, sex, mobilePhone, realName, wechat, qq,
 				robotSno, regional, upUserId, createTime, updateTime, remark, createTimeStr, downNumber);
 	}
 

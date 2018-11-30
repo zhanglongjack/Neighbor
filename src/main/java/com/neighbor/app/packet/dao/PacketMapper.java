@@ -12,4 +12,9 @@ public interface PacketMapper {
     Packet selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Packet record);
+    
+    Packet lockPacketByPrimaryKey(Long id);
+    
+    int updateCollectedNumBy(Packet record);
+    
 }
