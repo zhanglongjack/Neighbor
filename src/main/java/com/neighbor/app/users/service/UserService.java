@@ -13,6 +13,8 @@ public interface UserService {
 
     public int insertUserConfigSelective(UserConfig record);
 
+    public UserConfig selectUserConfigByPrimaryKey(Long uId);
+
     UserInfo selectByPrimaryKey(Long uId);
 
     int updateByPrimaryKeySelective(UserInfo record);

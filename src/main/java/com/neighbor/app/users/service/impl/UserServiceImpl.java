@@ -51,6 +51,10 @@ public class UserServiceImpl implements UserService {
         return count;
     }
 
+    public UserConfig selectUserConfigByPrimaryKey(Long uId) {
+        return userConfigMapper.selectByPrimaryKey(uId);
+    }
+
     @Override
     public UserInfo selectByPrimaryKey(Long uId) {
         return userInfoMapper.selectByPrimaryKey(uId);
