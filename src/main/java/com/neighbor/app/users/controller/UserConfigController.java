@@ -35,7 +35,7 @@ public class UserConfigController {
 	@ResponseBody
 	public ResponseResult userEdit(UserInfo userInfo,@ModelAttribute("user") UserInfo user){
 		logger.info("userEdit request:{}",userInfo);
-		userInfo.setId(user.getId());
+		userInfo.setUserID(user.getId());
 		userService.updateByPrimaryKeySelective(userInfo);
 		return new ResponseResult();
 	}

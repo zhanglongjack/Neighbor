@@ -1,6 +1,8 @@
 package com.neighbor.app.packet.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Packet {
     private Long id;
@@ -26,6 +28,8 @@ public class Packet {
     private Integer collectedNum;
 
     private String remarke;
+    
+    private List<PacketDetail> detailList = new ArrayList<PacketDetail>();
 
     public Long getId() {
         return id;
@@ -122,6 +126,15 @@ public class Packet {
     public void setRemarke(String remarke) {
         this.remarke = remarke;
     }
+
+	public List<PacketDetail> getDetailList() {
+		return detailList;
+	}
+	
+	public void addDetail(PacketDetail detail){
+		detailList.add(detail);
+	}
+	
 
 	@Override
 	public String toString() {

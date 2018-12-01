@@ -29,7 +29,7 @@ public interface UserService {
 //
 //	UserInfo selectByName(String username);
 
-    UserInfo createUser(UserInfo record);
+    UserInfo builderUserInfo(UserInfo record);
 
     Long selectPageTotalCount(UserInfo queryUser);
 

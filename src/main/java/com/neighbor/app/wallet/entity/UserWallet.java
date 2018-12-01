@@ -3,6 +3,8 @@ package com.neighbor.app.wallet.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class UserWallet {
     private Long id;
 
@@ -18,7 +20,10 @@ public class UserWallet {
 
 	private BigDecimal freezeAmount = new BigDecimal("0.00");
 
+	@JsonIgnore
 	private String payPassword;//支付密码
+	
+	private Boolean isSetPassword = false;
 
 	public String getPayPassword() {
 		return payPassword;
@@ -26,6 +31,15 @@ public class UserWallet {
 
 	public void setPayPassword(String payPassword) {
 		this.payPassword = payPassword;
+		setIsSetPassword(payPassword!=null);
+	}
+
+	public Boolean getIsSetPassword() {
+		return isSetPassword;
+	}
+
+	public void setIsSetPassword(Boolean isSetPassword) {
+		this.isSetPassword = isSetPassword;
 	}
 
 	public Long getId() {

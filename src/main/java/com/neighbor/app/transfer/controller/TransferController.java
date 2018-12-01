@@ -20,7 +20,7 @@ public class TransferController {
     private static final Logger logger = LoggerFactory.getLogger(TransferController.class);
     @Autowired
     private TransferService transferService;
-
+    //直接转账
     @RequestMapping(value = "/transfer.req",method= RequestMethod.POST)
     @ResponseBody
     public ResponseResult transfer(@ModelAttribute("user") UserInfo user, TransferReq transfer) throws Exception{
@@ -28,7 +28,7 @@ public class TransferController {
         ResponseResult result  = transferService.transfer(user,transfer);
         return result;
     }
-
+    //查询转账记录
     @RequestMapping(value = "/transferRecord.req",method= RequestMethod.POST)
     @ResponseBody
     public ResponseResult transferRecord(@ModelAttribute("user") UserInfo user, PageTools pageTools) throws Exception{
@@ -40,11 +40,30 @@ public class TransferController {
         return result;
     }
 
+    //查询转账详情
     @RequestMapping(value = "/transferInfo.req",method= RequestMethod.POST)
     @ResponseBody
     public ResponseResult transferInfo(Transfer transfer) throws Exception{
         logger.info("transferInfo request >>>> " + JSON.toJSONString(transfer));
         ResponseResult result = transferService.transferInfo(transfer);
+        return result;
+    }
+
+    //聊天转账
+    @RequestMapping(value = "/transferForChat.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult transferForChat(@ModelAttribute("user") UserInfo user, TransferReq transfer) throws Exception{
+        logger.info("transferForChat request : " + transfer);
+        ResponseResult result  = transferService.transferForChat(user,transfer);
+        return result;
+    }
+
+    //收转账
+    @RequestMapping(value = "/transferReceive.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult transferReceive(@ModelAttribute("user") UserInfo user, TransferReq transfer) throws Exception{
+        logger.info("transferForChat request : " + transfer);
+        ResponseResult result  = transferService.transferReceive(user,transfer);
         return result;
     }
 }
