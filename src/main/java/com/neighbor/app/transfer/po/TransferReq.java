@@ -4,17 +4,19 @@ import java.util.StringJoiner;
 
 public class TransferReq  {
 
-	private long uId;
+	private Long uId;
 	private String payPwd;
 	private String amount;
 	private Long transferUserId;
 	private String remarks;
+	private Long transferId;
 
-	public long getuId() {
+
+	public Long getuId() {
 		return uId;
 	}
 
-	public void setuId(long uId) {
+	public void setuId(Long uId) {
 		this.uId = uId;
 	}
 
@@ -50,6 +52,13 @@ public class TransferReq  {
 		this.remarks = remarks;
 	}
 
+	public Long getTransferId() {
+		return transferId;
+	}
+
+	public void setTransferId(Long transferId) {
+		this.transferId = transferId;
+	}
 
 	@Override
 	public String toString() {
@@ -59,6 +68,7 @@ public class TransferReq  {
 				.add("amount='" + amount + "'")
 				.add("transferUserId='" + transferUserId + "'")
 				.add("remarks='" + remarks + "'")
+				.add("transferId='" + transferId + "'")
 				.toString();
 	}
 }

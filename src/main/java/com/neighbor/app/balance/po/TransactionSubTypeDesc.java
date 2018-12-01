@@ -5,7 +5,7 @@ public enum TransactionSubTypeDesc {
     sendRedPack("发红包"),transferOut("转给"),thunderOut("踩雷")
     //收款
     ,receiveRedPack("收红包"),backRedPack("红包退回"),lucked("中奖"),thunderIn("收到雷包"),recharge("充值")
-    ,transferIn("转入")
+    ,transferIn("转入"),transferBack("转账退回")
     //支出
     ,withdraw("提现"),withdrawCost("提现手续费");
     private String des;
