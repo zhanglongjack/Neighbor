@@ -1,10 +1,9 @@
 package com.neighbor.app.users.dao;
 
-import java.util.List;
-
+import com.neighbor.app.users.entity.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
 
-import com.neighbor.app.users.entity.UserInfo;
+import java.util.List;
 
 @Mapper
 public interface UserInfoMapper {
@@ -16,10 +15,12 @@ public interface UserInfoMapper {
 
     int updateByPrimaryKeySelective(UserInfo record);
 
-	UserInfo selectByUserPhone(String phone);
+    UserInfo selectByUserPhone(String phone);
 
-	Long selectPageTotalCount(UserInfo userInfo);
+    Long selectPageTotalCount(UserInfo userInfo);
 
-	List<UserInfo> selectPageByObjectForList(UserInfo userInfo);
-    
+    List<UserInfo> selectPageByObjectForList(UserInfo userInfo);
+
+    int userPasswordEdit(UserInfo record);
+
 }
