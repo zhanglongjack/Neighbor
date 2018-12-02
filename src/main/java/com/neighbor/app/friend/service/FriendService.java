@@ -18,6 +18,8 @@ public interface FriendService {
 
    public void acceptFriend(FriendApply friendApply) throws Exception;
 
+   public void deleteFriend(Friend friend) throws Exception;
+
    public ResponseResult listFriendApplyRecord(UserInfo user, FriendApply friendApply) throws Exception;
 
 }
