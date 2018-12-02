@@ -23,6 +23,7 @@ public class Transfer extends PageEntity {
     private String createTimeStr;
 
     private Date updateTime;
+    private String updateTimeStr;
 
     private Long uId;
 
@@ -44,6 +45,26 @@ public class Transfer extends PageEntity {
     private BigDecimal availableAmount;
 
     private String transactionTypeDesc;
+
+    private String transferBack;
+
+    private String realRemarks;
+
+    public String getRealRemarks() {
+        return remarks;
+    }
+
+    public void setRealRemarks(String realRemarks) {
+        this.realRemarks = realRemarks;
+    }
+
+    public String getTransferBack() {
+        return transferBack;
+    }
+
+    public void setTransferBack(String transferBack) {
+        this.transferBack = transferBack;
+    }
 
     public String getTransactionTypeDesc() {
         if(TransferWayDesc.in.toString().equals(transferWay)){
@@ -180,6 +201,22 @@ public class Transfer extends PageEntity {
     public void setCreateTimeStr(String createTimeStr) {
         this.createTimeStr = createTimeStr;
     }
+
+    public String getUpdateTimeStr() {
+        if(updateTime!=null){
+            try {
+                return DateUtils.formatDateStr(updateTime, DateFormateType.LANG_FORMAT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return updateTimeStr;
+    }
+
+    public void setUpdateTimeStr(String updateTimeStr) {
+        this.updateTimeStr = updateTimeStr;
+    }
+
     public String getTransferWayStr() {
         if(transferWay!=null){
             return TransferWayDesc.getDesByValue(transferWay);

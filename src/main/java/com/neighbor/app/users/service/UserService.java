@@ -13,9 +13,15 @@ public interface UserService {
 
     public int insertUserConfigSelective(UserConfig record);
 
+    public void userConfigSetting(UserConfig userConfig);
+
+    public UserConfig selectUserConfigByPrimaryKey(Long uId);
+
     UserInfo selectByPrimaryKey(Long uId);
 
     int updateByPrimaryKeySelective(UserInfo record);
+
+    public int userPasswordEdit(UserInfo record);
 
     UserInfo selectByUserPhone(String phone);
 //

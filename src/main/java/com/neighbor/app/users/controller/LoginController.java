@@ -1,5 +1,6 @@
 package com.neighbor.app.users.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
+import com.neighbor.app.users.entity.UserConfig;
 import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,9 +61,8 @@ public class LoginController {
 		
 		String token = UUID.randomUUID().toString(); 
 		userContainer.put(token, user);
-		
-		result.addBody("user", user);
-		result.addBody("token", token);
+
+		commonResultLogic(user, result, token);
 		
 		logger.info("登录成功:{},result :{}",user,result); 
 		return result;
@@ -77,26 +78,41 @@ public class LoginController {
 			UserInfo record = new UserInfo();
 			record.setMobilePhone(phone);
 			record.setUserAccount(phone);
-			record.setUpUserId(upUserId);  
-			
+			record.setUpUserId(upUserId);
+
 			user = userService.builderUserInfo(record);
 
 		}else if(!isValid){
 			logger.info("验证吗输入错误"); 
 			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"验证码错误");
 		}
-        String token = UUID.randomUUID().toString(); 
+        String token = UUID.randomUUID().toString();
         userContainer.put(token, user);
-		
+
         UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
-         
-		result.addBody("user", user);
+
 		result.addBody("wallet", wallet);
-//		result.addBody("config", config);
-		result.addBody("token", token);
+
+		commonResultLogic(user, result, token);
 		
 		logger.info("登录成功:{},result :{}",user,result); 
 		return result;
+	}
+
+	private void commonResultLogic(UserInfo user, ResponseResult result, String token) throws Exception {
+		result.addBody("user", user);
+		result.addBody("token", token);
+
+		UserConfig userConfig = userService.selectUserConfigByPrimaryKey(user.getId());
+		if (userConfig == null) {
+			Date currentTime = new Date();
+			userConfig = new UserConfig();
+			userConfig.setUserId(user.getId());
+			userConfig.setCreateTime(currentTime);
+			userConfig.setUpdateTime(currentTime);
+			userService.insertUserConfigSelective(userConfig);
+		}
+		result.addBody("userConfig", userConfig);
 	}
 	
 	@RequestMapping(value="/sendSMS.req",method=RequestMethod.POST)

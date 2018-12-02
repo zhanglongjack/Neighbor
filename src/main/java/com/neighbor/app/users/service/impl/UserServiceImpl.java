@@ -1,10 +1,13 @@
 package com.neighbor.app.users.service.impl;
 
-import java.util.List;
-import java.util.UUID;
-
+import com.neighbor.app.users.constants.UserContainer;
 import com.neighbor.app.users.dao.UserConfigMapper;
+import com.neighbor.app.users.dao.UserInfoMapper;
 import com.neighbor.app.users.entity.UserConfig;
+import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.app.users.service.UserService;
+import com.neighbor.app.wallet.entity.UserWallet;
+import com.neighbor.app.wallet.service.UserWalletService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.neighbor.app.users.constants.UserContainer;
-import com.neighbor.app.users.dao.UserInfoMapper;
-import com.neighbor.app.users.entity.UserInfo;
-import com.neighbor.app.users.service.UserService;
-import com.neighbor.app.wallet.entity.UserWallet;
-import com.neighbor.app.wallet.service.UserWalletService;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -52,6 +50,14 @@ public class UserServiceImpl implements UserService {
         return count;
     }
 
+    public void userConfigSetting(UserConfig userConfig){
+        userConfigMapper.updateByPrimaryKeySelective(userConfig);
+    }
+
+    public UserConfig selectUserConfigByPrimaryKey(Long uId) {
+        return userConfigMapper.selectByPrimaryKey(uId);
+    }
+
     @Override
     public UserInfo selectByPrimaryKey(Long uId) {
         return userInfoMapper.selectByPrimaryKey(uId);
@@ -62,6 +68,10 @@ public class UserServiceImpl implements UserService {
         int count = userInfoMapper.updateByPrimaryKeySelective(record);
         userContainer.buildUserInfo();
         return count;
+    }
+
+    public int userPasswordEdit(UserInfo record) {
+        return userInfoMapper.userPasswordEdit(record);
     }
 
     @Override
@@ -92,22 +102,22 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public UserInfo builderUserInfo(UserInfo record) {
-    	logger.info("创建用户信息:"+record);
+        logger.info("创建用户信息:" + record);
         insertSelective(record);
         record.setNickName(record.getId() + "");
         record.setUserAccount(record.getId() + "");
         updateByPrimaryKeySelective(record);
-        
-        logger.info("创建用户设置信息:"+record);
+
+        logger.info("创建用户设置信息:" + record);
         UserConfig config = new UserConfig();
         config.setNoPasswordPay("0");
         insertUserConfigSelective(config);
-        
-        logger.info("创建钱包信息:"+record);
+
+        logger.info("创建钱包信息:" + record);
         UserWallet wallet = new UserWallet();
         wallet.setuId(record.getId());
         userWalletService.insertSelective(wallet);
-		
+
         return record;
     }
 

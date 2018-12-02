@@ -77,7 +77,7 @@ public class FriendController {
 
     @RequestMapping(value = "/addFriend.req", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseResult addFriend(@ModelAttribute("user") UserInfo user,Friend friend) {
+    public ResponseResult addFriend(@ModelAttribute("user") UserInfo user, Friend friend) {
         logger.info("addFriend begin ......");
 
         ResponseResult result = new ResponseResult();
@@ -91,9 +91,9 @@ public class FriendController {
             friendApplyCheck.setFriendUserId(friendUserId);
             FriendApply friendApplyOld = friendService.viewFriendApplyByUserIdAndFriendId(friendApplyCheck);
 
-            if(friendApplyOld!=null){
+            if (friendApplyOld != null) {
                 result.setErrorCode(2);
-            }else{
+            } else {
                 Date currentTime = new Date();
                 FriendApply friendApplyNew = new FriendApply();
                 friendApplyNew.setCreateTime(currentTime);
@@ -118,9 +118,29 @@ public class FriendController {
         return result;
     }
 
+    @RequestMapping(value = "/deleteFriend.req", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult deleteFriend(@ModelAttribute("user") UserInfo user, Friend friend) {
+        logger.info("deleteFriend begin ......");
+
+        ResponseResult result = new ResponseResult();
+        try {
+
+            friend.setUserId(user.getId());
+
+            friendService.deleteFriend(friend);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            result.setErrorCode(ErrorCodeDesc.failed.getValue());
+        }
+
+        return result;
+    }
+
     @RequestMapping(value = "/acceptFriend.req", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseResult acceptFriend(@ModelAttribute("user") UserInfo user,Friend friend) {
+    public ResponseResult acceptFriend(@ModelAttribute("user") UserInfo user, Friend friend) {
         logger.info("acceptFriend begin ......");
 
         ResponseResult result = new ResponseResult();
@@ -134,11 +154,11 @@ public class FriendController {
             friendApplyCheck.setFriendUserId(friendUserId);
             FriendApply friendApplyOld = friendService.viewFriendApplyByUserIdAndFriendId(friendApplyCheck);
 
-            if(friendApplyOld!=null){
+            if (friendApplyOld != null) {
 
                 friendService.acceptFriend(friendApplyOld);
 
-            }else{
+            } else {
                 result.setErrorCode(ErrorCodeDesc.failed.getValue());
             }
 

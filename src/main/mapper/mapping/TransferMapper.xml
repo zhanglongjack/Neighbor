@@ -39,6 +39,7 @@
 			<if test="orderNo != null and orderNo.length()>0">and  t.order_no=#{orderNo}</if>
           <if test="beginTime != null"> <![CDATA[ and  t.create_time >= str_to_date(#{beginTime}, '%Y-%m-%d %H:%i:%s') ]]> </if>
           <if test="endTime != null"> <![CDATA[ and  t.create_time <=  str_to_date(#{endTime}, '%Y-%m-%d %H:%i:%s') ]]> </if>
+          <if test="transferBack != null and transferBack.length()>0"> <![CDATA[ and  hour(timediff(date_format(now(),'%Y-%m-%d %H:00:00'),date_format(t.create_time,'%Y-%m-%d %H:00:00'))) >=24 ]]> </if>
         </where>
 	</sql>
 	

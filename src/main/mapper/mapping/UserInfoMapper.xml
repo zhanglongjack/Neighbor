@@ -240,5 +240,18 @@
 		</set>
 		where id = #{userID,jdbcType=BIGINT}
 	</update>
+
+	<update id="userPasswordEdit" parameterType="com.neighbor.app.users.entity.UserInfo">
+		update users_info
+		<set>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="userPassword != null">
+				user_password = #{userPassword,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{userID,jdbcType=BIGINT}
+	</update>
 	 
 </mapper>

@@ -11,5 +11,12 @@ public interface TransferService {
 
 	public ResponseResult transferRecord(UserInfo user, Transfer transfer)  throws Exception;
 
-	public ResponseResult transferInfo(Transfer transfer)  throws Exception;
+	public ResponseResult transferInfo(Transfer transfer)  throws Exception ;
+
+	public ResponseResult transferForChat(UserInfo user, TransferReq transfer) throws Exception;
+
+	public ResponseResult transferReceive(UserInfo user, TransferReq transfer) throws Exception;
+
+	public ResponseResult transferBackJob() throws Exception;
+	public ResponseResult transferBack(Transfer transfer) throws Exception;
 }
