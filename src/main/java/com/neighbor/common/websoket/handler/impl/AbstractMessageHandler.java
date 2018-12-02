@@ -23,7 +23,7 @@ public abstract class AbstractMessageHandler implements WebSocketMessageHandler{
 	
 	@Override
 	public ResponseResult handleMessage(SocketMessage msgInfo, WebSocketChatType chatType, WebSocketMsgType msgType) {
-		logger.info("开始处理文字类消息接收处理:{}",msgInfo);
+		logger.info("开始处理通用消息接收处理:{}",msgInfo);
 
 		socketMessageService.insertSelective(msgInfo);
 		

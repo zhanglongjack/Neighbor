@@ -3,6 +3,7 @@
 <mapper namespace="com.neighbor.common.websoket.dao.SocketMessageMapper">
 	<resultMap id="BaseResultMap" type="com.neighbor.common.websoket.po.SocketMessage">
 		<id column="msg_id" jdbcType="BIGINT" property="msgId" />
+		<result column="request_id" jdbcType="VARCHAR" property="requestId" />
 		<result column="header" jdbcType="VARCHAR" property="header" />
 		<result column="chat_type" jdbcType="VARCHAR" property="chatType" />
 		<result column="msg_type" jdbcType="VARCHAR" property="msgType" />
@@ -10,18 +11,21 @@
 		<result column="send_user_id" jdbcType="BIGINT" property="sendUserId" />
 		<result column="target_user_id" jdbcType="BIGINT" property="targetUserId" />
 		<result column="target_group_id" jdbcType="BIGINT" property="targetGroupId" />
+		<result column="biz_id" jdbcType="VARCHAR" property="bizId" />
 		<result column="content" jdbcType="VARCHAR" property="content" />
 		<result column="date" jdbcType="VARCHAR" property="date" />
 		<result column="time" jdbcType="VARCHAR" property="time" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		msg_id, header, chat_type, msg_type, status, send_user_id, target_user_id,
-		target_group_id, content, date, time
+		msg_id,request_id, header, chat_type, msg_type, status, send_user_id, target_user_id,
+		target_group_id,biz_id, content, date, time
 	</sql>
   	<sql id="dynamicWhere">
 		<where>
 		    <if test="msgId != null">and msg_id=#{msgId}</if>
+		    <if test="requestId != null and requestId.length>0">and request_id=#{requestId}</if>
+		    <if test="bizId != null and bizId.length>0">and biz_id=#{bizId}</if>
 		    <if test="chatType != null and chatType.length>0">and chat_type=#{chatType}</if>
 		    <if test="msgType != null and msgType.length>0">and msg_type=#{msgType}</if>
 		    <if test="status != null and status.length>0">and status=#{status}</if>
@@ -70,6 +74,9 @@
 	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="msgId"  parameterType="com.neighbor.common.websoket.po.SocketMessage">
 		insert into chat_message
 		<trim prefix="(" suffix=")" suffixOverrides=","> 
+			<if test="requestId != null">
+				request_id,
+			</if>
 			<if test="header != null">
 				header,
 			</if>
@@ -91,6 +98,9 @@
 			<if test="targetGroupId != null">
 				target_group_id,
 			</if>
+			<if test="bizId != null">
+				biz_id,
+			</if>
 			<if test="content != null">
 				content,
 			</if>
@@ -102,6 +112,9 @@
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=","> 
+			<if test="requestId != null">
+				#{requestId,jdbcType=VARCHAR},
+			</if>
 			<if test="header != null">
 				#{header,jdbcType=VARCHAR},
 			</if>
@@ -122,6 +135,9 @@
 			</if>
 			<if test="targetGroupId != null">
 				#{targetGroupId,jdbcType=BIGINT},
+			</if>
+			<if test="bizId != null">
+				#{bizId,jdbcType=VARCHAR},
 			</if>
 			<if test="content != null">
 				#{content,jdbcType=VARCHAR},
@@ -157,6 +173,9 @@
 			</if>
 			<if test="targetGroupId != null">
 				target_group_id = #{targetGroupId,jdbcType=BIGINT},
+			</if>
+			<if test="bizId != null">
+				biz_id = #{bizId,jdbcType=VARCHAR},
 			</if>
 			<if test="content != null">
 				content = #{content,jdbcType=VARCHAR},

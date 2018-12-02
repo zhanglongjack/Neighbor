@@ -92,6 +92,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 		msgInfo.setStatus(MessageStatus.received + "");
 		msgInfo.setDate(DateUtils.getStringDateShort());
 		msgInfo.setTime(DateUtils.getTimeShort());
+		msgInfo.setRequestId(msgInfo.getWebSocketHeader().getRequestId());
 		
 		WebSocketMsgType msgType = WebSocketMsgType.valueOf(msgInfo.getMsgType());
 		WebSocketChatType chatType = WebSocketChatType.valueOf(msgInfo.getChatType());

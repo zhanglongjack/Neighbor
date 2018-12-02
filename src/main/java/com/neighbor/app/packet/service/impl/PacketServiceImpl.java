@@ -112,13 +112,14 @@ public class PacketServiceImpl implements PacketService {
 		PacketDetail detail = new PacketDetail();
 		if(lockPacket.getGroupId()!=null && lockPacket.getCollectedNum()+1== lockPacket.getPacketNum()){
 			// 由系统抢
-			
+			detail.setIsFree("1");
 			// 然后修改状态为抢完
 			lockPacket.setCollectedNum(lockPacket.getPacketNum());
 			lockPacket.setStatus(PacketStatus.collected.toString());
 		}else if (lockPacket.getReceiveUserId()!=null){
 			lockPacket.setStatus(PacketStatus.collected.toString());
 			detail.setGotAmount(lockPacket.getAmount());
+			detail.setIsFree("1");
 		}else{
 			lockPacket.setCollectedNum(lockPacket.getCollectedNum() + 1);
 		}

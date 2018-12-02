@@ -6,12 +6,14 @@ import com.alibaba.fastjson.JSON;
 
 public class SocketMessage {
 	private Long msgId;
+	private String requestId;
 	private String header;
 	private String chatType;
 	private String msgType;
 	private Long sendUserId;
 	private Long targetUserId;
 	private Long targetGroupId;
+	private String bizId;
 	private String content;
 	private String date;
 	private String time;
@@ -123,6 +125,22 @@ public class SocketMessage {
 
 	public void setPushedUsers(List<Long> pushedUsers) {
 		this.pushedUsers = pushedUsers;
+	}
+
+	public String getRequestId() {
+		return requestId;
+	}
+
+	public void setRequestId(String requestId) {
+		this.requestId = requestId;
+	}
+
+	public String getBizId() {
+		return bizId;
+	}
+
+	public void setBizId(String bizId) {
+		this.bizId = bizId;
 	}
 
 	@Override
