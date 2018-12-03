@@ -115,6 +115,10 @@ public class ChartListServiceImpl implements ChatListService {
         ResponseResult responseResult = new ResponseResult();
         chatList.setUserId(user.getId());
         chatListMapper.delChat(chatList);
+        ChatList delFriendChat = new ChatList();
+        delFriendChat.setFriendId(user.getId());
+        delFriendChat.setUserId(chatList.getFriendId());
+        chatListMapper.delChat(delFriendChat);
         return responseResult;
     }
 
