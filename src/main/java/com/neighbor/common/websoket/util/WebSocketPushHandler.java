@@ -77,7 +77,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 				handler.successCallBack(msgInfo,chatType,msgType);
 			}else{
 				// 按顺序推送消息,有一条异常,后面则不推,可能是推送异常或者用户断开连接
-				logger.info("按顺序推送消息,有一条异常可能是推送异常或者用户断开连接");
+				logger.info("按顺序推送消息,中断推送,可能是推送异常或者用户断开连接");
 				break;
 			}
 		}
@@ -224,6 +224,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 
 	private boolean sendMessage(WebSocketSession session, TextMessage message) {
 		if(session==null){
+			logger.info("用户断开连接或退出登录或未登录");
 			return false;
 		}
 		try {
