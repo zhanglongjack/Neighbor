@@ -59,6 +59,10 @@ public class FriendController {
         try {
             UserInfo userFriend = userService.selectByPrimaryKey(friend.getFriendUserId());
             Friend friendReturn = null;
+            if (userFriend == null) {
+                userFriend = userService.selectByUserPhone(String.valueOf(friend.getFriendUserId()));
+            }
+
             if (userFriend != null) {
                 Friend f = new Friend();
                 f.setUserId(user.getId());
