@@ -1,18 +1,18 @@
 package com.neighbor.common.websoket.service.impl;
 
-import java.util.List;
-import java.util.Map;
-
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.websoket.constants.MessageStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.neighbor.common.websoket.dao.SocketMessageMapper;
 import com.neighbor.common.websoket.po.SocketMessage;
 import com.neighbor.common.websoket.service.SocketMessageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class SocketMessageServiceImpl implements SocketMessageService {
@@ -77,13 +77,46 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	}
 
 	@Override
-	public ResponseResult pageRecord(UserInfo user, Long targetUserId, PageTools pageTools) {
-
-		return null;
+	public ResponseResult pageRecord(UserInfo user, Long friendId, PageTools pageTools) {
+		HashMap map = new HashMap();
+		map.put("userId",user.getId());
+		map.put("friendId",friendId);
+		map.put("rowIndex",pageTools.getRowIndex());
+		map.put("pageSize",pageTools.getPageSize());
+		Long size = selectPageTotalCount(map);
+		pageTools.setTotal(size);
+		List<SocketMessage> messageList = selectPageByObjectForList(map);
+		ResponseResult result = new ResponseResult();
+		result.addBody("messageList", messageList);
+		result.addBody("pageTools", pageTools);
+		return result;
 	}
 
 	@Override
-	public ResponseResult changeRecord(UserInfo user, Long targetUserId, Long msgId, String status) {
-		return null;
+	public ResponseResult changeRecord(UserInfo user, Long friendId, Long msgId, String status) {
+		ResponseResult result = new ResponseResult();
+		HashMap map = new HashMap();
+		map.put("userId",user.getId());
+		map.put("friendId",friendId);
+		map.put("msgId",msgId);
+		if(MessageStatus.complete.toString().equals(status)){
+			map.put("status",MessageStatus.complete.toString());
+			map.put("changeComplete","ok");
+		}else if(MessageStatus.pushed.toString().equals(status)){
+			map.put("status",MessageStatus.pushed.toString());
+			map.put("changePushed","ok");
+		}
+		socketMessageMapper.changeRecord(map);
+		return result;
+	}
+
+	@Override
+	public Long selectPageTotalCount(HashMap map) {
+		return socketMessageMapper.selectPageTotalCount(map);
+	}
+
+	@Override
+	public List<SocketMessage> selectPageByObjectForList(HashMap map) {
+		return socketMessageMapper.selectPageByObjectForList(map);
 	}
 }

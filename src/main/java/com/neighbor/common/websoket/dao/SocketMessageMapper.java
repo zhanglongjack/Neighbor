@@ -1,11 +1,11 @@
 package com.neighbor.common.websoket.dao;
 
-import java.util.List;
-import java.util.Map;
-
+import com.neighbor.common.websoket.po.SocketMessage;
 import org.apache.ibatis.annotations.Mapper;
 
-import com.neighbor.common.websoket.po.SocketMessage;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 @Mapper
 public interface SocketMessageMapper {
     int deleteByPrimaryKey(Long msgId);
@@ -22,4 +22,9 @@ public interface SocketMessageMapper {
 
 	void insertRelationShipSelective(Map<String, Long> relationShip);
 
+    Long selectPageTotalCount(HashMap map);
+
+    List<SocketMessage> selectPageByObjectForList(HashMap map);
+
+    void changeRecord(HashMap map);
 }

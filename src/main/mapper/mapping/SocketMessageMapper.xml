@@ -1,192 +1,226 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.neighbor.common.websoket.dao.SocketMessageMapper">
-	<resultMap id="BaseResultMap" type="com.neighbor.common.websoket.po.SocketMessage">
-		<id column="msg_id" jdbcType="BIGINT" property="msgId" />
-		<result column="request_id" jdbcType="VARCHAR" property="requestId" />
-		<result column="header" jdbcType="VARCHAR" property="header" />
-		<result column="chat_type" jdbcType="VARCHAR" property="chatType" />
-		<result column="msg_type" jdbcType="VARCHAR" property="msgType" />
-		<result column="status" jdbcType="VARCHAR" property="status" />
-		<result column="send_user_id" jdbcType="BIGINT" property="sendUserId" />
-		<result column="target_user_id" jdbcType="BIGINT" property="targetUserId" />
-		<result column="target_group_id" jdbcType="BIGINT" property="targetGroupId" />
-		<result column="biz_id" jdbcType="VARCHAR" property="bizId" />
-		<result column="content" jdbcType="VARCHAR" property="content" />
-		<result column="date" jdbcType="VARCHAR" property="date" />
-		<result column="time" jdbcType="VARCHAR" property="time" />
-	</resultMap>
+    <resultMap id="BaseResultMap" type="com.neighbor.common.websoket.po.SocketMessage">
+        <id column="msg_id" jdbcType="BIGINT" property="msgId"/>
+        <result column="request_id" jdbcType="VARCHAR" property="requestId"/>
+        <result column="header" jdbcType="VARCHAR" property="header"/>
+        <result column="chat_type" jdbcType="VARCHAR" property="chatType"/>
+        <result column="msg_type" jdbcType="VARCHAR" property="msgType"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="send_user_id" jdbcType="BIGINT" property="sendUserId"/>
+        <result column="target_user_id" jdbcType="BIGINT" property="targetUserId"/>
+        <result column="target_group_id" jdbcType="BIGINT" property="targetGroupId"/>
+        <result column="biz_id" jdbcType="VARCHAR" property="bizId"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+        <result column="time" jdbcType="VARCHAR" property="time"/>
+    </resultMap>
 
-	<sql id="Base_Column_List">
+    <sql id="Base_Column_List">
 		msg_id,request_id, header, chat_type, msg_type, status, send_user_id, target_user_id,
 		target_group_id,biz_id, content, date, time
 	</sql>
-  	<sql id="dynamicWhere">
-		<where>
-		    <if test="msgId != null">and msg_id=#{msgId}</if>
-		    <if test="requestId != null and requestId.length>0">and request_id=#{requestId}</if>
-		    <if test="bizId != null and bizId.length>0">and biz_id=#{bizId}</if>
-		    <if test="chatType != null and chatType.length>0">and chat_type=#{chatType}</if>
-		    <if test="msgType != null and msgType.length>0">and msg_type=#{msgType}</if>
-		    <if test="status != null and status.length>0">and status=#{status}</if>
-		    <if test="sendUserId != null">and send_user_id=#{sendUserId}</if>
-		    <if test="targetUserId != null">and target_user_id=#{targetUserId}</if>
-		    <if test="targetGroupId != null">and chat_type=#{targetGroupId}</if>
-		    <if test="date != null and date.length>0">and date=#{date}</if>
-		</where>
-	</sql>
-	
-	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
-		resultMap="BaseResultMap">
-		select
-		<include refid="Base_Column_List" />
-		from chat_message
-		where msg_id = #{msgId,jdbcType=BIGINT}
-	</select>
-	
-	<select id="selectByStatus" parameterType="String"
-		resultMap="BaseResultMap">
-		select
-		<include refid="Base_Column_List" />
-		from chat_message
-		where status = #{status,jdbcType=VARCHAR}
-	</select>
-	
-	<select id="selectbySelective" parameterType="String"
-		resultMap="BaseResultMap">
-		select
-		<include refid="Base_Column_List" />
-		from chat_message
-		<include refid="dynamicWhere" />
-		order by date,time
+    <sql id="dynamicWhere">
+        <where>
+            <if test="msgId != null">and msg_id=#{msgId}</if>
+            <if test="requestId != null and requestId.length>0">and request_id=#{requestId}</if>
+            <if test="bizId != null and bizId.length>0">and biz_id=#{bizId}</if>
+            <if test="chatType != null and chatType.length>0">and chat_type=#{chatType}</if>
+            <if test="msgType != null and msgType.length>0">and msg_type=#{msgType}</if>
+            <if test="status != null and status.length>0">and status=#{status}</if>
+            <if test="sendUserId != null">and send_user_id=#{sendUserId}</if>
+            <if test="targetUserId != null">and target_user_id=#{targetUserId}</if>
+            <if test="targetGroupId != null">and chat_type=#{targetGroupId}</if>
+            <if test="date != null and date.length>0">and date=#{date}</if>
+        </where>
+    </sql>
+
+    <select id="selectPageTotalCount" parameterType="java.util.Map"
+            resultType="Long">
+	  select count(1) from (select c.* from chat_message c where c.`status`= 'complete' and c.send_user_id = #{friendId,jdbcType=BIGINT} and c.target_user_id = #{userId,jdbcType=BIGINT}
+      UNION ALL
+      select a.* from chat_message a where  a.send_user_id = #{userId,jdbcType=BIGINT} and a.target_user_id = #{friendId,jdbcType=BIGINT} ) b
 	</select>
 
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="selectPageByObjectForList" parameterType="java.util.Map"
+            resultMap="BaseResultMap">
+     select b.* from (select c.* from chat_message c where c.`status`= 'complete' and c.send_user_id = #{friendId,jdbcType=BIGINT} and c.target_user_id = #{userId,jdbcType=BIGINT}
+      UNION ALL
+      select a.* from chat_message a where  a.send_user_id = #{userId,jdbcType=BIGINT} and a.target_user_id = #{friendId,jdbcType=BIGINT} ) b
+        order by b.msg_id desc
+        limit #{rowIndex},#{pageSize}
+    </select>
+
+
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from chat_message
+        where msg_id = #{msgId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByStatus" parameterType="String"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from chat_message
+        where status = #{status,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectbySelective" parameterType="String"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from chat_message
+        <include refid="dynamicWhere"/>
+        order by date,time
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from chat_message
 		where msg_id = #{msgId,jdbcType=BIGINT}
 	</delete>
 
-	<insert id="insertRelationShipSelective" parameterType="Map">
+    <insert id="insertRelationShipSelective" parameterType="Map">
 		insert into msg_group_menber_relationship (r_msg_id,r_user_id)
 		values(#{msgId},#{userId})
 	</insert>
 
-	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="msgId"  parameterType="com.neighbor.common.websoket.po.SocketMessage">
-		insert into chat_message
-		<trim prefix="(" suffix=")" suffixOverrides=","> 
-			<if test="requestId != null">
-				request_id,
-			</if>
-			<if test="header != null">
-				header,
-			</if>
-			<if test="chatType != null">
-				chat_type,
-			</if>
-			<if test="msgType != null">
-				msg_type,
-			</if>
-			<if test="status != null">
-				status,
-			</if>
-			<if test="sendUserId != null">
-				send_user_id,
-			</if>
-			<if test="targetUserId != null">
-				target_user_id,
-			</if>
-			<if test="targetGroupId != null">
-				target_group_id,
-			</if>
-			<if test="bizId != null">
-				biz_id,
-			</if>
-			<if test="content != null">
-				content,
-			</if>
-			<if test="date != null">
-				date,
-			</if>
-			<if test="time != null">
-				time,
-			</if>
-		</trim>
-		<trim prefix="values (" suffix=")" suffixOverrides=","> 
-			<if test="requestId != null">
-				#{requestId,jdbcType=VARCHAR},
-			</if>
-			<if test="header != null">
-				#{header,jdbcType=VARCHAR},
-			</if>
-			<if test="chatType != null">
-				#{chatType,jdbcType=VARCHAR},
-			</if>
-			<if test="msgType != null">
-				#{msgType,jdbcType=VARCHAR},
-			</if>
-			<if test="status != null">
-				#{status,jdbcType=VARCHAR},
-			</if>
-			<if test="sendUserId != null">
-				#{sendUserId,jdbcType=BIGINT},
-			</if>
-			<if test="targetUserId != null">
-				#{targetUserId,jdbcType=BIGINT},
-			</if>
-			<if test="targetGroupId != null">
-				#{targetGroupId,jdbcType=BIGINT},
-			</if>
-			<if test="bizId != null">
-				#{bizId,jdbcType=VARCHAR},
-			</if>
-			<if test="content != null">
-				#{content,jdbcType=VARCHAR},
-			</if>
-			<if test="date != null">
-				#{date,jdbcType=VARCHAR},
-			</if>
-			<if test="time != null">
-				#{time,jdbcType=VARCHAR},
-			</if>
-		</trim>
-	</insert>
-	<update id="updateByPrimaryKeySelective" parameterType="com.neighbor.common.websoket.po.SocketMessage">
-		update chat_message
-		<set>
-			<if test="header != null">
-				header = #{header,jdbcType=VARCHAR},
-			</if>
-			<if test="chatType != null">
-				chat_type = #{chatType,jdbcType=VARCHAR},
-			</if>
-			<if test="msgType != null">
-				msg_type = #{msgType,jdbcType=VARCHAR},
-			</if>
-			<if test="status != null">
-				status = #{status,jdbcType=VARCHAR},
-			</if>
-			<if test="sendUserId != null">
-				send_user_id = #{sendUserId,jdbcType=BIGINT},
-			</if>
-			<if test="targetUserId != null">
-				target_user_id = #{targetUserId,jdbcType=BIGINT},
-			</if>
-			<if test="targetGroupId != null">
-				target_group_id = #{targetGroupId,jdbcType=BIGINT},
-			</if>
-			<if test="bizId != null">
-				biz_id = #{bizId,jdbcType=VARCHAR},
-			</if>
-			<if test="content != null">
-				content = #{content,jdbcType=VARCHAR},
-			</if>
-			<if test="date != null">
-				date = #{date,jdbcType=VARCHAR},
-			</if>
-			<if test="time != null">
-				time = #{time,jdbcType=VARCHAR},
-			</if>
-		</set>
-		where msg_id = #{msgId,jdbcType=BIGINT}
-	</update>
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="msgId"
+            parameterType="com.neighbor.common.websoket.po.SocketMessage">
+        insert into chat_message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="requestId != null">
+                request_id,
+            </if>
+            <if test="header != null">
+                header,
+            </if>
+            <if test="chatType != null">
+                chat_type,
+            </if>
+            <if test="msgType != null">
+                msg_type,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="sendUserId != null">
+                send_user_id,
+            </if>
+            <if test="targetUserId != null">
+                target_user_id,
+            </if>
+            <if test="targetGroupId != null">
+                target_group_id,
+            </if>
+            <if test="bizId != null">
+                biz_id,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="date != null">
+                date,
+            </if>
+            <if test="time != null">
+                time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="requestId != null">
+                #{requestId,jdbcType=VARCHAR},
+            </if>
+            <if test="header != null">
+                #{header,jdbcType=VARCHAR},
+            </if>
+            <if test="chatType != null">
+                #{chatType,jdbcType=VARCHAR},
+            </if>
+            <if test="msgType != null">
+                #{msgType,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="sendUserId != null">
+                #{sendUserId,jdbcType=BIGINT},
+            </if>
+            <if test="targetUserId != null">
+                #{targetUserId,jdbcType=BIGINT},
+            </if>
+            <if test="targetGroupId != null">
+                #{targetGroupId,jdbcType=BIGINT},
+            </if>
+            <if test="bizId != null">
+                #{bizId,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="date != null">
+                #{date,jdbcType=VARCHAR},
+            </if>
+            <if test="time != null">
+                #{time,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.common.websoket.po.SocketMessage">
+        update chat_message
+        <set>
+            <if test="header != null">
+                header = #{header,jdbcType=VARCHAR},
+            </if>
+            <if test="chatType != null">
+                chat_type = #{chatType,jdbcType=VARCHAR},
+            </if>
+            <if test="msgType != null">
+                msg_type = #{msgType,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="sendUserId != null">
+                send_user_id = #{sendUserId,jdbcType=BIGINT},
+            </if>
+            <if test="targetUserId != null">
+                target_user_id = #{targetUserId,jdbcType=BIGINT},
+            </if>
+            <if test="targetGroupId != null">
+                target_group_id = #{targetGroupId,jdbcType=BIGINT},
+            </if>
+            <if test="bizId != null">
+                biz_id = #{bizId,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="date != null">
+                date = #{date,jdbcType=VARCHAR},
+            </if>
+            <if test="time != null">
+                time = #{time,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where msg_id = #{msgId,jdbcType=BIGINT}
+    </update>
+
+    <update id="changeRecord" parameterType="java.util.Map">
+        update chat_message
+        <set>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where
+        <![CDATA[  msg_id <= #{msgId,jdbcType=BIGINT} and target_user_id = #{userId,jdbcType=BIGINT} ]]>
+        <if test="changePushed != null and  changePushed.length>0"> and status='pushed_response' </if>
+        <if test="changeComplete != null and  changeComplete.length>0"> and status='pushed'  </if>
+        <if test="friendId != null and  friendId.length>0"> and send_user_id = #{friendId,jdbcType=BIGINT}  </if>
+
+    </update>
 </mapper>

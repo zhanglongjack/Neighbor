@@ -1,12 +1,13 @@
 package com.neighbor.common.websoket.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.websoket.po.SocketMessage;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface SocketMessageService {
     int deleteByPrimaryKey(Long msgId);
@@ -30,4 +31,8 @@ public interface SocketMessageService {
     ResponseResult pageRecord(UserInfo user, Long targetUserId, PageTools pageTools);
 
     ResponseResult changeRecord(UserInfo user, Long targetUserId, Long msgId, String status);
+
+    Long selectPageTotalCount(HashMap map);
+
+    List<SocketMessage> selectPageByObjectForList(HashMap map);
 }

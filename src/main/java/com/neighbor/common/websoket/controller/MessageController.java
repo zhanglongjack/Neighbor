@@ -1,10 +1,9 @@
 package com.neighbor.common.websoket.controller;
 
-import com.neighbor.app.transfer.entity.Transfer;
-import com.neighbor.app.transfer.service.TransferService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.constants.MessageStatus;
 import com.neighbor.common.websoket.service.SocketMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,19 +31,28 @@ public class MessageController {
     //分页展示好友发送已完成和自己发送的消息
     @RequestMapping(value = "/pageRecord.req",method= RequestMethod.POST)
     @ResponseBody
-    public ResponseResult pageRecord(@ModelAttribute("user") UserInfo user,Long targetUserId,PageTools pageTools) throws Exception{
-        logger.info("pageRecord request user >>>> " + user+" | targetUserId >>"+targetUserId);
+    public ResponseResult pageRecord(@ModelAttribute("user") UserInfo user,Long friendId,PageTools pageTools) throws Exception{
+        logger.info("pageRecord request user >>>> " + user+" | targetUserId >>"+friendId);
         logger.info("pageRecord request pageTools >>>> " + pageTools);
-        ResponseResult result  = socketMessageService.pageRecord(user,targetUserId,pageTools);
+        ResponseResult result  = socketMessageService.pageRecord(user,friendId,pageTools);
         return result;
     }
 
-    //通知后端变更记录状态
-    @RequestMapping(value = "/changeRecord.req",method= RequestMethod.POST)
+    //通知后端变更完成记录状态
+    @RequestMapping(value = "/changeCompleteRecord.req",method= RequestMethod.POST)
     @ResponseBody
-    public ResponseResult changeRecord(@ModelAttribute("user") UserInfo user,Long targetUserId,Long msgId,String status) throws Exception{
-        logger.info("pageRecord request user >>>> " + user+" | targetUserId >>"+targetUserId +" | msgId >> "+msgId+"| status >>"+status);
-        ResponseResult result  = socketMessageService.changeRecord(user,targetUserId,msgId,status);
+    public ResponseResult changeCompleteRecord(@ModelAttribute("user") UserInfo user,Long friendId,Long msgId) throws Exception{
+        logger.info("pageRecord request user >>>> " + user+" | targetUserId >>"+friendId +" | msgId >> "+msgId+"| status >>"+ MessageStatus.complete);
+        ResponseResult result  = socketMessageService.changeRecord(user,friendId,msgId,MessageStatus.complete.toString());
+        return result;
+    }
+
+    //通知后端变更已推送记录状态
+    @RequestMapping(value = "/changePushedRecord.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult changePushedRecord(@ModelAttribute("user") UserInfo user,Long friendId,Long msgId) throws Exception{
+        logger.info("pageRecord request user >>>> " + user+" | targetUserId >>"+friendId +" | msgId >> "+msgId+"| status >>"+MessageStatus.pushed.toString());
+        ResponseResult result  = socketMessageService.changeRecord(user,friendId,msgId,MessageStatus.pushed.toString());
         return result;
     }
 
