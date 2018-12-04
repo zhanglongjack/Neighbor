@@ -40,9 +40,8 @@ public class ChatListController {
 
     @RequestMapping(value = "/listRecord.req",method= RequestMethod.POST)
     @ResponseBody
-    public ResponseResult listRecord(@ModelAttribute("user") UserInfo user, PageTools pageTools) throws Exception{
+    public ResponseResult listRecord(@ModelAttribute("user") UserInfo user, ChatList chatList, PageTools pageTools) throws Exception{
         logger.info("chatlist request user >>>> " + user);
-        ChatList chatList = new ChatList();
         chatList.setPageTools(pageTools);
         logger.info("chatlist request chatList >>>> " + chatList);
         ResponseResult result  = chatListService.chatlist(user,chatList);

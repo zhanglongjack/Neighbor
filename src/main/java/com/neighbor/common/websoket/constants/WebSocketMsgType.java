@@ -1,14 +1,6 @@
 package com.neighbor.common.websoket.constants;
 
-import com.neighbor.common.websoket.handler.impl.FailedMessageHandler;
-import com.neighbor.common.websoket.handler.impl.ImageMessageHandler;
-import com.neighbor.common.websoket.handler.impl.PacketMessageHandler;
-import com.neighbor.common.websoket.handler.impl.ResponseMessageHandler;
-import com.neighbor.common.websoket.handler.impl.SpeechMessageHandler;
-import com.neighbor.common.websoket.handler.impl.TextMessageHandler;
-import com.neighbor.common.websoket.handler.impl.TransferMessageHandler;
-import com.neighbor.common.websoket.handler.impl.UnreadMessageHandler;
-import com.neighbor.common.websoket.handler.impl.VideoMessageHandler;
+import com.neighbor.common.websoket.handler.impl.*;
 
 public enum WebSocketMsgType {
 	IMGR(ImageMessageHandler.class),
@@ -20,8 +12,8 @@ public enum WebSocketMsgType {
 	RESPONSE(ResponseMessageHandler.class),
 //	RECEIVE(),
 	FAILED(FailedMessageHandler.class),
-	UNREAD(UnreadMessageHandler.class)
-	;
+	UNREAD(UnreadMessageHandler.class),
+	FRIEND_CONFIRM(FriendConfirmMessageHandler.class);
 	
 	
 	private Class<?> implClass;
