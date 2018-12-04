@@ -3,6 +3,9 @@ package com.neighbor.common.websoket.service;
 import java.util.List;
 import java.util.Map;
 
+import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.common.util.PageTools;
+import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.websoket.po.SocketMessage;
 
 public interface SocketMessageService {
@@ -22,4 +25,9 @@ public interface SocketMessageService {
 
 	void insertRelationShipSelective(Map<String, Long> relationShip);
 
+    ResponseResult unreadRecord(UserInfo user);
+
+    ResponseResult pageRecord(UserInfo user, Long targetUserId, PageTools pageTools);
+
+    ResponseResult changeRecord(UserInfo user, Long targetUserId, Long msgId, String status);
 }

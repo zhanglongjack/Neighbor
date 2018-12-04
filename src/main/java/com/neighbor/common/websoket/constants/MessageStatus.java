@@ -5,7 +5,8 @@ public enum MessageStatus {
 	pushed_response("已推送应答"),
 	pushed("已推送消息"),
 	push_failed("消息推送失败"),
-	response_failed("应答推送失败");
+	response_failed("应答推送失败"),
+	complete("完成");
 
 	private String desc;
 
