@@ -39,15 +39,21 @@
     <select id="selectPageTotalCount" parameterType="java.util.Map"
             resultType="Long">
 	  select count(1) from (select c.* from chat_message c where c.`status`= 'complete' and c.send_user_id = #{friendId,jdbcType=BIGINT} and c.target_user_id = #{userId,jdbcType=BIGINT}
+        <if test="msgId != null ">  <![CDATA[ and msg_id < #{msgId,jdbcType=BIGINT} ]]> </if>
       UNION ALL
-      select a.* from chat_message a where  a.send_user_id = #{userId,jdbcType=BIGINT} and a.target_user_id = #{friendId,jdbcType=BIGINT} ) b
+      select a.* from chat_message a where  a.send_user_id = #{userId,jdbcType=BIGINT} and a.target_user_id = #{friendId,jdbcType=BIGINT}
+        <if test="msgId != null ">  <![CDATA[ and msg_id < #{msgId,jdbcType=BIGINT} ]]> </if>
+        ) b
 	</select>
 
     <select id="selectPageByObjectForList" parameterType="java.util.Map"
             resultMap="BaseResultMap">
      select b.* from (select c.* from chat_message c where c.`status`= 'complete' and c.send_user_id = #{friendId,jdbcType=BIGINT} and c.target_user_id = #{userId,jdbcType=BIGINT}
+        <if test="msgId != null ">  <![CDATA[ and msg_id < #{msgId,jdbcType=BIGINT} ]]> </if>
       UNION ALL
-      select a.* from chat_message a where  a.send_user_id = #{userId,jdbcType=BIGINT} and a.target_user_id = #{friendId,jdbcType=BIGINT} ) b
+      select a.* from chat_message a where  a.send_user_id = #{userId,jdbcType=BIGINT} and a.target_user_id = #{friendId,jdbcType=BIGINT}
+        <if test="msgId != null ">  <![CDATA[ and msg_id < #{msgId,jdbcType=BIGINT} ]]> </if>
+        ) b
         order by b.msg_id desc
         limit #{rowIndex},#{pageSize}
     </select>
@@ -220,7 +226,7 @@
         <![CDATA[  msg_id <= #{msgId,jdbcType=BIGINT} and target_user_id = #{userId,jdbcType=BIGINT} ]]>
         <if test="changePushed != null and  changePushed.length>0"> and status='pushed_response' </if>
         <if test="changeComplete != null and  changeComplete.length>0"> and status='pushed'  </if>
-        <if test="friendId != null and  friendId.length>0"> and send_user_id = #{friendId,jdbcType=BIGINT}  </if>
+        <if test="friendId != null "> and send_user_id = #{friendId,jdbcType=BIGINT}  </if>
 
     </update>
 </mapper>

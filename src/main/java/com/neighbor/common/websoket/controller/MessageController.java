@@ -31,10 +31,10 @@ public class MessageController {
     //分页展示好友发送已完成和自己发送的消息
     @RequestMapping(value = "/pageRecord.req",method= RequestMethod.POST)
     @ResponseBody
-    public ResponseResult pageRecord(@ModelAttribute("user") UserInfo user,Long friendId,PageTools pageTools) throws Exception{
-        logger.info("pageRecord request user >>>> " + user+" | targetUserId >>"+friendId);
+    public ResponseResult pageRecord(@ModelAttribute("user") UserInfo user,Long friendId,Long msgId,PageTools pageTools) throws Exception{
+        logger.info("pageRecord request user >>>> " + user+" | targetUserId >>"+friendId+" | msgId >> "+msgId);
         logger.info("pageRecord request pageTools >>>> " + pageTools);
-        ResponseResult result  = socketMessageService.pageRecord(user,friendId,pageTools);
+        ResponseResult result  = socketMessageService.pageRecord(user,friendId,msgId,pageTools);
         return result;
     }
 

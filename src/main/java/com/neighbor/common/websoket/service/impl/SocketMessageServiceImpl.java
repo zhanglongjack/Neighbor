@@ -77,10 +77,11 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	}
 
 	@Override
-	public ResponseResult pageRecord(UserInfo user, Long friendId, PageTools pageTools) {
+	public ResponseResult pageRecord(UserInfo user, Long friendId,Long msgId, PageTools pageTools) {
 		HashMap map = new HashMap();
 		map.put("userId",user.getId());
 		map.put("friendId",friendId);
+		map.put("msgId",msgId);
 		map.put("rowIndex",pageTools.getRowIndex());
 		map.put("pageSize",pageTools.getPageSize());
 		Long size = selectPageTotalCount(map);

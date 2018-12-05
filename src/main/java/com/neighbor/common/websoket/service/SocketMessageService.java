@@ -28,7 +28,7 @@ public interface SocketMessageService {
 
     ResponseResult unreadRecord(UserInfo user);
 
-    ResponseResult pageRecord(UserInfo user, Long targetUserId, PageTools pageTools);
+    ResponseResult pageRecord(UserInfo user, Long targetUserId,Long msgId, PageTools pageTools);
 
     ResponseResult changeRecord(UserInfo user, Long targetUserId, Long msgId, String status);
 
