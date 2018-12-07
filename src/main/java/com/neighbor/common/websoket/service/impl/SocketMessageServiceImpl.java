@@ -78,7 +78,7 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 
 	@Override
 	public ResponseResult pageRecord(UserInfo user, Long friendId,Long msgId, PageTools pageTools) {
-		HashMap map = new HashMap();
+		HashMap<String,Object> map = new HashMap<String,Object>();
 		map.put("userId",user.getId());
 		map.put("friendId",friendId);
 		map.put("msgId",msgId);
@@ -96,7 +96,7 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	@Override
 	public ResponseResult changeRecord(UserInfo user, Long friendId, Long msgId, String status) {
 		ResponseResult result = new ResponseResult();
-		HashMap map = new HashMap();
+		HashMap<String,Object> map = new HashMap<String,Object>();
 		map.put("userId",user.getId());
 		map.put("friendId",friendId);
 		map.put("msgId",msgId);
@@ -120,4 +120,16 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	public List<SocketMessage> selectPageByObjectForList(HashMap map) {
 		return socketMessageMapper.selectPageByObjectForList(map);
 	}
+
+	@Override
+	public List<SocketMessage> selectForTargetUserMsgByStatus(String status) {
+		SocketMessage msg = new SocketMessage();
+		msg.setStatus(status);
+		msg.setTargetUserNotNull(1);
+		
+		return selectbySelective(msg);
+	}
+	
+	
+	
 }
