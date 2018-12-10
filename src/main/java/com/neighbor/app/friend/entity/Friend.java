@@ -22,7 +22,7 @@ public class Friend extends PageEntity {
 
     private String friendDesc;
 
-    //状态，1：申请；2：审核通过；3：审核拒绝；
+    //状态，0是正常，1是被删除；
     private String states;
 
     private String addDirection;

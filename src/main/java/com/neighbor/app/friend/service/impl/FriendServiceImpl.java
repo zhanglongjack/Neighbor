@@ -2,6 +2,7 @@ package com.neighbor.app.friend.service.impl;
 
 import com.neighbor.app.chatlist.entity.ChatList;
 import com.neighbor.app.chatlist.service.ChatListService;
+import com.neighbor.app.friend.constants.FriendStatesDesc;
 import com.neighbor.app.friend.dao.FriendApplyMapper;
 import com.neighbor.app.friend.dao.FriendMapper;
 import com.neighbor.app.friend.entity.Friend;
@@ -88,16 +89,19 @@ public class FriendServiceImpl implements FriendService {
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void deleteFriend(Friend friend) throws Exception {
-
+        //删除自己的好友关系
         Friend friendA = friendMapper.selectByMap(friend);
         friendMapper.deleteByPrimaryKey(friendA.getId());
-
+        //对方好更新删除标记
         Long userId = friend.getUserId();
         Long friendUserId = friend.getFriendUserId();
         friend.setUserId(friendUserId);
         friend.setFriendUserId(userId);
         Friend friendB = friendMapper.selectByMap(friend);
-        friendMapper.deleteByPrimaryKey(friendB.getId());
+        Friend updateFriend = new Friend();
+        updateFriend.setStates(FriendStatesDesc.delete.getDes());
+        updateFriend.setId(friendB.getId());
+        friendMapper.updateByPrimaryKeySelective(updateFriend);
 
         UserInfo user = userService.selectByPrimaryKey(userId);
         ChatList chatList = new ChatList();
@@ -133,7 +137,7 @@ public class FriendServiceImpl implements FriendService {
             friendActive.setContactTime(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
             friendActive.setUserId(userId);
             friendActive.setFriendUserId(friendUserId);
-            friendActive.setStates(FriendApply.StatesDesc.pass.getValue());
+            friendActive.setStates(FriendStatesDesc.normal.getDes());
             friendActive.setAddDirection(FriendApply.AddDirectionDesc.activeAdd.getValue());
             friendActive.setAddType(FriendApply.AddTypeDesc.appAdd.getValue());
             friendActive.setCode(String.valueOf(userId));
@@ -146,7 +150,7 @@ public class FriendServiceImpl implements FriendService {
             friendAccept.setContactTime(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
             friendAccept.setUserId(friendUserId);
             friendAccept.setFriendUserId(userId);
-            friendAccept.setStates(FriendApply.StatesDesc.pass.getValue());
+            friendAccept.setStates(FriendStatesDesc.normal.getDes());
             friendAccept.setAddDirection(FriendApply.AddDirectionDesc.acceptAdd.getValue());
             friendAccept.setAddType(FriendApply.AddTypeDesc.appAdd.getValue());
             friendAccept.setCode(String.valueOf(friendUserId));
