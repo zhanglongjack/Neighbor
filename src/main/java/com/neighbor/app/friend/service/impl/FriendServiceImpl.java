@@ -99,11 +99,15 @@ public class FriendServiceImpl implements FriendService {
         Friend friendB = friendMapper.selectByMap(friend);
         friendMapper.deleteByPrimaryKey(friendB.getId());
 
-        UserInfo user=userService.selectByPrimaryKey(userId);
+        UserInfo user = userService.selectByPrimaryKey(userId);
         ChatList chatList = new ChatList();
         chatList.setFriendId(friendUserId);
-        chatListService.delChat(user,chatList);
+        chatListService.delChat(user, chatList);
 
+    }
+
+    public void deleteFriendApplyByPrimaryKey(Long id) throws Exception {
+        friendApplyMapper.deleteByPrimaryKey(id);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
