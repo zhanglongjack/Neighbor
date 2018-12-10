@@ -57,12 +57,8 @@ public class LoginController {
 			logger.info("用户名或密码错误"); 
 			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"用户名或密码错误!");
 		}
-		user.setUserPassword(null);
-		
-		String token = UUID.randomUUID().toString(); 
-		userContainer.put(token, user);
 
-		commonResultLogic(user, result, token);
+		commonResultLogic(user, result);
 		
 		logger.info("登录成功:{},result :{}",user,result); 
 		return result;
@@ -86,23 +82,23 @@ public class LoginController {
 			logger.info("验证吗输入错误"); 
 			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"验证码错误");
 		}
-        String token = UUID.randomUUID().toString();
-        userContainer.put(token, user);
 
-        UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
-
-		result.addBody("wallet", wallet);
-
-		commonResultLogic(user, result, token);
+		commonResultLogic(user, result);
 		
 		logger.info("登录成功:{},result :{}",user,result); 
 		return result;
 	}
 
-	private void commonResultLogic(UserInfo user, ResponseResult result, String token) throws Exception {
+	private void commonResultLogic(UserInfo user, ResponseResult result) throws Exception {
+		user.setUserPassword(null);
+		String token = UUID.randomUUID().toString(); 
+		userContainer.put(token, user);
+		
 		result.addBody("user", user);
 		result.addBody("token", token);
+        UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
 
+		result.addBody("wallet", wallet);
 		UserConfig userConfig = userService.selectUserConfigByPrimaryKey(user.getId());
 		if (userConfig == null) {
 			Date currentTime = new Date();

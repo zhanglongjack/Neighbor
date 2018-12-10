@@ -31,6 +31,7 @@
             <if test="status != null and status.length>0">and status=#{status}</if>
             <if test="sendUserId != null">and send_user_id=#{sendUserId}</if>
             <if test="targetUserId != null">and target_user_id=#{targetUserId}</if>
+            <if test="targetUserNotNull != null">and target_user_id is not null</if>
             <if test="targetGroupId != null">and chat_type=#{targetGroupId}</if>
             <if test="date != null and date.length>0">and date=#{date}</if>
         </where>

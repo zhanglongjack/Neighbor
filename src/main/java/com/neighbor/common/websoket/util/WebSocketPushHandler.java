@@ -77,7 +77,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 				handler.successCallBack(msgInfo,chatType,msgType);
 			}else{
 				// 按顺序推送消息,有一条异常,后面则不推,可能是推送异常或者用户断开连接
-				logger.info("按顺序推送消息,中断推送,可能是推送异常或者用户断开连接");
+				logger.info("按顺序推送消息,中断推送,可能是推送异常,用户未登录或者用户断开连接");
 				break;
 			}
 		}
@@ -248,6 +248,8 @@ public class WebSocketPushHandler implements WebSocketHandler {
 		logger.info("给指定用户发信息:" + userId);
 		TextMessage message = new TextMessage(JSON.toJSONString(result));
 		WebSocketSession session = userSessions.get(userId);
-		return sendMessage(session, message);
+		boolean isPushed= sendMessage(session, message);
+		logger.info("给指定用户:[{}]发信息是否成功:[{}]", userId,isPushed);
+		return isPushed;
 	}
 }

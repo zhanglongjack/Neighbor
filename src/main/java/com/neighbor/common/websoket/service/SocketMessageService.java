@@ -35,4 +35,6 @@ public interface SocketMessageService {
     Long selectPageTotalCount(HashMap map);
 
     List<SocketMessage> selectPageByObjectForList(HashMap map);
+
+	List<SocketMessage> selectForTargetUserMsgByStatus(String status);
 }

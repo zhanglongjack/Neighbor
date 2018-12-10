@@ -18,9 +18,11 @@ public class SocketMessage {
 	private String date;
 	private String time;
 	private String status; 
-	public WebSocketHeader webSocketHeader;
+	private WebSocketHeader webSocketHeader;
 	private List<Long> pushedUsers;
 	
+	// 查询条件
+	private Integer targetUserNotNull;
 	
 	public Long getMsgId() {
 		return msgId;
@@ -141,6 +143,14 @@ public class SocketMessage {
 
 	public void setBizId(String bizId) {
 		this.bizId = bizId;
+	}
+
+	public Integer getTargetUserNotNull() {
+		return targetUserNotNull;
+	}
+
+	public void setTargetUserNotNull(Integer targetUserNotNull) {
+		this.targetUserNotNull = targetUserNotNull;
 	}
 
 	@Override
