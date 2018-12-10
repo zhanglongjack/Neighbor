@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.neighbor.app.friend.entity.Friend;
+import com.neighbor.app.friend.service.FriendService;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.websoket.constants.WebSocketChatType;
 import com.neighbor.common.websoket.constants.WebSocketMsgType;
@@ -20,15 +22,29 @@ public abstract class AbstractMessageHandler implements WebSocketMessageHandler{
 	
 	@Autowired
 	private SocketMessageService socketMessageService;
-	
+	@Autowired
+	private FriendService friendService;
 	@Override
 	public ResponseResult handleMessage(SocketMessage msgInfo, WebSocketChatType chatType, WebSocketMsgType msgType) {
 		logger.info("开始处理通用消息接收处理:{}",msgInfo);
-
-		socketMessageService.insertSelective(msgInfo);
+		Friend friend = new Friend();
+		friend.setUserId(msgInfo.getSendUserId());
+		friend.setFriendUserId(msgInfo.getTargetUserId());
+		ResponseResult handleResult = new ResponseResult();
 		
-		ResponseResult result = new ResponseResult();
-		return result;
+		try {
+			Friend resultFriend = friendService.viewFriendByUserIdAndFriendId(friend);
+			if(resultFriend.getStates()=="2"){
+				handleResult.setErrorCode(4);
+				handleResult.setErrorMessage("双方非互为好友,消息发送失败");
+				return handleResult;
+			}
+		} catch (Exception e) {
+			
+		}
+		
+		socketMessageService.insertSelective(msgInfo);
+		return handleResult;
 	}
 
 	@Override
