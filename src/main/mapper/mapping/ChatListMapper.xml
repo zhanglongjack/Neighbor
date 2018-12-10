@@ -90,7 +90,7 @@
     delete from chat_list
     where user_id = #{userId,jdbcType=BIGINT} and friend_id = #{friendId,jdbcType=BIGINT}
   </delete>
-  <insert id="insertSelective" parameterType="com.neighbor.app.chatlist.entity.ChatList" >
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id"  parameterType="com.neighbor.app.chatlist.entity.ChatList" >
     insert into chat_list
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
