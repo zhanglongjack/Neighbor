@@ -98,20 +98,17 @@ public class FriendServiceImpl implements FriendService {
         friend.setUserId(friendUserId);
         friend.setFriendUserId(userId);
         Friend friendB = friendMapper.selectByMap(friend);
-        Friend updateFriend = new Friend();
-        updateFriend.setStates(FriendStatesDesc.delete.getDes());
-        updateFriend.setId(friendB.getId());
-        friendMapper.updateByPrimaryKeySelective(updateFriend);
-
-        UserInfo user = userService.selectByPrimaryKey(userId);
+        if(friendB!=null){
+            Friend updateFriend = new Friend();
+            updateFriend.setStates(FriendStatesDesc.delete.getDes());
+            updateFriend.setId(friendB.getId());
+            friendMapper.updateByPrimaryKeySelective(updateFriend);
+        }
+        UserInfo user=userService.selectByPrimaryKey(userId);
         ChatList chatList = new ChatList();
         chatList.setFriendId(friendUserId);
-        chatListService.delChat(user, chatList);
+        chatListService.delChat(user,chatList);
 
-    }
-
-    public void deleteFriendApplyByPrimaryKey(Long id) throws Exception {
-        friendApplyMapper.deleteByPrimaryKey(id);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -159,7 +156,7 @@ public class FriendServiceImpl implements FriendService {
             UserInfo user = userService.selectByPrimaryKey(userId);
             ChatList chatList = new ChatList();
             chatList.setFriendId(friendUserId);
-            chatListService.createChat(user, chatList);
+            //chatListService.createChat(user, chatList);
 
         }
 
