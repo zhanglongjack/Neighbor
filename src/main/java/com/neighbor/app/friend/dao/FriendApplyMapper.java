@@ -9,6 +9,8 @@ import java.util.List;
 @Mapper
 public interface FriendApplyMapper {
 
+    int deleteByPrimaryKey(Long id);
+
     int insertFriendApply(FriendApply friendApply);
 
     Long selectPageTotalCount(FriendApply record);

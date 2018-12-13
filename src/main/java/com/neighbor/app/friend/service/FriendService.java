@@ -16,6 +16,8 @@ public interface FriendService {
 
    public void insertFriendApply(FriendApply friendApply)throws Exception;
 
+   public void deleteFriendApplyByPrimaryKey(Long id) throws Exception;
+
    public void acceptFriend(FriendApply friendApply) throws Exception;
 
    public void deleteFriend(Friend friend) throws Exception;

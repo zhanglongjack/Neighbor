@@ -95,6 +95,17 @@ public class FriendController {
             friendApplyCheck.setFriendUserId(friendUserId);
             FriendApply friendApplyOld = friendService.viewFriendApplyByUserIdAndFriendId(friendApplyCheck);
 
+            if (friendApplyOld != null && friendApplyOld.getStates().equals("2")) {
+                Friend friendOld = new Friend();
+                friendOld.setUserId(friendApplyOld.getUserId());
+                friendOld.setFriendUserId(friendApplyOld.getFriendUserId());
+                friendOld = friendService.viewFriendByUserIdAndFriendId(friendOld);
+                if (friendOld == null) {
+                    friendService.deleteFriendApplyByPrimaryKey(friendApplyOld.getId());
+                    friendApplyOld = null;
+                }
+            }
+
             if (friendApplyOld != null) {
                 result.setErrorCode(2);
             } else {
