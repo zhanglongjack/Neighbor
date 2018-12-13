@@ -13,32 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ImageMessageHandler implements WebSocketMessageHandler {
-	private static final Logger logger = LoggerFactory.getLogger(ImageMessageHandler.class);
-	@Autowired
-	private SocketMessageService socketMessageService;
-	@Override
-	public ResponseResult handleMessage(SocketMessage msgInfo, WebSocketChatType chatType, WebSocketMsgType msgType) {
-		logger.info("开始处理图片消息接收处理:{}",msgInfo);
-		String filepath = FileUploadUtil.chatImagePath(msgInfo.getSendUserId(),msgInfo.getTargetUserId());
-		msgInfo.setContent(filepath+msgInfo.getContent());
-		socketMessageService.insertSelective(msgInfo);
-		ResponseResult result = new ResponseResult();
-		return result;
-	}
+public class ImageMessageHandler extends AbstractMessageHandler {
+//	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
-	public void successCallBack(SocketMessage msgInfo, WebSocketChatType chatType, WebSocketMsgType msgType) {
-		// TODO Auto-generated method stub
-		logger.info("图片消息成功,更新消息状态:{}",msgInfo);
-		socketMessageService.updateByPrimaryKeySelective(msgInfo);
+	public ResponseResult handle() {
+		return null;
 	}
 
-	@Override
-	public void failedCallBack(SocketMessage msgInfo, WebSocketChatType chatType, WebSocketMsgType msgType) {
-		// TODO Auto-generated method stub
-		logger.info("图片消息推送失败,更新消息状态:{}",msgInfo);
-		socketMessageService.updateByPrimaryKeySelective(msgInfo);
-	}
- 
+
 }
