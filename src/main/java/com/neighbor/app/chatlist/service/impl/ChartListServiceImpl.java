@@ -101,9 +101,12 @@ public class ChartListServiceImpl implements ChatListService {
             createChat.setLastChatDateTime(date);
             createChat.setLastChatTime(createChat.getCreTime());
             chatListMapper.insertSelective(createChat);
-            responseResult.addBody("chatList",createChat);
+            ChatList friendChat = new ChatList();
+            BeanUtils.copyProperties(createChat,friendChat);
+            friendChat.setUserId(friendId);
+            friendChat.setFriendId(userId);
+            chatListMapper.insertSelective(friendChat);
         }
-
         return responseResult;
     }
 

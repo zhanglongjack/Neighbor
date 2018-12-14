@@ -72,6 +72,7 @@ public class LoginController {
 		ResponseResult result = new ResponseResult();
 		if(user==null && isValid){
 			UserInfo record = new UserInfo();
+			record.setUserPhoto("img/head-user2.png");
 			record.setMobilePhone(phone);
 			record.setUserAccount(phone);
 			record.setUpUserId(upUserId);

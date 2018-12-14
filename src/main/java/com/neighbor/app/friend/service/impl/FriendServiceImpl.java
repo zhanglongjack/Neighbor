@@ -162,5 +162,8 @@ public class FriendServiceImpl implements FriendService {
 
     }
 
+    public void deleteFriendApplyByPrimaryKey(Long id) throws Exception {
+        friendApplyMapper.deleteByPrimaryKey(id);
+    }
 
 }
