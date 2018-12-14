@@ -56,8 +56,8 @@ public class ChartListServiceImpl implements ChatListService {
         queryChat.setUserId(userId);
         queryChat.setFriendId(friendId);
         PageTools pageTools = new PageTools();
-        chatList.setPageTools(pageTools);
-        List<ChatList> chatLists = chatListMapper.selectPageByObjectForList(chatList);
+        queryChat.setPageTools(pageTools);
+        List<ChatList> chatLists = chatListMapper.selectPageByObjectForList(queryChat);
         ChatList chat = null;
         if(chatLists!=null&&chatLists.size()>0){
             chat = chatLists.get(0);
@@ -105,6 +105,8 @@ public class ChartListServiceImpl implements ChatListService {
             createChat.setLastChatTime(createChat.getCreTime());
             chatListMapper.insertSelective(createChat);
             responseResult.addBody("chatList",createChat);
+        }else{
+            responseResult.addBody("chatList",chat);
         }
         return responseResult;
     }
