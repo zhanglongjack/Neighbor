@@ -16,17 +16,28 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
 	
 	@Autowired
 	private WebSocketInterceptor webSocketInterceptor;
-	
 	@Autowired
 	private WebSocketPushHandler webSocketPushHandler;
+//	@Autowired
+//	private NoticeMsgHandler noticeMsgHandler;
+	
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
     	logger.info("初始化websoket");
-        registry.addHandler(webSocketPushHandler, "/chatServer")
+    	registry.addHandler(webSocketPushHandler, "/chatServer")
+//    			.addHandler(noticeMsgHandler, "/noticeServer")
         		.addInterceptors(webSocketInterceptor).setAllowedOrigins("*");
         
         registry.addHandler(webSocketPushHandler, "/sockjs/chatServer")
+//        		.addHandler(noticeMsgHandler, "/noticeServer")
                 .addInterceptors(webSocketInterceptor).withSockJS();
+        
+//    	registry.addHandler(webSocketPushHandler, "/noticeServer")
+//				.addInterceptors(webSocketInterceptor).setAllowedOrigins("*");
+//
+//    	registry.addHandler(webSocketPushHandler, "/sockjs/noticeServer")
+//		        .addInterceptors(webSocketInterceptor).withSockJS();
+        
     }
 //
 //    @Bean

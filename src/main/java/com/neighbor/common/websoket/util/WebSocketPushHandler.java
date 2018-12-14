@@ -17,7 +17,6 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.alibaba.fastjson.JSON;
 import com.neighbor.app.api.common.SpringUtil;
-import com.neighbor.app.friend.entity.Friend;
 import com.neighbor.app.friend.service.FriendService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.DateUtils;

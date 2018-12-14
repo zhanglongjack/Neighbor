@@ -13,7 +13,8 @@ public enum WebSocketMsgType {
 //	RECEIVE(),
 	FAILED(FailedMessageHandler.class),
 	UNREAD(UnreadMessageHandler.class),
-	FRIEND_CONFIRM(FriendConfirmMessageHandler.class);
+	FRIEND_CONFIRM(FriendConfirmMessageHandler.class),
+	FRIEND_ADD(TextMessageHandler.class);
 	
 	
 	private Class<?> implClass;

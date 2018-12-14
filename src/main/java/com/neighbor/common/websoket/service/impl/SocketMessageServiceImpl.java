@@ -70,6 +70,7 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		ResponseResult responseResult = new ResponseResult();
 		SocketMessage socketMessage = new SocketMessage();
 		socketMessage.setTargetUserId(user.getId());
+		socketMessage.setMasterMsgType("1");
 		socketMessage.setStatus(MessageStatus.pushed_response.toString());//未推送状态
 		List<SocketMessage> socketMessageList = selectbySelective(socketMessage);
 		responseResult.addBody("messageList",socketMessageList);
@@ -100,6 +101,7 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		map.put("userId",user.getId());
 		map.put("friendId",friendId);
 		map.put("msgId",msgId);
+		map.put("masterMsgType","1");
 		if(MessageStatus.complete.toString().equals(status)){
 			map.put("status",MessageStatus.complete.toString());
 			map.put("changeComplete","ok");
@@ -126,7 +128,7 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		SocketMessage msg = new SocketMessage();
 		msg.setStatus(status);
 		msg.setTargetUserNotNull(1);
-		
+//		msg.setMasterMsgType("1");
 		return selectbySelective(msg);
 	}
 	

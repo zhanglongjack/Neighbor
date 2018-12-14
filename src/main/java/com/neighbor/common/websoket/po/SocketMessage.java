@@ -3,11 +3,13 @@ package com.neighbor.common.websoket.po;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class SocketMessage {
 	private Long msgId;
 	private String requestId;
 	private String header;
+	private String masterMsgType;
 	private String chatType;
 	private String msgType;
 	private Long sendUserId;
@@ -18,11 +20,14 @@ public class SocketMessage {
 	private String date;
 	private String time;
 	private String status; 
+	
+	@JsonIgnore
 	private WebSocketHeader webSocketHeader;
 	private List<Long> pushedUsers;
 	
 	// 查询条件
 	private Integer targetUserNotNull;
+	private Long msgIdLess;
 	
 	public Long getMsgId() {
 		return msgId;
@@ -47,6 +52,14 @@ public class SocketMessage {
 
 	public void setWebSocketHeader(WebSocketHeader webSocketHeader) {
 		this.webSocketHeader = webSocketHeader;
+	}
+
+	public String getMasterMsgType() {
+		return masterMsgType;
+	}
+
+	public void setMasterMsgType(String masterMsgType) {
+		this.masterMsgType = masterMsgType;
 	}
 
 	public String getChatType() {
