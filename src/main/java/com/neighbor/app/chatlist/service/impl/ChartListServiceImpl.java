@@ -8,6 +8,7 @@ import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.service.SocketMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -22,6 +23,8 @@ public class ChartListServiceImpl implements ChatListService {
     private static final Logger logger = LoggerFactory.getLogger(ChartListServiceImpl.class);
     @Autowired
     private ChatListMapper chatListMapper;
+    @Autowired
+    private SocketMessageService socketMessageService;
 
     @Override
     public ResponseResult chatlist(UserInfo user, ChatList chatList) throws Exception {
@@ -78,7 +81,7 @@ public class ChartListServiceImpl implements ChatListService {
     public ResponseResult clearChatHistory(ChatList chatList) throws Exception {
         logger.info("清空好友聊天记录...");
         ResponseResult responseResult = new ResponseResult();
-        //TODO 需要调用 好友消息服务清除
+
         return responseResult;
     }
 
@@ -101,11 +104,7 @@ public class ChartListServiceImpl implements ChatListService {
             createChat.setLastChatDateTime(date);
             createChat.setLastChatTime(createChat.getCreTime());
             chatListMapper.insertSelective(createChat);
-            ChatList friendChat = new ChatList();
-            BeanUtils.copyProperties(createChat,friendChat);
-            friendChat.setUserId(friendId);
-            friendChat.setFriendId(userId);
-            chatListMapper.insertSelective(friendChat);
+            responseResult.addBody("chatList",createChat);
         }
         return responseResult;
     }
