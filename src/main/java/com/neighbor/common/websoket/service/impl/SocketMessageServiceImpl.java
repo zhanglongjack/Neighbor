@@ -3,6 +3,7 @@ package com.neighbor.common.websoket.service.impl;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.constants.MessageDeleteStates;
 import com.neighbor.common.websoket.constants.MessageStatus;
 import com.neighbor.common.websoket.dao.SocketMessageMapper;
 import com.neighbor.common.websoket.po.SocketMessage;
@@ -56,6 +57,7 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		msg.setTargetUserId(targetUserId);
 		msg.setStatus(status);
 		msg.setChatType(chatType);
+		msg.setTargetUserDeleteFlag(MessageDeleteStates.normal.getDes());
 		return selectbySelective(msg);
 	}
 
@@ -70,6 +72,7 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		ResponseResult responseResult = new ResponseResult();
 		SocketMessage socketMessage = new SocketMessage();
 		socketMessage.setTargetUserId(user.getId());
+		socketMessage.setTargetUserDeleteFlag(MessageDeleteStates.normal.getDes());
 		socketMessage.setMasterMsgType("1");
 		socketMessage.setStatus(MessageStatus.pushed_response.toString());//未推送状态
 		List<SocketMessage> socketMessageList = selectbySelective(socketMessage);
@@ -131,7 +134,14 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 //		msg.setMasterMsgType("1");
 		return selectbySelective(msg);
 	}
-	
-	
-	
+
+	@Override
+	public int deleteMessage(SocketMessage record) {
+		return socketMessageMapper.deleteMessage(record);
+	}
+
+	@Override
+	public int jobDeleteMessage(SocketMessage record) {
+		return socketMessageMapper.jobDeleteMessage(record);
+	}
 }

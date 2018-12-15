@@ -51,6 +51,15 @@ public class ChatList {
     private String friendDesc;
     private String friendName;
 
+    private String chatHistorySetNot;
+
+    public String getChatHistorySetNot() {
+        return chatHistorySetNot;
+    }
+
+    public void setChatHistorySetNot(String chatHistorySetNot) {
+        this.chatHistorySetNot = chatHistorySetNot;
+    }
 
     public String getChatHistorySetText() {
         if(chatHistorySet==null){

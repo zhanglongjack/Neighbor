@@ -16,11 +16,13 @@
         <result column="content" jdbcType="VARCHAR" property="content"/>
         <result column="date" jdbcType="VARCHAR" property="date"/>
         <result column="time" jdbcType="VARCHAR" property="time"/>
+        <result column="send_user_delete_flag" jdbcType="VARCHAR" property="sendUserDeleteFlag"/>
+        <result column="target_user_delete_Flag" jdbcType="VARCHAR" property="targetUserDeleteFlag"/>
     </resultMap>
 
     <sql id="Base_Column_List">
 		msg_id,request_id, header,master_msg_type, chat_type, msg_type, status, send_user_id, target_user_id,
-		target_group_id,biz_id, content, date, time
+		target_group_id,biz_id, content, date, time,send_user_delete_flag,target_user_delete_Flag
 	</sql>
     <sql id="dynamicWhere">
         <where>
@@ -36,6 +38,9 @@
             <if test="targetUserNotNull != null">and target_user_id is not null</if>
             <if test="targetGroupId != null">and chat_type=#{targetGroupId}</if>
             <if test="date != null and date.length>0">and date=#{date}</if>
+            <if test="time != null and time.length>0">and time=#{time}</if>
+            <if test="sendUserDeleteFlag != null and sendUserDeleteFlag.length>0">and send_user_delete_flag=#{sendUserDeleteFlag}</if>
+            <if test="targetUserDeleteFlag != null and targetUserDeleteFlag.length>0">and target_user_delete_Flag=#{targetUserDeleteFlag}</if>
         </where>
     </sql>
 
@@ -65,12 +70,14 @@
 		and c.master_msg_type='1'
 		and c.send_user_id = #{friendId,jdbcType=BIGINT} 
 		and c.target_user_id = #{userId,jdbcType=BIGINT}
+        and c.target_user_delete_Flag = '0'
 		<if test="msgId != null ">  <![CDATA[ and msg_id < #{msgId,jdbcType=BIGINT} ]]> </if>
       	UNION ALL
 		select a.* from chat_message a 
 		where  a.send_user_id = #{userId,jdbcType=BIGINT} 
 		and a.master_msg_type='1'
 		and a.target_user_id = #{friendId,jdbcType=BIGINT}
+        and a.send_user_delete_flag = '0'
         <if test="msgId != null ">  <![CDATA[ and msg_id < #{msgId,jdbcType=BIGINT} ]]> </if>
       ) b
       order by b.msg_id desc
@@ -155,6 +162,12 @@
             <if test="time != null">
                 time,
             </if>
+            <if test="sendUserDeleteFlag != null">
+                send_user_delete_flag,
+            </if>
+            <if test="targetUserDeleteFlag != null">
+                target_user_delete_Flag,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="requestId != null">
@@ -195,6 +208,12 @@
             </if>
             <if test="time != null">
                 #{time,jdbcType=VARCHAR},
+            </if>
+            <if test="sendUserDeleteFlag != null">
+                #{sendUserDeleteFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="targetUserDeleteFlag != null">
+                #{targetUserDeleteFlag,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -237,6 +256,13 @@
             <if test="time != null">
                 time = #{time,jdbcType=VARCHAR},
             </if>
+            <if test="sendUserDeleteFlag != null">
+                send_user_delete_flag = #{sendUserDeleteFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="targetUserDeleteFlag != null">
+                target_user_delete_Flag = #{targetUserDeleteFlag,jdbcType=VARCHAR},
+            </if>
+
         </set>
         where msg_id = #{msgId,jdbcType=BIGINT}
     </update>
@@ -255,4 +281,42 @@
         <if test="changeComplete != null and  changeComplete.length>0"> and status='pushed'  </if>
         <if test="friendId != null "> and send_user_id = #{friendId,jdbcType=BIGINT}  </if>
     </update>
+
+    <update id="deleteMessage" parameterType="com.neighbor.common.websoket.po.SocketMessage">
+        update chat_message
+        <set>
+            <if test="sendUserDeleteFlag != null">
+                send_user_delete_flag = #{sendUserDeleteFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="targetUserDeleteFlag != null">
+                target_user_delete_Flag = #{targetUserDeleteFlag,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where  master_msg_type='1'
+        <if test="sendUserId != null" >and send_user_id=#{sendUserId}</if>
+        <if test="targetUserId != null">and target_user_id=#{targetUserId}</if>
+        <if test="date != null and date.length>0">and date=#{date}</if>
+        <if test="time != null and time.length>0">and time=#{time}</if>
+    </update>
+
+    <update id="jobDeleteMessage" parameterType="com.neighbor.common.websoket.po.SocketMessage">
+        update chat_message
+        <set>
+            <if test="sendUserDeleteFlag != null">
+                send_user_delete_flag = #{sendUserDeleteFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="targetUserDeleteFlag != null">
+                target_user_delete_Flag = #{targetUserDeleteFlag,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where master_msg_type='1'
+        <if test="sendUserId != null">and send_user_id=#{sendUserId}</if>
+        <if test="targetUserId != null">and target_user_id=#{targetUserId}</if>
+        <if test="cleanHistory == 'oneHour'"><![CDATA[ and hour(timediff(date_format(now(),'%Y-%m-%d %H:00:00'),CONCAT(date,' ',left(time,2),':00:00'))) >1 ]]> </if>
+        <if test="cleanHistory == 'twelveHours'"> <![CDATA[ and  hour(timediff(date_format(now(),'%Y-%m-%d %H:00:00'),CONCAT(date,' ',left(time,2),':00:00'))) >12 ]]> </if>
+        <if test="cleanHistory == 'oneDay'"><![CDATA[ and date < date_format(now(),'%Y-%m-%d') ]]> </if>
+        <if test="cleanHistory == 'threeDay'"><![CDATA[ and TIMESTAMPDIFF(DAY,date,date_format(now(),'%Y-%m-%d')) >= 3 ]]> </if>
+        <if test="cleanHistory == 'sevenDay'"><![CDATA[ and TIMESTAMPDIFF(DAY,date,date_format(now(),'%Y-%m-%d')) >= 7 ]]> </if>
+    </update>
+
 </mapper>

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.neighbor.common.websoket.constants.MessageDeleteStates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,8 @@ public abstract class AbstractMessageHandler implements WebSocketMessageHandler{
 		} catch (Exception e) {
 
 		}
-
+		msgInfo.setTargetUserDeleteFlag(MessageDeleteStates.normal.getDes());
+		msgInfo.setSendUserDeleteFlag(MessageDeleteStates.normal.getDes());
 		socketMessageService.insertSelective(msgInfo);
 		return handleResult;
 	}

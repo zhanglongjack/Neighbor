@@ -37,4 +37,6 @@ public interface SocketMessageService {
     List<SocketMessage> selectPageByObjectForList(HashMap map);
 
 	List<SocketMessage> selectForTargetUserMsgByStatus(String status);
+	int deleteMessage(SocketMessage record);
+    int jobDeleteMessage(SocketMessage record);
 }

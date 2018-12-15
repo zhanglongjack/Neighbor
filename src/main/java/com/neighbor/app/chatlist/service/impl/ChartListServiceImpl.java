@@ -1,5 +1,6 @@
 package com.neighbor.app.chatlist.service.impl;
 
+import com.neighbor.app.chatlist.constants.ChatHistorySetDesc;
 import com.neighbor.app.chatlist.dao.ChatListMapper;
 import com.neighbor.app.chatlist.entity.ChatList;
 import com.neighbor.app.chatlist.service.ChatListService;
@@ -8,12 +9,16 @@ import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.constants.MessageDeleteStates;
+import com.neighbor.common.websoket.po.SocketMessage;
 import com.neighbor.common.websoket.service.SocketMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -46,12 +51,12 @@ public class ChartListServiceImpl implements ChatListService {
         ResponseResult responseResult = new ResponseResult();
         Long userId = chatList.getUserId();
         Long friendId = chatList.getFriendId();
-        ChatList chat = queryChatListInfo(chatList, userId, friendId);
+        ChatList chat = queryChatListInfo(userId, friendId);
         responseResult.addBody("chatInfo",chat);
         return responseResult;
     }
 
-    private ChatList queryChatListInfo(ChatList chatList, Long userId, Long friendId) {
+    private ChatList queryChatListInfo( Long userId, Long friendId) {
         ChatList queryChat = new ChatList();
         queryChat.setUserId(userId);
         queryChat.setFriendId(friendId);
@@ -72,7 +77,7 @@ public class ChartListServiceImpl implements ChatListService {
         chatListMapper.updateByFriendKeySelective(chatList);
         Long userId = chatList.getUserId();
         Long friendId = chatList.getFriendId();
-        ChatList chat = queryChatListInfo(chatList, userId, friendId);
+        ChatList chat = queryChatListInfo( userId, friendId);
         responseResult.addBody("chatInfo",chat);
         return responseResult;
     }
@@ -81,7 +86,51 @@ public class ChartListServiceImpl implements ChatListService {
     public ResponseResult clearChatHistory(ChatList chatList) throws Exception {
         logger.info("清空好友聊天记录...");
         ResponseResult responseResult = new ResponseResult();
+        //删除 所有我发送给好友的记录
+        SocketMessage selfSend = new SocketMessage();
+        selfSend.setSendUserId(chatList.getUserId());
+        selfSend.setTargetUserId(chatList.getFriendId());
+        selfSend.setSendUserDeleteFlag(MessageDeleteStates.delete.getDes());
+        socketMessageService.deleteMessage(selfSend);
+        //删除 所有发送给我的记录
+        SocketMessage friendSend = new SocketMessage();
+        friendSend.setSendUserId(chatList.getFriendId());
+        friendSend.setTargetUserId(chatList.getUserId());
+        friendSend.setTargetUserDeleteFlag(MessageDeleteStates.delete.getDes());
+        socketMessageService.deleteMessage(friendSend);
+        return responseResult;
+    }
 
+    public ResponseResult jobDeleteChatHistory() throws Exception {
+        logger.info("JOB清空好友聊天记录...");
+        ResponseResult responseResult = new ResponseResult();
+        ChatList select = new ChatList();
+        select.setChatHistorySetNot(ChatHistorySetDesc.save.toString());
+        List<ChatList> chatLists =  chatListMapper.selectAll(select);
+        for(ChatList chatList :chatLists){
+            deleteChatHistory(chatList);
+        }
+        return responseResult;
+    }
+
+    @Transactional(readOnly = false,rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    public ResponseResult deleteChatHistory(ChatList chatList) throws Exception {
+        logger.info("JOB 执行到 chatList id "+chatList.getId()+" 间隔 "+chatList.getChatHistorySetText()+ " 清空好友聊天记录...");
+        ResponseResult responseResult = new ResponseResult();
+        //删除 所有我发送给好友的记录
+        SocketMessage selfSend = new SocketMessage();
+        selfSend.setSendUserId(chatList.getUserId());
+        selfSend.setTargetUserId(chatList.getFriendId());
+        selfSend.setSendUserDeleteFlag(MessageDeleteStates.delete.getDes());
+        selfSend.setCleanHistory(chatList.getChatHistorySet());
+        socketMessageService.jobDeleteMessage(selfSend);
+        //删除 所有发送给我的记录
+        SocketMessage friendSend = new SocketMessage();
+        friendSend.setSendUserId(chatList.getFriendId());
+        friendSend.setTargetUserId(chatList.getUserId());
+        friendSend.setTargetUserDeleteFlag(MessageDeleteStates.delete.getDes());
+        friendSend.setCleanHistory(chatList.getChatHistorySet());
+        socketMessageService.jobDeleteMessage(friendSend);
         return responseResult;
     }
 
@@ -90,7 +139,7 @@ public class ChartListServiceImpl implements ChatListService {
         ResponseResult responseResult = new ResponseResult();
         Long userId = user.getId();
         Long friendId = chatList.getFriendId();
-        ChatList chat = queryChatListInfo(chatList, userId, friendId);
+        ChatList chat = queryChatListInfo(userId, friendId);
         if(chat==null){
             ChatList createChat = new ChatList();
             createChat.setUserId(userId);
@@ -116,10 +165,9 @@ public class ChartListServiceImpl implements ChatListService {
         ResponseResult responseResult = new ResponseResult();
         chatList.setUserId(user.getId());
         chatListMapper.delChat(chatList);
-        /*ChatList delFriendChat = new ChatList();
-        delFriendChat.setFriendId(user.getId());
-        delFriendChat.setUserId(chatList.getFriendId());
-        chatListMapper.delChat(delFriendChat);*/
+        //删除聊天窗口清空聊天记录
+        ChatList chat = queryChatListInfo( user.getId(), chatList.getFriendId());
+        clearChatHistory(chat);
         return responseResult;
     }
 

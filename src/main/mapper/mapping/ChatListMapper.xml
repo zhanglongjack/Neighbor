@@ -48,13 +48,15 @@
       <if test="toppingFlag != null and toppingFlag.length()>0">and t.topping_flag=#{toppingFlag}</if>
       <if test="showMsgSwitch != null and showMsgSwitch.length()>0">and t.show_msg_switch=#{showMsgSwitch}</if>
       <if test="chatHistorySet != null and chatHistorySet.length()>0">and t.chat_history_set=#{chatHistorySet}</if>
+      <if test="chatHistorySetNot != null and chatHistorySetNot.length()>0"> <![CDATA[ and t.chat_history_set <> #{chatHistorySetNot} ]]> </if>
     </where>
   </sql>
   
-  <select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="com.neighbor.app.chatlist.entity.ChatList">
     select
     <include refid="Base_Column_List" />
     from chat_list t
+    <include refid="dynamicWhere" />
     order by create_time
   </select>
 

@@ -20,7 +20,7 @@ public interface ChatListMapper {
 
     List<ChatList> selectPageByObjectForList(ChatList record);
 
-    List<ChatList> selectAll();
+    List<ChatList> selectAll(ChatList chatList);
 
     int delChat(ChatList chatList);
 

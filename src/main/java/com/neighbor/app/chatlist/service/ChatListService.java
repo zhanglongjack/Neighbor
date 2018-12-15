@@ -16,4 +16,6 @@ public interface ChatListService {
     ResponseResult createChat(UserInfo user, ChatList chatList) throws Exception;
 
     ResponseResult delChat(UserInfo user, ChatList chatList) throws Exception;
+
+     ResponseResult jobDeleteChatHistory() throws Exception;
 }

@@ -28,7 +28,36 @@ public class SocketMessage {
 	// 查询条件
 	private Integer targetUserNotNull;
 	private Long msgIdLess;
-	
+
+	private String cleanHistory;//清除历史消息间隔时间
+
+	private String sendUserDeleteFlag; //发送者删除状态（0 正常，1被删除了）
+	private String targetUserDeleteFlag;//接受者删除状态（0 正常，1被删除了）
+
+	public String getSendUserDeleteFlag() {
+		return sendUserDeleteFlag;
+	}
+
+	public void setSendUserDeleteFlag(String sendUserDeleteFlag) {
+		this.sendUserDeleteFlag = sendUserDeleteFlag;
+	}
+
+	public String getTargetUserDeleteFlag() {
+		return targetUserDeleteFlag;
+	}
+
+	public void setTargetUserDeleteFlag(String targetUserDeleteFlag) {
+		this.targetUserDeleteFlag = targetUserDeleteFlag;
+	}
+
+	public String getCleanHistory() {
+		return cleanHistory;
+	}
+
+	public void setCleanHistory(String cleanHistory) {
+		this.cleanHistory = cleanHistory;
+	}
+
 	public Long getMsgId() {
 		return msgId;
 	}

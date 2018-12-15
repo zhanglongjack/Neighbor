@@ -27,4 +27,6 @@ public interface SocketMessageMapper {
     List<SocketMessage> selectPageByObjectForList(HashMap map);
 
     void changeRecord(HashMap map);
+    int deleteMessage(SocketMessage record);
+    int jobDeleteMessage(SocketMessage record);
 }
