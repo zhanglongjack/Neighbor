@@ -102,6 +102,7 @@ public class FriendServiceImpl implements FriendService {
             Friend updateFriend = new Friend();
             updateFriend.setStates(FriendStatesDesc.delete.getDes());
             updateFriend.setId(friendB.getId());
+            updateFriend.setUpdateTime(new Date());
             friendMapper.updateByPrimaryKeySelective(updateFriend);
         }
         UserInfo user=userService.selectByPrimaryKey(userId);
@@ -122,36 +123,60 @@ public class FriendServiceImpl implements FriendService {
         Long userId = friendApply.getUserId();
         Long friendUserId = friendApply.getFriendUserId();
 
+        //关于添加好友--删除---添加好友的逻辑如下：
+        //1、A，添加好友B，生成一条 friend_apply记录；
+        //2、B，接受A，更新 friend_apply 记录，同时生成两条 friend 记录，AB记录 和BA 记录；
+        //3、A 删除 B，删除AB记录，更新BA记录为删除状态，删除AB的聊天记录，保留BA的聊天记录；
+        //4、A再次添加B，删除旧的 friend_apply记录，生成新的记录
+        //5、B接受A，更新friend_apply记录，同时新增AB，更新BA的状态为正常
+
         Friend friend = new Friend();
         friend.setUserId(userId);
         friend.setFriendUserId(friendUserId);
+        friend.setStates(FriendStatesDesc.normal.getDes());
         Friend friendOld = friendMapper.selectByMap(friend);
         if (friendOld == null) {
             Friend friendActive = new Friend();
-            friendActive.setCreateTime(currentTime);
-            friendActive.setUpdateTime(currentTime);
-            friendActive.setContactDate(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
-            friendActive.setContactTime(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
             friendActive.setUserId(userId);
             friendActive.setFriendUserId(friendUserId);
-            friendActive.setStates(FriendStatesDesc.normal.getDes());
-            friendActive.setAddDirection(FriendApply.AddDirectionDesc.activeAdd.getValue());
-            friendActive.setAddType(FriendApply.AddTypeDesc.appAdd.getValue());
-            friendActive.setCode(String.valueOf(userId));
-            insertFriend(friendActive);
+            friendOld = friendMapper.selectByMap(friendActive);
+            if(friendOld==null) {
+                friendActive.setCreateTime(currentTime);
+                friendActive.setUpdateTime(currentTime);
+                friendActive.setContactDate(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
+                friendActive.setContactTime(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
+                friendActive.setStates(FriendStatesDesc.normal.getDes());
+                friendActive.setAddDirection(FriendApply.AddDirectionDesc.activeAdd.getValue());
+                friendActive.setAddType(FriendApply.AddTypeDesc.appAdd.getValue());
+                friendActive.setCode(String.valueOf(userId));
+                insertFriend(friendActive);
+            }else{
+                friendOld.setStates(FriendStatesDesc.normal.getDes());
+                friendOld.setAddDirection(FriendApply.AddDirectionDesc.activeAdd.getValue());
+                friendOld.setUpdateTime(currentTime);
+                friendMapper.updateByPrimaryKeySelective(friendOld);
+            }
 
             Friend friendAccept = new Friend();
-            friendAccept.setCreateTime(currentTime);
-            friendAccept.setUpdateTime(currentTime);
-            friendAccept.setContactDate(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
-            friendAccept.setContactTime(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
             friendAccept.setUserId(friendUserId);
             friendAccept.setFriendUserId(userId);
-            friendAccept.setStates(FriendStatesDesc.normal.getDes());
-            friendAccept.setAddDirection(FriendApply.AddDirectionDesc.acceptAdd.getValue());
-            friendAccept.setAddType(FriendApply.AddTypeDesc.appAdd.getValue());
-            friendAccept.setCode(String.valueOf(friendUserId));
-            insertFriend(friendAccept);
+            friendOld = friendMapper.selectByMap(friendAccept);
+            if(friendOld==null) {
+                friendAccept.setCreateTime(currentTime);
+                friendAccept.setUpdateTime(currentTime);
+                friendAccept.setContactDate(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
+                friendAccept.setContactTime(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
+                friendAccept.setStates(FriendStatesDesc.normal.getDes());
+                friendAccept.setAddDirection(FriendApply.AddDirectionDesc.acceptAdd.getValue());
+                friendAccept.setAddType(FriendApply.AddTypeDesc.appAdd.getValue());
+                friendAccept.setCode(String.valueOf(friendUserId));
+                insertFriend(friendAccept);
+            }else{
+                friendOld.setStates(FriendStatesDesc.normal.getDes());
+                friendOld.setAddDirection(FriendApply.AddDirectionDesc.acceptAdd.getValue());
+                friendOld.setUpdateTime(currentTime);
+                friendMapper.updateByPrimaryKeySelective(friendOld);
+            }
 
             UserInfo user = userService.selectByPrimaryKey(userId);
             ChatList chatList = new ChatList();

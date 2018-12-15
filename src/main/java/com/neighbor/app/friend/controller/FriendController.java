@@ -1,6 +1,7 @@
 package com.neighbor.app.friend.controller;
 
 import com.neighbor.app.api.common.ErrorCodeDesc;
+import com.neighbor.app.friend.constants.FriendStatesDesc;
 import com.neighbor.app.friend.entity.Friend;
 import com.neighbor.app.friend.entity.FriendApply;
 import com.neighbor.app.friend.service.FriendService;
@@ -67,6 +68,7 @@ public class FriendController {
                 Friend f = new Friend();
                 f.setUserId(user.getId());
                 f.setFriendUserId(userFriend.getId());
+                f.setStates(FriendStatesDesc.normal.getDes());
                 friendReturn = friendService.viewFriendByUserIdAndFriendId(f);
             }
             result = new ResponseResult();
@@ -99,6 +101,7 @@ public class FriendController {
                 Friend friendOld = new Friend();
                 friendOld.setUserId(friendApplyOld.getUserId());
                 friendOld.setFriendUserId(friendApplyOld.getFriendUserId());
+                friendOld.setStates(FriendStatesDesc.normal.getDes());
                 friendOld = friendService.viewFriendByUserIdAndFriendId(friendOld);
                 if (friendOld == null) {
                     friendService.deleteFriendApplyByPrimaryKey(friendApplyOld.getId());
