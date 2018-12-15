@@ -1,8 +1,10 @@
 package com.neighbor.common.websoket.controller;
 
+import com.alipay.api.internal.util.StringUtils;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.util.StringUtil;
 import com.neighbor.common.websoket.constants.MessageStatus;
 import com.neighbor.common.websoket.service.SocketMessageService;
 import org.slf4j.Logger;
@@ -31,10 +33,14 @@ public class MessageController {
     //分页展示好友发送已完成和自己发送的消息
     @RequestMapping(value = "/pageRecord.req",method= RequestMethod.POST)
     @ResponseBody
-    public ResponseResult pageRecord(@ModelAttribute("user") UserInfo user,Long friendId,Long msgId,PageTools pageTools) throws Exception{
+    public ResponseResult pageRecord(@ModelAttribute("user") UserInfo user,Long friendId,String msgId,PageTools pageTools) throws Exception{
         logger.info("pageRecord request user >>>> " + user+" | targetUserId >>"+friendId+" | msgId >> "+msgId);
         logger.info("pageRecord request pageTools >>>> " + pageTools);
-        ResponseResult result  = socketMessageService.pageRecord(user,friendId,msgId,pageTools);
+        Long msgIdN = null;
+        if(StringUtils.isNumeric(msgId)){
+            msgIdN = Long.valueOf(msgId);
+        }
+        ResponseResult result  = socketMessageService.pageRecord(user,friendId,msgIdN,pageTools);
         return result;
     }
 
