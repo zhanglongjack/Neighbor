@@ -167,7 +167,9 @@ public class ChartListServiceImpl implements ChatListService {
         chatListMapper.delChat(chatList);
         //删除聊天窗口清空聊天记录
         ChatList chat = queryChatListInfo( user.getId(), chatList.getFriendId());
-        clearChatHistory(chat);
+        if(chat!=null){
+            clearChatHistory(chat);
+        }
         return responseResult;
     }
 
