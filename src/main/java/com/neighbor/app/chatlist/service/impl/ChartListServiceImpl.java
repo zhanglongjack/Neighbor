@@ -153,7 +153,8 @@ public class ChartListServiceImpl implements ChatListService {
             createChat.setLastChatDateTime(date);
             createChat.setLastChatTime(createChat.getCreTime());
             chatListMapper.insertSelective(createChat);
-            responseResult.addBody("chatList",createChat);
+            ChatList chatNew = queryChatListInfo(userId, friendId);
+            responseResult.addBody("chatList",chatNew);
         }else{
             responseResult.addBody("chatList",chat);
         }
@@ -167,7 +168,9 @@ public class ChartListServiceImpl implements ChatListService {
         chatListMapper.delChat(chatList);
         //删除聊天窗口清空聊天记录
         ChatList chat = queryChatListInfo( user.getId(), chatList.getFriendId());
-        clearChatHistory(chat);
+        if(chat!=null){
+            clearChatHistory(chat);
+        }
         return responseResult;
     }
 
