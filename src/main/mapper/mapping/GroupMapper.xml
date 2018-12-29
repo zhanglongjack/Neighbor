@@ -13,33 +13,78 @@
     <result column="group_notice" property="groupNotice" jdbcType="VARCHAR" />
     <result column="group_head_img_url" property="groupHeadImgUrl" jdbcType="VARCHAR" />
     <result column="states" property="states" jdbcType="VARCHAR" />
+    <result column="game_id" property="gameId" jdbcType="BIGINT" />
+    <result column="red_pack_amount_limit" property="redPackAmountLimit" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, create_time, update_time, cre_date, cre_time, group_name, user_num, online_num, 
-    group_notice, group_head_img_url, states
+     g.id, g.create_time, g.update_time, g.cre_date, g.cre_time, g.group_name, g.user_num, g.online_num,
+    g.group_notice, g.group_head_img_url, g.states,g.game_id,g.red_pack_amount_limit
   </sql>
+  <sql id="dynamicWhere">
+    <where>
+      <if test="id != null">and g.id=#{id}</if>
+      <if test="createTime != null ">and g.create_time=#{createTime}</if>
+      <if test="updateTime != null ">and g.update_time=#{updateTime}</if>
+      <if test="creDate != null and creDate.length()>0">and g.cre_date=#{creDate}</if>
+      <if test="creTime != null and creTime.length()>0">and g.cre_time=#{creTime}</if>
+      <if test="groupName != null and groupName.length()>0">and g.group_name=#{groupName}</if>
+      <if test="userNum != null">and g.user_num=#{userNum}</if>
+      <if test="onlineNum != null">and g.online_num=#{onlineNum}</if>
+      <if test="groupNotice != null and groupNotice.length()>0">and g.group_notice=#{groupNotice}</if>
+      <if test="states != null and states.length()>0">and g.states=#{states}</if>
+      <if test="gameId != null">and g.game_id=#{gameId}</if>
+      <if test="redPackAmountLimit != null">and g.red_pack_amount_limit=#{redPackAmountLimit}</if>
+    </where>
+  </sql>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from `group` g
+    order by g.create_time
+  </select>
+  
+  <select id="selectPageByObjectForList" parameterType="com.neighbor.app.group.entity.Group"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from `group` g
+    <if test="userId != null" >
+      INNER JOIN group_member gm on g.id=gm.group_id and gm.user_id=#{userId,jdbcType=BIGINT}
+    </if>
+    <if test="gameType != null and gameType.length()>0 " >
+      INNER JOIN game ge on  g.game_id = ge.id and ge.game_type=#{gameType,jdbcType=VARCHAR}
+    </if>
+    <include refid="dynamicWhere" />
+    order by g.create_time
+    limit #{pageTools.rowIndex},#{pageTools.pageSize}
+  </select>
+
+  <select id="selectPageTotalCount" parameterType="com.neighbor.app.group.entity.Group"
+          resultType="Long">
+    select
+    count(1)
+    from `group` g
+    <if test="userId != null" >
+      INNER JOIN group_member gm on g.id=gm.group_id and gm.user_id=#{userId,jdbcType=BIGINT}
+    </if>
+    <if test="gameType != null and gameType.length()>0 " >
+      INNER JOIN game ge on  g.game_id = ge.id and ge.game_type=#{gameType,jdbcType=VARCHAR}
+    </if>
+    <include refid="dynamicWhere" />
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from group
-    where id = #{id,jdbcType=BIGINT}
+    from `group`  g
+    where g.id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from group
+    delete from `group`
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.neighbor.app.group.entity.Group" >
-    insert into group (id, create_time, update_time, 
-      cre_date, cre_time, group_name, 
-      user_num, online_num, group_notice, 
-      group_head_img_url, states)
-    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{creDate,jdbcType=VARCHAR}, #{creTime,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR}, 
-      #{userNum,jdbcType=BIGINT}, #{onlineNum,jdbcType=BIGINT}, #{groupNotice,jdbcType=VARCHAR}, 
-      #{groupHeadImgUrl,jdbcType=VARCHAR}, #{states,jdbcType=VARCHAR})
-  </insert>
   <insert id="insertSelective" parameterType="com.neighbor.app.group.entity.Group" >
-    insert into group
+    insert into `group`
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -73,6 +118,12 @@
       </if>
       <if test="states != null" >
         states,
+      </if>
+      <if test="groupHeadImgUrl != null" >
+        game_id,
+      </if>
+      <if test="states != null" >
+        red_pack_amount_limit,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -109,10 +160,16 @@
       <if test="states != null" >
         #{states,jdbcType=VARCHAR},
       </if>
+      <if test="gameId != null" >
+        #{gameId,jdbcType=BIGINT},
+      </if>
+      <if test="redPackAmountLimit != null" >
+        #{redPackAmountLimit,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.group.entity.Group" >
-    update group
+    update `group`
     <set >
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -144,21 +201,14 @@
       <if test="states != null" >
         states = #{states,jdbcType=VARCHAR},
       </if>
+      <if test="gameId != null" >
+        game_id = #{gameId,jdbcType=BIGINT},
+      </if>
+      <if test="redPackAmountLimit != null" >
+        red_pack_amount_limit = #{redPackAmountLimit,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.neighbor.app.group.entity.Group" >
-    update group
-    set create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      cre_date = #{creDate,jdbcType=VARCHAR},
-      cre_time = #{creTime,jdbcType=VARCHAR},
-      group_name = #{groupName,jdbcType=VARCHAR},
-      user_num = #{userNum,jdbcType=BIGINT},
-      online_num = #{onlineNum,jdbcType=BIGINT},
-      group_notice = #{groupNotice,jdbcType=VARCHAR},
-      group_head_img_url = #{groupHeadImgUrl,jdbcType=VARCHAR},
-      states = #{states,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
 </mapper>
