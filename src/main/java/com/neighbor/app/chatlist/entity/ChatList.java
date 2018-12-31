@@ -104,8 +104,6 @@ public class ChatList {
             return friendDesc;
         }else if(!StringUtils.isEmpty(friendNickName)){
             return friendNickName;
-        }else if(!StringUtils.isEmpty(friendName)){
-            return friendName;
         }
         return friendId+"";
     }

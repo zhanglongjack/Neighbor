@@ -15,26 +15,33 @@
     <result column="automatic_grab_switch" property="automaticGrabSwitch" jdbcType="VARCHAR" />
     <result column="topping_flag" property="toppingFlag" jdbcType="VARCHAR" />
   </resultMap>
+
+  <resultMap id="FullResultMap" type="com.neighbor.app.group.entity.GroupMember" extends="BaseResultMap" >
+    <result column="friendNickName" property="friendNickName" jdbcType="VARCHAR" />
+    <result column="friendDesc" property="friendDesc" jdbcType="VARCHAR" />
+    <result column="friendHeadUrl" property="friendHeadUrl" jdbcType="VARCHAR" />
+  </resultMap>
+
   <sql id="Base_Column_List" >
     id, create_time, update_time, group_id, user_id, member_type, show_msg_switch, show_nick_name_switch, 
     unread_message_num, states, automatic_grab_switch, topping_flag
   </sql>
 
+
   <sql id="dynamicWhere">
     <where>
-      <if test="id != null">and id=#{id}</if>
-      <if test="createTime != null ">and create_time=#{createTime}</if>
-      <if test="updateTime != null ">and update_time=#{updateTime}</if>
-      <if test="groupId != null">and group_id=#{groupId}</if>
-      <if test="userId != null ">and user_id=#{userId}</if>
-      <if test="memberType != null and memberType.length()>0">and member_type=#{memberType}</if>
-      <if test="showMsgSwitch != null and showMsgSwitch.length()>0">and show_msg_switch=#{showMsgSwitch}</if>
-      <if test="showNickNameSwitch != null and showNickNameSwitch.length()>0">and show_nick_name_switch=#{showNickNameSwitch}</if>
-      <if test="unreadMessageNum != null ">and unread_message_num=#{unreadMessageNum}</if>
-      <if test="groupNotice != null and groupNotice.length()>0">and group_notice=#{groupNotice}</if>
-      <if test="states != null and states.length()>0">and states=#{states}</if>
-      <if test="automaticGrabSwitch != null and automaticGrabSwitch.length()>0">and automatic_grab_switch=#{automaticGrabSwitch}</if>
-      <if test="toppingFlag != null and toppingFlag.length()>0">and topping_flag=#{toppingFlag}</if>
+      <if test="id != null">and t.id=#{id}</if>
+      <if test="createTime != null ">and t.create_time=#{createTime}</if>
+      <if test="updateTime != null ">and t.update_time=#{updateTime}</if>
+      <if test="groupId != null">and t.group_id=#{groupId}</if>
+      <if test="userId != null ">and t.user_id=#{userId}</if>
+      <if test="memberType != null and memberType.length()>0">and t.member_type=#{memberType}</if>
+      <if test="showMsgSwitch != null and showMsgSwitch.length()>0">and t.show_msg_switch=#{showMsgSwitch}</if>
+      <if test="showNickNameSwitch != null and showNickNameSwitch.length()>0">and t.show_nick_name_switch=#{showNickNameSwitch}</if>
+      <if test="unreadMessageNum != null ">and t.unread_message_num=#{unreadMessageNum}</if>
+      <if test="states != null and states.length()>0">and t.states=#{states}</if>
+      <if test="automaticGrabSwitch != null and automaticGrabSwitch.length()>0">and t.automatic_grab_switch=#{automaticGrabSwitch}</if>
+      <if test="toppingFlag != null and toppingFlag.length()>0">and t.topping_flag=#{toppingFlag}</if>
     </where>
   </sql>
 
@@ -48,10 +55,11 @@
   <select id="selectPageByObjectForList" parameterType="com.neighbor.app.group.entity.GroupMember"
           resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from `group_member`
+    t.*,u.nick_name as friendNickName,u.user_photo as friendHeadUrl,f.friend_desc as friendDesc
+    from `group_member` t left join users_info u on t.user_id = u.id
+    <if test="friendUserId != null"> LEFT JOIN friend f on t.user_id = f.friend_user_id and f.user_id = #{friendUserId}</if>
     <include refid="dynamicWhere" />
-    order by create_time
+    order by t.create_time
     limit #{pageTools.rowIndex},#{pageTools.pageSize}
   </select>
 
@@ -59,7 +67,7 @@
           resultType="Long">
     select
     count(1)
-    from `group_member`
+    from `group_member` t
     <include refid="dynamicWhere" />
   </select>
 
@@ -69,6 +77,14 @@
     from `group_member`
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <select id="selectGroupMember" resultMap="BaseResultMap" parameterType="com.neighbor.app.group.entity.GroupMember" >
+    select
+    <include refid="Base_Column_List" />
+    from `group_member`
+    where user_id = #{userId,jdbcType=BIGINT} and group_id = #{groupId,jdbcType=BIGINT} limit 1
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from group_member
     where id = #{id,jdbcType=BIGINT}

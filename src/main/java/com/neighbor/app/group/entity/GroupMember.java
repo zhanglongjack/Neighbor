@@ -1,6 +1,7 @@
 package com.neighbor.app.group.entity;
 
 import com.neighbor.common.util.PageTools;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
@@ -30,6 +31,50 @@ public class GroupMember {
     private String toppingFlag;
 
     private PageTools pageTools;
+
+    private Long friendUserId;
+
+    private String friendNickName;
+    private String friendHeadUrl;
+
+    private String friendDesc;
+
+    public Long getFriendUserId() {
+        return friendUserId;
+    }
+
+    public void setFriendUserId(Long friendUserId) {
+        this.friendUserId = friendUserId;
+    }
+
+    public String getFriendNickName() {
+        if(!StringUtils.isEmpty(friendDesc)){
+            return friendDesc;
+        }else if(!StringUtils.isEmpty(friendNickName)){
+            return friendNickName;
+        }
+        return userId+"";
+    }
+
+    public void setFriendNickName(String friendNickName) {
+        this.friendNickName = friendNickName;
+    }
+
+    public String getFriendHeadUrl() {
+        return friendHeadUrl;
+    }
+
+    public void setFriendHeadUrl(String friendHeadUrl) {
+        this.friendHeadUrl = friendHeadUrl;
+    }
+
+    public String getFriendDesc() {
+        return friendDesc;
+    }
+
+    public void setFriendDesc(String friendDesc) {
+        this.friendDesc = friendDesc;
+    }
 
     public PageTools getPageTools() {
         return pageTools;

@@ -32,7 +32,6 @@ public class Group {
 
     private Long userId;
     private String gameType;//游戏类型（1:红包游戏,2:猜猜乐,3:休闲游戏,4:福利群）
-
     public Long getUserId() {
         return userId;
     }
