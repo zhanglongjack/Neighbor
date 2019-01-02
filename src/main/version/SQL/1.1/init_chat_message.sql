@@ -58,5 +58,10 @@ CREATE TABLE `packet_detail` (
 ALTER TABLE `user_wallet` 
 ADD UNIQUE INDEX `u_id_UNIQUE` (`u_id` ASC);
 
+alter table chat_message add master_msg_type varchar(50) DEFAULT '1' COMMENT '大消息类型';
 alter table chat_message add send_user_delete_flag varchar(50) DEFAULT '0' COMMENT '发送者删除状态';
 alter table chat_message add target_user_delete_Flag varchar(50) DEFAULT '0' COMMENT '接受者删除状态';
+
+alter table users_info add regional varchar(50) DEFAULT null  ;
+alter table chat_message add request_id varchar(50) DEFAULT null  ;
+alter table chat_message add biz_id varchar(50) DEFAULT null  ;
