@@ -1,6 +1,7 @@
 package com.neighbor.app.group.entity;
 
 import com.neighbor.common.util.PageTools;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
@@ -29,19 +30,51 @@ public class GroupMember {
 
     private String toppingFlag;
 
-    private Date lastChatDateTime;
-
-    private String lastChatDate;
-
-    private String lastChatTime;
-
-    private Long lastChatMessageId;
-
-    private String lastChatMessageType;
-
-    private String lastChatMessageContent;
-
     private PageTools pageTools;
+
+    private Long friendUserId;
+
+    private String friendNickName;
+    private String friendHeadUrl;
+
+    private String friendDesc;
+
+    public Long getFriendUserId() {
+        return friendUserId;
+    }
+
+    public void setFriendUserId(Long friendUserId) {
+        this.friendUserId = friendUserId;
+    }
+
+    public String getFriendNickName() {
+        if(!StringUtils.isEmpty(friendDesc)){
+            return friendDesc;
+        }else if(!StringUtils.isEmpty(friendNickName)){
+            return friendNickName;
+        }
+        return userId+"";
+    }
+
+    public void setFriendNickName(String friendNickName) {
+        this.friendNickName = friendNickName;
+    }
+
+    public String getFriendHeadUrl() {
+        return friendHeadUrl;
+    }
+
+    public void setFriendHeadUrl(String friendHeadUrl) {
+        this.friendHeadUrl = friendHeadUrl;
+    }
+
+    public String getFriendDesc() {
+        return friendDesc;
+    }
+
+    public void setFriendDesc(String friendDesc) {
+        this.friendDesc = friendDesc;
+    }
 
     public PageTools getPageTools() {
         return pageTools;
@@ -147,54 +180,6 @@ public class GroupMember {
         this.toppingFlag = toppingFlag;
     }
 
-    public Date getLastChatDateTime() {
-        return lastChatDateTime;
-    }
-
-    public void setLastChatDateTime(Date lastChatDateTime) {
-        this.lastChatDateTime = lastChatDateTime;
-    }
-
-    public String getLastChatDate() {
-        return lastChatDate;
-    }
-
-    public void setLastChatDate(String lastChatDate) {
-        this.lastChatDate = lastChatDate;
-    }
-
-    public String getLastChatTime() {
-        return lastChatTime;
-    }
-
-    public void setLastChatTime(String lastChatTime) {
-        this.lastChatTime = lastChatTime;
-    }
-
-    public Long getLastChatMessageId() {
-        return lastChatMessageId;
-    }
-
-    public void setLastChatMessageId(Long lastChatMessageId) {
-        this.lastChatMessageId = lastChatMessageId;
-    }
-
-    public String getLastChatMessageType() {
-        return lastChatMessageType;
-    }
-
-    public void setLastChatMessageType(String lastChatMessageType) {
-        this.lastChatMessageType = lastChatMessageType;
-    }
-
-    public String getLastChatMessageContent() {
-        return lastChatMessageContent;
-    }
-
-    public void setLastChatMessageContent(String lastChatMessageContent) {
-        this.lastChatMessageContent = lastChatMessageContent;
-    }
-
 
     @Override
     public String toString() {
@@ -211,12 +196,6 @@ public class GroupMember {
         sb.append(", states='").append(states).append('\'');
         sb.append(", automaticGrabSwitch='").append(automaticGrabSwitch).append('\'');
         sb.append(", toppingFlag='").append(toppingFlag).append('\'');
-        sb.append(", lastChatDateTime=").append(lastChatDateTime);
-        sb.append(", lastChatDate='").append(lastChatDate).append('\'');
-        sb.append(", lastChatTime='").append(lastChatTime).append('\'');
-        sb.append(", lastChatMessageId=").append(lastChatMessageId);
-        sb.append(", lastChatMessageType='").append(lastChatMessageType).append('\'');
-        sb.append(", lastChatMessageContent='").append(lastChatMessageContent).append('\'');
         sb.append(", pageTools=").append(pageTools);
         sb.append('}');
         return sb.toString();

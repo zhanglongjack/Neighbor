@@ -65,6 +65,10 @@ public class BankCardServiceImpl implements BankCardService {
         bankCard.setBindTime(dateStr[1]);
         bankCardMapper.insertSelective(bankCard);
         logger.info(bankCard.toString());
+        List<BankCard> pageList = bankCardMapper.selectPageByObjectForList(bankCard);
+        if(pageList!=null&&pageList.size()>0){
+            result.addBody("resultList", pageList);
+        }
         return result;
     }
 

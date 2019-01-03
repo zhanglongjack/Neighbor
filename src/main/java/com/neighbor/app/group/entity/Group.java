@@ -27,6 +27,43 @@ public class Group {
 
     private String states;
 
+    private Long gameId;
+    private String redPackAmountLimit;
+
+    private Long userId;
+    private String gameType;//游戏类型（1:红包游戏,2:猜猜乐,3:休闲游戏,4:福利群）
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getGameType() {
+        return gameType;
+    }
+
+    public void setGameType(String gameType) {
+        this.gameType = gameType;
+    }
+
+    public Long getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
+    }
+
+    public String getRedPackAmountLimit() {
+        return redPackAmountLimit;
+    }
+
+    public void setRedPackAmountLimit(String redPackAmountLimit) {
+        this.redPackAmountLimit = redPackAmountLimit;
+    }
+
     private PageTools pageTools;
 
     public PageTools getPageTools() {
@@ -130,20 +167,21 @@ public class Group {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Group{");
-        sb.append("id=").append(id);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", updateTime=").append(updateTime);
-        sb.append(", creDate='").append(creDate).append('\'');
-        sb.append(", creTime='").append(creTime).append('\'');
-        sb.append(", groupName='").append(groupName).append('\'');
-        sb.append(", userNum=").append(userNum);
-        sb.append(", onlineNum=").append(onlineNum);
-        sb.append(", groupNotice='").append(groupNotice).append('\'');
-        sb.append(", groupHeadImgUrl='").append(groupHeadImgUrl).append('\'');
-        sb.append(", states='").append(states).append('\'');
-        sb.append(", pageTools=").append(pageTools);
-        sb.append('}');
-        return sb.toString();
+        return "Group{" +
+                "id=" + id +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", creDate='" + creDate + '\'' +
+                ", creTime='" + creTime + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", userNum=" + userNum +
+                ", onlineNum=" + onlineNum +
+                ", groupNotice='" + groupNotice + '\'' +
+                ", groupHeadImgUrl='" + groupHeadImgUrl + '\'' +
+                ", states='" + states + '\'' +
+                ", gameId=" + gameId +
+                ", redPackAmountLimit='" + redPackAmountLimit + '\'' +
+                ", pageTools=" + pageTools +
+                '}';
     }
 }

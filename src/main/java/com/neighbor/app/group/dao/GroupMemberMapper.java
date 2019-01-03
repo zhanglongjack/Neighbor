@@ -21,4 +21,6 @@ public interface GroupMemberMapper {
     List<GroupMember> selectPageByObjectForList(GroupMember record);
 
     List<GroupMember> selectAll();
+
+    GroupMember selectGroupMember(GroupMember record);
 }
