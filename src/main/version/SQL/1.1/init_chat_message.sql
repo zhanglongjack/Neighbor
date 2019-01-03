@@ -2,6 +2,8 @@
 DROP TABLE IF EXISTS `chat_message`;
 CREATE TABLE `chat_message` (
   `msg_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `request_id` varchar(126) NOT NULL COMMENT '请求编号',
+  `master_msg_type` varchar(126) NOT NULL COMMENT '消息大类型:1-聊天类消息,2-通知类消息',
   `header` varchar(1000) NOT NULL COMMENT '消息头Json格式',
   `chat_type` varchar(15) NOT NULL COMMENT '聊天类型',
   `msg_type` varchar(15) NOT NULL COMMENT '消息类型',
@@ -9,6 +11,7 @@ CREATE TABLE `chat_message` (
   `send_user_id` bigint(20) NOT NULL COMMENT '发送消息人',
   `target_user_id` bigint(20) DEFAULT NULL COMMENT '接收消息人',
   `target_group_id` bigint(20) DEFAULT NULL COMMENT '接收消息群',
+  `biz_id` bigint(20) DEFAULT NULL COMMENT '业务编号',
   `content` varchar(500) DEFAULT NULL COMMENT '消息内容',
   `date` varchar(15) NOT NULL COMMENT '发送日期',
   `time` varchar(15) NOT NULL COMMENT '发送时间',
