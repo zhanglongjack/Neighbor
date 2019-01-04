@@ -106,4 +106,11 @@ public class GroupServiceImpl implements GroupService {
         return result;
     }
 
+    @Override
+    public ResponseResult exitGroup(UserInfo user, GroupMember groupMember) throws Exception {
+        ResponseResult result = new ResponseResult();
+        groupMemberMapper.deleteByPrimaryKey(groupMember.getMemberId());
+        return result;
+    }
+
 }
