@@ -4,7 +4,9 @@ import com.neighbor.app.common.entity.PageEntity;
 
 import java.util.Date;
 
+//内容管理
 public class Cms extends PageEntity {
+
     private Long id;
 
     private Date createTime;
@@ -15,12 +17,15 @@ public class Cms extends PageEntity {
 
     private String contactTime;
 
+    //类型,1：图片；2：文字；
     private String cmsType;
 
+    //如果类型是图片的时候，这个值就是图片的地址
     private String url;
 
     private String cmsDesc;
 
+    //跳转页面
     private String jumpUrl;
 
     public Long getId() {
