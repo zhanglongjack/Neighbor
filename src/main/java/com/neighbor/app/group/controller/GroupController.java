@@ -96,4 +96,13 @@ public class GroupController {
         return result;
     }
 
+    @RequestMapping(value = "/enterGroup.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult enterGroup(@ModelAttribute("user") UserInfo user, GroupMember groupMember) throws Exception{
+        logger.info("chatlist request user >>>> " + user);
+        logger.info("groupMember >>>> " + groupMember);
+        ResponseResult result  = groupService.enterGroup(user,groupMember);
+        return result;
+    }
+
 }

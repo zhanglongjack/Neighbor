@@ -12,6 +12,7 @@ import com.neighbor.common.util.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -110,6 +111,23 @@ public class GroupServiceImpl implements GroupService {
     public ResponseResult exitGroup(UserInfo user, GroupMember groupMember) throws Exception {
         ResponseResult result = new ResponseResult();
         groupMemberMapper.deleteByPrimaryKey(groupMember.getMemberId());
+        return result;
+    }
+
+    @Override
+    public ResponseResult enterGroup(UserInfo user, GroupMember groupMember) throws Exception {
+        ResponseResult result = new ResponseResult();
+        String[] userIds = groupMember.getFriendUserIds().split(",");
+        Date date = new Date();
+        if(userIds.length>0){
+            for(int i=0;i<userIds.length;i++){
+                GroupMember temp =new GroupMember();
+                temp.setGroupId(groupMember.getGroupId());
+                temp.setUserId(Long.valueOf(userIds[i]));
+                temp.setCreateTime(date);
+                groupMemberMapper.insertSelective(temp);
+            }
+        }
         return result;
     }
 

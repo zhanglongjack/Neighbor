@@ -41,6 +41,16 @@ public class GroupMember {
 
     private Long memberId;
 
+    private String friendUserIds;
+
+    public String getFriendUserIds() {
+        return friendUserIds;
+    }
+
+    public void setFriendUserIds(String friendUserIds) {
+        this.friendUserIds = friendUserIds;
+    }
+
     public Long getMemberId() {
         return memberId;
     }

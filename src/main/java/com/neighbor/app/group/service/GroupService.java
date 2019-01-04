@@ -21,4 +21,6 @@ public interface GroupService {
     ResponseResult viewinfo(Group group) throws Exception;
 
     ResponseResult exitGroup(UserInfo user, GroupMember groupMember) throws Exception;
+
+    ResponseResult enterGroup(UserInfo user, GroupMember groupMember) throws Exception;
 }
