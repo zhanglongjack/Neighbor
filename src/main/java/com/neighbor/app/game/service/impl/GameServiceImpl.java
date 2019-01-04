@@ -59,12 +59,9 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public ResponseResult ruleMatching(GameRule gameRule) {
-        ResponseResult result = new ResponseResult();
+    public GameRule ruleMatching(GameRule gameRule) {
         if(gameRule.getRuleType()==null||StringUtils.isEmpty(gameRule.getMatchingParam())||!StringUtil.isNumeric(gameRule.getMatchingParam())){
-            result.setErrorMessage("参数非法！");
-            result.setErrorCode(ErrorCodeDesc.failed.getValue());
-            return result;
+            return null;
         }
         PageTools pageTools = new PageTools();
         pageTools.setIndex(1);
@@ -75,8 +72,7 @@ public class GameServiceImpl implements GameService {
             gameRule.setRuleCode(gameRule.getMatchingParam());
             List<GameRule> gameRules = gameRuleMapper.selectPageByObjectForList(gameRule);
             if(gameRules!=null&&gameRules.size()>0){
-                result.addBody("gameRule",gameRules.get(0));
-                return result;
+                return gameRules.get(0);
             }
             pageTools.setPageSize(999999);
             gameRule.setPageTools(pageTools);
@@ -90,8 +86,7 @@ public class GameServiceImpl implements GameService {
                         BigDecimal end = new BigDecimal(arr[1]);
                         BigDecimal param = new BigDecimal(gameRule.getMatchingParam());
                         if(param.compareTo(begin)>=0&&param.compareTo(end)<=0){
-                            result.addBody("gameRule",rule);
-                            return result;
+                            return rule;
                         }
                     }
                 }
@@ -103,13 +98,10 @@ public class GameServiceImpl implements GameService {
             gameRule.setRuleCode(gameRule.getMatchingParam());
             List<GameRule> gameRules = gameRuleMapper.selectPageByObjectForList(gameRule);
             if(gameRules!=null&&gameRules.size()>0){
-                result.addBody("gameRule",gameRules.get(0));
-                return result;
+                return gameRules.get(0);
             }
         }
-        result.setErrorMessage("无匹配规则");
-        result.setErrorCode(ErrorCodeDesc.failed.getValue());
-        return result;
+        return null;
     }
 
 

@@ -21,7 +21,7 @@ public interface GameService {
 
     List<GameRule> selectRuleAll();
 
-    ResponseResult ruleMatching(GameRule gameRule);
+    GameRule ruleMatching(GameRule gameRule);
 
     ResponseResult ruleRecord(GameRule gameRule);
 }

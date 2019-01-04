@@ -27,7 +27,8 @@ public class GameController {
     @ResponseBody
     public ResponseResult ruleMatching(GameRule gameRule) throws Exception {
         logger.info("ruleMatching request gameRule >>>> " + gameRule);
-        ResponseResult result = gameService.ruleMatching(gameRule);
+        ResponseResult result = new ResponseResult();
+        result.addBody("gameRule",gameService.ruleMatching(gameRule));
         return result;
     }
 
