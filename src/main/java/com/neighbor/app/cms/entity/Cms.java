@@ -20,6 +20,10 @@ public class Cms extends PageEntity {
     //类型,1：图片；2：文字；
     private String cmsType;
 
+    //位置,1：index页面；2：商城页面；
+    private String position;
+
+
     //如果类型是图片的时候，这个值就是图片的地址
     private String url;
 
@@ -98,5 +102,13 @@ public class Cms extends PageEntity {
 
     public void setJumpUrl(String jumpUrl) {
         this.jumpUrl = jumpUrl;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 }

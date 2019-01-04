@@ -22,9 +22,8 @@ public class CmsController {
 
     @RequestMapping(value = "/list.req", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseResult list(@ModelAttribute("user") UserInfo user, PageTools pageTools) throws Exception {
+    public ResponseResult list(@ModelAttribute("user") UserInfo user, PageTools pageTools,Cms cms) throws Exception {
         logger.info("list request user >>>> " + user);
-        Cms cms = new Cms();
         cms.setPageTools(pageTools);
         ResponseResult result = cmsService.list(user, cms);
         return result;

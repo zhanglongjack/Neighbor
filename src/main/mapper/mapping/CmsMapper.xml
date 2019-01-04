@@ -8,19 +8,23 @@
     <result column="contact_date" jdbcType="VARCHAR" property="contactDate" />
     <result column="contact_time" jdbcType="VARCHAR" property="contactTime" />
     <result column="cms_type" jdbcType="VARCHAR" property="cmsType" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+
     <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="cms_desc" jdbcType="VARCHAR" property="cmsDesc" />
     <result column="jump_url" jdbcType="VARCHAR" property="jumpUrl" />
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, create_time, update_time, contact_date, contact_time, cms_type, url, cms_desc, 
+    id, create_time, update_time, contact_date, contact_time, cms_type, position, url, cms_desc,
     jump_url
   </sql>
 
     <sql id="dynamicWhere">
         <where>
+            <if test="position != null">position=#{position}</if>
             <if test="id != null">id=#{id}</if>
+
         </where>
     </sql>
 
@@ -44,11 +48,11 @@
   </delete>
   <insert id="insert" parameterType="com.neighbor.app.cms.entity.Cms">
     insert into cms (id, create_time, update_time, 
-      contact_date, contact_time, cms_type, 
+      contact_date, contact_time, cms_type, position,
       url, cms_desc, jump_url
       )
     values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{contactDate,jdbcType=VARCHAR}, #{contactTime,jdbcType=VARCHAR}, #{cmsType,jdbcType=VARCHAR}, 
+      #{contactDate,jdbcType=VARCHAR}, #{contactTime,jdbcType=VARCHAR}, #{cmsType,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR},
       #{url,jdbcType=VARCHAR}, #{cmsDesc,jdbcType=VARCHAR}, #{jumpUrl,jdbcType=VARCHAR}
       )
   </insert>
@@ -73,6 +77,9 @@
       <if test="cmsType != null">
         cms_type,
       </if>
+      <if test="position != null">
+        position,
+      </if>
       <if test="url != null">
         url,
       </if>
@@ -81,35 +88,6 @@
       </if>
       <if test="jumpUrl != null">
         jump_url,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="contactDate != null">
-        #{contactDate,jdbcType=VARCHAR},
-      </if>
-      <if test="contactTime != null">
-        #{contactTime,jdbcType=VARCHAR},
-      </if>
-      <if test="cmsType != null">
-        #{cmsType,jdbcType=VARCHAR},
-      </if>
-      <if test="url != null">
-        #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="cmsDesc != null">
-        #{cmsDesc,jdbcType=VARCHAR},
-      </if>
-      <if test="jumpUrl != null">
-        #{jumpUrl,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -131,6 +109,9 @@
       <if test="cmsType != null">
         cms_type = #{cmsType,jdbcType=VARCHAR},
       </if>
+      <if test="position != null">
+        position = #{cmsType,jdbcType=VARCHAR},
+      </if>
       <if test="url != null">
         url = #{url,jdbcType=VARCHAR},
       </if>
@@ -150,6 +131,7 @@
       contact_date = #{contactDate,jdbcType=VARCHAR},
       contact_time = #{contactTime,jdbcType=VARCHAR},
       cms_type = #{cmsType,jdbcType=VARCHAR},
+      position = #{cmsType,jdbcType=VARCHAR},
       url = #{url,jdbcType=VARCHAR},
       cms_desc = #{cmsDesc,jdbcType=VARCHAR},
       jump_url = #{jumpUrl,jdbcType=VARCHAR}
@@ -160,7 +142,7 @@
           resultType="Long">
     select
     count(1)
-    from friend
+    from cms
     <include refid="dynamicWhere" />
   </select>
 
