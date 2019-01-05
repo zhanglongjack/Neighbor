@@ -3,6 +3,7 @@ package com.neighbor.app.group.service;
 import java.util.List;
 
 import com.neighbor.app.group.entity.Group;
+import com.neighbor.app.group.entity.GroupApply;
 import com.neighbor.app.group.entity.GroupMember;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.ResponseResult;
@@ -35,4 +36,12 @@ public interface GroupService {
     ResponseResult exitGroup(UserInfo user, GroupMember groupMember) throws Exception;
 
     ResponseResult enterGroup(UserInfo user, GroupMember groupMember) throws Exception;
+
+    ResponseResult enterGroupApplyNum(UserInfo user, GroupApply groupMember);
+
+    ResponseResult groupApplyRecord(UserInfo user, GroupApply groupMember)  throws Exception;
+
+    ResponseResult clearGroupApplyNum(UserInfo user, GroupApply groupApply);
+
+    ResponseResult groupApply(UserInfo user, GroupApply groupApply) throws Exception;
 }

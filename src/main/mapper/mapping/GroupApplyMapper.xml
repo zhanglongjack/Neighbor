@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neighbor.app.group.dao.GroupApplyMapper" >
+  <resultMap id="BaseResultMap" type="com.neighbor.app.group.entity.GroupApply" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="group_id" property="groupId" jdbcType="BIGINT" />
+    <result column="enter_user_id" property="enterUserId" jdbcType="BIGINT" />
+    <result column="invite_user_id" property="inviteUserId" jdbcType="BIGINT" />
+    <result column="states" property="states" jdbcType="VARCHAR" />
+    <result column="show_flag" property="showFlag" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, group_id, enter_user_id, invite_user_id, states, show_flag
+  </sql>
+
+  <sql id="dynamicWhere">
+    <where>
+      <if test="id != null">id=#{id}</if>
+      <if test="groupId != null">and group_id=#{groupId}</if>
+      <if test="enterUserId != null">and enter_user_id=#{enterUserId}</if>
+      <if test="inviteUserId != null ">and invite_user_id=#{inviteUserId}</if>
+      <if test="states != null and states.length()>0">and states=#{states}</if>
+      <if test="showFlag != null and showFlag.length()>0">and show_flag=#{showFlag}</if>
+    </where>
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from group_apply
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <resultMap id="FullResultMap" type="com.neighbor.app.group.entity.GroupApply" extends="BaseResultMap" >
+    <result column="friendName" property="friendName" jdbcType="VARCHAR" />
+    <result column="friendNickName" property="friendNickName" jdbcType="VARCHAR" />
+    <result column="userPhoto" property="userPhoto" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from group_apply
+    order by create_time
+  </select>
+
+  <select id="selectFullInfoPageForList" parameterType="com.neighbor.app.group.entity.GroupApply" resultMap="FullResultMap">
+    select
+    t.*,u.real_name as friendName,u.nick_name friendNickName,u.user_photo userPhoto
+    from group_apply t inner join users_info u on t.enter_user_id = u.id
+    <include refid="dynamicWhere" />
+    order by t.states,t.create_time
+    limit #{pageTools.rowIndex},#{pageTools.pageSize}
+  </select>
+
+  <select id="selectPageByObjectForList" parameterType="com.neighbor.app.group.entity.GroupApply"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from group_apply
+    <include refid="dynamicWhere" />
+    order by create_time
+    limit #{pageTools.rowIndex},#{pageTools.pageSize}
+  </select>
+
+  <select id="selectPageTotalCount" parameterType="com.neighbor.app.group.entity.GroupApply"
+          resultType="Long">
+    select
+    count(1)
+    from group_apply
+    <include refid="dynamicWhere" />
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from group_apply
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <delete id="deleteByGroupApply" parameterType="com.neighbor.app.group.entity.GroupApply" >
+    delete from group_apply
+    where group_id=#{groupId,jdbcType=BIGINT} and enter_user_id =#{enterUserId,jdbcType=BIGINT}
+  </delete>
+
+
+  <insert id="insertSelective" parameterType="com.neighbor.app.group.entity.GroupApply" >
+    insert into group_apply
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="groupId != null" >
+        group_id,
+      </if>
+      <if test="enterUserId != null" >
+        enter_user_id,
+      </if>
+      <if test="inviteUserId != null" >
+        invite_user_id,
+      </if>
+      <if test="states != null" >
+        states,
+      </if>
+      <if test="showFlag != null" >
+        show_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groupId != null" >
+        #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="enterUserId != null" >
+        #{enterUserId,jdbcType=BIGINT},
+      </if>
+      <if test="inviteUserId != null" >
+        #{inviteUserId,jdbcType=BIGINT},
+      </if>
+      <if test="states != null" >
+        #{states,jdbcType=VARCHAR},
+      </if>
+      <if test="showFlag != null" >
+        #{showFlag,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.group.entity.GroupApply" >
+    update group_apply
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groupId != null" >
+        group_id = #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="enterUserId != null" >
+        enter_user_id = #{enterUserId,jdbcType=BIGINT},
+      </if>
+      <if test="inviteUserId != null" >
+        invite_user_id = #{inviteUserId,jdbcType=BIGINT},
+      </if>
+      <if test="states != null" >
+        states = #{states,jdbcType=VARCHAR},
+      </if>
+      <if test="showFlag != null" >
+        show_flag = #{showFlag,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="clearGroupApplyNum" parameterType="com.neighbor.app.group.entity.GroupApply" >
+    update group_apply
+    <set>
+        show_flag = '1'
+    </set>
+    where group_id = #{groupId,jdbcType=BIGINT}
+  </update>
+
+</mapper>

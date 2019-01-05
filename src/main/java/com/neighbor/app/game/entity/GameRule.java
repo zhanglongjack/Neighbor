@@ -21,6 +21,10 @@ public class GameRule extends PageEntity {
 
     private String ruleValue;
 
+    private String ruleSubType;// 1:单个值,2:顺子,3:同数
+
+    private String schemeCode;//确定值值列表
+
     public Long getId() {
         return id;
     }
@@ -83,6 +87,23 @@ public class GameRule extends PageEntity {
 
     public void setRuleValue(String ruleValue) {
         this.ruleValue = ruleValue;
+    }
+
+
+    public String getRuleSubType() {
+        return ruleSubType;
+    }
+
+    public void setRuleSubType(String ruleSubType) {
+        this.ruleSubType = ruleSubType;
+    }
+
+    public String getSchemeCode() {
+        return schemeCode;
+    }
+
+    public void setSchemeCode(String schemeCode) {
+        this.schemeCode = schemeCode;
     }
 
     @Override
