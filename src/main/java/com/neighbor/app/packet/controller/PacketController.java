@@ -35,19 +35,25 @@ public class PacketController {
 	public ResponseResult sendPacket(@ModelAttribute("user") UserInfo user, Packet packet) throws Exception {
 		packet.setUserId(user.getId());
 		logger.info("sendPacket request : " + packet);
-		Packet resultPacket = packetService.sendPacket(packet);
 		UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
+		Packet resultPacket = packetService.sendPacket(packet,wallet);
 		ResponseResult result = new ResponseResult();
-		result.addBody("packet", resultPacket);
 		result.addBody("wallet", wallet);
+		if(resultPacket!=null){
+			result.addBody("packet", resultPacket);
+		}else{
+			result.setErrorCode(1);
+			result.setErrorMessage("余额不足");
+		}
+		
 		return result;
 	}
 	
 	@RequestMapping(value = "/grabPacekt.req", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseResult grabPacekt(@ModelAttribute("user") UserInfo user, Packet packet) throws Exception {
+	public ResponseResult grabPacekt(@ModelAttribute("user") UserInfo user, Packet packet,Long gameId) throws Exception {
 		logger.info("grabPacekt request :packet== {},user =={}" , packet,user);
-		return packetService.grabPacekt(packet,user);
+		return packetService.grabPacekt(packet,user,gameId);
 	}
 	
 	@RequestMapping(value = "/queryNewestPacketInfo.req", method = RequestMethod.POST)

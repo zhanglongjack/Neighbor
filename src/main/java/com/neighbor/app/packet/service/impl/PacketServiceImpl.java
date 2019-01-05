@@ -9,13 +9,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONArray;
 import com.neighbor.app.balance.entity.BalanceDetail;
 import com.neighbor.app.balance.po.TransactionSubTypeDesc;
 import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.balance.service.BalanceDetailService;
+import com.neighbor.app.game.constants.RuleTypeDesc;
+import com.neighbor.app.game.entity.GameRule;
+import com.neighbor.app.game.service.GameService;
 import com.neighbor.app.group.entity.GroupMember;
 import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.packet.constants.PacketContainer;
@@ -47,6 +52,8 @@ public class PacketServiceImpl implements PacketService {
 	private UserWalletService userWalletService;
 	@Autowired
 	private GroupService groupService;
+	@Autowired
+	private GameService gameService;
     @Autowired
     private Environment env;
     
@@ -85,7 +92,10 @@ public class PacketServiceImpl implements PacketService {
 
 	@Override
 	@Transactional(readOnly = false, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-	public Packet sendPacket(Packet record) throws Exception {
+	public Packet sendPacket(Packet record,UserWallet wallet) throws Exception {
+		if(wallet.getAvailableAmount().doubleValue()<record.getAmount().doubleValue()){
+			return null;
+		}
 		logger.info("开始处理发红包");
 		record.setSendDate(DateUtils.getStringDateShort());
 		record.setSendTime(DateUtils.getTimeShort());
@@ -133,13 +143,15 @@ public class PacketServiceImpl implements PacketService {
 	}
 	
 	public static void main(String[] args) {
+		String teet = "1.02";
+		System.out.println(Integer.parseInt(teet.charAt(teet.length()-1)+""));
 		System.out.println(new BigDecimal(1).compareTo(new BigDecimal(2)));
 	}
-	
+	 
 	@Override
-	@Transactional(readOnly = false, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-	public ResponseResult grabPacekt(Packet packet,UserInfo user) {
-		logger.info("开始抢红包"+packet);
+	@Transactional(readOnly = false, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+	public ResponseResult grabPacekt(Packet packet,UserInfo user,Long gameId) {
+		logger.info("开始抢红包:"+packet);
 
 		GroupMember member = groupService.selectGroupMemberBy(user.getId(), packet.getGroupId());
 		Packet cachePacket = packetContainer.get(packet.getId());
@@ -161,14 +173,14 @@ public class PacketServiceImpl implements PacketService {
 		if(resultResp.getErrorCode()!=0){
 			return resultResp;
 		}
-		
-		logger.info("上锁再检查实际是否还有剩余红包");
+		logger.info("开始锁表");
 		Packet lockPacket = lockPacketByPrimaryKey(cachePacket.getId());
+		logger.info("上锁再检查实际是否还有剩余红包数:[{}]",lockPacket.getPacketNum() - lockPacket.getCollectedNum());
 		resultResp = checLeftoverPacket(lockPacket.getStatus(),lockPacket);
 		if(resultResp.getErrorCode()!=0){
 			return resultResp;
 		}
-		logger.info("还有剩余红包,开始处理");
+		logger.info("还有剩余红包数量[{}],开始处理",lockPacket.getPacketNum() - lockPacket.getCollectedNum());
 		PacketDetail detail = new PacketDetail();
 //		if(lockPacket.getGroupId()!=null && lockPacket.getCollectedNum()+1== lockPacket.getPacketNum()){
 //			// 由系统抢
@@ -189,21 +201,21 @@ public class PacketServiceImpl implements PacketService {
 		detail.setdPacketId(lockPacket.getId());
 		detail.setGotUserId(user.getId());
 		detail.setFree("1".equals(member.getMemberType()));
-		detail.setGotBomb(num.charAt(num.length()-1)==lockPacket.getHitNum());
-		
+		detail.setGotBomb(Integer.parseInt(num.substring(num.length()-1))==lockPacket.getHitNum());
+		lockPacket.addDetail(detail);
+		packetDetailMapper.insertSelective(detail);
+		logger.info("抢到的红包是[{}]尾数是[{}]信息:{},",num,Integer.parseInt(num.substring(num.length()-1)),detail);
 		UserWallet senderWallet = userWalletService.selectByPrimaryUserId(packet.getUserId());
 		// 处理踩雷
 		handleHitBomb(detail.isGotBomb(), lockPacket.getAmount(), lastWallet,senderWallet);
 		// 抢包中奖处理 
-		handleLottery( lastWallet, detail.getGotAmount());
+		handleLottery(gameId, lastWallet, detail.getGotAmount());
 		// 发包中奖检查和最佳检查处理
-		handleReward(lockPacket,senderWallet);
+		handleReward(gameId,lockPacket,senderWallet);
 		// 抢红包处理
 		grapPacketHandle(user, lastWallet, detail);
 		
-		lockPacket.addDetail(detail);
 		packetMapper.updateByPrimaryKeySelective(lockPacket);
-		packetDetailMapper.insertSelective(detail);
 		
 		packetContainer.put(lockPacket.getId(), lockPacket);
 		resultResp.addBody("packet", lockPacket);
@@ -240,11 +252,12 @@ public class PacketServiceImpl implements PacketService {
 	 * @param lastWallet
 	 * @param detail
 	 */
-	private void handleLottery( UserWallet graperWallet, BigDecimal grapAmount) {
-		BigDecimal lotteryAmount = new BigDecimal(0); // 中奖金额 TODO
-		if(lotteryAmount.doubleValue() <= 0){
+	private void handleLottery(long gameId, UserWallet graperWallet, BigDecimal grapAmount) {
+		GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.award, grapAmount.doubleValue()); 
+		if(gameRule==null){
 			return;
 		}
+		BigDecimal lotteryAmount = new BigDecimal(gameRule.getRuleValue());// 中奖金额 
 		logger.info("抢包中奖处理");
 		graperWallet.setAvailableAmount(graperWallet.getAvailableAmount().subtract(lotteryAmount));
 		// 收红包交易明细
@@ -268,36 +281,40 @@ public class PacketServiceImpl implements PacketService {
 
 	/**
 	 * 发包中奖检查和最佳检查处理
+	 * @param gameId 
 	 * @param lockPacket
 	 * @param senderWallet
 	 */
-	private void handleReward(Packet lockPacket, UserWallet senderWallet) {
+	private void handleReward(Long gameId, Packet lockPacket, UserWallet senderWallet) {
 		if(PacketStatus.collected == PacketStatus.valueOf(lockPacket.getStatus())){
-			// 多雷奖励处理 TODO
-			List<PacketDetail> detailList = lockPacket.getDetailList();
-			logger.info("中奖检查开始"+detailList.size());
-			int maxIndex = -1;// 最佳下标
+			// 多雷奖励处理 
+			List<PacketDetail>  detailList = lockPacket.getDetailList();
+			logger.info("最佳检查开始:"+detailList.size());
+			int maxIndex = 0;// 最佳下标
 			int hitBombNum = 0;
 			for(int i=0;i<detailList.size();i++){
 				PacketDetail detail = detailList.get(i);
+				logger.info("红包[{}]大于红包[{}]?",detail.getGotAmount().doubleValue(),detailList.get(maxIndex).getGotAmount().doubleValue());
 				if(detail.getGotAmount().doubleValue()>detailList.get(maxIndex).getGotAmount().doubleValue()){
 					maxIndex = i;
 				}
 				hitBombNum += detail.isGotBomb()?1:0;
 			}
 			logger.info("中雷数[{}],最佳位置[{}]",hitBombNum,maxIndex);
+			logger.info("最佳明细List:",JSONArray.toJSON(detailList));
 			if(maxIndex>=0){
 				detailList.get(maxIndex).setMaximum(true);
+				packetDetailMapper.updateByPrimaryKeySelective(detailList.get(maxIndex));
 			}
-			
+			logger.info("最佳明细:",detailList.get(maxIndex));
 			if(hitBombNum<=0){
 				return ;
 			}
-			
-			BigDecimal amount = new BigDecimal(0); // TODO 多雷中奖
-			if(amount.doubleValue()<=0){
+			GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.award, hitBombNum); // 中奖金额 
+			if(gameRule==null){
 				return;
 			}
+			BigDecimal amount = new BigDecimal(gameRule.getRuleValue()); // 多雷中奖奖励
 			
 			logger.info("发包方多雷中奖收款");
 			senderWallet.setAvailableAmount(senderWallet.getAvailableAmount().add(amount));
@@ -322,6 +339,7 @@ public class PacketServiceImpl implements PacketService {
 	}
 
 	private void handleHitBomb(boolean isGotBomb,BigDecimal packetAmount, UserWallet graperWallet, UserWallet senderWallet) {
+		logger.info("抢包人[{}]是否中雷检查:[{}]",graperWallet.getuId(),isGotBomb);
 		if(isGotBomb){
 			logger.info("抢包方踩雷处理");
 			// 中雷赔付金额
