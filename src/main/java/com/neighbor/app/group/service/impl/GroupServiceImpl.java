@@ -1,9 +1,12 @@
 package com.neighbor.app.group.service.impl;
 
 import com.neighbor.app.api.common.ErrorCodeDesc;
+import com.neighbor.app.group.constants.ApplyStatesDesc;
+import com.neighbor.app.group.dao.GroupApplyMapper;
 import com.neighbor.app.group.dao.GroupMapper;
 import com.neighbor.app.group.dao.GroupMemberMapper;
 import com.neighbor.app.group.entity.Group;
+import com.neighbor.app.group.entity.GroupApply;
 import com.neighbor.app.group.entity.GroupMember;
 import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.users.entity.UserInfo;
@@ -23,6 +26,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Autowired
     private GroupMemberMapper groupMemberMapper;
+
+    @Autowired
+    private GroupApplyMapper groupApplyMapper;
 
     @Override
     public ResponseResult chatlist(UserInfo user, Group group) throws Exception {
@@ -119,16 +125,119 @@ public class GroupServiceImpl implements GroupService {
         ResponseResult result = new ResponseResult();
         String[] userIds = groupMember.getFriendUserIds().split(",");
         Date date = new Date();
-        if(userIds.length>0){
-            for(int i=0;i<userIds.length;i++){
-                GroupMember temp =new GroupMember();
-                temp.setGroupId(groupMember.getGroupId());
-                temp.setUserId(Long.valueOf(userIds[i]));
-                temp.setCreateTime(date);
-                groupMemberMapper.insertSelective(temp);
+        if(checkMember(groupMember.getGroupId(),user.getId(),result)){
+            //群主
+            if(userIds.length>0){
+                for(int i=0;i<userIds.length;i++){
+                    GroupMember temp =new GroupMember();
+                    temp.setGroupId(groupMember.getGroupId());
+                    temp.setUserId(Long.valueOf(userIds[i]));
+                    temp.setCreateTime(date);
+                    groupMemberMapper.insertSelective(temp);
+                }
             }
+            result.addBody("memberType","1");//群主
+        }else{
+           //非群主
+            if(userIds.length>0){
+                for(int i=0;i<userIds.length;i++){
+                    GroupApply temp =new GroupApply();
+                    temp.setGroupId(groupMember.getGroupId());
+                    temp.setEnterUserId(Long.valueOf(userIds[i]));
+                    temp.setInviteUserId(user.getId());
+                    temp.setShowFlag("0");
+                    temp.setStates(ApplyStatesDesc.apply.getValue()+"");
+                    temp.setCreateTime(date);
+                    groupApplyMapper.insertSelective(temp);
+                }
+            }
+            result.addBody("memberType","0");//非群主
         }
+
         return result;
     }
 
+    @Override
+    public ResponseResult enterGroupApplyNum(UserInfo user, GroupApply groupApply) {
+        ResponseResult result = new ResponseResult();
+        groupApply.setShowFlag("0");
+        Long total = groupApplyMapper.selectPageTotalCount(groupApply);
+        result.addBody("total",total);
+        return result;
+    }
+
+    @Override
+    public ResponseResult clearGroupApplyNum(UserInfo user, GroupApply groupApply) {
+        ResponseResult result = new ResponseResult();
+        groupApplyMapper.clearGroupApplyNum(groupApply);
+        return result;
+    }
+
+    private boolean checkMember(Long groupId,Long userId,ResponseResult result){
+        //检查是否去群主
+        GroupMember groupMember = new GroupMember();
+        groupMember.setGroupId(groupId);
+        groupMember.setUserId(userId);
+        groupMember.setMemberType("1"); //群主
+        Long total = groupMemberMapper.selectPageTotalCount(groupMember);
+        if(total==0){
+            result.setErrorCode(ErrorCodeDesc.failed.getValue());
+            result.setErrorMessage("非群主不能添加");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public ResponseResult groupApply(UserInfo user, GroupApply groupApply) throws Exception {
+        ResponseResult result = new ResponseResult();
+        //检查是否去群主
+        if(!checkMember(groupApply.getGroupId(),user.getId(),result)){
+            return result;
+        }
+        GroupApply apply = groupApplyMapper.selectByPrimaryKey(groupApply.getRecordId());
+        if(apply==null){
+            result.setErrorCode(ErrorCodeDesc.failed.getValue());
+            result.setErrorMessage("记录不存在~");
+            return result;
+        }
+        if(!groupApply.getStates().equals(ApplyStatesDesc.apply.getValue()+"")){
+            result.setErrorCode(ErrorCodeDesc.failed.getValue());
+            result.setErrorMessage("记录已经审核过了~");
+            return result;
+        }
+        Date date = new Date();
+        GroupApply update = new GroupApply();
+        update.setId(apply.getId());
+        update.setUpdateTime(date);
+        //审核通过
+        if(groupApply.getStates().equals(ApplyStatesDesc.pass.getValue()+"")){
+            GroupMember member = new GroupMember();
+            member.setGroupId(groupApply.getGroupId());
+            member.setUserId(apply.getEnterUserId());
+            member.setCreateTime(date);
+            member.setMemberType("0");
+            groupMemberMapper.insertSelective(member);
+            update.setStates(ApplyStatesDesc.pass.getValue()+"");
+        }else{
+            update.setStates(ApplyStatesDesc.reject.getValue()+"");
+        }
+        groupApplyMapper.updateByPrimaryKeySelective(update);
+        return result;
+    }
+
+    @Override
+    public ResponseResult groupApplyRecord(UserInfo user, GroupApply member) throws Exception {
+        ResponseResult result = new ResponseResult();
+        GroupApply groupApply = new GroupApply();
+        groupApply.setPageTools(member.getPageTools());
+        groupApply.setGroupId(member.getGroupId());
+        Long total = groupApplyMapper.selectPageTotalCount(groupApply);
+        List<GroupApply> pageList = groupApplyMapper.selectFullInfoPageForList(groupApply);
+        PageTools pageTools = member.getPageTools();
+        pageTools.setTotal(total);
+        result.addBody("resultList", pageList);
+        result.addBody("pageTools", pageTools);
+        return result;
+    }
 }

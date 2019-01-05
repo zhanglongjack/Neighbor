@@ -76,3 +76,18 @@ CREATE TABLE `group_member`  (
   `topping_flag` varchar(10) default '0' COMMENT '是否聊天置顶是1否0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='群成员表';
+
+
+DROP TABLE IF EXISTS `group_apply`;
+CREATE TABLE `group_apply` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `group_id` bigint(20)  NOT NULL COMMENT '群Id',
+  `enter_user_id` bigint(20)  NOT NULL COMMENT '要入群的用户Id',
+  `invite_user_id` bigint(20)  NOT NULL COMMENT '拉人进群的用户ID',
+  `states` varchar(50) NOT NULL DEFAULT '1' COMMENT '状态，1：申请；2：审核通过；3：审核拒绝；',
+  `show_flag` varchar(1) NOT NULL  DEFAULT '0' COMMENT '群主是否查看过（0未查看，1查看了）',
+  PRIMARY KEY (`id`),
+  KEY `index_group_apply_group_id` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='拉人进群申请表';
