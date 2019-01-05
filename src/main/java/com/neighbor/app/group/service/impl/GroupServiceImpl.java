@@ -105,5 +105,52 @@ public class GroupServiceImpl implements GroupService {
         result.addBody("group",groupMapper.selectByPrimaryKey(group.getId()));
         return result;
     }
+    
+    @Override
+    public List<Group> selectBySelective(Group group) throws Exception {
+    	return groupMapper.selectBySelective(group);
+    }
+
+	@Override
+	public List<GroupMember> selectUserOwnGroupsBy(Long userId) {
+		GroupMember groupMember = new GroupMember();
+		groupMember.setUserId(userId);
+		return groupMemberMapper.selectBySelective(groupMember);
+	}
+	
+	@Override
+	public GroupMember selectGroupMemberBy(Long userId,Long groupId) {
+		GroupMember groupMember = new GroupMember();
+		groupMember.setUserId(userId);
+		groupMember.setGroupId(groupId);
+		return groupMemberMapper.selectGroupMember(groupMember);
+	}
+	
+	private void addGroupMember(GroupMember member){
+		groupMemberMapper.insertSelective(member);
+	}
+	
+	@Override
+	public void addGroupMember(Long groupId,Long userId,String memberType){
+		GroupMember member = new GroupMember();
+		member.setUserId(userId);
+		member.setGroupId(groupId);
+		member.setMemberType(memberType);
+		addGroupMember(member);
+	}
+	
+	@Override
+	public void addGroupMembers(Long groupId,List<Long> userList){
+		for(Long userId : userList){
+			addGroupMember(groupId, userId,null);
+		}
+	}
+
+    @Override
+    public ResponseResult exitGroup(UserInfo user, GroupMember groupMember) throws Exception {
+        ResponseResult result = new ResponseResult();
+        groupMemberMapper.deleteByPrimaryKey(groupMember.getMemberId());
+        return result;
+    }
 
 }

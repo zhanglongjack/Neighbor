@@ -1,5 +1,7 @@
 package com.neighbor.app.group.service;
 
+import java.util.List;
+
 import com.neighbor.app.group.entity.Group;
 import com.neighbor.app.group.entity.GroupMember;
 import com.neighbor.app.users.entity.UserInfo;
@@ -19,4 +21,17 @@ public interface GroupService {
     ResponseResult setting(Group group) throws Exception;
 
     ResponseResult viewinfo(Group group) throws Exception;
+
+	List<Group> selectBySelective(Group group) throws Exception;
+
+	List<GroupMember> selectUserOwnGroupsBy(Long userId);
+
+	GroupMember selectGroupMemberBy(Long userId, Long groupId);
+
+	void addGroupMember(Long groupId, Long userId, String memberType);
+
+	void addGroupMembers(Long groupId, List<Long> userList);
+
+    ResponseResult exitGroup(UserInfo user, GroupMember groupMember) throws Exception;
+
 }
