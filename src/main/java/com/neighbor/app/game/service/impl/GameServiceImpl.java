@@ -66,36 +66,18 @@ public class GameServiceImpl implements GameService {
         PageTools pageTools = new PageTools();
         pageTools.setIndex(1);
         pageTools.setPageSize(1);
+        gameRule.setPageTools(pageTools);
         if(RuleTypeDesc.award.getValue()==gameRule.getRuleType()){
             //中奖
-            gameRule.setPageTools(pageTools);
-            gameRule.setRuleCode(gameRule.getMatchingParam());
             List<GameRule> gameRules = gameRuleMapper.selectPageByObjectForList(gameRule);
             if(gameRules!=null&&gameRules.size()>0){
                 return gameRules.get(0);
             }
-            pageTools.setPageSize(999999);
-            gameRule.setPageTools(pageTools);
-            gameRule.setRuleCode(null);
-            List<GameRule> gameRuleList = gameRuleMapper.selectPageByObjectForList(gameRule);
-            if(gameRuleList!=null&&gameRuleList.size()>0){
-                for(GameRule rule : gameRuleList){
-                    if(rule.getRuleCode().indexOf("-")!=-1){
-                        String[] arr = rule.getRuleCode().split("-");
-                        BigDecimal begin = new BigDecimal(arr[0]);
-                        BigDecimal end = new BigDecimal(arr[1]);
-                        BigDecimal param = new BigDecimal(gameRule.getMatchingParam());
-                        if(param.compareTo(begin)>=0&&param.compareTo(end)<=0){
-                            return rule;
-                        }
-                    }
-                }
-            }
 
         }else if(RuleTypeDesc.thunder.getValue()==gameRule.getRuleType()){
             //中雷
-            gameRule.setPageTools(pageTools);
             gameRule.setRuleCode(gameRule.getMatchingParam());
+            gameRule.setMatchingParam(null);
             List<GameRule> gameRules = gameRuleMapper.selectPageByObjectForList(gameRule);
             if(gameRules!=null&&gameRules.size()>0){
                 return gameRules.get(0);

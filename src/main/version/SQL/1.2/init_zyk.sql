@@ -18,29 +18,31 @@ CREATE TABLE `game_rule`  (
   `rule_type` bigint(20) NOT NULL COMMENT '游戏规则类型（1:返佣比例,2:中奖数字奖励,3:多雷奖励）',
   `rule_code` varchar(500) NOT NULL COMMENT '游戏规则代码',
   `rule_value` varchar(500) NOT NULL COMMENT '游戏规则值',
+  `rule_sub_type` bigint(20) NOT NULL  COMMENT '游戏规则类型（1:单个值,2:顺子,3:同数）',
+  `scheme_code` varchar(5000) NOT NULL  COMMENT '真实值',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='游戏规则表';
 
 
 
 /*   返佣规则  */
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 1, '1', '0.12');
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 1, '2', '0.10');
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 1, '3', '0.08');
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 1, '4', '0.05');
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 1, '5', '0.03');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 1, '1', '0.12',1, '1');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 1, '2', '0.10',1, '2');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 1, '3', '0.08',1, '3');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 1, '4', '0.05',1, '4');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 1, '5', '0.03',1, '5');
 /*   中奖规则  */
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 2, '0.01', '6.66');
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 2, '5.20', '13.14');
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 2, '13.14', '16.88');
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 2, '1.23-7.89', '8.88');
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 2, '12.34-45.67', '16.88');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 2, '0.01', '6.66',1, '0.01');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 2, '5.20', '13.14',1, '5.20');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 2, '13.14', '16.88',1, '13.14');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 2, '1.23-7.89', '8.88',2, '1.23,2.34,3.45,4.56,5.67,6.78,7.89');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 2, '12.34-45.67', '16.88',2, '12.34,23.45,34.56,45.67');
 /*   多雷奖励规则  */
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 3, '3', '18');
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 3, '4', '38');
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 3, '5', '188');
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 3, '6', '388');
-INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 3, '7', '588');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 3, '3', '18',1, '3');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 3, '4', '38',1, '4');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 3, '5', '188',1, '5');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 3, '6', '388',1, '6');
+INSERT INTO `game_rule`(`create_time`,`update_time`,`game_id`,`rule_type`,`rule_code`,`rule_value`,`rule_sub_type`,`scheme_code`) VALUES ( '2018-12-29 18:39:19', NULL, 1, 3, '7', '588',1, '7');
 
 DROP TABLE IF EXISTS `group`;
 CREATE TABLE `group`  (

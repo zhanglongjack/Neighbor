@@ -156,6 +156,11 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public ResponseResult exitGroup(UserInfo user, GroupMember groupMember) throws Exception {
         ResponseResult result = new ResponseResult();
+        GroupMember member = groupMemberMapper.selectByPrimaryKey(groupMember.getMemberId());
+        GroupApply groupApply = new GroupApply();
+        groupApply.setGroupId(member.getGroupId());
+        groupApply.setEnterUserId(member.getUserId());
+        groupApplyMapper.deleteByGroupApply(groupApply);
         groupMemberMapper.deleteByPrimaryKey(groupMember.getMemberId());
         return result;
     }
@@ -184,6 +189,8 @@ public class GroupServiceImpl implements GroupService {
                     GroupApply temp =new GroupApply();
                     temp.setGroupId(groupMember.getGroupId());
                     temp.setEnterUserId(Long.valueOf(userIds[i]));
+                    Long total = groupApplyMapper.selectPageTotalCount(temp);
+                    if(total>0)continue;
                     temp.setInviteUserId(user.getId());
                     temp.setShowFlag("0");
                     temp.setStates(ApplyStatesDesc.apply.getValue()+"");
@@ -241,7 +248,7 @@ public class GroupServiceImpl implements GroupService {
             result.setErrorMessage("记录不存在~");
             return result;
         }
-        if(!groupApply.getStates().equals(ApplyStatesDesc.apply.getValue()+"")){
+        if(!(ApplyStatesDesc.apply.getValue()+"").equals(apply.getStates())){
             result.setErrorCode(ErrorCodeDesc.failed.getValue());
             result.setErrorMessage("记录已经审核过了~");
             return result;
