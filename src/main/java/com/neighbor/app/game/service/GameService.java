@@ -1,5 +1,6 @@
 package com.neighbor.app.game.service;
 
+import com.neighbor.app.game.constants.RuleTypeDesc;
 import com.neighbor.app.game.entity.GameRule;
 import com.neighbor.common.util.ResponseResult;
 
@@ -24,4 +25,6 @@ public interface GameService {
     GameRule ruleMatching(GameRule gameRule);
 
     ResponseResult ruleRecord(GameRule gameRule);
+
+	GameRule ruleMatching(long gameId, RuleTypeDesc award, double value);
 }

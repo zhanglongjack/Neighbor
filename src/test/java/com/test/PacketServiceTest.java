@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -17,7 +18,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.neighbor.StartNeighbor;
 import com.neighbor.app.group.entity.GroupMember;
@@ -31,6 +35,8 @@ import com.neighbor.app.recharge.entity.Recharge;
 import com.neighbor.app.users.controller.LoginController;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
+import com.neighbor.app.wallet.entity.UserWallet;
+import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 
@@ -50,16 +56,19 @@ public class PacketServiceTest {
 	private UserService userService;
 	@Autowired
 	private GroupService groupService;
-	
+	@Autowired
+	private UserWalletService userWalletService;
 	@Test
 	public void test1() throws Exception{
+		Long gameId = 1L;
 		Packet packet = new Packet();
 		packet.setAmount(new BigDecimal(100));
 		packet.setPacketNum(7);
 		packet.setHitNum(1);
-		packet.setUserId(600020L);
+		packet.setUserId(600023L);
 		packet.setGroupId(100000L);
-		final Packet packet1 = packetService.sendPacket(packet);
+		UserWallet wallet = userWalletService.selectByPrimaryUserId(packet.getUserId());
+		final Packet packet1 = packetService.sendPacket(packet, wallet);
 		UserInfo user = new UserInfo();
 		PageTools pageTool =new PageTools();
 		pageTool.setPageSize(200);
@@ -72,7 +81,8 @@ public class PacketServiceTest {
 		ExecutorService fixedThreadPool = null;
 		try {
 			logger.info("开始并发抢红包");
-			CountDownLatch countDown = new CountDownLatch(memList.size());
+			CyclicBarrier cyclicBarrier = new CyclicBarrier(memList.size());
+//			CountDownLatch countDown = new CountDownLatch(memList.size());
 			fixedThreadPool = Executors.newFixedThreadPool(memList.size());
 			List<Future<Long>> futureList = new ArrayList<Future<Long>>();
 			for (int i=0;i<memList.size();i++) {
@@ -80,12 +90,13 @@ public class PacketServiceTest {
 				futureList.add(fixedThreadPool.submit(new Callable<Long>() {
 					@Override
 					public Long call() throws Exception {
-						countDown.countDown();
-						countDown.await();
+//						countDown.countDown();
+//						countDown.await();
+						cyclicBarrier.await();
 						try {
 							UserInfo user = new UserInfo();
 							user.setUserID(member.getUserId());
-							ResponseResult result = packetService.grabPacekt(packet1, user);
+							ResponseResult result = packetService.grabPacekt(packet1, user,gameId);
 							if(result.getErrorCode()==0){
 								return member.getUserId();
 							}
@@ -156,8 +167,9 @@ public class PacketServiceTest {
 	@Test
 	public void test(){
 		try {
-			Packet aaa =packetMapper.selectByPrimaryKey(1L);
-			System.out.println(JSONObject.toJSON(aaa.getDetailList()));
+			Packet aaa =packetMapper.lockPacketByPrimaryKey(23L);
+			logger.info("最佳明细List:",JSON.toJSON(aaa.getDetailList()));
+			logger.info("test:"+JSONObject.toJSON(aaa.getDetailList()));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

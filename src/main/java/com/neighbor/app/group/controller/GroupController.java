@@ -1,6 +1,7 @@
 package com.neighbor.app.group.controller;
 
 import com.neighbor.app.group.entity.Group;
+import com.neighbor.app.group.entity.GroupApply;
 import com.neighbor.app.group.entity.GroupMember;
 import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.users.entity.UserInfo;
@@ -102,6 +103,44 @@ public class GroupController {
         logger.info("chatlist request user >>>> " + user);
         logger.info("groupMember >>>> " + groupMember);
         ResponseResult result  = groupService.enterGroup(user,groupMember);
+        return result;
+    }
+
+
+    //
+    @RequestMapping(value = "/enterGroupApplyNum.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult enterGroupApplyNum(@ModelAttribute("user") UserInfo user, GroupApply groupApply) throws Exception{
+        logger.info("chatlist request user >>>> " + user);
+        logger.info("groupApply >>>> " + groupApply);
+        ResponseResult result  = groupService.enterGroupApplyNum(user,groupApply);
+        return result;
+    }
+
+    @RequestMapping(value = "/clearGroupApplyNum.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult clearGroupApplyNum(@ModelAttribute("user") UserInfo user, GroupApply groupApply) throws Exception{
+        logger.info("chatlist request user >>>> " + user);
+        logger.info("groupApply >>>> " + groupApply);
+        ResponseResult result  = groupService.clearGroupApplyNum(user,groupApply);
+        return result;
+    }
+
+    @RequestMapping(value = "/groupApplyRecord.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult groupApplyRecord(@ModelAttribute("user") UserInfo user, GroupApply groupApply) throws Exception{
+        logger.info("chatlist request user >>>> " + user);
+        logger.info("groupApply >>>> " + groupApply);
+        ResponseResult result  = groupService.groupApplyRecord(user,groupApply);
+        return result;
+    }
+
+    @RequestMapping(value = "/groupApply.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult groupApply(@ModelAttribute("user") UserInfo user, GroupApply groupApply) throws Exception{
+        logger.info("chatlist request user >>>> " + user);
+        logger.info("groupApply >>>> " + groupApply);
+        ResponseResult result  = groupService.groupApply(user,groupApply);
         return result;
     }
 

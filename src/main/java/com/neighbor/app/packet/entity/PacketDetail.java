@@ -94,4 +94,12 @@ public class PacketDetail {
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
+
+	@Override
+	public String toString() {
+		return String.format(
+				"PacketDetail [id=%s, dPacketId=%s, gotUserId=%s, gotAmount=%s, isGotBomb=%s, isFree=%s, isMaximum=%s, createDate=%s, createTime=%s]",
+				id, dPacketId, gotUserId, gotAmount, isGotBomb, isFree, isMaximum, createDate, createTime);
+	}
+    
 }

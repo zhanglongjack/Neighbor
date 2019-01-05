@@ -9,10 +9,12 @@
     <result column="rule_type" property="ruleType" jdbcType="BIGINT" />
     <result column="rule_code" property="ruleCode" jdbcType="VARCHAR" />
     <result column="rule_value" property="ruleValue" jdbcType="VARCHAR" />
+    <result column="rule_sub_type" property="ruleSubType" jdbcType="BIGINT" />
+    <result column="scheme_code" property="schemeCode" jdbcType="VARCHAR" />
   </resultMap>
   
   <sql id="Base_Column_List" >
-    id, create_time, update_time, game_id, rule_type, rule_code, rule_value
+    id, create_time, update_time, game_id, rule_type, rule_code, rule_value,rule_sub_type,scheme_code
   </sql>
   <sql id="dynamicWhere">
     <where>
@@ -23,6 +25,9 @@
       <if test="ruleType != null">and rule_type=#{ruleType}</if>
       <if test="ruleCode != null and ruleCode.length()>0">and rule_code=#{ruleCode}</if>
       <if test="ruleValue != null and ruleValue.length()>0">and rule_value=#{ruleValue}</if>
+      <if test="ruleSubType != null">and rule_sub_type=#{ruleSubType}</if>
+      <if test="schemeCode != null and schemeCode.length()>0">and scheme_code=#{schemeCode}</if>
+      <if test="matchingParam != null and matchingParam.length()>0">and FIND_IN_SET(#{matchingParam},scheme_code)</if>
     </where>
   </sql>
   <select id="selectAll" resultMap="BaseResultMap">
@@ -85,6 +90,12 @@
       <if test="ruleValue != null" >
         rule_value,
       </if>
+      <if test="ruleSubType != null" >
+        rule_sub_type,
+      </if>
+      <if test="schemeCode != null" >
+        scheme_code,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -108,6 +119,12 @@
       <if test="ruleValue != null" >
         #{ruleValue,jdbcType=VARCHAR},
       </if>
+      <if test="ruleSubType != null" >
+        #{ruleSubType,jdbcType=BIGINT},
+      </if>
+      <if test="schemeCode != null" >
+        #{schemeCode,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.game.entity.GameRule" >
@@ -130,6 +147,12 @@
       </if>
       <if test="ruleValue != null" >
         rule_value = #{ruleValue,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleSubType != null" >
+        rule_sub_type = #{ruleSubType,jdbcType=BIGINT},
+      </if>
+      <if test="schemeCode != null" >
+        scheme_code = #{schemeCode,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
