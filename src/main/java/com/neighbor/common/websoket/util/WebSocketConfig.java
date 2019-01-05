@@ -18,6 +18,8 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
 	private WebSocketInterceptor webSocketInterceptor;
 	@Autowired
 	private WebSocketPushHandler webSocketPushHandler;
+	@Autowired
+	private GroupMsgPushHandler groupMsgPushHandler;
 //	@Autowired
 //	private NoticeMsgHandler noticeMsgHandler;
 	
@@ -26,9 +28,11 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
     	logger.info("初始化websoket");
     	registry.addHandler(webSocketPushHandler, "/chatServer")
 //    			.addHandler(noticeMsgHandler, "/noticeServer")
+    			.addHandler(groupMsgPushHandler, "/groupChatServer")
         		.addInterceptors(webSocketInterceptor).setAllowedOrigins("*");
         
         registry.addHandler(webSocketPushHandler, "/sockjs/chatServer")
+        		.addHandler(groupMsgPushHandler, "/sockjs/groupChatServer")
 //        		.addHandler(noticeMsgHandler, "/noticeServer")
                 .addInterceptors(webSocketInterceptor).withSockJS();
         

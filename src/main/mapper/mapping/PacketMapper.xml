@@ -14,18 +14,22 @@
 		<result column="status" jdbcType="VARCHAR" property="status" />
 		<result column="collected_num" jdbcType="VARCHAR" property="collectedNum" />
 		<result column="remarke" jdbcType="VARCHAR" property="remarke" />
+		<result column="random_amount" jdbcType="VARCHAR" property="randomAmount" />
+		<collection property="detailList" javaType="ArrayList" ofType="com.neighbor.app.packet.entity.PacketDetail" 
+					select="com.neighbor.app.packet.dao.PacketDetailMapper.selectPacketDetailByPacketId" column="id">
+		</collection>
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, s_user_id, receive_user_id, group_id, amount, packet_num, hit_num,
 		send_date,
-		send_time, status,collected_num,remarke
+		send_time, status,collected_num,remarke,random_amount
 	</sql>
 	
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from packet
+		from packet p
 		where id = #{id,jdbcType=BIGINT}
 	</select>
 	
@@ -81,6 +85,9 @@
 			<if test="remarke != null">
 				remarke,
 			</if>
+			<if test="randomAmount != null">
+				random_amount,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null">
@@ -119,6 +126,9 @@
 			<if test="remarke != null">
 				#{remarke,jdbcType=VARCHAR},
 			</if>
+			<if test="randomAmount != null">
+				#{randomAmount,jdbcType=VARCHAR},
+			</if> 
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.packet.entity.Packet">
@@ -153,6 +163,12 @@
 			</if>
 			<if test="remarke != null">
 				remarke = #{remarke,jdbcType=VARCHAR},
+			</if>
+			<if test="randomAmount != null">
+				random_amount = #{randomAmount,jdbcType=VARCHAR},
+			</if>
+			<if test="collectedNum != null">
+				collected_num = #{collectedNum},
 			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}

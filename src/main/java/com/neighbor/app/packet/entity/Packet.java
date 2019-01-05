@@ -29,6 +29,9 @@ public class Packet {
 
     private String remarke;
     
+    private String randomAmount = "";
+    private String randomAmountList[] = null;
+    
     private List<PacketDetail> detailList = new ArrayList<PacketDetail>();
 
     public Long getId() {
@@ -127,22 +130,44 @@ public class Packet {
         this.remarke = remarke;
     }
 
+	public String getRandomAmount() {
+		return randomAmount;
+	}
+
+	public void setRandomAmount(String randomAmount) {
+		this.randomAmount = randomAmount;
+		randomAmountList = randomAmount.split(",");
+	}
+
+	public String[] getRandomAmountList() {
+		return randomAmountList;
+	}
+
+	public void setRandomAmountList(String[] randomAmountList) {
+		this.randomAmountList = randomAmountList;
+	}
+
 	public List<PacketDetail> getDetailList() {
 		return detailList;
 	}
 	
+	public void setDetailList(List<PacketDetail> detailList) {
+		this.detailList = detailList;
+	}
+
 	public void addDetail(PacketDetail detail){
 		detailList.add(detail);
 	}
-	
 
 	@Override
 	public String toString() {
 		return String.format(
-				"Packet [id=%s, userId=%s, receiveUserId=%s, groupId=%s, amount=%s, packetNum=%s, hitNum=%s, sendDate=%s, sendTime=%s, status=%s, collectedNum=%s, remarke=%s]",
+				"Packet [id=%s, userId=%s, receiveUserId=%s, groupId=%s, amount=%s, packetNum=%s, hitNum=%s, sendDate=%s, sendTime=%s, status=%s, collectedNum=%s, remarke=%s, randomAmount=%s, detailList=%s]",
 				id, userId, receiveUserId, groupId, amount, packetNum, hitNum, sendDate, sendTime, status, collectedNum,
-				remarke);
+				remarke, randomAmount, detailList);
 	}
+
+
 
     
 }

@@ -140,7 +140,10 @@
 		update user_wallet 
 		set available_amount = available_amount + #{availableAmount}
 		<if test="freezeAmount != null and freezeAmount > 0">
-				,freeze_amount = freeze_amount + #{freezeAmount}
+			,freeze_amount = freeze_amount + #{freezeAmount}
+		</if>
+		<if test="score != null">
+			,score = score + #{score}
 		</if>
 		where u_id = #{uId}
 	</update>

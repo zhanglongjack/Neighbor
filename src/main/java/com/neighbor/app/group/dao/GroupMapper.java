@@ -7,15 +7,19 @@ import java.util.List;
 
 @Mapper
 public interface GroupMapper {
-    int deleteByPrimaryKey(Long id);
-    int insertSelective(Group record);
-    Group selectByPrimaryKey(Long id);
-    int updateByPrimaryKeySelective(Group record);
+	int deleteByPrimaryKey(Long id);
 
-    Long selectPageTotalCount(Group record);
+	int insertSelective(Group record);
 
-    List<Group> selectPageByObjectForList(Group record);
+	Group selectByPrimaryKey(Long id);
 
-    List<Group> selectAll();
+	int updateByPrimaryKeySelective(Group record);
 
+	Long selectPageTotalCount(Group record);
+
+	List<Group> selectPageByObjectForList(Group record);
+
+	List<Group> selectAll();
+
+	List<Group> selectBySelective(Group record);
 }
