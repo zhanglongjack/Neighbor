@@ -36,7 +36,7 @@ public class ChatMessagePushSchedule {
 	 * 个人消息定时推送任务
 	 */
 	@Scheduled(cron = "0/30 * * * * *")
-	public void breakCheck() {
+	public void userMsgPush() {
 		ExecutorService fixedThreadPool = null;
 		// logger.info("每30秒执行一次定时任务推送消息");
 		try {

@@ -36,7 +36,7 @@
             <if test="sendUserId != null">and send_user_id=#{sendUserId}</if>
             <if test="targetUserId != null">and target_user_id=#{targetUserId}</if>
             <if test="targetUserNotNull != null">and target_user_id is not null</if>
-            <if test="targetGroupId != null">and chat_type=#{targetGroupId}</if>
+            <if test="targetGroupId != null">and target_group_id=#{targetGroupId}</if>
             <if test="date != null and date.length>0">and date=#{date}</if>
             <if test="time != null and time.length>0">and time=#{time}</if>
             <if test="sendUserDeleteFlag != null and sendUserDeleteFlag.length>0">and send_user_delete_flag=#{sendUserDeleteFlag}</if>
@@ -107,6 +107,20 @@
         from chat_message
         <include refid="dynamicWhere"/>
         order by date,time
+    </select>
+    
+    <select id="selectMsgByTargetGroupIdStatus" parameterType="Long"
+            resultMap="BaseResultMap">
+		select 
+			<include refid="Base_Column_List"/>
+		from chat_message c
+		where not exists(
+			select * from msg_group_menber_relationship 
+			where c.msg_id=r_msg_id and g.user_id = r_user_id
+		)
+		and status='pushed_response'
+		and chat_type='multiple'
+		and target_group_id=#{targetGroupId}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

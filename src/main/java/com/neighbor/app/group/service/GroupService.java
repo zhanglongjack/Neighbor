@@ -34,4 +34,5 @@ public interface GroupService {
 
     ResponseResult exitGroup(UserInfo user, GroupMember groupMember) throws Exception;
 
+    ResponseResult enterGroup(UserInfo user, GroupMember groupMember) throws Exception;
 }

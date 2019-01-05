@@ -22,11 +22,13 @@ public interface SocketMessageMapper {
 
 	void insertRelationShipSelective(Map<String, Long> relationShip);
 
-    Long selectPageTotalCount(HashMap map);
+    Long selectPageTotalCount(HashMap<?,?> map);
 
-    List<SocketMessage> selectPageByObjectForList(HashMap map);
+    List<SocketMessage> selectPageByObjectForList(HashMap<?,?> map);
 
-    void changeRecord(HashMap map);
+    void changeRecord(HashMap<?,?> map);
     int deleteMessage(SocketMessage record);
     int jobDeleteMessage(SocketMessage record);
+
+	List<SocketMessage> selectMsgByTargetGroupIdStatus(Long userId);
 }

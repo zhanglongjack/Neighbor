@@ -1,9 +1,10 @@
 package com.neighbor.app.group.dao;
 
-import com.neighbor.app.group.entity.GroupMember;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
+import com.neighbor.app.group.entity.GroupMember;
 
 @Mapper
 public interface GroupMemberMapper {
@@ -23,4 +24,6 @@ public interface GroupMemberMapper {
     List<GroupMember> selectAll();
 
     GroupMember selectGroupMember(GroupMember record);
+
+	List<GroupMember> selectBySelective(GroupMember groupMember);
 }

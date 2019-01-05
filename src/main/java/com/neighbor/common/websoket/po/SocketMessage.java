@@ -27,7 +27,7 @@ public class SocketMessage {
 	
 	// 查询条件
 	private Integer targetUserNotNull;
-	private Long msgIdLess;
+//	private Long msgIdLess;
 
 	private String cleanHistory;//清除历史消息间隔时间
 

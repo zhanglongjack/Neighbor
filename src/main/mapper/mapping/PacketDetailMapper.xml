@@ -24,6 +24,14 @@
 		from packet_detail
 		where id = #{id,jdbcType=BIGINT}
 	</select>  
+	
+	<select id="selectPacketDetailByPacketId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from packet_detail
+		where d_packet_id = #{packetId}
+	</select>  
+	
 	<insert id="insertSelective" parameterType="com.neighbor.app.packet.entity.PacketDetail">
 		insert into packet_detail
 		<trim prefix="(" suffix=")" suffixOverrides=",">

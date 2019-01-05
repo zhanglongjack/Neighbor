@@ -16,10 +16,12 @@
     <result column="game_id" property="gameId" jdbcType="BIGINT" />
     <result column="red_pack_amount_limit" property="redPackAmountLimit" jdbcType="VARCHAR" />
   </resultMap>
+  
   <sql id="Base_Column_List" >
      g.id, g.create_time, g.update_time, g.cre_date, g.cre_time, g.group_name, g.user_num, g.online_num,
     g.group_notice, g.group_head_img_url, g.states,g.game_id,g.red_pack_amount_limit
   </sql>
+  
   <sql id="dynamicWhere">
     <where>
       <if test="id != null">and g.id=#{id}</if>
@@ -73,16 +75,26 @@
     </if>
     <include refid="dynamicWhere" />
   </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from `group`  g
     where g.id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.neighbor.app.group.entity.Group" >
+    select 
+    <include refid="Base_Column_List" />
+    from `group`  g
+    <include refid="dynamicWhere" />
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from `group`
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  
   <insert id="insertSelective" parameterType="com.neighbor.app.group.entity.Group" >
     insert into `group`
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -168,6 +180,7 @@
       </if>
     </trim>
   </insert>
+  
   <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.group.entity.Group" >
     update `group`
     <set >

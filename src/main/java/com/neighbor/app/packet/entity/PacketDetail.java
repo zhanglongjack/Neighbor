@@ -13,11 +13,11 @@ public class PacketDetail {
 
     private BigDecimal gotAmount;
 
-    private String isGotBomb;
+    private boolean isGotBomb;
 
-    private String isFree;
+    private boolean isFree;
 
-    private String isMaximum;
+    private boolean isMaximum;
 
     private String createDate = DateUtils.getStringDateShort();
 
@@ -55,31 +55,31 @@ public class PacketDetail {
         this.gotAmount = gotAmount;
     }
 
-    public String getIsGotBomb() {
-        return isGotBomb;
-    }
+    public boolean isGotBomb() {
+		return isGotBomb;
+	}
 
-    public void setIsGotBomb(String isGotBomb) {
-        this.isGotBomb = isGotBomb;
-    }
+	public void setGotBomb(boolean isGotBomb) {
+		this.isGotBomb = isGotBomb;
+	}
 
-    public String getIsFree() {
-        return isFree;
-    }
+	public boolean isFree() {
+		return isFree;
+	}
 
-    public void setIsFree(String isFree) {
-        this.isFree = isFree;
-    }
+	public void setFree(boolean isFree) {
+		this.isFree = isFree;
+	}
 
-    public String getIsMaximum() {
-        return isMaximum;
-    }
+	public boolean isMaximum() {
+		return isMaximum;
+	}
 
-    public void setIsMaximum(String isMaximum) {
-        this.isMaximum = isMaximum;
-    }
+	public void setMaximum(boolean isMaximum) {
+		this.isMaximum = isMaximum;
+	}
 
-    public String getCreateDate() {
+	public String getCreateDate() {
         return createDate;
     }
 

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neighbor.app.game.dao.GameRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.neighbor.app.game.entity.GameRule" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="game_id" property="gameId" jdbcType="BIGINT" />
+    <result column="rule_type" property="ruleType" jdbcType="BIGINT" />
+    <result column="rule_code" property="ruleCode" jdbcType="VARCHAR" />
+    <result column="rule_value" property="ruleValue" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, game_id, rule_type, rule_code, rule_value
+  </sql>
+  <sql id="dynamicWhere">
+    <where>
+      <if test="id != null">and id=#{id}</if>
+      <if test="createTime != null ">and create_time=#{createTime}</if>
+      <if test="updateTime != null ">and update_time=#{updateTime}</if>
+      <if test="gameId != null">and game_id=#{gameId}</if>
+      <if test="ruleType != null">and rule_type=#{ruleType}</if>
+      <if test="ruleCode != null and ruleCode.length()>0">and rule_code=#{ruleCode}</if>
+      <if test="ruleValue != null and ruleValue.length()>0">and rule_value=#{ruleValue}</if>
+    </where>
+  </sql>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from game_rule
+    order by create_time
+  </select>
+
+  <select id="selectPageByObjectForList" parameterType="com.neighbor.app.game.entity.GameRule"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from game_rule
+    <include refid="dynamicWhere" />
+    order by create_time desc
+    limit #{pageTools.rowIndex},#{pageTools.pageSize}
+  </select>
+
+  <select id="selectPageTotalCount" parameterType="com.neighbor.app.game.entity.GameRule"
+          resultType="Long">
+    select
+    count(1)
+    from game_rule
+    <include refid="dynamicWhere" />
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from game_rule
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from game_rule
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+ 
+  <insert id="insertSelective" parameterType="com.neighbor.app.game.entity.GameRule" >
+    insert into game_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="gameId != null" >
+        game_id,
+      </if>
+      <if test="ruleType != null" >
+        rule_type,
+      </if>
+      <if test="ruleCode != null" >
+        rule_code,
+      </if>
+      <if test="ruleValue != null" >
+        rule_value,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gameId != null" >
+        #{gameId,jdbcType=BIGINT},
+      </if>
+      <if test="ruleType != null" >
+        #{ruleType,jdbcType=BIGINT},
+      </if>
+      <if test="ruleCode != null" >
+        #{ruleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleValue != null" >
+        #{ruleValue,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.game.entity.GameRule" >
+    update game_rule
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gameId != null" >
+        game_id = #{gameId,jdbcType=BIGINT},
+      </if>
+      <if test="ruleType != null" >
+        rule_type = #{ruleType,jdbcType=BIGINT},
+      </if>
+      <if test="ruleCode != null" >
+        rule_code = #{ruleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleValue != null" >
+        rule_value = #{ruleValue,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

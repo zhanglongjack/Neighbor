@@ -35,7 +35,7 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
 			ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
 			HttpServletRequest httpRequest = servletRequest.getServletRequest();
 			
-			logger.debug("有发送的用信息么?" + httpRequest.getParameter("token"));
+			logger.debug("有发送的用户信息么?" + httpRequest.getParameter("token"));
 			String token = httpRequest.getParameter("token");
 			// 检查token是否为空
 			if (!StringUtils.hasLength(token)) {

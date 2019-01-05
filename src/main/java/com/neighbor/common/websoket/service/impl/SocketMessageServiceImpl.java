@@ -1,5 +1,12 @@
 package com.neighbor.common.websoket.service.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
@@ -8,12 +15,6 @@ import com.neighbor.common.websoket.constants.MessageStatus;
 import com.neighbor.common.websoket.dao.SocketMessageMapper;
 import com.neighbor.common.websoket.po.SocketMessage;
 import com.neighbor.common.websoket.service.SocketMessageService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class SocketMessageServiceImpl implements SocketMessageService {
@@ -117,12 +118,12 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	}
 
 	@Override
-	public Long selectPageTotalCount(HashMap map) {
+	public Long selectPageTotalCount(HashMap<?,?> map) {
 		return socketMessageMapper.selectPageTotalCount(map);
 	}
 
 	@Override
-	public List<SocketMessage> selectPageByObjectForList(HashMap map) {
+	public List<SocketMessage> selectPageByObjectForList(HashMap<?,?> map) {
 		return socketMessageMapper.selectPageByObjectForList(map);
 	}
 
@@ -143,5 +144,10 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	@Override
 	public int jobDeleteMessage(SocketMessage record) {
 		return socketMessageMapper.jobDeleteMessage(record);
+	}
+
+	@Override
+	public List<SocketMessage> selectMsgByTargetGroupIdStatus(Long groupId) {
+		return socketMessageMapper.selectMsgByTargetGroupIdStatus(groupId);
 	}
 }

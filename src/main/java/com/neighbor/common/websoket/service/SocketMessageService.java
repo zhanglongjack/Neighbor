@@ -32,11 +32,13 @@ public interface SocketMessageService {
 
     ResponseResult changeRecord(UserInfo user, Long targetUserId, Long msgId, String status);
 
-    Long selectPageTotalCount(HashMap map);
+    Long selectPageTotalCount(HashMap<?,?> map);
 
-    List<SocketMessage> selectPageByObjectForList(HashMap map);
+    List<SocketMessage> selectPageByObjectForList(HashMap<?,?> map);
 
 	List<SocketMessage> selectForTargetUserMsgByStatus(String status);
 	int deleteMessage(SocketMessage record);
     int jobDeleteMessage(SocketMessage record);
+
+	List<SocketMessage> selectMsgByTargetGroupIdStatus(Long userId);
 }

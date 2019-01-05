@@ -27,7 +27,6 @@
     unread_message_num, states, automatic_grab_switch, topping_flag
   </sql>
 
-
   <sql id="dynamicWhere">
     <where>
       <if test="id != null">and t.id=#{id}</if>
@@ -51,11 +50,18 @@
     from `group_member`
     order by create_time
   </select>
+  
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.neighbor.app.group.entity.GroupMember">
+    select
+    <include refid="Base_Column_List" />
+    from `group_member`
+    <include refid="dynamicWhere" />
+  </select>
 
   <select id="selectPageByObjectForList" parameterType="com.neighbor.app.group.entity.GroupMember"
           resultMap="BaseResultMap">
     select
-    t.*,u.nick_name as friendNickName,u.user_photo as friendHeadUrl,f.friend_desc as friendDesc
+    t.*,u.nick_name as friendNickName,u.user_photo as friendHeadUrl 
     from `group_member` t left join users_info u on t.user_id = u.id
     <if test="friendUserId != null"> LEFT JOIN friend f on t.user_id = f.friend_user_id and f.user_id = #{friendUserId}</if>
     <include refid="dynamicWhere" />
