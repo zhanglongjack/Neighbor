@@ -10,6 +10,7 @@ import com.neighbor.app.product.service.ProductService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +40,10 @@ public class ProductServiceImpl implements ProductService {
         Long total = productMapper.selectPageTotalCount(product);
         List<Product> pageList = productMapper.selectByParams(product);
         List<ProductImg> imgList = productImgMapper.selectByParams(null);
+        String imgType = product.getImgType();
         for (Product productThis : pageList) {
-            for (ProductImg productImg : imgList) {
-                if (productImg.getProductId().longValue() == productThis.getId()
-                        && product.getImgType().equals(productImg.getImgType())) {
-                    productThis.getProductImgList().add(productImg);
-                }
-            }
+            productThis.setImgType(imgType);
+            makeProductImgInfo(imgList, productThis);
         }
 
         PageTools pageTools = product.getPageTools();
@@ -54,6 +52,28 @@ public class ProductServiceImpl implements ProductService {
         result.addBody("pageTools", pageTools);
         return result;
 
+    }
+
+    private void makeProductImgInfo(List<ProductImg> imgList, Product productThis) {
+        for (ProductImg productImg : imgList) {
+            if (StringUtil.isNotEmpty(productThis.getImgType())) {
+                if (productImg.getProductId().longValue() == productThis.getId()
+                        && productThis.getImgType().equals(productImg.getImgType())) {
+                    productThis.getProductImgList().add(productImg);
+                }
+            } else {
+                if (productImg.getProductId().longValue() == productThis.getId()) {
+                    productThis.getProductImgList().add(productImg);
+                }
+            }
+        }
+    }
+
+    public Product viewProduct(Product product) {
+        product = productMapper.selectByPrimaryKey(product.getId());
+        List<ProductImg> imgList = productImgMapper.selectByParams(null);
+        makeProductImgInfo(imgList, product);
+        return product;
     }
 
 }

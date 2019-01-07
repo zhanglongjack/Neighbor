@@ -1,5 +1,6 @@
 package com.neighbor.app.product.controller;
 
+import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.cms.controller.CmsController;
 import com.neighbor.app.cms.entity.Cms;
 import com.neighbor.app.cms.service.CmsService;
@@ -30,6 +31,26 @@ public class ProductController {
         logger.info("listProduct request user >>>> " + user);
         product.setPageTools(pageTools);
         ResponseResult result = productService.listProduct(user, product);
+        return result;
+    }
+
+    @RequestMapping(value = "/getProduct.req", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult getProduct(@ModelAttribute("user") UserInfo user, Product product) {
+        logger.info("getProduct begin ......");
+
+        ResponseResult result = new ResponseResult();
+        try {
+
+            product=productService.viewProduct(product);
+
+            result.addBody("product", product);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            result.setErrorCode(ErrorCodeDesc.failed.getValue());
+        }
+
         return result;
     }
 

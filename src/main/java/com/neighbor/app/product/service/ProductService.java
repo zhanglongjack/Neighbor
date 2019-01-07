@@ -8,6 +8,6 @@ public interface ProductService {
 
     public ResponseResult listProduct(UserInfo user, Product product) throws Exception;
 
-
+    public Product viewProduct(Product product);
 
 }
