@@ -19,6 +19,15 @@ public class StringUtil {
         return true;
     }
 
+    public static boolean isEmpty(CharSequence cs) {
+        return cs == null || cs.length() == 0;
+    }
+
+    public static boolean isNotEmpty(CharSequence cs) {
+        return !isEmpty(cs);
+    }
+
+
     //生成顺子数 subType 1=顺子,2=同数
     public static String generateGameRuleNum(String s1,String s2,int subType){
         if(!checkGameRuleNum(s1,s2,subType))return null;
@@ -146,4 +155,6 @@ public class StringUtil {
         System.out.println(checkGameRuleNum("1.23","7..",1));
         System.out.println(checkGameRuleNum("77.7","11.1",2));
     }
+
+
 }

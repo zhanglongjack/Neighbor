@@ -1,6 +1,14 @@
 package com.neighbor.app.game.service.impl;
 
-import com.neighbor.app.api.common.ErrorCodeDesc;
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
+
 import com.neighbor.app.game.constants.RuleTypeDesc;
 import com.neighbor.app.game.dao.GameRuleMapper;
 import com.neighbor.app.game.entity.GameRule;
@@ -8,14 +16,6 @@ import com.neighbor.app.game.service.GameService;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.thymeleaf.util.StringUtils;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 public class GameServiceImpl implements GameService {
@@ -56,6 +56,16 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<GameRule> selectRuleAll() {
         return gameRuleMapper.selectAll();
+    }
+    
+    @Override
+    public GameRule ruleMatching(long gameId,RuleTypeDesc ruleType,double value) {
+    	GameRule gameRule = new GameRule();
+    	gameRule.setGameId(gameId);
+    	gameRule.setRuleType(ruleType.getValue());
+    	gameRule.setMatchingParam(value+"");
+    	
+    	return ruleMatching(gameRule);
     }
 
     @Override

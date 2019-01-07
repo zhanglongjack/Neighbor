@@ -1,7 +1,8 @@
 package com.neighbor.app.packet.dao;
 
-import org.apache.ibatis.annotations.Mapper;
+import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
 import com.neighbor.app.packet.entity.PacketDetail;
 
 @Mapper
@@ -11,5 +12,7 @@ public interface PacketDetailMapper {
     PacketDetail selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(PacketDetail record);
+
+	List<PacketDetail> selectPacketDetailByPacketId(Long packetId);
 
 }

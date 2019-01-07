@@ -138,7 +138,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <select id="selectPageTotalCount" parameterType="com.neighbor.app.friend.entity.Friend"
+  <select id="selectPageTotalCount" parameterType="com.neighbor.app.cms.entity.Cms"
           resultType="Long">
     select
     count(1)
