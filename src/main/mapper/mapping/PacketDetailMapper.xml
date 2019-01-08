@@ -31,7 +31,7 @@
 		from packet_detail
 		where d_packet_id = #{packetId}
 	</select>   
-	<insert id="insertSelective" parameterType="com.neighbor.app.packet.entity.PacketDetail">
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.neighbor.app.packet.entity.PacketDetail">
 		insert into packet_detail
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null">
