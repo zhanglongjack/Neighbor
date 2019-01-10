@@ -34,6 +34,7 @@ CREATE TABLE `product_order` (
   `contact_time` varchar(16) COMMENT '时间',
   `score` decimal(20,2)  NOT NULL COMMENT '订单价格，使用的是积分',
   `user_id` bigint(20)  NOT NULL COMMENT '用户id',
+  `state` varchar(200) NOT NULL  COMMENT '订单状态，0：下单；1：支付；2：发货；3：收货',
   `address` varchar(200)  COMMENT '送货地址',
   `phone` varchar(20)  COMMENT '送货电话',
   PRIMARY KEY (`id`)
@@ -48,6 +49,6 @@ CREATE TABLE `product_order_item` (
   `contact_time` varchar(16) COMMENT '时间',
   `order_id` bigint(20)  NOT NULL COMMENT '订单id',
   `product_id` bigint(20)  NOT NULL COMMENT '商品id',
-  `num` bigint(10)  NOT NULL COMMENT '商品数量',
+  `num` int(5)  NOT NULL COMMENT '商品数量',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单商品关联表';

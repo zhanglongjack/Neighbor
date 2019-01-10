@@ -26,6 +26,12 @@ public class ProductOrder extends PageEntity {
 
     private String phone;
 
+    //订单状态，0：下单；1：支付；2：发货；3：收货
+    private String state;
+
+    //=================下面是扩展属性======================
+    private String productId;
+
     public Long getId() {
         return id;
     }
@@ -96,5 +102,21 @@ public class ProductOrder extends PageEntity {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }

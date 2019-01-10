@@ -21,7 +21,7 @@ public class ProductOrderItem extends PageEntity {
     private Long productId;
 
     //商品数量
-    private Long num;
+    private Integer num;
 
     public Long getId() {
         return id;
@@ -79,11 +79,11 @@ public class ProductOrderItem extends PageEntity {
         this.productId = productId;
     }
 
-    public Long getNum() {
+    public Integer getNum() {
         return num;
     }
 
-    public void setNum(Long num) {
+    public void setNum(Integer num) {
         this.num = num;
     }
 }

@@ -5,6 +5,7 @@ import com.neighbor.app.cms.controller.CmsController;
 import com.neighbor.app.cms.entity.Cms;
 import com.neighbor.app.cms.service.CmsService;
 import com.neighbor.app.product.entity.Product;
+import com.neighbor.app.product.entity.ProductOrder;
 import com.neighbor.app.product.service.ProductService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
@@ -53,5 +54,24 @@ public class ProductController {
 
         return result;
     }
+
+    @RequestMapping(value = "/payAction.req", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult payAction(@ModelAttribute("user") UserInfo user, ProductOrder productOrder) {
+        logger.info("payAction begin ......");
+
+        ResponseResult result = new ResponseResult();
+        try {
+
+            productService.payAction(user,productOrder,result);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            result.setErrorCode(ErrorCodeDesc.failed.getValue());
+        }
+
+        return result;
+    }
+
 
 }
