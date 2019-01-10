@@ -35,6 +35,7 @@ import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.util.DateUtils;
+import com.neighbor.common.util.RedPackageUtil;
 import com.neighbor.common.util.ResponseResult;
 
 @Service
@@ -100,14 +101,14 @@ public class PacketServiceImpl implements PacketService {
 		record.setSendDate(DateUtils.getStringDateShort());
 		record.setSendTime(DateUtils.getTimeShort());
 		record.setStatus(PacketStatus.uncollected.toString());
-		String str = "";
-		Packet packetGenerate = new Packet();
-		packetGenerate.setAmount(record.getAmount());
-		packetGenerate.setPacketNum(record.getPacketNum());
-		for(int i=record.getPacketNum();i>0;i--){
-			str+=","+getRandomMoney(packetGenerate);
-		}
-		record.setRandomAmount(str.substring(1));
+//		String str = "";
+//		Packet packetGenerate = new Packet();
+//		packetGenerate.setAmount(record.getAmount());
+//		packetGenerate.setPacketNum(record.getPacketNum());
+//		for(int i=record.getPacketNum();i>0;i--){
+//			str+=","+getRandomMoney(packetGenerate);
+//		}
+		record.setRandomAmount(RedPackageUtil.generate(record.getAmount().doubleValue(), record.getPacketNum()));
 		
 		UserWallet userWallet = new UserWallet();
 		userWallet.setuId(record.getUserId());
