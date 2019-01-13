@@ -27,4 +27,6 @@ public interface GameService {
     ResponseResult ruleRecord(GameRule gameRule);
 
 	GameRule ruleMatching(long gameId, RuleTypeDesc award, double value);
+
+	List<GameRule> ruleCommissionRecord(Long gameId, int ruleType);
 }

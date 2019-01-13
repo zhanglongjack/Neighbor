@@ -93,8 +93,9 @@ public class PacketServiceTest {
 //						countDown.countDown();
 //						countDown.await();
 						cyclicBarrier.await();
+						UserInfo user = new UserInfo();
 						try {
-							UserInfo user = new UserInfo();
+							
 							user.setUserID(member.getUserId());
 							ResponseResult result = packetService.grabPacekt(packet1, user,gameId);
 							if(result.getErrorCode()==0){
@@ -103,6 +104,7 @@ public class PacketServiceTest {
 							return null;
 						} catch (Exception e) {
 							e.printStackTrace();
+							logger.error("异常的用户:"+user);
 							return null;
 						}
 					}

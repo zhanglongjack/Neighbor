@@ -2,7 +2,7 @@ package com.neighbor.app.balance.po;
 
 public enum TransactionSubTypeDesc {
     //付款
-    sendRedPack("发红包"),transferOut("转给"),thunderOut("踩雷")
+    sendRedPack("发红包"),transferOut("转给"),thunderOut("踩雷"),payCommission("佣金支付")
     //收款
     ,receiveRedPack("收红包"),backRedPack("红包退回"),lucked("中奖"),thunderIn("收到雷包"),recharge("充值")
     ,transferIn("转入"),transferBack("转账退回")

@@ -109,5 +109,16 @@ public class GameServiceImpl implements GameService {
         result.addBody("pageTools", pageTools);
         return result;
     }
+    
+    @Override
+    public List<GameRule> ruleCommissionRecord(Long gameId,int ruleType) {
+    	GameRule gameRule = new GameRule();
+    	gameRule.setGameId(gameId);
+    	gameRule.setRuleType(ruleType);
+    	return gameRuleMapper.selectBySelective(gameRule); 
+    }
+    
+    
+    
 
 }

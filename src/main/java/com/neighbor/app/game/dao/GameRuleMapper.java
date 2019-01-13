@@ -20,4 +20,6 @@ public interface GameRuleMapper {
     List<GameRule> selectPageByObjectForList(GameRule record);
 
     List<GameRule> selectAll();
+
+	List<GameRule> selectBySelective(GameRule gameRule);
 }

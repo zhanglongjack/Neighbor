@@ -18,6 +18,8 @@ import com.neighbor.app.balance.entity.BalanceDetail;
 import com.neighbor.app.balance.po.TransactionSubTypeDesc;
 import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.balance.service.BalanceDetailService;
+import com.neighbor.app.commission.entity.UserCommission;
+import com.neighbor.app.commission.service.CommissionService;
 import com.neighbor.app.game.constants.RuleTypeDesc;
 import com.neighbor.app.game.entity.GameRule;
 import com.neighbor.app.game.service.GameService;
@@ -31,9 +33,12 @@ import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.packet.entity.PacketDetail;
 import com.neighbor.app.packet.service.PacketService;
 import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.app.users.service.UserService;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
+import com.neighbor.common.constants.CommonConstants;
 import com.neighbor.common.constants.EnvConstants;
+import com.neighbor.common.util.BigDecimalUtil;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.RedPackageUtil;
 import com.neighbor.common.util.ResponseResult;
@@ -55,6 +60,12 @@ public class PacketServiceImpl implements PacketService {
 	private GroupService groupService;
 	@Autowired
 	private GameService gameService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private CommissionService commissionService;
+	@Autowired
+	private CommonConstants commonConstants;
     @Autowired
     private Environment env;
     
@@ -147,6 +158,9 @@ public class PacketServiceImpl implements PacketService {
 		String teet = "1.02";
 		System.out.println(Integer.parseInt(teet.charAt(teet.length()-1)+""));
 		System.out.println(new BigDecimal(1).compareTo(new BigDecimal(2)));
+		Long a = new Long(10);
+		Long b = 10L;
+		System.out.println(a == b);
 	}
 	 
 	@Override
@@ -203,6 +217,13 @@ public class PacketServiceImpl implements PacketService {
 		detail.setGotUserId(user.getId());
 		detail.setFree("1".equals(member.getMemberType()));
 		detail.setGotBomb(Integer.parseInt(num.substring(num.length()-1))==lockPacket.getHitNum());
+		logger.info("是否需要分佣检查:"+detail);
+		logger.info("用户检查:"+user);
+		logger.info("群成员检查:"+member);
+		if( member.getUserId()!=user.getId() && detail.isFree()){
+			logger.info("开始分佣处理");
+			handleFreePacketCommission(detail,gameId,lockPacket.getUserId());
+		}
 		lockPacket.addDetail(detail);
 		packetDetailMapper.insertSelective(detail);
 		logger.info("抢到的红包是[{}]尾数是[{}]信息:{},",num,Integer.parseInt(num.substring(num.length()-1)),detail);
@@ -224,6 +245,139 @@ public class PacketServiceImpl implements PacketService {
 		
 		logger.info("抢红包完成");
 		return resultResp;
+	}
+
+	/**
+	 * 群主抢的免死包,给发包上级奖励佣金
+	 * @param detail
+	 * @param id
+	 */
+	private void handleFreePacketCommission(PacketDetail detail,Long gameId,Long senderUserId) {
+		UserInfo groupMasterUser = userService.selectByPrimaryKey(detail.getGotUserId());
+		UserInfo upUser = userService.selectByPrimaryKey(detail.getGotUserId());
+		distributeCommission(detail.getGotAmount(),groupMasterUser, upUser.getUpUserId(), 1,gameId,senderUserId);
+		
+		// 系统还有25%
+		String distributeProportion = env.getProperty("sys.commission.percent");
+		BigDecimal amount = detail.getGotAmount().multiply(new BigDecimal(distributeProportion));
+		amount = BigDecimalUtil.rounding(amount);
+		
+		UserWallet groupMasterWallet = userWalletService.selectByPrimaryUserId(groupMasterUser.getId());
+		groupMasterWallet.setAvailableAmount(groupMasterWallet.getAvailableAmount().subtract(amount));
+		Long sysUserId = Long.parseLong(env.getProperty("sys.user.id"));
+		
+		// 群主记录交易明细:佣金支付
+		BalanceDetail balanceDetail = new BalanceDetail();
+		balanceDetail.setAmount(amount.negate());
+		balanceDetail.setAvailableAmount(groupMasterWallet.getAvailableAmount());
+		balanceDetail.setuId(groupMasterWallet.getuId());
+		balanceDetail.setTransactionType(TransactionTypeDesc.payment.toString());
+		balanceDetail.setTransactionSubType(TransactionSubTypeDesc.payCommission.toString());
+		balanceDetail.setRemarks(TransactionSubTypeDesc.payCommission.getDes());
+		balanceDetail.setTransactionId(groupMasterWallet.getId());
+		logger.info("保存佣金交易信息"+balanceDetail);
+		balanceDetailService.insertSelective(balanceDetail);
+		
+		// 超级管理员获得25%的佣金
+		UserCommission userCommission = new UserCommission();
+		userCommission.setCommisionAmt(amount);
+		userCommission.setDownUserId(groupMasterUser.getId());
+		userCommission.setDownLevel("0");
+		userCommission.setOwnUser(sysUserId);
+		userCommission.setGainProportion(distributeProportion);
+		userCommission.setGainDate(DateUtils.getStringDateShort());
+		userCommission.setGainTime(DateUtils.getTimeShort());
+		logger.info("保存佣金信息"+userCommission);
+		commissionService.insertSelective(userCommission);
+		// 更新发包上级金额
+		UserWallet userWallet = new UserWallet();
+		userWallet.setuId(sysUserId);
+		userWallet.setAvailableAmount(amount);
+		userWalletService.updateWalletAmount(userWallet);
+		
+		
+		UserInfo sysMasterUser = userService.selectByPrimaryKey(sysUserId);
+		distributeCommission(amount,sysMasterUser, groupMasterUser.getUpUserId(), 1,gameId,groupMasterUser.getId());
+		
+//		distributeCommissionBySys(amount, groupMasterUser.getUpUserId(), 1,gameId);
+	}
+	
+//	private void distributeCommissionBySys(BigDecimal amount, Long upUserId, int upLevel,Long gameId) {
+//		if(upLevel>5){
+//			logger.info("最多5级分佣");
+//			return;
+//		}
+//		
+//		// 发包上级按比例获得佣金,添加佣金记录
+//		UserCommission userCommission = new UserCommission();
+//		userCommission.setCommisionAmt(distributeCommission);
+//		userCommission.setDownUserId(senderUserId);
+//		userCommission.setDownLevel(upLevel+"");
+//		userCommission.setOwnUser(user.getId());
+//		userCommission.setGainProportion(distributeProportion.toEngineeringString());
+//		userCommission.setGainDate(DateUtils.getStringDateShort());
+//		commissionService.insertSelective(userCommission);
+//		// 更新发包上级金额
+//		UserWallet userWallet = new UserWallet();
+//		userWallet.setuId(user.getId());
+//		userWallet.setAvailableAmount(distributeCommission);
+//		userWalletService.updateWalletAmount(userWallet);
+//	}
+
+	private void distributeCommission(BigDecimal amount,UserInfo groupMasterUser, Long upUserId,int upLevel,Long gameId,Long senderUserId){
+		if(upLevel>5){
+			logger.info("最多5级分佣");
+			return;
+		}
+		logger.info("分佣级别[{}],群主用户:{}",upLevel,groupMasterUser);
+		UserInfo user = userService.selectByPrimaryKey(upUserId);
+		UserWallet groupMasterWallet = userWalletService.selectByPrimaryUserId(groupMasterUser.getId());
+		
+		String value = commonConstants.getGameRuleCommissionBy(gameId, RuleTypeDesc.rebate, upLevel+"");
+		BigDecimal distributeProportion=new BigDecimal(value);
+		BigDecimal distributeCommission = amount.multiply(distributeProportion);
+		distributeCommission = BigDecimalUtil.rounding(distributeCommission);
+		
+		logger.info("检查钱包是否为空:"+groupMasterWallet);
+		groupMasterWallet.setAvailableAmount(groupMasterWallet.getAvailableAmount().subtract(distributeCommission));
+		
+		// 群主/超管记录交易明细:佣金支付
+		BalanceDetail balanceDetail = new BalanceDetail();
+		balanceDetail.setAmount(distributeCommission.negate());
+		balanceDetail.setAvailableAmount(groupMasterWallet.getAvailableAmount());
+		balanceDetail.setuId(groupMasterWallet.getuId());
+		balanceDetail.setTransactionType(TransactionTypeDesc.payment.toString());
+		balanceDetail.setTransactionSubType(TransactionSubTypeDesc.payCommission.toString());
+		balanceDetail.setRemarks(TransactionSubTypeDesc.payCommission.getDes());
+		balanceDetail.setTransactionId(groupMasterWallet.getId());
+		logger.info("保存交易信息");
+		balanceDetailService.insertSelective(balanceDetail);
+		
+		// 群主减少钱包金额
+		UserWallet wallet = new UserWallet();
+		wallet.setuId(groupMasterWallet.getuId());
+		wallet.setAvailableAmount(distributeCommission.negate());
+		userWalletService.updateWalletAmount(wallet);
+		
+		// 发包上级按比例获得佣金,添加佣金记录
+		UserCommission userCommission = new UserCommission();
+		userCommission.setCommisionAmt(distributeCommission);
+		userCommission.setDownUserId(senderUserId);
+		userCommission.setDownLevel(upLevel+"");
+		userCommission.setOwnUser(user.getId());
+		userCommission.setGainProportion(distributeProportion.toEngineeringString());
+		userCommission.setGainDate(DateUtils.getStringDateShort());
+		userCommission.setGainTime(DateUtils.getTimeShort());
+		commissionService.insertSelective(userCommission);
+		// 更新发包上级金额
+		UserWallet userWallet = new UserWallet();
+		userWallet.setuId(user.getId());
+		userWallet.setAvailableAmount(distributeCommission);
+		userWalletService.updateWalletAmount(userWallet);
+		
+		if(user.getUpUserId()!=null){
+			distributeCommission(amount,groupMasterUser, user.getUpUserId(), ++upLevel,gameId,senderUserId);
+		}
 	}
 
 	private void grapPacketHandle(UserInfo user, UserWallet lastWallet, PacketDetail detail) {

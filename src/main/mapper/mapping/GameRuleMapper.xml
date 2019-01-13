@@ -61,6 +61,14 @@
     from game_rule
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.neighbor.app.game.entity.GameRule" >
+    select 
+    <include refid="Base_Column_List" />
+    from game_rule
+    <include refid="dynamicWhere" />
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from game_rule
     where id = #{id,jdbcType=BIGINT}
