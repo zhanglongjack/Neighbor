@@ -18,27 +18,8 @@ import java.util.List;
 public class UserConfigController {
 	private static final Logger logger = LoggerFactory.getLogger(UserConfigController.class);
 	@Autowired
-	private UserService userService; 
+	private UserService userService;
 
-	@RequestMapping(value = "/userConfigShow.req",method=RequestMethod.POST)
-	@ResponseBody
-	public ResponseResult userInfoShow(@ModelAttribute("user") UserInfo user) {
-		logger.info("userView request : " +user);
-		UserInfo resultUser = userService.selectByPrimaryKey(user.getId());
-		
-		ResponseResult result = new ResponseResult();
-		result.addBody("userConfig", resultUser);
-		return result;
-	}
-
-	@RequestMapping(value="/userEdit.req",method=RequestMethod.POST)
-	@ResponseBody
-	public ResponseResult userEdit(UserInfo userInfo,@ModelAttribute("user") UserInfo user){
-		logger.info("userEdit request:{}",userInfo);
-		userInfo.setUserID(user.getId());
-		userService.updateByPrimaryKeySelective(userInfo);
-		return new ResponseResult();
-	}
 	
 	@RequestMapping(value="/checkPwd.req",method=RequestMethod.POST)
 	@ResponseBody
