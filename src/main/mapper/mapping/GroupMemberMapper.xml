@@ -65,7 +65,7 @@
     from `group_member` t left join users_info u on t.user_id = u.id
     <if test="friendUserId != null"> LEFT JOIN friend f on t.user_id = f.friend_user_id and f.user_id = #{friendUserId}</if>
     <include refid="dynamicWhere" />
-    order by t.create_time
+    order by t.member_type desc,t.create_time
     limit #{pageTools.rowIndex},#{pageTools.pageSize}
   </select>
 

@@ -14,8 +14,8 @@ public enum WebSocketMsgType {
 	FAILED(FailedMessageHandler.class),
 	UNREAD(UnreadMessageHandler.class),
 	FRIEND_CONFIRM(FriendConfirmMessageHandler.class),
-	FRIEND_ADD(TextMessageHandler.class);
-	
+	FRIEND_ADD(TextMessageHandler.class),
+	GROUP_ADD(TextMessageHandler.class);
 	private Class<?> implClass;
 	
 	private WebSocketMsgType(Class<?> implClass) {
