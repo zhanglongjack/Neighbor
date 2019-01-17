@@ -170,6 +170,12 @@ public class GroupServiceImpl implements GroupService {
         ResponseResult result = new ResponseResult();
         String[] userIds = groupMember.getFriendUserIds().split(",");
         Date date = new Date();
+        Group group = groupMapper.selectByPrimaryKey(groupMember.getGroupId());
+        if(group==null){
+            result.setErrorCode(ErrorCodeDesc.failed.getValue());
+            result.setErrorMessage("群不存在！");
+            return result;
+        }
         if(checkMember(groupMember.getGroupId(),user.getId(),result)){
             //群主
             if(userIds.length>0){
@@ -182,6 +188,7 @@ public class GroupServiceImpl implements GroupService {
                 }
             }
             result.addBody("memberType","1");//群主
+            result.addBody("group",group);//群主
         }else{
            //非群主
             if(userIds.length>0){
@@ -266,6 +273,8 @@ public class GroupServiceImpl implements GroupService {
             member.setMemberType("0");
             groupMemberMapper.insertSelective(member);
             update.setStates(ApplyStatesDesc.pass.getValue()+"");
+            Group group = groupMapper.selectByPrimaryKey(groupApply.getGroupId());
+            result.addBody("group",group);
         }else{
             update.setStates(ApplyStatesDesc.reject.getValue()+"");
         }
