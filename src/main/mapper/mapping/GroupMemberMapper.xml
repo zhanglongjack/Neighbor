@@ -54,7 +54,7 @@
   <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.neighbor.app.group.entity.GroupMember">
     select
     <include refid="Base_Column_List" />
-    from `group_member`
+    from `group_member` t
     <include refid="dynamicWhere" />
   </select>
 
@@ -65,7 +65,7 @@
     from `group_member` t left join users_info u on t.user_id = u.id
     <if test="friendUserId != null"> LEFT JOIN friend f on t.user_id = f.friend_user_id and f.user_id = #{friendUserId}</if>
     <include refid="dynamicWhere" />
-    order by t.create_time
+    order by t.member_type desc,t.create_time
     limit #{pageTools.rowIndex},#{pageTools.pageSize}
   </select>
 
@@ -80,7 +80,7 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from `group_member`
+    from `group_member` 
     where id = #{id,jdbcType=BIGINT}
   </select>
 
