@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.neighbor.common.util.PageTools;
 
 public class SocketMessage {
 	private Long msgId;
@@ -20,6 +21,9 @@ public class SocketMessage {
 	private String date;
 	private String time;
 	private String status; 
+	
+	@JsonIgnore
+	private PageTools pageTools;
 	
 	@JsonIgnore
 	private WebSocketHeader webSocketHeader;
@@ -193,6 +197,14 @@ public class SocketMessage {
 
 	public void setTargetUserNotNull(Integer targetUserNotNull) {
 		this.targetUserNotNull = targetUserNotNull;
+	}
+
+	public PageTools getPageTools() {
+		return pageTools;
+	}
+
+	public void setPageTools(PageTools pageTools) {
+		this.pageTools = pageTools;
 	}
 
 	@Override

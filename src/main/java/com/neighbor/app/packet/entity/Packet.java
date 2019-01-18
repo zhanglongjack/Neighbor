@@ -8,6 +8,8 @@ public class Packet {
     private Long id;
 
     private Long userId;
+    
+    private String headUrl;
 
     private Long receiveUserId;
 
@@ -48,6 +50,14 @@ public class Packet {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public String getHeadUrl() {
+		return headUrl;
+	}
+
+	public void setHeadUrl(String headUrl) {
+		this.headUrl = headUrl;
 	}
 
 	public Long getReceiveUserId() {
@@ -159,6 +169,7 @@ public class Packet {
 		detailList.add(detail);
 	}
 
+	
 	@Override
 	public String toString() {
 		return String.format(

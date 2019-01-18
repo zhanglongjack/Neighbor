@@ -24,11 +24,15 @@ public interface SocketMessageMapper {
 
     Long selectPageTotalCount(HashMap<?,?> map);
 
-    List<SocketMessage> selectPageByObjectForList(HashMap<?,?> map);
+    List<SocketMessage> selectPageByObjectForList(Map<?,?> map);
 
-    void changeRecord(HashMap<?,?> map);
+    void changeRecord(Map<?,?> map);
     int deleteMessage(SocketMessage record);
     int jobDeleteMessage(SocketMessage record);
 
-	List<SocketMessage> selectMsgByTargetGroupIdStatus(Long userId);
+	List<SocketMessage> selectMsgByTargetGroupIdStatus(Map<?,?> map);
+
+	Long selectGroupPageTotalCount(Map<String, Object> map);
+
+	List<SocketMessage> selectGroupPageByObjectForList(Map<String, Object> map);
 }

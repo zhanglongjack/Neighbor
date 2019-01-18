@@ -147,7 +147,34 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	}
 
 	@Override
-	public List<SocketMessage> selectMsgByTargetGroupIdStatus(Long groupId) {
-		return socketMessageMapper.selectMsgByTargetGroupIdStatus(groupId);
+	public List<SocketMessage> selectMsgByTargetGroupIdStatus(Long groupId, Long userId) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("groupId", groupId);
+		map.put("userId", userId);
+		return socketMessageMapper.selectMsgByTargetGroupIdStatus(map);
+	}
+
+	@Override
+	public ResponseResult groupPageRecord(UserInfo user, Long groupId , PageTools pageTools) {
+		HashMap<String,Object> map = new HashMap<String,Object>();
+		map.put("userId",user.getId());
+		map.put("targetGroupId",groupId);
+		map.put("rowIndex",pageTools.getRowIndex());
+		map.put("pageSize",pageTools.getPageSize());
+		Long size = selectGroupPageTotalCount(map);
+		pageTools.setTotal(size);
+		List<SocketMessage> messageList = selectGroupPageByObjectForList(map);
+		ResponseResult result = new ResponseResult();
+		result.addBody("messageList", messageList);
+		result.addBody("pageTools", pageTools);
+		return result;
+	}
+
+	private List<SocketMessage> selectGroupPageByObjectForList(HashMap<String, Object> map) {
+		return socketMessageMapper.selectGroupPageByObjectForList(map);
+	}
+
+	private Long selectGroupPageTotalCount(HashMap<String, Object> map) {
+		return socketMessageMapper.selectGroupPageTotalCount(map);
 	}
 }

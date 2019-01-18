@@ -23,3 +23,10 @@ CREATE TABLE `dictionary` (
   `remarke` varchar(200) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='字典表'
+
+
+INSERT INTO `neighbor_dev`.`users_info` (`id`, `user_photo`, `nick_name`, `user_account`, `sex`, `mobile_phone`, `upuser_id`)
+ VALUES ('1', 'img/head-user2.png', '超管', '1', '2', '18999586019', null);
+ 
+ALTER TABLE `neighbor_dev`.`packet` 
+ADD COLUMN `send_head_url` VARCHAR(256) NULL COMMENT '发红包的头像' AFTER `random_amount`;

@@ -84,6 +84,24 @@
       limit #{rowIndex},#{pageSize}
     </select>
 
+    <select id="selectGroupPageTotalCount" parameterType="java.util.Map"
+            resultType="Long">
+     select count(1) from chat_message c
+	 inner join msg_group_menber_relationship r on c.msg_id = r.r_msg_id
+	 where  r_user_id = #{userId}
+	 and target_group_id=#{targetGroupId}
+	</select>
+
+    <select id="selectGroupPageByObjectForList" parameterType="java.util.Map"
+            resultMap="BaseResultMap">
+     select c.* from chat_message c
+	 inner join msg_group_menber_relationship r on c.msg_id = r.r_msg_id
+	 where  r_user_id = #{userId}
+	 and target_group_id=#{targetGroupId}
+     order by c.msg_id desc
+     limit #{rowIndex},#{pageSize}
+    </select>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long"
             resultMap="BaseResultMap">
         select
@@ -109,14 +127,14 @@
         order by date,time
     </select>
     
-    <select id="selectMsgByTargetGroupIdStatus" parameterType="Long"
+    <select id="selectMsgByTargetGroupIdStatus" parameterType="Map"
             resultMap="BaseResultMap">
 		select 
 			<include refid="Base_Column_List"/>
 		from chat_message c
 		where not exists(
 			select * from msg_group_menber_relationship 
-			where c.msg_id=r_msg_id and g.user_id = r_user_id
+			where c.msg_id=r_msg_id and r_user_id= #{userId}
 		)
 		and status='pushed_response'
 		and chat_type='multiple'

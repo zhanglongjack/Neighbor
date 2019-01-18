@@ -4,12 +4,12 @@ import com.alipay.api.internal.util.StringUtils;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
-import com.neighbor.common.util.StringUtil;
 import com.neighbor.common.websoket.constants.MessageStatus;
 import com.neighbor.common.websoket.service.SocketMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,5 +61,15 @@ public class MessageController {
         ResponseResult result  = socketMessageService.changeRecord(user,friendId,msgId,MessageStatus.pushed.toString());
         return result;
     }
+    
+    //分页展示好友发送已完成和自己发送的消息
+    @RequestMapping(value = "/groupPageRecord.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult groupPageRecord(@ModelAttribute("user") UserInfo user,Long groupId ,PageTools pageTools) throws Exception{
+    	logger.info("groupPageRecord request user >>>> " + user+" | targetUserId >>"+groupId);
+    	logger.info("groupPageRecord request pageTools >>>> " + pageTools);
 
+    	ResponseResult result  = socketMessageService.groupPageRecord(user,groupId,pageTools);
+    	return result;
+    }
 }

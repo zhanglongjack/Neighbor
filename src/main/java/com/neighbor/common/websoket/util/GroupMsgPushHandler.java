@@ -65,8 +65,8 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 		logger.info("成功进入了系统。。。" + session.getAttributes().get("user"));
 		Map<Long,List<SocketMessage>> groupsMsgList = new HashMap<Long,List<SocketMessage>>();
 		for(GroupMember member : groupList){
-			List<SocketMessage> groupMsgList = socketMessageService.selectMsgByTargetGroupIdStatus(member.getGroupId());
-			groupsMsgList.put(member.getGroupId(), groupMsgList);
+			List<SocketMessage> groupMsgList = socketMessageService.selectMsgByTargetGroupIdStatus(member.getGroupId(),member.getUserId());
+			groupsMsgList.put(member.getUserId(), groupMsgList);
 			
 			Map<Long, WebSocketSession> groupUserSession = null;
 			if(groupSessions.containsKey(member.getGroupId())){
@@ -75,9 +75,9 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 				groupUserSession= new HashMap<Long, WebSocketSession>();
 			}
 			
-			groupUserSession.put(member.getGroupId(), session);
+			groupUserSession.put(member.getUserId(), session);
 			groupSessions.put(member.getGroupId(), groupUserSession);
-			
+//			
 		}
 		
 		pushGroupMsgToUser(groupsMsgList,user.getId());
@@ -192,7 +192,7 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 			handleResult.addBody("chatType", chatType);
 			handleResult.addBody("msgInfo", msgInfo);
 			if (handleResult.getErrorCode() == 0) {
-				boolean isResponse = sendMessageToUser(msgInfo.getSendUserId(),msgInfo.getTargetGroupId(), handleResult);
+				 boolean isResponse = sendMessageToUser(msgInfo.getSendUserId(),msgInfo.getTargetGroupId(), handleResult);
 				 if (WebSocketChatType.multiple == chatType && isResponse) {
 					logger.info("收到群发消息:" + msgInfo.getContent());
 					// 消息消息发回,表示消息已接收

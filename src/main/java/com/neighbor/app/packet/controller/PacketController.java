@@ -58,12 +58,12 @@ public class PacketController {
 	
 	@RequestMapping(value = "/queryNewestPacketInfo.req", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseResult queryNewestPacketInfo(Packet packet) throws Exception {
+	public ResponseResult queryNewestPacketInfo(Packet packet,@ModelAttribute("user") UserInfo user) throws Exception {
 		logger.info("queryNewestPacketInfo request : " + packet);
 		
 		Packet cachePacket = packetContainer.get(packet.getId());
 		
-		return packetService.checLeftoverPacket(cachePacket.getStatus(), cachePacket);
+		return packetService.checLeftoverPacket(cachePacket.getStatus(), cachePacket,user.getId());
 	}
 	
 	

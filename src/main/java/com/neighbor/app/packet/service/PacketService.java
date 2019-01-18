@@ -19,7 +19,7 @@ public interface PacketService{
 
 	ResponseResult grabPacekt(Packet packet, UserInfo user, Long gameId);
 
-	ResponseResult checLeftoverPacket(String statusStr, Packet packet);
+	ResponseResult checLeftoverPacket(String statusStr,Packet packet,Long userId);
 
 
 }

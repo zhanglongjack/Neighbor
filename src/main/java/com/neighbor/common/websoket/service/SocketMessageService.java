@@ -37,8 +37,15 @@ public interface SocketMessageService {
     List<SocketMessage> selectPageByObjectForList(HashMap<?,?> map);
 
 	List<SocketMessage> selectForTargetUserMsgByStatus(String status);
+	
 	int deleteMessage(SocketMessage record);
+	
     int jobDeleteMessage(SocketMessage record);
 
-	List<SocketMessage> selectMsgByTargetGroupIdStatus(Long userId);
+	List<SocketMessage> selectMsgByTargetGroupIdStatus(Long groupId, Long userId);
+
+	ResponseResult groupPageRecord(UserInfo user, Long groupId, PageTools pageTools);
+
+
+	
 }

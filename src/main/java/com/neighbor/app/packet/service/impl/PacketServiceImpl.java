@@ -184,14 +184,14 @@ public class PacketServiceImpl implements PacketService {
 			
 		}
 		
-		ResponseResult resultResp = checLeftoverPacket(cachePacket.getStatus(),cachePacket);
+		ResponseResult resultResp = checLeftoverPacket(cachePacket.getStatus(),cachePacket,user.getId());
 		if(resultResp.getErrorCode()!=0){
 			return resultResp;
 		}
 		logger.info("开始锁表");
 		Packet lockPacket = lockPacketByPrimaryKey(cachePacket.getId());
 		logger.info("上锁再检查实际是否还有剩余红包数:[{}]",lockPacket.getPacketNum() - lockPacket.getCollectedNum());
-		resultResp = checLeftoverPacket(lockPacket.getStatus(),lockPacket);
+		resultResp = checLeftoverPacket(lockPacket.getStatus(),lockPacket,user.getId());
 		if(resultResp.getErrorCode()!=0){
 			return resultResp;
 		}
@@ -542,7 +542,7 @@ public class PacketServiceImpl implements PacketService {
 	}
 
 	@Override
-	public ResponseResult checLeftoverPacket(String statusStr,Packet packet){
+	public ResponseResult checLeftoverPacket(String statusStr,Packet packet,Long userId){
 		ResponseResult resultResp = new ResponseResult();
 		resultResp.addBody("packet", packet);
 		PacketStatus status = PacketStatus.valueOf(statusStr);
@@ -558,6 +558,15 @@ public class PacketServiceImpl implements PacketService {
 			resultResp.setErrorCode(1);
 			resultResp.setErrorMessage("红包已抢完");
 			return resultResp;
+		}
+		
+		for(PacketDetail detail : packet.getDetailList()){
+			if((long)detail.getGotUserId() == (long)userId){
+				logger.info("红包被抢过了");
+				resultResp.setErrorCode(3);
+				resultResp.setErrorMessage("红包被抢过了");
+				return resultResp;
+			}
 		}
 		
 		return resultResp;
