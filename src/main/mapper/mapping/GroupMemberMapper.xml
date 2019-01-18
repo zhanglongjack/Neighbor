@@ -54,7 +54,7 @@
   <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.neighbor.app.group.entity.GroupMember">
     select
     <include refid="Base_Column_List" />
-    from `group_member`
+    from `group_member` t
     <include refid="dynamicWhere" />
   </select>
 
@@ -80,7 +80,7 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from `group_member`
+    from `group_member` 
     where id = #{id,jdbcType=BIGINT}
   </select>
 
