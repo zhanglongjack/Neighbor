@@ -6,6 +6,8 @@ import java.util.Date;
 
 public class Group {
     private Long id;
+    private Long groupId;
+
 
     private Date createTime;
 
@@ -164,6 +166,16 @@ public class Group {
         this.states = states;
     }
 
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        if(groupId!=null){
+           this.id=groupId;
+        }
+        this.groupId = groupId;
+    }
 
     @Override
     public String toString() {
