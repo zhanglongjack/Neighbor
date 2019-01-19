@@ -41,6 +41,7 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private static final Map<Long, List<GroupMember>> userGroups = new ConcurrentHashMap<Long, List<GroupMember>>();
 	private static final Map<Long, Map<Long, WebSocketSession>> groupSessions = new ConcurrentHashMap<Long, Map<Long, WebSocketSession>>();
+	private static final Map<Long, WebSocketSession> noGroupUserSessions = new ConcurrentHashMap<Long, WebSocketSession>();
 	private static int threadPoolSize = 300;
 	@Autowired
 	private SocketMessageService socketMessageService;
@@ -81,8 +82,11 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 			groupSessions.put(member.getGroupId(), groupUserSession);
 			//
 		}
-
-		pushGroupMsgToUser(groupsMsgList, user.getId());
+		if(groupsMsgList.size()>0){
+			pushGroupMsgToUser(groupsMsgList, user.getId());
+		}else{
+			noGroupUserSessions.put(user.getId(), session);
+		}
 	}
 
 	public void pushGroupMsgToUser(Map<Long, List<SocketMessage>> groupMsgList, Long userId) {
@@ -208,6 +212,16 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 				ralation.setStatus(MessageStatus.complete+"");
 				
 				socketMessageService.insertRelationShipSelective(ralation);
+				
+				if("2".equals(msgInfo.getMasterMsgType()) && WebSocketMsgType.GROUP_ADD==msgType){
+					WebSocketSession userSession = noGroupUserSessions.get(msgInfo.getTargetUserId());
+					groupSessions.get(msgInfo.getTargetGroupId()).put(msgInfo.getTargetUserId(), userSession);
+					
+				}else if("2".equals(msgInfo.getMasterMsgType()) && WebSocketMsgType.GROUP_QUIT==msgType){
+					WebSocketSession userSession = groupSessions.get(msgInfo.getTargetGroupId()).remove(msgInfo.getTargetUserId());
+					noGroupUserSessions.put(msgInfo.getTargetUserId(),userSession);
+				}
+				
 				if (WebSocketChatType.multiple == chatType && isResponse) { 
 					logger.info("收到群发消息:" + msgInfo.getContent());
 					// 消息消息发回,表示消息已接收
