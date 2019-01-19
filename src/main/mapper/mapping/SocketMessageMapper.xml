@@ -91,6 +91,7 @@
 	 where  r_user_id = #{userId}
 	 and r.status='complete'
 	 and target_group_id=#{targetGroupId}
+	  <if test="msgId != null ">  <![CDATA[ and r.r_msg_id < #{msgId,jdbcType=BIGINT} ]]> </if>
 	</select>
 
     <select id="selectGroupPageByObjectForList" parameterType="java.util.Map"
@@ -100,6 +101,7 @@
 	 where  r_user_id = #{userId}
 	 and r.status='complete'
 	 and target_group_id=#{targetGroupId}
+	 <if test="msgId != null ">  <![CDATA[ and r.r_msg_id < #{msgId,jdbcType=BIGINT} ]]> </if>
      order by c.msg_id desc
      limit #{rowIndex},#{pageSize}
     </select>

@@ -46,7 +46,7 @@ public interface SocketMessageService {
 
 	List<SocketMessage> selectMsgByTargetGroupIdStatus(Long groupId, Long userId);
 
-	ResponseResult groupPageRecord(UserInfo user, Long groupId, PageTools pageTools);
+	ResponseResult groupPageRecord(UserInfo user, Long groupId, Long msgIdN, PageTools pageTools);
 	
 	void updateGroupMsgRalationStatusRecord(Long userId, Long msgId, Long groupId, MessageStatus status);
 

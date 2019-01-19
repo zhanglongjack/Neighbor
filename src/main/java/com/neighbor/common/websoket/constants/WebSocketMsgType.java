@@ -15,7 +15,8 @@ public enum WebSocketMsgType {
 	UNREAD(UnreadMessageHandler.class),
 	FRIEND_CONFIRM(FriendConfirmMessageHandler.class),
 	FRIEND_ADD(TextMessageHandler.class),
-	GROUP_ADD(TextMessageHandler.class);
+	GROUP_ADD(TextMessageHandler.class), 
+	GROUP_QUIT(TextMessageHandler.class);
 	private Class<?> implClass;
 	
 	private WebSocketMsgType(Class<?> implClass) {

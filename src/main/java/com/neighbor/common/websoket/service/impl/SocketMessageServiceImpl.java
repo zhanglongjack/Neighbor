@@ -156,9 +156,10 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	}
 
 	@Override
-	public ResponseResult groupPageRecord(UserInfo user, Long groupId , PageTools pageTools) {
+	public ResponseResult groupPageRecord(UserInfo user, Long groupId ,Long msgIdN, PageTools pageTools) {
 		HashMap<String,Object> map = new HashMap<String,Object>();
 		map.put("userId",user.getId());
+		map.put("msgId",msgIdN);
 		map.put("targetGroupId",groupId);
 		map.put("rowIndex",pageTools.getRowIndex());
 		map.put("pageSize",pageTools.getPageSize());

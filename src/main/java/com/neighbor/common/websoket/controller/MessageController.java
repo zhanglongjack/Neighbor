@@ -75,12 +75,15 @@ public class MessageController {
 	// 分页展示好友发送已完成和自己发送的消息
 	@RequestMapping(value = "/groupPageRecord.req", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseResult groupPageRecord(@ModelAttribute("user") UserInfo user, Long groupId, PageTools pageTools)
+	public ResponseResult groupPageRecord(@ModelAttribute("user") UserInfo user, Long groupId,String msgId, PageTools pageTools)
 			throws Exception {
 		logger.info("groupPageRecord request user >>>> " + user + " | targetUserId >>" + groupId);
 		logger.info("groupPageRecord request pageTools >>>> " + pageTools);
-
-		ResponseResult result = socketMessageService.groupPageRecord(user, groupId, pageTools);
+		Long msgIdN = null;
+		if (StringUtils.isNumeric(msgId)) {
+			msgIdN = Long.valueOf(msgId);
+		}
+		ResponseResult result = socketMessageService.groupPageRecord(user, groupId,msgIdN, pageTools);
 		return result;
 	}
 
