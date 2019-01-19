@@ -89,6 +89,7 @@
      select count(1) from chat_message c
 	 inner join msg_group_menber_relationship r on c.msg_id = r.r_msg_id
 	 where  r_user_id = #{userId}
+	 and r.status='complete'
 	 and target_group_id=#{targetGroupId}
 	</select>
 
@@ -97,6 +98,7 @@
      select c.* from chat_message c
 	 inner join msg_group_menber_relationship r on c.msg_id = r.r_msg_id
 	 where  r_user_id = #{userId}
+	 and r.status='complete'
 	 and target_group_id=#{targetGroupId}
      order by c.msg_id desc
      limit #{rowIndex},#{pageSize}
@@ -146,9 +148,9 @@
 		where msg_id = #{msgId,jdbcType=BIGINT}
 	</delete>
 
-    <insert id="insertRelationShipSelective" parameterType="Map">
-		insert into msg_group_menber_relationship (r_msg_id,r_user_id)
-		values(#{msgId},#{userId})
+    <insert id="insertRelationShipSelective" parameterType="com.neighbor.common.websoket.po.GroupMsgRalation">
+		insert into msg_group_menber_relationship (r_msg_id,r_user_id,status)
+		values(#{msgId},#{userId},#{status})
 	</insert>
 
     <insert id="insertSelective" useGeneratedKeys="true" keyProperty="msgId"
@@ -351,4 +353,15 @@
         <if test="cleanHistory == 'sevenDay'"><![CDATA[ and TIMESTAMPDIFF(DAY,date,date_format(now(),'%Y-%m-%d')) >= 7 ]]> </if>
     </update>
 
+    <update id="updateGroupMsgRalationStatusRecord" parameterType="java.util.Map">
+		update msg_group_menber_relationship r
+		inner join chat_message c on c.msg_id = r.r_msg_id
+		set r.status = #{status,jdbcType=VARCHAR}
+		<![CDATA[ 
+		where r_user_id = #{userId,jdbcType=VARCHAR}
+		and r_msg_id <= #{msgId,jdbcType=BIGINT} 
+		and c.target_group_id = #{targetGroupId,jdbcType=BIGINT} 
+        ]]> 
+    </update>
+    
 </mapper>

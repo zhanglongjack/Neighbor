@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.neighbor.common.websoket.constants.MessageDeleteStates;
+import com.neighbor.common.websoket.constants.MessageStatus;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.websoket.constants.WebSocketChatType;
 import com.neighbor.common.websoket.constants.WebSocketMsgType;
 import com.neighbor.common.websoket.handler.WebSocketMessageHandler;
+import com.neighbor.common.websoket.po.GroupMsgRalation;
 import com.neighbor.common.websoket.po.SocketMessage;
 import com.neighbor.common.websoket.service.SocketMessageService;
 
@@ -56,14 +59,15 @@ public abstract class AbstractMessageHandler implements WebSocketMessageHandler{
 		logger.info("成功,更新消息状态:{}",msgInfo);
 		handle();
 		socketMessageService.updateByPrimaryKeySelective(msgInfo);
-		Map<String,Long> relationShip = new HashMap<String,Long>();
-		relationShip.put("msgId", msgInfo.getMsgId());
 
 		List<Long> userIds = msgInfo.getPushedUsers();
 		if(chatType == WebSocketChatType.multiple && userIds!=null){
 			for(Long userId : userIds){
-				relationShip.put("userId", userId);
-				socketMessageService.insertRelationShipSelective(relationShip);
+				GroupMsgRalation ralation = new GroupMsgRalation();
+				ralation.setMsgId(msgInfo.getMsgId());
+				ralation.setUserId(userId);
+				ralation.setStatus(MessageStatus.received+"");
+				socketMessageService.insertRelationShipSelective(ralation);
 			}
 		}
 

@@ -13,6 +13,7 @@ import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.websoket.constants.MessageDeleteStates;
 import com.neighbor.common.websoket.constants.MessageStatus;
 import com.neighbor.common.websoket.dao.SocketMessageMapper;
+import com.neighbor.common.websoket.po.GroupMsgRalation;
 import com.neighbor.common.websoket.po.SocketMessage;
 import com.neighbor.common.websoket.service.SocketMessageService;
 
@@ -63,8 +64,8 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	}
 
 	@Override
-	public void insertRelationShipSelective(Map<String, Long> relationShip) {
-		socketMessageMapper.insertRelationShipSelective(relationShip);
+	public void insertRelationShipSelective(GroupMsgRalation ralation) {
+		socketMessageMapper.insertRelationShipSelective(ralation);
 	}
 
 
@@ -149,7 +150,7 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	@Override
 	public List<SocketMessage> selectMsgByTargetGroupIdStatus(Long groupId, Long userId) {
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("groupId", groupId);
+		map.put("targetGroupId", groupId);
 		map.put("userId", userId);
 		return socketMessageMapper.selectMsgByTargetGroupIdStatus(map);
 	}
@@ -176,5 +177,16 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 
 	private Long selectGroupPageTotalCount(HashMap<String, Object> map) {
 		return socketMessageMapper.selectGroupPageTotalCount(map);
+	}
+
+	@Override
+	public void updateGroupMsgRalationStatusRecord(Long userId,Long msgId,Long groupId,MessageStatus status) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("userId", userId);
+		map.put("msgId",msgId);
+		map.put("targetGroupId", groupId);
+		map.put("status", status+"");
+		
+		socketMessageMapper.updateGroupMsgRalationStatusRecord(map);
 	}
 }

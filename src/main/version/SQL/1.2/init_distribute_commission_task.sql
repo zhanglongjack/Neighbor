@@ -30,3 +30,6 @@ INSERT INTO `neighbor_dev`.`users_info` (`id`, `user_photo`, `nick_name`, `user_
  
 ALTER TABLE `neighbor_dev`.`packet` 
 ADD COLUMN `send_head_url` VARCHAR(256) NULL COMMENT '发红包的头像' AFTER `random_amount`;
+
+ALTER TABLE `neighbor_dev`.`msg_group_menber_relationship` 
+ADD COLUMN `status` VARCHAR(15) NOT NULL DEFAULT 'received' COMMENT '消息状态' AFTER `r_user_id`;

@@ -1,5 +1,6 @@
 package com.neighbor.common.websoket.dao;
 
+import com.neighbor.common.websoket.po.GroupMsgRalation;
 import com.neighbor.common.websoket.po.SocketMessage;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -20,7 +21,7 @@ public interface SocketMessageMapper {
 
 	List<SocketMessage> selectbySelective(SocketMessage msg);
 
-	void insertRelationShipSelective(Map<String, Long> relationShip);
+	void insertRelationShipSelective(GroupMsgRalation ralation);
 
     Long selectPageTotalCount(HashMap<?,?> map);
 
@@ -35,4 +36,8 @@ public interface SocketMessageMapper {
 	Long selectGroupPageTotalCount(Map<String, Object> map);
 
 	List<SocketMessage> selectGroupPageByObjectForList(Map<String, Object> map);
+	
+	void updateGroupMsgRalationStatusRecord(Map<String, Object> map);
+	
+	
 }

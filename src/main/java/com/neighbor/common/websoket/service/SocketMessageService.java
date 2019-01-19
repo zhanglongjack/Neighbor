@@ -3,6 +3,8 @@ package com.neighbor.common.websoket.service;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.constants.MessageStatus;
+import com.neighbor.common.websoket.po.GroupMsgRalation;
 import com.neighbor.common.websoket.po.SocketMessage;
 
 import java.util.HashMap;
@@ -24,7 +26,7 @@ public interface SocketMessageService {
 
 	List<SocketMessage> selectbySelective(SocketMessage msg);
 
-	void insertRelationShipSelective(Map<String, Long> relationShip);
+	void insertRelationShipSelective(GroupMsgRalation ralation);
 
     ResponseResult unreadRecord(UserInfo user);
 
@@ -45,6 +47,8 @@ public interface SocketMessageService {
 	List<SocketMessage> selectMsgByTargetGroupIdStatus(Long groupId, Long userId);
 
 	ResponseResult groupPageRecord(UserInfo user, Long groupId, PageTools pageTools);
+	
+	void updateGroupMsgRalationStatusRecord(Long userId, Long msgId, Long groupId, MessageStatus status);
 
 
 	
