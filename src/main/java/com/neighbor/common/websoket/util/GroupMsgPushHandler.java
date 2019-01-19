@@ -84,9 +84,8 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 		}
 		if(groupsMsgList.size()>0){
 			pushGroupMsgToUser(groupsMsgList, user.getId());
-		}else{
-			noGroupUserSessions.put(user.getId(), session);
 		}
+		noGroupUserSessions.put(user.getId(), session);
 	}
 
 	public void pushGroupMsgToUser(Map<Long, List<SocketMessage>> groupMsgList, Long userId) {
@@ -214,12 +213,12 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 				socketMessageService.insertRelationShipSelective(ralation);
 				
 				if("2".equals(msgInfo.getMasterMsgType()) && WebSocketMsgType.GROUP_ADD==msgType){
-					WebSocketSession userSession = noGroupUserSessions.get(msgInfo.getTargetUserId());
-					groupSessions.get(msgInfo.getTargetGroupId()).put(msgInfo.getTargetUserId(), userSession);
-					
+					WebSocketSession userSession = noGroupUserSessions.get(msgInfo.getSendUserId());
+					groupSessions.get(msgInfo.getTargetGroupId()).put(msgInfo.getSendUserId(), userSession);
+					if(!isResponse)isResponse=true;
 				}else if("2".equals(msgInfo.getMasterMsgType()) && WebSocketMsgType.GROUP_QUIT==msgType){
-					WebSocketSession userSession = groupSessions.get(msgInfo.getTargetGroupId()).remove(msgInfo.getTargetUserId());
-					noGroupUserSessions.put(msgInfo.getTargetUserId(),userSession);
+					groupSessions.get(msgInfo.getTargetGroupId()).remove(msgInfo.getTargetUserId());
+					//noGroupUserSessions.put(msgInfo.getTargetUserId(),userSession);
 				}
 				
 				if (WebSocketChatType.multiple == chatType && isResponse) { 
