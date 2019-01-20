@@ -359,11 +359,21 @@
 		update msg_group_menber_relationship r
 		inner join chat_message c on c.msg_id = r.r_msg_id
 		set r.status = #{status,jdbcType=VARCHAR}
-		<![CDATA[ 
+		
 		where r_user_id = #{userId,jdbcType=VARCHAR}
-		and r_msg_id <= #{msgId,jdbcType=BIGINT} 
-		and c.target_group_id = #{targetGroupId,jdbcType=BIGINT} 
+		<if test="msgIdGreater != null">
+		<![CDATA[ 
+         and r_msg_id <= #{msgIdGreater,jdbcType=BIGINT} 
         ]]> 
+        </if>
+		<if test="msgId != null">
+		<![CDATA[ 
+         and r_msg_id = #{msgId,jdbcType=BIGINT} 
+        ]]> 
+        </if>
+        and r.status not in ('complete')
+		and c.target_group_id = #{targetGroupId,jdbcType=BIGINT} 
+        
     </update>
     
 </mapper>

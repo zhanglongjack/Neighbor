@@ -62,7 +62,7 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 			// handleTransportError(session, null);
 			return;
 		}
-
+		noGroupUserSessions.put(user.getId(), session);
 		List<GroupMember> groupList = groupService.selectUserOwnGroupsBy(user.getId());
 		userGroups.put(user.getId(), groupList);
 		logger.info("成功进入了系统。。。" + session.getAttributes().get("user"));
@@ -85,7 +85,7 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 		if(groupsMsgList.size()>0){
 			pushGroupMsgToUser(groupsMsgList, user.getId());
 		}
-		noGroupUserSessions.put(user.getId(), session);
+		
 	}
 
 	public void pushGroupMsgToUser(Map<Long, List<SocketMessage>> groupMsgList, Long userId) {
@@ -248,30 +248,32 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
 		logger.error("消息处理异常", exception);
+		UserInfo user = (UserInfo) session.getAttributes().get("user");
 		if (session.isOpen()) {
 			session.close();
 		}
-		userGroupExit(session);
+		userGroupExit(user.getId());
 	}
 
 	// 用户退出后的处理，不如退出之后，要将用户信息从websocket的session中remove掉，这样用户就处于离线状态了，也不会占用系统资源
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+		UserInfo user = (UserInfo) session.getAttributes().get("user");
 		if (session.isOpen()) {
 			session.close();
 		}
-		userGroupExit(session);
+		userGroupExit(user.getId());
 
 	}
 
-	private void userGroupExit(WebSocketSession session) {
-		UserInfo user = (UserInfo) session.getAttributes().get("user");
-		List<GroupMember> groupList = userGroups.get(user.getId());
+	private void userGroupExit(Long userId) {
+		
+		List<GroupMember> groupList = userGroups.get(userId);
 		for (GroupMember member : groupList) {
-			groupSessions.get(member.getGroupId()).remove(user.getId());
+			groupSessions.get(member.getGroupId()).remove(userId);
 		}
 
-		logger.info("用户[{}]安全退出了群", user.getId());
+		logger.info("用户[{}]安全退出了群", userId);
 	}
 
 	@Override
