@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import com.neighbor.app.download.FileController;
 import com.neighbor.app.users.entity.UserConfig;
+import com.neighbor.common.util.StringUtil;
 import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,115 +37,124 @@ import com.neighbor.common.util.ResponseResult;
 @Controller
 @Validated
 public class LoginController {
-	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
-	@Autowired
-	private UserService userService;
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    @Autowired
+    private UserService userService;
 
-	@Autowired
-	private UserContainer userContainer;
-	@Autowired
-	private UserWalletService userWalletService;
+    @Autowired
+    private UserContainer userContainer;
+    @Autowired
+    private UserWalletService userWalletService;
 
-//	mv.setViewName("forward:/login.html");
+    //	mv.setViewName("forward:/login.html");
 //	mv.setViewName("redirect:/login.html");
 //	mv.addObject("message", "用户名或密码错误");
-	@RequestMapping(value="/accountLogin.req",method=RequestMethod.POST)
-	@ResponseBody
-	public ResponseResult login(String phone,@NotNull(message = "密码不能为空") String password) throws Exception{
-		UserInfo user  = userService.selectByUserPhone( phone );
+    @RequestMapping(value = "/accountLogin.req", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult login(String phone, @NotNull(message = "密码不能为空") String password) throws Exception {
+        UserInfo user = userService.selectByUserPhone(phone);
 
-		ResponseResult result = new ResponseResult();
-		if(user==null || user.getUserPassword()==null || !EncodeData.matches(password, user.getUserPassword())){
-			logger.info("用户名或密码错误");
-			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"用户名或密码错误!");
-		}
+        ResponseResult result = new ResponseResult();
+        if (user == null || user.getUserPassword() == null || !EncodeData.matches(password, user.getUserPassword())) {
+            logger.info("用户名或密码错误");
+            throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "用户名或密码错误!");
+        }
 
-		commonResultLogic(user, result);
+        commonResultLogic(user, result);
 
-		logger.info("登录成功:{},result :{}",user,result);
-		return result;
-	}
+        logger.info("登录成功:{},result :{}", user, result);
+        return result;
+    }
 
-	@RequestMapping(value="/registerLogin.req",method=RequestMethod.POST)
-	@ResponseBody
-	public ResponseResult registerLogin(@NotNull(message = "手机号不能为空")String phone,@NotNull(message = "验证码不能为空") String verfiyCode,Long upUserId) throws Exception{
+    @RequestMapping(value = "/registerLogin.req", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult registerLogin(@NotNull(message = "手机号不能为空") String phone, @NotNull(message = "验证码不能为空") String verfiyCode, String onlyLogin, Long upUserId) throws Exception {
 
-		UserInfo userUp=userService.selectByPrimaryKey(upUserId);
-		if (userUp==null){
-			logger.info("上级人员不存在......");
-			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"上级人员不存在......");
-		}
+        if (StringUtil.isEmpty(onlyLogin) || !onlyLogin.equals("1")) {
+            UserInfo userUp = userService.selectByPrimaryKey(upUserId);
+            if (userUp == null) {
+                logger.info("上级人员不存在......");
+                throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "上级人员不存在......");
+            }
+        }
 
-        UserInfo user  = userService.selectByUserPhone( phone );
+        UserInfo user = userService.selectByUserPhone(phone);
         boolean isValid = verfiyCode.equals(TencentSms.smsCache.get(phone));
         ResponseResult result = new ResponseResult();
 
-		if(user==null && isValid){
+        if (user == null && isValid) {
 
-			UserInfo record = new UserInfo();
-			record.setUserPhoto("img/head-user2.png");
-			record.setMobilePhone(phone);
-			record.setUserAccount(phone);
-			record.setUpUserId(upUserId);
+            if (StringUtil.isNotEmpty(onlyLogin) && onlyLogin.equals("1")) {
+                logger.info("APP只允许登录......");
+                throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "APP只允许登录......");
+            }
 
-			user = userService.builderUserInfo(record);
+            UserInfo record = new UserInfo();
+            record.setUserPhoto("img/head-user2.png");
+            record.setMobilePhone(phone);
+            record.setUserAccount(phone);
+            record.setUpUserId(upUserId);
 
-		}else if(!isValid){
-			logger.info("验证吗输入错误");
-			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"验证码错误");
-		}else if(user.getId().equals(upUserId)){
-            logger.info("上级人员不能是本人......");
-            throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"上级人员不能是本人......");
+            user = userService.builderUserInfo(record);
+
+        } else if (!isValid) {
+            logger.info("验证吗输入错误");
+            throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "验证码错误");
+        } else if (user.getId().equals(upUserId)) {
+            if (StringUtil.isEmpty(onlyLogin) || !onlyLogin.equals("1")) {
+                logger.info("上级人员不能是本人......");
+                throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "上级人员不能是本人......");
+            }
         }
 
-		commonResultLogic(user, result);
+        commonResultLogic(user, result);
 
-		logger.info("登录成功:{},result :{}",user,result);
-		return result;
-	}
+        logger.info("登录成功:{},result :{}", user, result);
+        return result;
+    }
 
-	private void commonResultLogic(UserInfo user, ResponseResult result) throws Exception {
-		user.setUserPassword(null);
-		String token = UUID.randomUUID().toString();
-		userContainer.put(token, user);
+    private void commonResultLogic(UserInfo user, ResponseResult result) throws Exception {
+        user.setUserPassword(null);
+        String token = UUID.randomUUID().toString();
+        userContainer.put(token, user);
 
-		result.addBody("user", user);
-		result.addBody("token", token);
+        result.addBody("user", user);
+        result.addBody("token", token);
         UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
 
-		result.addBody("wallet", wallet);
-		UserConfig userConfig = userService.selectUserConfigByPrimaryKey(user.getId());
-		if (userConfig == null) {
-			Date currentTime = new Date();
-			userConfig = new UserConfig();
-			userConfig.setUserId(user.getId());
-			userConfig.setCreateTime(currentTime);
-			userConfig.setUpdateTime(currentTime);
-			userService.insertUserConfigSelective(userConfig);
-		}
-		result.addBody("userConfig", userConfig);
-	}
+        result.addBody("wallet", wallet);
+        UserConfig userConfig = userService.selectUserConfigByPrimaryKey(user.getId());
+        if (userConfig == null) {
+            Date currentTime = new Date();
+            userConfig = new UserConfig();
+            userConfig.setUserId(user.getId());
+            userConfig.setCreateTime(currentTime);
+            userConfig.setUpdateTime(currentTime);
+            userService.insertUserConfigSelective(userConfig);
+        }
+        result.addBody("userConfig", userConfig);
+    }
 
-	@RequestMapping(value="/sendSMS.req",method=RequestMethod.POST)
-	@ResponseBody
-	public ResponseResult sendSMS(@Length(message = "手机长度最少11位",min=11)@NotNull(message = "手机号不能为空")String phone){
-		String code =null;// TencentSms.createVerifyCode();
-		logger.info("发送验证码:"+phone);
-		TencentSms.smsSend(code,phone);
-		return new ResponseResult();
-	}
+    @RequestMapping(value = "/sendSMS.req", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult sendSMS(@Length(message = "手机长度最少11位", min = 11) @NotNull(message = "手机号不能为空") String phone) {
+        String code = null;// TencentSms.createVerifyCode();
+        logger.info("发送验证码:" + phone);
+        TencentSms.smsSend(code, phone);
+        return new ResponseResult();
+    }
 
-	@RequestMapping(value="/logout.req")
-	@ResponseBody
-	public Map<String,Object> logout(HttpServletRequest request,String token){
-		logger.info("注销:"+token);
-		HttpSession session = request.getSession();
-		session.removeAttribute("user");
-		userContainer.userMap.remove(token);
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("errorCode", 0);
-		logger.info("注销结束:"+map);
-		return map;
-	}
+    @RequestMapping(value = "/logout.req")
+    @ResponseBody
+    public Map<String, Object> logout(HttpServletRequest request, String token) {
+        logger.info("注销:" + token);
+        HttpSession session = request.getSession();
+        session.removeAttribute("user");
+        userContainer.userMap.remove(token);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("errorCode", 0);
+        logger.info("注销结束:" + map);
+        return map;
+    }
 
 }

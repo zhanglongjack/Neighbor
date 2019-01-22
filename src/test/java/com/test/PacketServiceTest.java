@@ -139,7 +139,7 @@ public class PacketServiceTest {
 		Long phone = 15999585920L;
 		for(int i=0;i<100;i++){
 			loginController.sendSMS(phone +"");
-			loginController.registerLogin(phone+"", "123456", 600016L);
+			loginController.registerLogin(phone+"", "123456","", 600016L);
 			phone++;
 		}
 	}
