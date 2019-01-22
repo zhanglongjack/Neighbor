@@ -183,8 +183,8 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	@Override
 	public void updateGroupMsgRalationStatusRecord(Long userId,Long msgId,Long groupId,MessageStatus status) {
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("userId", userId);
-		map.put("msgId",msgId);
+		map.put("userId", userId); 
+		map.put(MessageStatus.complete == status?"msgIdGreater":"msgId",msgId);
 		map.put("targetGroupId", groupId);
 		map.put("status", status+"");
 		

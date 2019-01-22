@@ -227,7 +227,7 @@ public class PacketServiceImpl implements PacketService {
 		lockPacket.addDetail(detail);
 		packetDetailMapper.insertSelective(detail);
 		logger.info("抢到的红包是[{}]尾数是[{}]信息:{},",num,Integer.parseInt(num.substring(num.length()-1)),detail);
-		UserWallet senderWallet = userWalletService.selectByPrimaryUserId(packet.getUserId());
+		UserWallet senderWallet = userWalletService.selectByPrimaryUserId(lockPacket.getUserId());
 		// 处理踩雷
 		handleHitBomb(detail.isGotBomb(), lockPacket.getAmount(), lastWallet,senderWallet);
 		// 抢包中奖处理 
