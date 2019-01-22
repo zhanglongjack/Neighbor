@@ -26,6 +26,64 @@
 		send_time, status,collected_num,remarke,random_amount,send_head_url
 	</sql>
 	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="id != null">and id=#{id}</if>
+			<if test="userId != null">
+				and s_user_id = #{userId,jdbcType=VARCHAR}
+			</if>
+			<if test="receiveUserId != null">
+				and receive_user_id = #{receiveUserId,jdbcType=BIGINT}
+			</if>
+			<if test="groupId != null">
+				and group_id = #{groupId,jdbcType=BIGINT}
+			</if>
+			<if test="sendDate != null">
+				and send_date = #{sendDate,jdbcType=VARCHAR}
+			</if>
+			<if test="sendTime != null">
+				and send_time = #{sendTime,jdbcType=VARCHAR}
+			</if>
+			<if test="status != null">
+				and status = #{status,jdbcType=VARCHAR}
+			</if>
+			<if test="remarke != null">
+				and remarke like CONCAT('%',#{remarke},'%')
+			</if>
+			<if test="createYear != null and createYear.length() > 0">
+				and send_date like CONCAT(#{createYear},'%')
+			</if>
+		</where>
+	</sql>
+	
+	<select id="querySendPacketSumAmount" parameterType="com.neighbor.app.packet.entity.Packet"
+		resultType="java.util.HashMap">
+		select
+		ifnull(sum(amount),0) sendAmount,
+		count(1) sendPacketNum
+		from packet
+		<include refid="dynamicWhere" />
+	</select>
+
+	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.packet.entity.Packet"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from packet
+		<include refid="dynamicWhere" />
+		order by send_date desc,send_time desc
+		limit
+		#{pageTools.rowIndex},#{pageTools.pageSize}
+	</select>
+
+	<select id="selectPageTotalCount" parameterType="com.neighbor.app.packet.entity.Packet"
+		resultType="Long">
+		select
+		count(1)
+		from packet
+		<include refid="dynamicWhere" />
+	</select>
+	
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		select

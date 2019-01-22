@@ -29,7 +29,10 @@ public class BalanceDetail extends PageEntity {
 
     private String remarks;
     private String createTimeStr ;
-
+    
+    // query
+    private String createYear;
+    
     
     public String getCreateTimeStr() {
         if(createTime!=null){
@@ -63,7 +66,15 @@ public class BalanceDetail extends PageEntity {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getCreateYear() {
+		return createYear;
+	}
+
+	public void setCreateYear(String createYear) {
+		this.createYear = createYear;
+	}
+
+	public Date getUpdateTime() {
         return updateTime;
     }
 

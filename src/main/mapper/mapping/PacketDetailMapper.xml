@@ -12,26 +12,99 @@
 		<result column="create_date" jdbcType="VARCHAR" property="createDate" />
 		<result column="create_time" jdbcType="VARCHAR" property="createTime" />
 	</resultMap>
+	
+	<resultMap id="resultWithParentMap" type="com.neighbor.app.packet.entity.PacketDetail">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="d_packet_id" jdbcType="BIGINT" property="dPacketId" />
+		<result column="got_user_id" jdbcType="BIGINT" property="gotUserId" />
+		<result column="got_amount" jdbcType="DECIMAL" property="gotAmount" />
+		<result column="is_got_bomb" jdbcType="VARCHAR" property="isGotBomb" />
+		<result column="is_free" jdbcType="VARCHAR" property="isFree" />
+		<result column="is_maximum" jdbcType="VARCHAR" property="isMaximum" />
+		<result column="create_date" jdbcType="VARCHAR" property="createDate" />
+		<result column="create_time" jdbcType="VARCHAR" property="createTime" />
+		<collection property="packet" column="d_packet_id" select="com.neighbor.app.packet.dao.PacketMapper.selectByPrimaryKey">
+        </collection>
+	</resultMap>
 	<sql id="Base_Column_List">
-		id, d_packet_id, got_user_id, got_amount, is_got_bomb, is_free,
+		id, d_packet_id, got_user_id, got_amount, is_got_bomb,
+		is_free,
 		is_maximum, create_date,
 		create_time
 	</sql>
+
+	<sql id="dynamicWhere">
+		<where>
+			<if test="id != null">and id=#{id}</if>
+			<if test="dPacketId != null">
+				and d_packet_id = #{dPacketId,jdbcType=BIGINT}
+			</if>
+			<if test="gotUserId != null">
+				and got_user_id = #{gotUserId,jdbcType=BIGINT}
+			</if>
+			<if test="gotAmount != null">
+				and got_amount = #{gotAmount,jdbcType=DECIMAL}
+			</if>
+			<if test="isGotBomb != null">
+				and is_got_bomb = #{isGotBomb,jdbcType=VARCHAR}
+			</if>
+			<if test="isFree != null">
+				and is_free = #{isFree,jdbcType=VARCHAR}
+			</if>
+			<if test="createYear != null and createYear.length() > 0">
+				and create_date like CONCAT(#{createYear},'%')
+			</if>
+		</where>
+	</sql>
+
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from packet_detail
 		where id = #{id,jdbcType=BIGINT}
-	</select>  
-	
-	<select id="selectPacketDetailByPacketId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+	</select>
+
+	<select id="queryGotPacketSumAmount" parameterType="com.neighbor.app.packet.entity.PacketDetail"
+		resultType="java.util.HashMap">
+		select
+		ifnull(sum(got_amount),0) gotAmount,
+		ifnull(sum(is_maximum),0) gotBestPacketNum,
+		count(1) gotPacketNum
+		from packet_detail
+		<include refid="dynamicWhere" />
+	</select>
+
+	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.packet.entity.PacketDetail"
+		resultMap="resultWithParentMap">
+		select
+		<include refid="Base_Column_List" />
+		from packet_detail
+		<include refid="dynamicWhere" />
+		order by create_time desc,create_time desc
+		limit
+		#{pageTools.rowIndex},#{pageTools.pageSize}
+	</select>
+
+	<select id="selectPageTotalCount" parameterType="com.neighbor.app.packet.entity.PacketDetail"
+		resultType="Long">
+		select
+		count(1)
+		from packet_detail
+		<include refid="dynamicWhere" />
+	</select>
+
+	<select id="selectPacketDetailByPacketId" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from packet_detail
 		where d_packet_id = #{packetId}
-	</select>   
-	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.neighbor.app.packet.entity.PacketDetail">
+	</select>
+
+	<insert id="insertSelective" keyProperty="id"
+		parameterType="com.neighbor.app.packet.entity.PacketDetail"
+		useGeneratedKeys="true">
 		insert into packet_detail
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null">
@@ -121,5 +194,5 @@
 			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
-	</update> 
+	</update>
 </mapper>

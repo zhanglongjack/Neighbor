@@ -1,8 +1,5 @@
 package com.neighbor.app.packet.controller;
 
-import com.neighbor.app.packet.constants.PacketContainer;
-import com.neighbor.app.packet.entity.Packet;
-import com.neighbor.app.packet.service.PacketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +10,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.neighbor.app.packet.constants.PacketContainer;
+import com.neighbor.app.packet.entity.Packet;
+import com.neighbor.app.packet.entity.PacketDetail;
+import com.neighbor.app.packet.service.PacketService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
+import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 
 @Controller
@@ -66,13 +68,31 @@ public class PacketController {
 		return packetService.checLeftoverPacket(cachePacket.getStatus(), cachePacket,user.getId());
 	}
 	
+	@RequestMapping(value = "/gotPacketList.req",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseResult gotPacketList(@ModelAttribute("user") UserInfo user,PageTools pageTools,String year) {
+		logger.info("gotPacketList request : " +pageTools); 
+		PacketDetail packetDetail = new PacketDetail();
+		packetDetail.setGotUserId(user.getId());
+		packetDetail.setCreateYear(year);
+		packetDetail.setPageTools(pageTools); 
+		ResponseResult result = packetService.packetDetailPage(packetDetail);
+		logger.info("gotPacketList response : " +result);
+		return result;
+	}
 	
-	
-	
-	
-	
-	
-	
+	@RequestMapping(value = "/sendPacketList.req",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseResult sendPacketList(@ModelAttribute("user") UserInfo user,PageTools pageTools,String year) {
+		logger.info("sendPacketList request : " +pageTools); 
+		Packet packet = new Packet();
+		packet.setUserId(user.getId());
+		packet.setCreateYear(year);
+		packet.setPageTools(pageTools); 
+		ResponseResult result = packetService.packetPage(packet);
+		logger.info("sendPacketList response : " +result);
+		return result;
+	}
 	
 	
 	

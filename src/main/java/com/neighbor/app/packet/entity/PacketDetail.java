@@ -2,10 +2,12 @@ package com.neighbor.app.packet.entity;
 
 import java.math.BigDecimal;
 
+import com.neighbor.app.common.entity.PageEntity;
 import com.neighbor.common.util.DateUtils;
 
-public class PacketDetail {
-    private Long id;
+public class PacketDetail extends PageEntity{
+
+	private Long id;
 
     private Long dPacketId;
 
@@ -13,17 +15,39 @@ public class PacketDetail {
 
     private BigDecimal gotAmount;
 
-    private boolean isGotBomb;
+    private Boolean isGotBomb;
 
-    private boolean isFree;
+    private Boolean isFree;
 
-    private boolean isMaximum;
+    private Boolean isMaximum;
 
     private String createDate = DateUtils.getStringDateShort();
 
     private String createTime = DateUtils.getTimeShort();
+    
+    private Packet packet;
+    
+    //query
+    private String createYear;
+    
+    
+    public String getCreateYear() {
+		return createYear;
+	}
 
-    public Long getId() {
+	public void setCreateYear(String createYear) {
+		this.createYear = createYear;
+	}
+
+	public Packet getPacket() {
+		return packet;
+	}
+
+	public void setPacket(Packet packet) {
+		this.packet = packet;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -55,27 +79,27 @@ public class PacketDetail {
         this.gotAmount = gotAmount;
     }
 
-    public boolean isGotBomb() {
+    public Boolean isGotBomb() {
 		return isGotBomb;
 	}
 
-	public void setGotBomb(boolean isGotBomb) {
+	public void setGotBomb(Boolean isGotBomb) {
 		this.isGotBomb = isGotBomb;
 	}
 
-	public boolean isFree() {
+	public Boolean isFree() {
 		return isFree;
 	}
 
-	public void setFree(boolean isFree) {
+	public void setFree(Boolean isFree) {
 		this.isFree = isFree;
 	}
 
-	public boolean isMaximum() {
+	public Boolean isMaximum() {
 		return isMaximum;
 	}
 
-	public void setMaximum(boolean isMaximum) {
+	public void setMaximum(Boolean isMaximum) {
 		this.isMaximum = isMaximum;
 	}
 

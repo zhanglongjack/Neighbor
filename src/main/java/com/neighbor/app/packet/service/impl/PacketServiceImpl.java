@@ -2,6 +2,7 @@ package com.neighbor.app.packet.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -573,7 +574,37 @@ public class PacketServiceImpl implements PacketService {
 		
 	}
 	
-	
+	@Override
+	public ResponseResult packetDetailPage(PacketDetail packetDetail){
+		Map<String,Object> gotSumPacketInfo = packetDetailMapper.queryGotPacketSumAmount(packetDetail);
+		logger.info("gotSumPacketInfo===="+gotSumPacketInfo);
+		Long size = packetDetailMapper.selectPageTotalCount(packetDetail);
+		packetDetail.getPageTools().setTotal(size);
+		List<PacketDetail> resultList = packetDetailMapper.selectPageByObjectForList(packetDetail);
+		
+		ResponseResult result = new ResponseResult();
+		result.addBody("resultList", resultList);
+		result.addBody("pageTools", packetDetail.getPageTools());
+		result.addBody("dataInfo", gotSumPacketInfo);
+		
+		return result;
+	}
+
+	@Override
+	public ResponseResult packetPage(Packet packet) {
+		Map<String,Object> sendPacketInfo = packetMapper.querySendPacketSumAmount(packet);
+		logger.info("gotSumPacketInfo===="+sendPacketInfo);
+		Long size = packetMapper.selectPageTotalCount(packet);
+		packet.getPageTools().setTotal(size);
+		List<PacketDetail> resultList = packetMapper.selectPageByObjectForList(packet);
+		
+		ResponseResult result = new ResponseResult();
+		result.addBody("resultList", resultList);
+		result.addBody("pageTools", packet.getPageTools());
+		result.addBody("dataInfo", sendPacketInfo);
+		
+		return result;
+	}
 	
 	
 	

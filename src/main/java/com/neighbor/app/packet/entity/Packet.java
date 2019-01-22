@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Packet {
+import com.neighbor.app.common.entity.PageEntity;
+
+public class Packet extends PageEntity{
     private Long id;
 
     private Long userId;
@@ -35,6 +37,18 @@ public class Packet {
     private String randomAmountList[] = null;
     
     private List<PacketDetail> detailList = new ArrayList<PacketDetail>();
+
+    //query
+    private String createYear;
+    
+    
+    public String getCreateYear() {
+		return createYear;
+	}
+
+	public void setCreateYear(String createYear) {
+		this.createYear = createYear;
+	}
 
     public Long getId() {
         return id;

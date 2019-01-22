@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.neighbor.app.balance.entity.BalanceDetail;
+import com.neighbor.app.balance.po.TransactionSubTypeDesc;
+import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.balance.service.BalanceDetailService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
@@ -44,24 +46,6 @@ public class BalanceController {
 		logger.info("balancePage response : " +pageTools);
 		return result;
 	}
-//
-//	@RequestMapping(value="/userEdit.req",method=RequestMethod.POST)
-//	@ResponseBody
-//	public ResponseResult userEdit(UserInfo userInfo){
-//		logger.info("userEdit request:{}",userInfo);
-//		userService.updateByPrimaryKeySelective(userInfo);
-//		return new ResponseResult();
-//	}
-//	
-//	@RequestMapping(value="/checkPwd.req",method=RequestMethod.POST)
-//	@ResponseBody
-//	public ResponseResult checkPwd(Long id,String pwd){
-//		logger.info("checkPwd request:uid={},pwd={}",id,pwd);
-//		UserInfo user = userService.selectByPrimaryKey(id);
-//		
-//		ResponseResult result = new ResponseResult();
-//		result.addBody("user", user);
-//		return result;
-//	}
+
 	
 }

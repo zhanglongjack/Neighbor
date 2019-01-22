@@ -1,6 +1,7 @@
 package com.neighbor.app.packet.service;
 
 import com.neighbor.app.packet.entity.Packet;
+import com.neighbor.app.packet.entity.PacketDetail;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.common.util.ResponseResult;
@@ -20,6 +21,10 @@ public interface PacketService{
 	ResponseResult grabPacekt(Packet packet, UserInfo user, Long gameId);
 
 	ResponseResult checLeftoverPacket(String statusStr,Packet packet,Long userId);
+ 
+	ResponseResult packetDetailPage(PacketDetail packetDetail);
+
+	ResponseResult packetPage(Packet packet);
 
 
 }
