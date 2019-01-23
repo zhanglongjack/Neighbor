@@ -41,7 +41,7 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private static final Map<Long, List<GroupMember>> userGroups = new ConcurrentHashMap<Long, List<GroupMember>>();
 	private static final Map<Long, Map<Long, WebSocketSession>> groupSessions = new ConcurrentHashMap<Long, Map<Long, WebSocketSession>>();
-	private static final Map<Long, WebSocketSession> noGroupUserSessions = new ConcurrentHashMap<Long, WebSocketSession>();
+	private static final Map<Long, WebSocketSession> allConnectUserSessions = new ConcurrentHashMap<Long, WebSocketSession>();
 	private static int threadPoolSize = 300;
 	@Autowired
 	private SocketMessageService socketMessageService;
@@ -62,7 +62,7 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 			// handleTransportError(session, null);
 			return;
 		}
-		noGroupUserSessions.put(user.getId(), session);
+		allConnectUserSessions.put(user.getId(), session);
 		List<GroupMember> groupList = groupService.selectUserOwnGroupsBy(user.getId());
 		userGroups.put(user.getId(), groupList);
 		logger.info("成功进入了系统。。。" + session.getAttributes().get("user"));
@@ -213,8 +213,8 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 				socketMessageService.insertRelationShipSelective(ralation);
 				
 				if("2".equals(msgInfo.getMasterMsgType()) && WebSocketMsgType.GROUP_ADD==msgType){
-					WebSocketSession userSession = noGroupUserSessions.get(msgInfo.getSendUserId());
-					groupSessions.get(msgInfo.getTargetGroupId()).put(msgInfo.getSendUserId(), userSession);
+					WebSocketSession userSession = allConnectUserSessions.get(msgInfo.getTargetUserId());
+					groupSessions.get(msgInfo.getTargetGroupId()).put(msgInfo.getTargetUserId(), userSession);
 					if(!isResponse)isResponse=true;
 				}else if("2".equals(msgInfo.getMasterMsgType()) && WebSocketMsgType.GROUP_QUIT==msgType){
 					groupSessions.get(msgInfo.getTargetGroupId()).remove(msgInfo.getTargetUserId());
