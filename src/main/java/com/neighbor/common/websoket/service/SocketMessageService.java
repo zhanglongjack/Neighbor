@@ -4,12 +4,12 @@ import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.websoket.constants.MessageStatus;
+import com.neighbor.common.websoket.constants.WebSocketChatType;
 import com.neighbor.common.websoket.po.GroupMsgRalation;
 import com.neighbor.common.websoket.po.SocketMessage;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public interface SocketMessageService {
     int deleteByPrimaryKey(Long msgId);
@@ -38,7 +38,7 @@ public interface SocketMessageService {
 
     List<SocketMessage> selectPageByObjectForList(HashMap<?,?> map);
 
-	List<SocketMessage> selectForTargetUserMsgByStatus(String status);
+	List<SocketMessage> selectForTargetUserMsgByStatus(String status, WebSocketChatType chatType);
 	
 	int deleteMessage(SocketMessage record);
 	
@@ -49,6 +49,8 @@ public interface SocketMessageService {
 	ResponseResult groupPageRecord(UserInfo user, Long groupId, Long msgIdN, PageTools pageTools);
 	
 	void updateGroupMsgRalationStatusRecord(Long userId, Long msgId, Long groupId, MessageStatus status);
+
+	
 
 
 	

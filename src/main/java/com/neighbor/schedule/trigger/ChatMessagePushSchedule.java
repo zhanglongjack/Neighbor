@@ -5,13 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.neighbor.common.websoket.constants.MessageStatus;
+import com.neighbor.common.websoket.constants.WebSocketChatType;
 import com.neighbor.common.websoket.po.SocketMessage;
 import com.neighbor.common.websoket.service.SocketMessageService;
 import com.neighbor.common.websoket.util.WebSocketPushHandler;
@@ -41,7 +39,7 @@ public class ChatMessagePushSchedule {
 		// logger.info("每30秒执行一次定时任务推送消息");
 		try {
 			logger.info("开始多线程推送一对一消息,以用户为一个维度");
-			List<SocketMessage> allTargetMsgList = socketMessageService.selectForTargetUserMsgByStatus(MessageStatus.pushed_response+"");
+			List<SocketMessage> allTargetMsgList = socketMessageService.selectForTargetUserMsgByStatus(MessageStatus.pushed_response+"",WebSocketChatType.single);
 			Map<Long, List<SocketMessage>> userMsgListMap = new HashMap<Long, List<SocketMessage>>();
 			for (SocketMessage sm : allTargetMsgList) {
 				if (userMsgListMap.containsKey(sm.getTargetUserId())) {

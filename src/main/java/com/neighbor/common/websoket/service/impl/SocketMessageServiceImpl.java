@@ -12,6 +12,7 @@ import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.websoket.constants.MessageDeleteStates;
 import com.neighbor.common.websoket.constants.MessageStatus;
+import com.neighbor.common.websoket.constants.WebSocketChatType;
 import com.neighbor.common.websoket.dao.SocketMessageMapper;
 import com.neighbor.common.websoket.po.GroupMsgRalation;
 import com.neighbor.common.websoket.po.SocketMessage;
@@ -129,10 +130,11 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	}
 
 	@Override
-	public List<SocketMessage> selectForTargetUserMsgByStatus(String status) {
+	public List<SocketMessage> selectForTargetUserMsgByStatus(String status, WebSocketChatType chatType) {
 		SocketMessage msg = new SocketMessage();
 		msg.setStatus(status);
 		msg.setTargetUserNotNull(1);
+		msg.setChatType(chatType+"");
 //		msg.setMasterMsgType("1");
 		return selectbySelective(msg);
 	}
