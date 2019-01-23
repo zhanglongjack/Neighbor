@@ -102,6 +102,7 @@
 	 and r.status='complete'
 	 and target_group_id=#{targetGroupId}
 	 <if test="msgId != null ">  <![CDATA[ and r.r_msg_id < #{msgId,jdbcType=BIGINT} ]]> </if>
+        <if test="noGroupOpt != null "> <![CDATA[ and c.msg_type <> 'GROUP_ADD' and c.msg_type <> 'GROUP_QUIT' ]]> </if>
      order by c.msg_id desc
      limit #{rowIndex},#{pageSize}
     </select>

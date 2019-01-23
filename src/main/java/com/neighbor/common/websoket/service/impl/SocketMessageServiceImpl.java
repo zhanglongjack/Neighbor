@@ -165,6 +165,7 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		map.put("targetGroupId",groupId);
 		map.put("rowIndex",pageTools.getRowIndex());
 		map.put("pageSize",pageTools.getPageSize());
+		map.put("noGroupOpt","1");//不差进群通知和退群通知
 		Long size = selectGroupPageTotalCount(map);
 		pageTools.setTotal(size);
 		List<SocketMessage> messageList = selectGroupPageByObjectForList(map);
