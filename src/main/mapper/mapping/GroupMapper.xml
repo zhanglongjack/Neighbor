@@ -16,6 +16,10 @@
     <result column="game_id" property="gameId" jdbcType="BIGINT" />
     <result column="red_pack_amount_limit" property="redPackAmountLimit" jdbcType="VARCHAR" />
   </resultMap>
+
+  <resultMap id="FullResultMap" type="com.neighbor.app.group.entity.Group" extends="BaseResultMap" >
+    <result column="groupOwnerUserId" property="groupOwnerUserId" jdbcType="BIGINT" />
+  </resultMap>
   
   <sql id="Base_Column_List" >
      g.id, g.create_time, g.update_time, g.cre_date, g.cre_time, g.group_name, g.user_num, g.online_num,
@@ -47,9 +51,9 @@
   </select>
   
   <select id="selectPageByObjectForList" parameterType="com.neighbor.app.group.entity.Group"
-          resultMap="BaseResultMap">
+          resultMap="FullResultMap">
     select
-    <include refid="Base_Column_List" />
+    g.*,(select gm.user_id from group_member gm where g.id=gm.group_id and gm.member_type=1 limit 1) as groupOwnerUserId
     from `group` g
     <if test="userId != null" >
       INNER JOIN group_member gm on g.id=gm.group_id and gm.user_id=#{userId,jdbcType=BIGINT}

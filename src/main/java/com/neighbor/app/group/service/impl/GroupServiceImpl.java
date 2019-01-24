@@ -76,6 +76,7 @@ public class GroupServiceImpl implements GroupService {
         groupMember1.setPageTools(member.getPageTools());
         groupMember1.setGroupId(member.getGroupId());
         groupMember1.setFriendUserId(user.getId());
+        groupMember1.setUserId(member.getUserId());
         Long total = groupMemberMapper.selectPageTotalCount(groupMember1);
         List<GroupMember> pageList = groupMemberMapper.selectPageByObjectForList(groupMember1);
         PageTools pageTools = member.getPageTools();
