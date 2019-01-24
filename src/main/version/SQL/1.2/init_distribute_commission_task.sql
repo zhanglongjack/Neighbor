@@ -25,11 +25,23 @@ CREATE TABLE `dictionary` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='字典表'
 
 
-INSERT INTO `neighbor_dev`.`users_info` (`id`, `user_photo`, `nick_name`, `user_account`, `sex`, `mobile_phone`, `upuser_id`)
+INSERT INTO  `users_info` (`id`, `user_photo`, `nick_name`, `user_account`, `sex`, `mobile_phone`, `upuser_id`)
  VALUES ('1', 'img/head-user2.png', '超管', '1', '2', '18999586019', null);
  
-ALTER TABLE `neighbor_dev`.`packet` 
+ALTER TABLE `packet` 
 ADD COLUMN `send_head_url` VARCHAR(256) NULL COMMENT '发红包的头像' AFTER `random_amount`;
 
-ALTER TABLE `neighbor_dev`.`msg_group_menber_relationship` 
+ ALTER TABLE  `packet` 
+ADD COLUMN `random_amount` VARCHAR(256) NULL COMMENT '各个红包的金额,逗号分隔' AFTER `remarke`;
+
+ ALTER TABLE  `packet` 
+ADD COLUMN `status` VARCHAR(15) NULL COMMENT '红包领取状态' ;
+
+ ALTER TABLE  `packet` 
+ADD COLUMN `collected_num` INT NULL COMMENT '红包已领取数量'  ;
+
+ALTER TABLE `packet` 
+CHANGE COLUMN `collected_num` `collected_num` INT(11) NOT NULL DEFAULT 0 COMMENT '红包已领取数量' ;
+
+ALTER TABLE  `msg_group_menber_relationship` 
 ADD COLUMN `status` VARCHAR(15) NOT NULL DEFAULT 'received' COMMENT '消息状态' AFTER `r_user_id`;

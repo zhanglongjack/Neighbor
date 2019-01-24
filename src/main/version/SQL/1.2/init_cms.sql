@@ -12,6 +12,3 @@ CREATE TABLE `cms` (
   `jump_url` varchar(200)   COMMENT '跳转页面',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内容管理表';
-
- ALTER TABLE `neighbor_dev`.`packet` 
-ADD COLUMN `random_amount` VARCHAR(256) NULL COMMENT '各个红包的金额,逗号分隔' AFTER `remarke`;
