@@ -53,4 +53,10 @@ public class ResponseResult {
 		this.requestID = requestID;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("ResponseResult [body=%s, errorCode=%s, errorMessage=%s, serviceURL=%s, requestID=%s]",
+				body, errorCode, errorMessage, serviceURL, requestID);
+	}
+
 }

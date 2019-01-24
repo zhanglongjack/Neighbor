@@ -217,8 +217,9 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 					groupSessions.get(msgInfo.getTargetGroupId()).put(msgInfo.getTargetUserId(), userSession);
 					if(!isResponse)isResponse=true;
 				}else if("2".equals(msgInfo.getMasterMsgType()) && WebSocketMsgType.GROUP_QUIT==msgType){
+					sendMessageToUser(msgInfo.getTargetUserId(), msgInfo.getTargetGroupId(), handleResult); 
+					
 					groupSessions.get(msgInfo.getTargetGroupId()).remove(msgInfo.getTargetUserId());
-					//noGroupUserSessions.put(msgInfo.getTargetUserId(),userSession);
 				}
 				
 				if (WebSocketChatType.multiple == chatType && isResponse) { 
