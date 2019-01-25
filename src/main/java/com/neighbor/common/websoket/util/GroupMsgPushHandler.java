@@ -22,6 +22,7 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.neighbor.app.api.common.SpringUtil;
 import com.neighbor.app.group.entity.GroupMember;
 import com.neighbor.app.group.service.GroupService;
@@ -187,7 +188,12 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
 		logger.info("收到消息:" + message.getPayload());
-
+		JSONObject jsonObject = JSON.parseObject((String) message.getPayload());
+		if(jsonObject.containsKey("heartBeat") && jsonObject.getBooleanValue("heartBeat") ){
+			UserInfo user = (UserInfo) session.getAttributes().get("user");
+			logger.info("收到用户[{}]的心跳消息",user.getId());
+			return;
+		}
 		SocketMessage msgInfo = JSON.parseObject((String) message.getPayload(), SocketMessage.class);
 		msgInfo.setStatus(MessageStatus.received + "");
 		msgInfo.setDate(DateUtils.getStringDateShort());
