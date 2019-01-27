@@ -74,7 +74,7 @@ public class ChatMessagePushSchedule {
 			
 			for(Future<Integer> future : futureList){
 				try {
-					future.get(1, TimeUnit.SECONDS);
+					future.get(10, TimeUnit.SECONDS);
 				} catch (Exception e) {
 					logger.error("消息结果获取异常",e);
 				}

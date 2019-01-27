@@ -605,7 +605,55 @@ public class PacketServiceImpl implements PacketService {
 		
 		return result;
 	}
+
+	@Override
+	public List<Packet> selectPacketBySelective(Packet packet) {
+		return packetMapper.selectPacketBySelective(packet);
+	}
+
+	@Override
+	@Transactional(readOnly = false, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+	public void expirePacketHandle(Long packetId) {
+		Packet lockPacket = lockPacketByPrimaryKey(packetId);
+		UserWallet lastWallet = userWalletService.selectByPrimaryUserId(lockPacket.getUserId());
+		
+		if(lockPacket.getCollectedNum()==0){
+			lockPacket.setStatus(PacketStatus.all_back.toString());
+		}else if(lockPacket.getCollectedNum()<7){
+			lockPacket.setStatus(PacketStatus.part_back.toString());
+		}else{
+			logger.info("红包已领完:{}",lockPacket);
+			return;
+		}
+		
+		BigDecimal sumAmount = new BigDecimal(0);
+		
+		for(PacketDetail detail : lockPacket.getDetailList()){
+			sumAmount = sumAmount.add(detail.getGotAmount());
+		}
+		
+		BigDecimal backAmount = lockPacket.getAmount().subtract(sumAmount);
+		lastWallet.setAvailableAmount(lastWallet.getAvailableAmount().add(backAmount));
+		// 收红包交易明细
+		BalanceDetail balanceDetail = new BalanceDetail();
+		balanceDetail.setAmount(backAmount);
+		balanceDetail.setAvailableAmount(lastWallet.getAvailableAmount());
+		balanceDetail.setuId(lastWallet.getuId());
+		balanceDetail.setTransactionType(TransactionTypeDesc.receipt.toString());
+		balanceDetail.setTransactionSubType(TransactionSubTypeDesc.backRedPack.toString());
+		balanceDetail.setRemarks(TransactionSubTypeDesc.backRedPack.getDes());
+		balanceDetail.setTransactionId(lastWallet.getId());
+		balanceDetailService.insertSelective(balanceDetail);
+		
+		UserWallet wallet = new UserWallet();
+		wallet.setuId(lockPacket.getUserId());
+		wallet.setAvailableAmount(backAmount);
+		userWalletService.updateWalletAmount(wallet);
+		
+		packetMapper.updateByPrimaryKeySelective(lockPacket);
+		logger.info("过期红包已处理退回:{}",lockPacket);
 	
+	}
 	
 	
 	

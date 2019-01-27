@@ -43,5 +43,32 @@ ADD COLUMN `collected_num` INT NULL COMMENT '红包已领取数量'  ;
 ALTER TABLE `packet` 
 CHANGE COLUMN `collected_num` `collected_num` INT(11) NOT NULL DEFAULT 0 COMMENT '红包已领取数量' ;
 
+ALTER TABLE `chat_message` 
+ADD COLUMN `s_nick_name` VARCHAR(50) NULL COMMENT '发送人昵称' AFTER `target_user_delete_Flag`;
+
+
 ALTER TABLE  `msg_group_menber_relationship` 
 ADD COLUMN `status` VARCHAR(15) NOT NULL DEFAULT 'received' COMMENT '消息状态' AFTER `r_user_id`;
+
+CREATE TABLE `chat_message_backup` (
+  `msg_id` bigint(20) NOT NULL COMMENT '主键',
+  `request_id` varchar(126) NOT NULL COMMENT '请求编号',
+  `master_msg_type` varchar(126) NOT NULL DEFAULT '1' COMMENT '消息大类型',
+  `header` varchar(1000) NOT NULL COMMENT '消息头Json格式',
+  `chat_type` varchar(15) NOT NULL COMMENT '聊天类型',
+  `msg_type` varchar(15) NOT NULL COMMENT '消息类型',
+  `status` varchar(15) NOT NULL DEFAULT '1' COMMENT '消息状态',
+  `send_user_id` bigint(20) NOT NULL COMMENT '发送消息人',
+  `target_user_id` bigint(20) DEFAULT NULL COMMENT '接收消息人',
+  `target_group_id` bigint(20) DEFAULT NULL COMMENT '接收消息群',
+  `biz_id` bigint(20) DEFAULT NULL COMMENT '业务编号',
+  `content` varchar(500) DEFAULT NULL COMMENT '消息内容',
+  `date` varchar(15) NOT NULL COMMENT '发送日期',
+  `time` varchar(15) NOT NULL COMMENT '发送时间',
+  `send_user_delete_flag` varchar(50) DEFAULT '0' COMMENT '发送者删除状态',
+  `target_user_delete_Flag` varchar(50) DEFAULT '0' COMMENT '接受者删除状态',
+  `s_nick_name` VARCHAR(50) NULL COMMENT '发送人昵称',
+  PRIMARY KEY (`msg_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=328 DEFAULT CHARSET=utf8 COMMENT='消息记录备份';
+
+

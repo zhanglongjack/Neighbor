@@ -26,5 +26,7 @@ public interface PacketMapper {
 	Long selectPageTotalCount(Packet packet);
 
 	List<PacketDetail> selectPageByObjectForList(Packet packet);
+
+	List<Packet> selectPacketBySelective(Packet packet);
     
 }

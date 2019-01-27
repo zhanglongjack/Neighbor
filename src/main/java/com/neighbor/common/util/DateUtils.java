@@ -133,7 +133,27 @@ public class DateUtils {
 		String dateString = formatter.format(dateDate);
 		return dateString;
 	}
-
+	/**
+	 * 获取当前时间往前/后推算分钟时间(HH:mm:ss)
+	 * @param minute 负数向前推,正数往后推 ,单位分钟
+	 * @return
+	 */
+	public static String getTimeBy(int minute){
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		Calendar beforeTime = Calendar.getInstance();
+		beforeTime.add(Calendar.MINUTE, minute);
+		Date beforeD = beforeTime.getTime();
+		String time = sdf.format(beforeD);
+		return time; 
+	} 
+	
+	public static void main(String[] args) {
+		String a = getTimeBy(-3);
+		System.out.println(a);
+		
+		
+	}
+	
 	/**
 	 * 将短时间格式时间转换为字符串 yyyy-MM-dd
 	 * 
@@ -720,4 +740,6 @@ public class DateUtils {
 		return formatter.format(date);
 	}
 
+	
+	
 }

@@ -1,5 +1,7 @@
 package com.neighbor.app.packet.service;
 
+import java.util.List;
+
 import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.packet.entity.PacketDetail;
 import com.neighbor.app.users.entity.UserInfo;
@@ -25,6 +27,10 @@ public interface PacketService{
 	ResponseResult packetDetailPage(PacketDetail packetDetail);
 
 	ResponseResult packetPage(Packet packet);
+
+	List<Packet> selectPacketBySelective(Packet packet);
+
+	void expirePacketHandle(Long packetId);
 
 
 }

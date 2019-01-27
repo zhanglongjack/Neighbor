@@ -18,11 +18,12 @@
         <result column="time" jdbcType="VARCHAR" property="time"/>
         <result column="send_user_delete_flag" jdbcType="VARCHAR" property="sendUserDeleteFlag"/>
         <result column="target_user_delete_Flag" jdbcType="VARCHAR" property="targetUserDeleteFlag"/>
+        <result column="s_nick_name" jdbcType="VARCHAR" property="sendNickName"/>
     </resultMap>
 
     <sql id="Base_Column_List">
 		msg_id,request_id, header,master_msg_type, chat_type, msg_type, status, send_user_id, target_user_id,
-		target_group_id,biz_id, content, date, time,send_user_delete_flag,target_user_delete_Flag
+		target_group_id,biz_id, content, date, time,send_user_delete_flag,target_user_delete_Flag,s_nick_name
 	</sql>
     <sql id="dynamicWhere">
         <where>
@@ -41,6 +42,12 @@
             <if test="time != null and time.length>0">and time=#{time}</if>
             <if test="sendUserDeleteFlag != null and sendUserDeleteFlag.length>0">and send_user_delete_flag=#{sendUserDeleteFlag}</if>
             <if test="targetUserDeleteFlag != null and targetUserDeleteFlag.length>0">and target_user_delete_Flag=#{targetUserDeleteFlag}</if>
+            <if test="timeLess != null and timeLess.length() > 0">
+				and #{timeLess} > time
+			</if>
+            <if test="dateLess != null and dateLess.length() > 0">
+				and #{dateLess} > date
+			</if> 
         </where>
     </sql>
 
@@ -204,6 +211,9 @@
             <if test="targetUserDeleteFlag != null">
                 target_user_delete_Flag,
             </if>
+            <if test="sendNickName != null">
+                s_nick_name,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="requestId != null">
@@ -251,8 +261,12 @@
             <if test="targetUserDeleteFlag != null">
                 #{targetUserDeleteFlag,jdbcType=VARCHAR},
             </if>
+            <if test="sendNickName != null">
+                #{sendNickName,jdbcType=VARCHAR},
+            </if>
         </trim>
     </insert>
+    
     <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.common.websoket.po.SocketMessage">
         update chat_message
         <set>
@@ -376,4 +390,20 @@
         
     </update>
     
+    <insert id="insertMsgBackup"  parameterType="java.lang.Long">
+		 INSERT INTO chat_message_backup
+		 (<include refid="Base_Column_List"/>)
+		 SELECT 
+		 	<include refid="Base_Column_List"/>
+		 FROM chat_message c
+		 where #{msgId} >= c.msg_id
+		 and c.chat_type = 'multiple'
+	</insert>
+	
+    <delete id="deleteByLessMsgId" parameterType="java.lang.Long">
+		delete from chat_message
+		where #{msgId} >= msg_id
+		and chat_type = 'multiple'
+	</delete>
+	
 </mapper>

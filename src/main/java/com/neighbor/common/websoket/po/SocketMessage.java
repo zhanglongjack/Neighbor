@@ -14,6 +14,7 @@ public class SocketMessage {
 	private String chatType;
 	private String msgType;
 	private Long sendUserId;
+	private String sendNickName;
 	private Long targetUserId;
 	private Long targetGroupId;
 	private String bizId;
@@ -31,6 +32,10 @@ public class SocketMessage {
 	
 	// 查询条件
 	private Integer targetUserNotNull;
+	private String dateLess;
+	private String timeLess;
+	
+	
 //	private Long msgIdLess;
 
 	private String cleanHistory;//清除历史消息间隔时间
@@ -119,6 +124,14 @@ public class SocketMessage {
 		this.sendUserId = sendUserId;
 	}
 
+	public String getSendNickName() {
+		return sendNickName;
+	}
+
+	public void setSendNickName(String sendNickName) {
+		this.sendNickName = sendNickName;
+	}
+
 	public Long getTargetUserId() {
 		return targetUserId;
 	}
@@ -197,6 +210,22 @@ public class SocketMessage {
 
 	public void setTargetUserNotNull(Integer targetUserNotNull) {
 		this.targetUserNotNull = targetUserNotNull;
+	}
+
+	public String getDateLess() {
+		return dateLess;
+	}
+
+	public void setDateLess(String dateLess) {
+		this.dateLess = dateLess;
+	}
+
+	public String getTimeLess() {
+		return timeLess;
+	}
+
+	public void setTimeLess(String timeLess) {
+		this.timeLess = timeLess;
 	}
 
 	public PageTools getPageTools() {

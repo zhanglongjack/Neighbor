@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -187,10 +188,10 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 	//
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+		UserInfo user = (UserInfo) session.getAttributes().get("user");
 		logger.info("收到消息:" + message.getPayload());
 		JSONObject jsonObject = JSON.parseObject((String) message.getPayload());
 		if(jsonObject.containsKey("heartBeat") && jsonObject.getBooleanValue("heartBeat") ){
-			UserInfo user = (UserInfo) session.getAttributes().get("user");
 			logger.info("收到用户[{}]的心跳消息",user.getId());
 			return;
 		}
@@ -199,6 +200,7 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 		msgInfo.setDate(DateUtils.getStringDateShort());
 		msgInfo.setTime(DateUtils.getTimeShort());
 		msgInfo.setRequestId(msgInfo.getWebSocketHeader().getRequestId());
+		msgInfo.setSendNickName(user.getNickName());
 
 		WebSocketMsgType msgType = WebSocketMsgType.valueOf(msgInfo.getMsgType());
 		WebSocketChatType chatType = WebSocketChatType.valueOf(msgInfo.getChatType());
@@ -302,10 +304,14 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 		try {
 			fixedThreadPool = Executors.newFixedThreadPool(threadPoolSize);
 			List<Future<Long>> futureList = new ArrayList<Future<Long>>();
+			Random r = new Random();
 			for (final Long key : groupSession.keySet()) {
 				futureList.add(fixedThreadPool.submit(new Callable<Long>() {
 					@Override
 					public Long call() throws Exception {
+						long time = r.nextInt(100);
+						logger.info("给当前群[{}]成员[{}]推送消息前睡眠时间:[{}]耗秒", key, userId,time);
+						Thread.sleep(time);
 						try {
 							logger.info("给当前群[{}]成员[{}]推送消息", key, userId);
 							if (key.equals(userId)) {

@@ -40,7 +40,9 @@ public class Packet extends PageEntity{
 
     //query
     private String createYear;
-    
+    private String groupIdIsNotNull;
+    private String sendDateLess;
+    private String sendTimeLess;
     
     public String getCreateYear() {
 		return createYear;
@@ -184,6 +186,30 @@ public class Packet extends PageEntity{
 	}
 
 	
+	public String getGroupIdIsNotNull() {
+		return groupIdIsNotNull;
+	}
+
+	public void setGroupIdIsNotNull(String groupIdIsNotNull) {
+		this.groupIdIsNotNull = groupIdIsNotNull;
+	}
+
+	public String getSendDateLess() {
+		return sendDateLess;
+	}
+
+	public void setSendDateLess(String sendDateLess) {
+		this.sendDateLess = sendDateLess;
+	}
+
+	public String getSendTimeLess() {
+		return sendTimeLess;
+	}
+
+	public void setSendTimeLess(String sendTimeLess) {
+		this.sendTimeLess = sendTimeLess;
+	}
+
 	@Override
 	public String toString() {
 		return String.format(
@@ -191,7 +217,7 @@ public class Packet extends PageEntity{
 				id, userId, receiveUserId, groupId, amount, packetNum, hitNum, sendDate, sendTime, status, collectedNum,
 				remarke, randomAmount, detailList);
 	}
-
+ 
 
 
     

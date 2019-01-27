@@ -38,6 +38,10 @@ public interface SocketMessageMapper {
 	List<SocketMessage> selectGroupPageByObjectForList(Map<String, Object> map);
 	
 	void updateGroupMsgRalationStatusRecord(Map<String, Object> map);
+
+	void insertMsgBackup(Long msgId);
+
+	void deleteByLessMsgId(Long msgId);
 	
 	
 }

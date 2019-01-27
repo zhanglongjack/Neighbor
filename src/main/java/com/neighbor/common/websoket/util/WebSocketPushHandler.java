@@ -3,7 +3,6 @@ package com.neighbor.common.websoket.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.neighbor.app.api.common.SpringUtil;
-import com.neighbor.app.friend.service.FriendService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.ResponseResult;
@@ -34,8 +33,6 @@ public class WebSocketPushHandler implements WebSocketHandler {
 
 	@Autowired
 	private SocketMessageService socketMessageService;
-	@Autowired
-	private FriendService friendService;
 
 	// 用户进入系统监听
 	@Override
@@ -87,10 +84,10 @@ public class WebSocketPushHandler implements WebSocketHandler {
 	//
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+		UserInfo user = (UserInfo) session.getAttributes().get("user");
 		logger.info("收到消息:" + message.getPayload());
 		JSONObject jsonObject = JSON.parseObject((String) message.getPayload());
 		if(jsonObject.containsKey("heartBeat") && jsonObject.getBooleanValue("heartBeat") ){
-			UserInfo user = (UserInfo) session.getAttributes().get("user");
 			logger.info("收到用户[{}]的心跳消息",user.getId());
 			return;
 		}
@@ -99,7 +96,8 @@ public class WebSocketPushHandler implements WebSocketHandler {
 		msgInfo.setDate(DateUtils.getStringDateShort());
 		msgInfo.setTime(DateUtils.getTimeShort());
 		msgInfo.setRequestId(msgInfo.getWebSocketHeader().getRequestId());
-
+		msgInfo.setSendNickName(user.getNickName());
+		
 		WebSocketMsgType msgType = WebSocketMsgType.valueOf(msgInfo.getMsgType());
 		WebSocketChatType chatType = WebSocketChatType.valueOf(msgInfo.getChatType());
 		WebSocketMessageHandler handler = (WebSocketMessageHandler) SpringUtil.getBean(msgType.getImplClass());

@@ -50,6 +50,8 @@ public interface SocketMessageService {
 	
 	void updateGroupMsgRalationStatusRecord(Long userId, Long msgId, Long groupId, MessageStatus status);
 
+	void insertMsgBackup(SocketMessage msg);
+
 	
 
 

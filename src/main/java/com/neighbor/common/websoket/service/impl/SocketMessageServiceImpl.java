@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
@@ -192,5 +194,13 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		map.put("status", status+"");
 		
 		socketMessageMapper.updateGroupMsgRalationStatusRecord(map);
+	}
+
+	@Override
+	@Transactional(readOnly = false, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+	public void insertMsgBackup(SocketMessage msg) {
+		socketMessageMapper.insertMsgBackup(msg.getMsgId());
+		socketMessageMapper.deleteByLessMsgId(msg.getMsgId());
+		
 	}
 }
