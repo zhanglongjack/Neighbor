@@ -1,5 +1,6 @@
 package com.neighbor.app.withdraw.service.impl;
 
+import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.balance.entity.BalanceDetail;
 import com.neighbor.app.balance.po.TransactionItemDesc;
 import com.neighbor.app.balance.po.TransactionSubTypeDesc;
@@ -71,6 +72,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         withdraw.setCreateTime(date);
         withdraw.setAvailableAmount(userWallet.getAvailableAmount());
         withdraw.setStates(WithdrawStatusDesc.initial.toString());
+        withdraw.setRealName(userInfo.getRealName());
         userWallet.setUpdateTime(date);
 
 
@@ -116,7 +118,17 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Override
     public ResponseResult withdrawRecord(UserInfo user, Withdraw withdraw) throws Exception {
         ResponseResult result = new ResponseResult();
-        withdraw.setuId(user.getId());
+        if("1".equals(withdraw.getIsCustomer())){
+            //后面增加特定用户判断
+            if(!checkUserRole(user)){
+                result.setErrorCode(ErrorCodeDesc.failed.getValue());
+                result.setErrorMessage("很抱歉，你没有权限操作~");
+                return result;
+            }
+            withdraw.setStates(WithdrawStatusDesc.initial.toString());
+        }else{
+            withdraw.setuId(user.getId());
+        }
         Long total = withdrawMapper.selectPageTotalCount(withdraw);
         List<Withdraw> pageList = withdrawMapper.selectPageByObjectForList(withdraw);
         /*PageResp pageResp = new PageResp();
@@ -156,5 +168,69 @@ public class WithdrawServiceImpl implements WithdrawService {
         return responseResult;
     }
 
+    @Override
+    @Transactional(readOnly = false,rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    public ResponseResult modifyWithdraw(UserInfo user, Withdraw withdraw) throws Exception {
+        ResponseResult result = new ResponseResult();
+        Date date = new Date();
+        if(!checkUserRole(user)){
+            result.setErrorCode(ErrorCodeDesc.failed.getValue());
+            result.setErrorMessage("很抱歉，你没有权限操作~");
+            return result;
+        }
+        if(WithdrawStatusDesc.success.toString().equals(withdraw.getStates())){
+            withdraw.setId(withdraw.getRecordId());
+            withdraw.setUpdateTime(date);
+            withdrawMapper.updateByPrimaryKeySelective(withdraw);
+        }else if(WithdrawStatusDesc.failed.toString().equals(withdraw.getStates())){
+            withdraw.setId(withdraw.getRecordId());
+            withdraw.setUpdateTime(date);
+            withdrawMapper.updateByPrimaryKeySelective(withdraw);
+            Withdraw temp = withdrawMapper.selectByPrimaryKey(withdraw.getId());
+            //失败回退 钱包 增加余额，插入交易明细
+            UserWallet updateWallet = new UserWallet();
+            //退回金额
+            updateWallet.setAvailableAmount(temp.getAmount().negate());
+            updateWallet.setuId(temp.getuId());
+            userWalletService.updateWalletAmount(updateWallet);
+            UserWallet userWallet = userWalletService.selectByPrimaryUserId(temp.getuId());
+            //增加一条明细
+            BalanceDetail balanceDetail = new BalanceDetail();
+            balanceDetail.setAmount(temp.getAmount().negate());
+            balanceDetail.setAvailableAmount(userWallet.getAvailableAmount());
+            balanceDetail.setuId(temp.getuId());
+            balanceDetail.setTransactionType(TransactionTypeDesc.receipt.toString());
+            balanceDetail.setTransactionSubType(TransactionSubTypeDesc.withdrawBack.toString());
+            balanceDetail.setRemarks(TransactionSubTypeDesc.withdrawBack.getDes());
+            balanceDetail.setTransactionId(withdraw.getId());
+            balanceDetailService.insertSelective(balanceDetail);
+
+            //退回手续费
+            updateWallet.setAvailableAmount(temp.getCost().negate());
+            updateWallet.setuId(temp.getuId());
+            userWalletService.updateWalletAmount(updateWallet);
+            userWallet = userWalletService.selectByPrimaryUserId(temp.getuId());
+
+            BalanceDetail balanceDetailCost = new BalanceDetail();
+            balanceDetailCost.setAmount(temp.getCost().negate());
+            balanceDetailCost.setAvailableAmount(userWallet.getAvailableAmount());
+            balanceDetailCost.setuId(temp.getuId());
+            balanceDetailCost.setTransactionType(TransactionTypeDesc.receipt.toString());
+            balanceDetailCost.setTransactionSubType(TransactionSubTypeDesc.withdrawCostBack.toString());
+            balanceDetailCost.setRemarks(TransactionSubTypeDesc.withdrawCostBack.getDes());
+            balanceDetailCost.setTransactionId(withdraw.getId());
+            balanceDetailService.insertSelective(balanceDetailCost);
+            //result.addBody("userWallet",userWallet);
+        }
+        return result;
+    }
+
+    //检查是否是超管和客服的角色账号
+    private boolean checkUserRole(UserInfo userInfo){
+        if("1".equals(userInfo.getUserRole())||"2".equals(userInfo.getUserRole())){
+            return true;
+        }
+        return false;
+    }
 
 }

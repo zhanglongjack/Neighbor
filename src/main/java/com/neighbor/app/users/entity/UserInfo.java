@@ -44,7 +44,16 @@ public class UserInfo extends PageEntity {
     private String remark;
     private String createTimeStr ;
     private Long downNumber ;
-    
+    private String userRole;//用户角色,0是正常用户，1是客服,2是超管
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
+
     public String getCreateTimeStr() {
         if(createTime!=null){
             try {

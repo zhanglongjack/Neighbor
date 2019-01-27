@@ -6,11 +6,13 @@ import java.util.Date;
 import com.neighbor.app.balance.po.TransactionItemDesc;
 import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.common.entity.PageEntity;
+import com.neighbor.app.withdraw.constants.WithdrawStatusDesc;
 import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
 
 public class Withdraw extends PageEntity {
     private Long id;
+    private Long recordId;
 
     private String orderNo;
 
@@ -29,6 +31,7 @@ public class Withdraw extends PageEntity {
     private String realName;
 
     private String states;
+    private String statesStr;
 
     private String remarks;
 
@@ -39,7 +42,25 @@ public class Withdraw extends PageEntity {
 
     private BigDecimal cost; //提现费用
 
+    private String isCustomer;//客户审核提现记录
+
     private String transactionTypeDesc;
+
+    public String getIsCustomer() {
+        return isCustomer;
+    }
+
+    public void setIsCustomer(String isCustomer) {
+        this.isCustomer = isCustomer;
+    }
+
+    public Long getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(Long recordId) {
+        this.recordId = recordId;
+    }
 
     public String getTransactionTypeDesc() {
         return TransactionTypeDesc.payment.getDes();
@@ -130,7 +151,10 @@ public class Withdraw extends PageEntity {
     }
 
     public String getRemarks() {
-        return TransactionItemDesc.withdraw.getDes();
+        if(remarks==null){
+            return TransactionItemDesc.withdraw.getDes();
+        }
+        return remarks;
     }
 
     public void setRemarks(String remarks) {
@@ -174,6 +198,17 @@ public class Withdraw extends PageEntity {
 
     public void setCost(BigDecimal cost) {
         this.cost = cost;
+    }
+
+    public String getStatesStr() {
+        if(states!=null){
+            return WithdrawStatusDesc.getDesByValue(states);
+        }
+        return statesStr;
+    }
+
+    public void setStatesStr(String statesStr) {
+        this.statesStr = statesStr;
     }
 
     @Override

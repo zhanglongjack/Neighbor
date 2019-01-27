@@ -93,3 +93,6 @@ CREATE TABLE `group_apply` (
   PRIMARY KEY (`id`),
   KEY `index_group_apply_group_id` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='拉人进群申请表';
+
+
+alter table users_info add user_role varchar(50) DEFAULT '0' COMMENT '用户角色（0：普通用户，1：客服，2：超管）';

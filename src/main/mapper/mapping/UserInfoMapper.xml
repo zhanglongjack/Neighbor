@@ -19,13 +19,14 @@
 		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
 		<result column="remark" jdbcType="VARCHAR" property="remark" />
 		<result column="regional" jdbcType="VARCHAR" property="regional" />
+		<result column="user_role" jdbcType="VARCHAR" property="userRole" />
 		<collection property="downNumber" column="id" select="com.neighbor.app.users.dao.UserInfoMapper.countDownNumber">
         </collection>
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, user_photo, nick_name, user_account, user_password, qr_code, sex,
 		mobile_phone,
-		real_name, wechat, qq, robot_sno, upuser_id, create_time, update_time, remark,regional
+		real_name, wechat, qq, robot_sno, upuser_id, create_time, update_time, remark,regional,user_role
 	</sql>
 	
   	<sql id="dynamicWhere">
@@ -134,6 +135,10 @@
 			<if test="regional != null">
 				regional,
 			</if>
+			<if test="userRole != null">
+				user_role,
+			</if>
+
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="userPhoto != null">
@@ -183,6 +188,9 @@
 			</if>
 			<if test="regional != null">
 				#{regional,jdbcType=VARCHAR},
+			</if>
+			<if test="userRole != null">
+				#{userRole,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
@@ -236,6 +244,9 @@
 			</if>
 			<if test="regional != null">
 				regional = #{regional,jdbcType=VARCHAR},
+			</if>
+			<if test="userRole != null">
+				user_role = #{userRole,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where id = #{userID,jdbcType=BIGINT}

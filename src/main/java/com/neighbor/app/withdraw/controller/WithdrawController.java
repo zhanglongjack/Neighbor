@@ -41,9 +41,8 @@ public class WithdrawController {
 
     @RequestMapping(value = "/withdrawRecord.req",method= RequestMethod.POST)
     @ResponseBody
-    public ResponseResult withdrawRecord(@ModelAttribute("user") UserInfo user, PageTools pageTools) throws Exception{
+    public ResponseResult withdrawRecord(@ModelAttribute("user") UserInfo user, PageTools pageTools,Withdraw withdraw) throws Exception{
         logger.info("withdrawRecord request user >>>> " + JSON.toJSONString(user));
-        Withdraw withdraw = new Withdraw();
         withdraw.setPageTools(pageTools);
         logger.info("withdrawRecord request withdraw >>>> " + JSON.toJSONString(withdraw));
         ResponseResult result  = withdrawService.withdrawRecord(user,withdraw);
@@ -57,5 +56,14 @@ public class WithdrawController {
         ResponseResult result = withdrawService.withdrawInfo(withdraw);
         return result;
     }
+    @RequestMapping(value = "/modifyWithdraw.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult modifyWithdraw(@ModelAttribute("user") UserInfo user,Withdraw withdraw) throws Exception{
+        logger.info("withdrawInfo request >>>> " + JSON.toJSONString(withdraw));
+        logger.info("user info >>>> " + user);
+        ResponseResult result = withdrawService.modifyWithdraw(user,withdraw);
+        return result;
+    }
+
 }
 

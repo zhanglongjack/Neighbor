@@ -12,4 +12,6 @@ public interface WithdrawService {
     ResponseResult withdrawInfo(Withdraw withdraw)  throws Exception;
 
     ResponseResult preWithdraw(UserInfo user, Withdraw withdraw)  throws Exception;
+
+    ResponseResult modifyWithdraw(UserInfo user, Withdraw withdraw) throws Exception;
 }
