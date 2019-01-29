@@ -130,6 +130,8 @@ public class LoginController {
             userConfig.setUserId(user.getId());
             userConfig.setCreateTime(currentTime);
             userConfig.setUpdateTime(currentTime);
+            userConfig.setHaveShock(UserConfig.HaveShockDesc.haveShock.getValue());
+            userConfig.setHaveVoice(UserConfig.HaveVoiceDesc.haveVoice.getValue());
             userService.insertUserConfigSelective(userConfig);
         }
         result.addBody("userConfig", userConfig);
