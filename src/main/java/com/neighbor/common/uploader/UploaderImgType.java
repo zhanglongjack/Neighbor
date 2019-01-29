@@ -3,7 +3,7 @@ package com.neighbor.common.uploader;
 import com.neighbor.app.bankcard.constants.CardTypeDesc;
 
 public enum UploaderImgType {
-    avatar("avatar"),chat("chat"),common("common");
+    avatar("avatar"),chat("chat"),common("common"),recharge("recharge");
     private String des;
 
     private UploaderImgType(String des) {

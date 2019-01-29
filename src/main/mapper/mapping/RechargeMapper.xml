@@ -12,9 +12,10 @@
     <result column="available_amount" jdbcType="DECIMAL" property="availableAmount" />
     <result column="states" jdbcType="CHAR" property="states" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="screenshot" jdbcType="VARCHAR" property="screenshot" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_no, create_time, update_time, u_id, channel_type, amount,available_amount, states, remarks
+    id, order_no, create_time, update_time, u_id, channel_type, amount,available_amount, states, remarks,screenshot
   </sql>
   
   <sql id="dynamicWhere">
@@ -24,6 +25,7 @@
 			<if test="channelType != null and channelType.length()>0">and channel_type=#{channelType}</if>
 			<if test="states != null and states.length()>0">and states=#{states}</if>
 			<if test="orderNo != null and orderNo.length()>0">and order_no=#{orderNo}</if>
+            <if test="screenshot != null and screenshot.length()>0">and screenshot=#{screenshot}</if>
 		</where>
 	</sql>
 	
@@ -97,6 +99,9 @@
       <if test="remarks != null">
         remarks,
       </if>
+      <if test="screenshot != null">
+        screenshot,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -129,6 +134,9 @@
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
       </if>
+      <if test="screenshot != null">
+        #{screenshot,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.recharge.entity.Recharge">
@@ -160,6 +168,9 @@
       </if>
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="screenshot != null">
+        screenshot = #{screenshot,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
