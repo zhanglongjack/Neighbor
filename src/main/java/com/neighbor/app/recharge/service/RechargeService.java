@@ -18,4 +18,6 @@ public interface RechargeService {
 	public Long selectPageTotalCount(Recharge detail);
 
 	public List<Recharge> selectPageByObjectForList(Recharge detail);
+
+    ResponseResult modifyRecharge(UserInfo user, Recharge recharge);
 }

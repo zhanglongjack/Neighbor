@@ -10,9 +10,11 @@ import com.neighbor.app.recharge.constants.ChannelTypeDesc;
 import com.neighbor.app.recharge.constants.RechargeStatusDesc;
 import com.neighbor.common.util.DateFormateType;
 import com.neighbor.common.util.DateUtils;
+import org.springframework.util.StringUtils;
 
 public class Recharge  extends PageEntity{
     private Long id;
+    private Long recordId;
 
     private String orderNo;
 
@@ -36,7 +38,47 @@ public class Recharge  extends PageEntity{
     private String statesDesc ;
     private String channelTypeDesc ;
 
+    public Long getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(Long recordId) {
+        this.recordId = recordId;
+    }
+
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
+    }
+
+    public void setStatesDesc(String statesDesc) {
+        this.statesDesc = statesDesc;
+    }
+
+    public void setChannelTypeDesc(String channelTypeDesc) {
+        this.channelTypeDesc = channelTypeDesc;
+    }
+
     private String transactionTypeDesc;
+
+    private String isCustomer;
+
+    public String getIsCustomer() {
+        return isCustomer;
+    }
+
+    public void setIsCustomer(String isCustomer) {
+        this.isCustomer = isCustomer;
+    }
+
+    private String screenshot;//线下转账截图地址
+
+    public String getScreenshot() {
+        return screenshot;
+    }
+
+    public void setScreenshot(String screenshot) {
+        this.screenshot = screenshot;
+    }
 
 
     public String getTransactionTypeDesc() {
@@ -146,6 +188,9 @@ public class Recharge  extends PageEntity{
     }
 
     public String getRemarks() {
+        if(!StringUtils.isEmpty(remarks)){
+            return remarks;
+        }
         if(channelType!=null){
             return ChannelTypeDesc.getDesByValue(channelType)+TransactionItemDesc.recharge.getDes();
         }
@@ -156,16 +201,26 @@ public class Recharge  extends PageEntity{
         this.remarks = remarks;
     }
 
-	@Override
-	public String toString() {
-		return String.format(
-				"Recharge [id=%s, orderNo=%s, createTime=%s, updateTime=%s, uId=%s, channelType=%s, amount=%s, states=%s, remarks=%s]",
-				id, orderNo, createTime, updateTime, uId, channelType, amount, states, remarks);
-	}
 
-
-    
-    
-   
-    
+    @Override
+    public String toString() {
+        return "Recharge{" +
+                "id=" + id +
+                ", orderNo='" + orderNo + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", uId=" + uId +
+                ", channelType='" + channelType + '\'' +
+                ", amount=" + amount +
+                ", states='" + states + '\'' +
+                ", remarks='" + remarks + '\'' +
+                ", availableAmount=" + availableAmount +
+                ", createTimeStr='" + createTimeStr + '\'' +
+                ", statesDesc='" + statesDesc + '\'' +
+                ", channelTypeDesc='" + channelTypeDesc + '\'' +
+                ", transactionTypeDesc='" + transactionTypeDesc + '\'' +
+                ", isCustomer='" + isCustomer + '\'' +
+                ", screenshot='" + screenshot + '\'' +
+                '}';
+    }
 }

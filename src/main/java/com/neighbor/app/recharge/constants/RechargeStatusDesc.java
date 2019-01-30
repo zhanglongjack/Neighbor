@@ -1,7 +1,7 @@
 package com.neighbor.app.recharge.constants;
 
 public enum RechargeStatusDesc {
-    initial("初始"),processing("处理中"),success("成功"),failed("失败");
+    initial("待审核"),processing("处理中"),success("成功"),failed("失败");
 
     private String des;
 

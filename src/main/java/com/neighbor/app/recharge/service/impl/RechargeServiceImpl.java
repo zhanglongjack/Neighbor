@@ -6,10 +6,11 @@ import com.neighbor.app.balance.po.TransactionSubTypeDesc;
 import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.balance.service.BalanceDetailService;
 import com.neighbor.app.common.util.OrderUtils;
+import com.neighbor.app.recharge.constants.ChannelTypeDesc;
+import com.neighbor.app.recharge.constants.RechargeStatusDesc;
 import com.neighbor.app.recharge.controller.RechargeController;
 import com.neighbor.app.recharge.dao.RechargeMapper;
 import com.neighbor.app.recharge.entity.Recharge;
-import com.neighbor.app.recharge.constants.RechargeStatusDesc;
 import com.neighbor.app.recharge.po.RechargeRecord;
 import com.neighbor.app.recharge.service.RechargeService;
 import com.neighbor.app.users.entity.UserInfo;
@@ -45,16 +46,27 @@ public class RechargeServiceImpl implements RechargeService {
     public ResponseResult recharge(UserInfo user, Recharge recharge) throws Exception {
         ResponseResult responseResult = new ResponseResult();
         Date date = new Date();
-        UserWallet userWallet = userWalletService.lockUserWalletByUserId(user.getId());
-        userWallet.setAvailableAmount(userWallet.getAvailableAmount().add(recharge.getAmount()));
-        userWallet.setUpdateTime(date);
+        UserWallet userWallet = userWalletService.selectByPrimaryUserId(user.getId());
         recharge.setId(null);
         recharge.setCreateTime(date);
         recharge.setOrderNo(OrderUtils.getOrderNo(OrderUtils.RECHARGE));
         recharge.setuId(user.getId());
         recharge.setAvailableAmount(userWallet.getAvailableAmount());
-        recharge.setStates(RechargeStatusDesc.success.toString());
-        rechargeMapper.insertSelective(recharge);
+        if(ChannelTypeDesc.offline.toString().equals(recharge.getChannelType())){
+            recharge.setStates(RechargeStatusDesc.initial.toString());
+            rechargeMapper.insertSelective(recharge);
+            return  responseResult;
+        }else{
+            recharge.setStates(RechargeStatusDesc.success.toString());
+            rechargeMapper.insertSelective(recharge);
+        }
+
+        UserWallet updateWallet = new UserWallet();
+        //退回金额
+        updateWallet.setAvailableAmount(recharge.getAmount());
+        updateWallet.setuId(user.getId());
+        userWalletService.updateWalletAmount(updateWallet);
+        userWallet = userWalletService.selectByPrimaryUserId(user.getId());
 
         //充值交易明细
         BalanceDetail balanceDetail = new BalanceDetail();
@@ -74,7 +86,6 @@ public class RechargeServiceImpl implements RechargeService {
         balanceDetailService.insertSelective(balanceDetail);
 
 
-        userWalletService.updateByPrimaryKeySelective(userWallet);
         
         responseResult.addBody("userWallet", userWallet);
         return responseResult;
@@ -122,4 +133,41 @@ public class RechargeServiceImpl implements RechargeService {
 	public List<Recharge> selectPageByObjectForList(Recharge record) {
 		return rechargeMapper.selectPageByObjectForList(record);
 	}
+
+    @Override
+    @Transactional(readOnly = false,rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    public ResponseResult modifyRecharge(UserInfo user, Recharge recharge) {
+        ResponseResult result = new ResponseResult();
+        Date date = new Date();
+        recharge.setId(recharge.getRecordId());
+        recharge.setUpdateTime(date);
+        rechargeMapper.updateByPrimaryKeySelective(recharge);
+        if(RechargeStatusDesc.success.toString().equals(recharge.getStates())){
+            //成功
+            Recharge temp = rechargeMapper.selectByPrimaryKey(recharge.getId());
+            UserWallet updateWallet = new UserWallet();
+            updateWallet.setAvailableAmount(temp.getAmount());
+            updateWallet.setuId(user.getId());
+            userWalletService.updateWalletAmount(updateWallet);
+            UserWallet userWallet = userWalletService.selectByPrimaryUserId(user.getId());
+
+            //充值交易明细
+            BalanceDetail balanceDetail = new BalanceDetail();
+            balanceDetail.setAmount(temp.getAmount());
+            balanceDetail.setAvailableAmount(userWallet.getAvailableAmount());
+            balanceDetail.setuId(temp.getuId());
+            balanceDetail.setTransactionType(TransactionTypeDesc.receipt.toString());
+            balanceDetail.setTransactionSubType(TransactionSubTypeDesc.recharge.toString());
+            if(recharge.getRemarks()!=null){
+                balanceDetail.setRemarks(TransactionItemDesc.recharge.getDes()+ StringUtil.split_
+                        +recharge.getRemarks());
+            }else{
+                balanceDetail.setRemarks(TransactionItemDesc.recharge.getDes());
+            }
+
+            balanceDetail.setTransactionId(temp.getId());
+            balanceDetailService.insertSelective(balanceDetail);
+        }
+        return result;
+    }
 }

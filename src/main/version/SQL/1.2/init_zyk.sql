@@ -96,3 +96,5 @@ CREATE TABLE `group_apply` (
 
 
 alter table users_info add user_role varchar(50) DEFAULT '0' COMMENT '用户角色（0：普通用户，1：客服，2：超管）';
+
+alter table recharge add screenshot varchar(500) DEFAULT null COMMENT '转账截图地址';
