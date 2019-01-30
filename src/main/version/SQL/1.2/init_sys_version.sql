@@ -9,7 +9,7 @@ CREATE TABLE `sys_version` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统版本表';
 
-INSERT INTO `sys_version` VALUES (100001, '2019-01-29 17:26:42', '2019-01-29 17:26:42', NULL, NULL, '1');
+INSERT INTO `sys_version` VALUES (100001, '2019-01-29 17:26:42', '2019-01-29 17:26:42', NULL, NULL, '1.1.1');
 
 -- 每次版本更新需要注意几点
 
