@@ -15,6 +15,8 @@ import com.neighbor.app.withdraw.entity.Withdraw;
 import com.neighbor.app.withdraw.constants.WithdrawStatusDesc;
 import com.neighbor.app.withdraw.service.WithdrawService;
 import com.neighbor.common.constants.EnvConstants;
+import com.neighbor.common.exception.ParamsCheckException;
+import com.neighbor.common.sms.TencentSms;
 import com.neighbor.common.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,21 @@ public class WithdrawServiceImpl implements WithdrawService {
             responseResult.setErrorCode(1);//失败
             responseResult.setErrorMessage("用户不存在！");
             return responseResult;
+        }
+        //判断验证码
+        boolean isValid = withdraw.getVerfiyCode().equals(TencentSms.smsCache.get(withdraw.getPhone()));
+        if (!isValid) {
+            logger.info("验证码错误");
+            throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "验证码错误");
+        }
+        //判断取现次数
+        String shortDate = DateUtils.getStringDateShort();
+        withdraw.setShortDate(shortDate);
+        long count = withdrawMapper.selectPageTotalCount(withdraw);
+        long num = Long.valueOf(env.getProperty(EnvConstants.WITHDRAW_LIMIT_NUM));
+        if(count>=num){
+            logger.info("取现次数已超过最大次数！"+num);
+            throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "很抱歉！您已达到每日可提现次数上限，请您明日再来。");
         }
         BigDecimal amount = BigDecimalUtil.rounding(withdraw.getAmount());
         BigDecimal withdrawRate = new BigDecimal(env.getProperty(EnvConstants.WITHDRAW_RATE));
@@ -110,7 +127,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         balanceDetailCost.setRemarks(TransactionSubTypeDesc.withdrawCost.getDes());
         balanceDetailCost.setTransactionId(withdraw.getId());
         balanceDetailService.insertSelective(balanceDetailCost);
-
+        TencentSms.smsCache.remove(withdraw.getPhone());
         responseResult.addBody("userWallet", userWallet);
         return responseResult;
     }
@@ -154,7 +171,7 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Override
     public ResponseResult preWithdraw(UserInfo userInfo, Withdraw withdraw) throws Exception {
         ResponseResult responseResult = new ResponseResult();
-        UserWallet userWallet = userWalletService.lockUserWalletByUserId(userInfo.getId());
+        UserWallet userWallet = userWalletService.selectByPrimaryUserId(userInfo.getId());
         if(userWallet==null){
             responseResult.setErrorCode(1);//失败
             responseResult.setErrorMessage("用户不存在！");
@@ -162,6 +179,16 @@ public class WithdrawServiceImpl implements WithdrawService {
             return responseResult;
         }
         HashMap<String,Object> body = new HashMap<String,Object>();
+        withdraw.setuId(userInfo.getId());
+        String shortDate = DateUtils.getStringDateShort();
+        withdraw.setShortDate(shortDate);
+        long count = withdrawMapper.selectPageTotalCount(withdraw);
+        long num = Long.valueOf(env.getProperty(EnvConstants.WITHDRAW_LIMIT_NUM));
+        if(count>=num){
+            body.put("limit",1);
+        }else{
+            body.put("limit",0);
+        }
         body.put("availableAmount",userWallet.getAvailableAmount());
         body.put("withdrawRate",env.getProperty(EnvConstants.WITHDRAW_RATE));
         responseResult.addBody("resp",body);

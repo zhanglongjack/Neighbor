@@ -46,6 +46,34 @@ public class Withdraw extends PageEntity {
 
     private String transactionTypeDesc;
 
+    private String phone;
+    private String verfiyCode;
+    private String shortDate;
+
+    public String getShortDate() {
+        return shortDate;
+    }
+
+    public void setShortDate(String shortDate) {
+        this.shortDate = shortDate;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getVerfiyCode() {
+        return verfiyCode;
+    }
+
+    public void setVerfiyCode(String verfiyCode) {
+        this.verfiyCode = verfiyCode;
+    }
+
     public String getIsCustomer() {
         return isCustomer;
     }

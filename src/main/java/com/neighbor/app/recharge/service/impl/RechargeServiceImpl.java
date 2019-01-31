@@ -1,5 +1,6 @@
 package com.neighbor.app.recharge.service.impl;
 
+import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.balance.entity.BalanceDetail;
 import com.neighbor.app.balance.po.TransactionItemDesc;
 import com.neighbor.app.balance.po.TransactionSubTypeDesc;
@@ -16,6 +17,8 @@ import com.neighbor.app.recharge.service.RechargeService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
+import com.neighbor.common.exception.ParamsCheckException;
+import com.neighbor.common.sms.TencentSms;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.util.StringUtil;
 import org.slf4j.Logger;
@@ -45,6 +48,12 @@ public class RechargeServiceImpl implements RechargeService {
     @Transactional(readOnly = false,rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     public ResponseResult recharge(UserInfo user, Recharge recharge) throws Exception {
         ResponseResult responseResult = new ResponseResult();
+        //判断验证码
+        boolean isValid = recharge.getVerfiyCode().equals(TencentSms.smsCache.get(recharge.getPhone()));
+        if (!isValid) {
+            logger.info("验证码错误");
+            throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "验证码错误");
+        }
         Date date = new Date();
         UserWallet userWallet = userWalletService.selectByPrimaryUserId(user.getId());
         recharge.setId(null);
@@ -55,6 +64,7 @@ public class RechargeServiceImpl implements RechargeService {
         if(ChannelTypeDesc.offline.toString().equals(recharge.getChannelType())){
             recharge.setStates(RechargeStatusDesc.initial.toString());
             rechargeMapper.insertSelective(recharge);
+            TencentSms.smsCache.remove(recharge.getPhone());
             return  responseResult;
         }else{
             recharge.setStates(RechargeStatusDesc.success.toString());
@@ -86,7 +96,7 @@ public class RechargeServiceImpl implements RechargeService {
         balanceDetailService.insertSelective(balanceDetail);
 
 
-        
+        TencentSms.smsCache.remove(recharge.getPhone());
         responseResult.addBody("userWallet", userWallet);
         return responseResult;
     }

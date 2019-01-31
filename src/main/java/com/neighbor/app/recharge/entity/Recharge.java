@@ -38,6 +38,25 @@ public class Recharge  extends PageEntity{
     private String statesDesc ;
     private String channelTypeDesc ;
 
+    private String phone;
+    private String verfiyCode;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getVerfiyCode() {
+        return verfiyCode;
+    }
+
+    public void setVerfiyCode(String verfiyCode) {
+        this.verfiyCode = verfiyCode;
+    }
+
     public Long getRecordId() {
         return recordId;
     }

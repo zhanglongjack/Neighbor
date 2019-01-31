@@ -31,6 +31,8 @@
 			<if test="realName != null and realName.length()>0">and real_name=#{realName}</if>
 		    <if test="states != null and states.length()>0">and states=#{states}</if>
 			<if test="orderNo != null and orderNo.length()>0">and order_no=#{orderNo}</if>
+            <if test="shortDate != null and shortDate.length()>0">and date_format(create_time ,'%Y-%m-%d') = #{shortDate}</if>
+
 		</where>
 	</sql>
 	
