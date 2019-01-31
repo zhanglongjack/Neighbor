@@ -191,10 +191,10 @@
         #{unreadMessageNum,jdbcType=BIGINT},
       </if>
       <if test="toppingFlag != null" >
-        #{toppingFlag,jdbcType=VARCHAR},
+        '0',
       </if>
       <if test="showMsgSwitch != null" >
-        #{showMsgSwitch,jdbcType=VARCHAR},
+        '0',
       </if>
       <if test="chatHistorySet != null" >
         #{chatHistorySet,jdbcType=VARCHAR},

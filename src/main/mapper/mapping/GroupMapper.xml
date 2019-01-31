@@ -19,6 +19,8 @@
 
   <resultMap id="FullResultMap" type="com.neighbor.app.group.entity.Group" extends="BaseResultMap" >
     <result column="groupOwnerUserId" property="groupOwnerUserId" jdbcType="BIGINT" />
+    <result column="show_msg_switch" property="showMsgSwitch" jdbcType="VARCHAR" />
+    <result column="show_nick_name_switch" property="showNickNameSwitch" jdbcType="VARCHAR" />
   </resultMap>
   
   <sql id="Base_Column_List" >
@@ -53,7 +55,14 @@
   <select id="selectPageByObjectForList" parameterType="com.neighbor.app.group.entity.Group"
           resultMap="FullResultMap">
     select
-    g.*,(select gm.user_id from group_member gm where g.id=gm.group_id and gm.member_type=1 limit 1) as groupOwnerUserId
+    g.*
+    ,(select gm.user_id from group_member gm where g.id=gm.group_id and gm.member_type=1 limit 1) as groupOwnerUserId
+    <if test="userId != null" >
+       ,gm.show_msg_switch,gm.show_nick_name_switch
+    </if>
+    <if test="userId == null" >
+      ,'0' as gm.show_msg_switch, '0' as gm.show_nick_name_switch
+    </if>
     from `group` g
     <if test="userId != null" >
       INNER JOIN group_member gm on g.id=gm.group_id and gm.user_id=#{userId,jdbcType=BIGINT}

@@ -37,6 +37,26 @@ public class Group {
 
     private Long groupOwnerUserId;//群主ID
 
+    private String showMsgSwitch;
+
+    private String showNickNameSwitch;
+
+    public String getShowMsgSwitch() {
+        return showMsgSwitch;
+    }
+
+    public void setShowMsgSwitch(String showMsgSwitch) {
+        this.showMsgSwitch = showMsgSwitch;
+    }
+
+    public String getShowNickNameSwitch() {
+        return showNickNameSwitch;
+    }
+
+    public void setShowNickNameSwitch(String showNickNameSwitch) {
+        this.showNickNameSwitch = showNickNameSwitch;
+    }
+
     public Long getGroupOwnerUserId() {
         return groupOwnerUserId;
     }
