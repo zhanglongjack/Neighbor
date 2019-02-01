@@ -12,6 +12,7 @@ public class PacketDetail extends PageEntity{
     private Long dPacketId;
 
     private Long gotUserId;
+    private String headUrl;
 
     private BigDecimal gotAmount;
 
@@ -118,6 +119,14 @@ public class PacketDetail extends PageEntity{
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
+
+	public String getHeadUrl() {
+		return headUrl;
+	}
+
+	public void setHeadUrl(String headUrl) {
+		this.headUrl = headUrl;
+	}
 
 	@Override
 	public String toString() {

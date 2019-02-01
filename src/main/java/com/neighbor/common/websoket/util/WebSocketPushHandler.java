@@ -85,10 +85,10 @@ public class WebSocketPushHandler implements WebSocketHandler {
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
 		UserInfo user = (UserInfo) session.getAttributes().get("user");
-		logger.info("收到消息:" + message.getPayload());
+		logger.info("收到单聊消息:" + message.getPayload());
 		JSONObject jsonObject = JSON.parseObject((String) message.getPayload());
 		if(jsonObject.containsKey("heartBeat") && jsonObject.getBooleanValue("heartBeat") ){
-			logger.info("收到用户[{}]的心跳消息",user.getId());
+			logger.info("收到单聊用户[{}]的心跳消息",user.getId());
 			return;
 		}
 		SocketMessage msgInfo = JSON.parseObject((String) message.getPayload(), SocketMessage.class);

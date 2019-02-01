@@ -71,4 +71,6 @@ CREATE TABLE `chat_message_backup` (
   PRIMARY KEY (`msg_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=328 DEFAULT CHARSET=utf8 COMMENT='消息记录备份';
 
+ALTER TABLE `packet_detail` 
+ADD COLUMN `head_url` VARCHAR(256) NULL COMMENT '抢红包人的头像' AFTER `create_time`;
 
