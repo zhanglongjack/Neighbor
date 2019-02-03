@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,5 +77,9 @@ public class TencentSms {
 		System.err.println("第一条发送完成");
 //		TencentSms.smsSend("666666", "15999585921");
 //		System.err.println("第二条发送完成");
+	}
+
+	public static void removeSMSCode(@NotNull(message = "手机号不能为空") String phone) {
+		smsCache.remove(phone);
 	}
 }

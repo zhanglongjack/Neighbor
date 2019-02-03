@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
-import com.neighbor.app.download.FileController;
 import com.neighbor.app.users.entity.UserConfig;
 import com.neighbor.common.util.StringUtil;
 import org.hibernate.validator.constraints.Length;
@@ -61,7 +60,8 @@ public class LoginController {
         }
 
         commonResultLogic(user, result);
-
+        TencentSms.removeSMSCode(phone);
+        
         logger.info("登录成功:{},result :{}", user, result);
         return result;
     }
@@ -108,7 +108,7 @@ public class LoginController {
         }
 
         commonResultLogic(user, result);
-
+        TencentSms.removeSMSCode(phone);
         logger.info("登录成功:{},result :{}", user, result);
         return result;
     }
