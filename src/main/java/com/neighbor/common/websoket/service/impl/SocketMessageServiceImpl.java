@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.neighbor.app.chatlist.service.ChatListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,6 +26,9 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 
 	@Autowired
 	private SocketMessageMapper socketMessageMapper;
+
+	@Autowired
+	private ChatListService chatListService;
 	
 	@Override
 	public int deleteByPrimaryKey(Long msgId) {
@@ -33,7 +37,13 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 
 	@Override
 	public int insertSelective(SocketMessage record) {
-		return socketMessageMapper.insertSelective(record);
+		int r = socketMessageMapper.insertSelective(record);
+		try {
+			chatListService.modifyLastMessage(record);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return r;
 	}
 
 	@Override

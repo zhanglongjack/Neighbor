@@ -5,10 +5,7 @@ import com.neighbor.app.chatlist.dao.ChatListMapper;
 import com.neighbor.app.chatlist.entity.ChatList;
 import com.neighbor.app.chatlist.service.ChatListService;
 import com.neighbor.app.users.entity.UserInfo;
-import com.neighbor.common.util.DateFormateType;
-import com.neighbor.common.util.DateUtils;
-import com.neighbor.common.util.PageTools;
-import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.util.*;
 import com.neighbor.common.websoket.constants.MessageDeleteStates;
 import com.neighbor.common.websoket.po.SocketMessage;
 import com.neighbor.common.websoket.service.SocketMessageService;
@@ -111,6 +108,30 @@ public class ChartListServiceImpl implements ChatListService {
             deleteChatHistory(chatList);
         }
         return responseResult;
+    }
+
+    @Override
+    public void modifyLastMessage(SocketMessage socketMessage) throws Exception {
+        if(socketMessage.getTargetGroupId()==null||socketMessage.getTargetGroupId()==0){
+            ChatList left = new ChatList();
+            left.setLastChatMessageContent(socketMessage.getContent());
+            left.setLastChatDate(socketMessage.getDate());
+            left.setLastChatTime(socketMessage.getTime());
+            left.setUserId(socketMessage.getSendUserId());
+            left.setFriendId(socketMessage.getTargetUserId());
+            left.setLastChatMessageType(socketMessage.getMsgType());
+            left.setLastChatMessageId(socketMessage.getMsgId());
+            chatListMapper.updateByFriendKeySelective(left);
+            ChatList right = new ChatList();
+            right.setLastChatMessageContent(socketMessage.getContent());
+            right.setLastChatDate(socketMessage.getDate());
+            right.setLastChatTime(socketMessage.getTime());
+            right.setUserId(socketMessage.getTargetUserId());
+            right.setFriendId(socketMessage.getSendUserId());
+            right.setLastChatMessageType(socketMessage.getMsgType());
+            right.setLastChatMessageId(socketMessage.getMsgId());
+            chatListMapper.updateByFriendKeySelective(right);
+        }
     }
 
     @Transactional(readOnly = false,rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
