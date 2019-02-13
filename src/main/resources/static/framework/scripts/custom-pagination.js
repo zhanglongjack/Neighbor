@@ -30,11 +30,15 @@ var getCategorySecondData = function(callback) {
 }
 
 var render = function(pageData) {
+	//$("#loading").show();
+	$('#loadingModal').modal('show');
 	pageQueryParams = pageData;
-	//setPaginator(currPage, Math.ceil(currTotal / currPageSize), render);
 	getCategorySecondData(function(data) {
+		$('#loadingModal').modal('hide');
 		$('#main-content').empty();
 		$('#main-content').html(data);
+		//$("#loading").hide();
+		console.log($('#loadingModal'));
 		setPaginator(Math.ceil(pageQueryParams.total / pageQueryParams.pageSize), render);
 	});
 }

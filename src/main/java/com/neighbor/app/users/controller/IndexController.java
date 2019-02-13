@@ -13,9 +13,9 @@ public class IndexController {
 	private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 //	public void login(String userName,String pwd,String code){
 	
-	@RequestMapping(value="/index")
+	@RequestMapping(value="/index.req")
 	public ModelAndView index(){
-		logger.info("index request");
+		logger.info("index request"); 
 		ModelAndView mv = new ModelAndView("page/index"); 
 		mv.addObject("test", "hello world !!!index");
 		mv.addObject("date", new Date());
@@ -23,7 +23,7 @@ public class IndexController {
 		return mv;
 	}
 	
-	@RequestMapping(value="/home")
+	@RequestMapping(value="/home.req")
 	public ModelAndView home(){
 		logger.info("home request");
 		ModelAndView mv = new ModelAndView("page/Home");

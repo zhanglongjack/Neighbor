@@ -10,53 +10,13 @@
 				$("[sign-tag='signAlarm']").each(function(){
 					$(this).hide();
 				});
-				$.ajax({
-					type : 'post',
-					url : '/sign/isSign',
-					cache : false,
-					dataType : 'json',
-					success : function(data) {
-						if(!data.success){
-							$("[sign-tag='signAlarm']").each(function(){
-								$(this).show();
-							});
-						}
-					},
-					error : function(data) {
-						if (data.responseJSON) {
-							toastr.error("签到失败:" + data.responseJSON.message);
-						}
-					}
-				});
-				
-				$("#signBTN").click(function() {
-					var targetUrl = "/sign/signAdd";
 
-					$.ajax({
-						type : 'post',
-						url : targetUrl,
-						cache : false,
-						dataType : 'json',
-						success : function(data) {
-							toastr.success("签到成功");
-							$("[sign-tag='signAlarm']").each(function(){
-								$(this).hide();
-							});
-							render(pageQueryParams); // 渲染页面函数
-						},
-						error : function(data) {
-							if (data.responseJSON) {
-								toastr.error("签到失败:" + data.responseJSON.message);
-							}
-						}
-					})
-
-				});
+	
 			});
 		</script>
 		
 			<div class="brand">
-				<a href="/index"><img th:src="@{~/crm_tempaltes/img/logo-dark.png}" alt="Klorofil Logo" class="img-responsive logo"></a>
+				<a href="/index"><img th:src="@{~/framework/img/logo-dark.png}" alt="Klorofil Logo" class="img-responsive logo"></a>
 			</div>
 			<div class="container-fluid">
 				<div class="navbar-btn">
@@ -76,14 +36,15 @@
 				<div id="navbar-menu">
 					<ul class="nav navbar-nav navbar-right">
 					<!-- -->
-						<li class="dropdown">
+						<li class="dropdown" style="display:none;">
 							<a class="dropdown-toggle icon-menu" data-toggle="dropdown">
 								<i class="lnr lnr-alarm"></i>
 								<span sign-tag="signAlarm" style="display:none;" class="badge bg-danger">1</span>
 							</a>
 							<ul class="dropdown-menu notifications">
+							<!-- 
 								<li sign-tag="signAlarm"><a id="signBTN" class="notification-item"><span class="dot bg-warning"></span>签到</a></li>
-								<!-- 
+								
 								<li><a href="#" class="notification-item"><span class="dot bg-danger"></span>You have 9 unfinished tasks</a></li>
 								<li><a href="#" class="notification-item"><span class="dot bg-success"></span>Monthly report is available</a></li>
 								<li><a href="#" class="notification-item"><span class="dot bg-warning"></span>Weekly meeting in 1 hour</a></li>
@@ -105,8 +66,8 @@
 						  -->
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<img th:src="@{~/crm_tempaltes/img/user-medium.png}" class="img-circle" alt="Avatar" style="height:22px;width:22px;"> 
-								<span data-th-text="${session.user.name}">Jack</span> 
+								<img th:src="@{~/framework/img/user-medium.png}" class="img-circle" alt="Avatar" style="height:22px;width:22px;"> 
+								<span data-th-text="${session.user.nickName}">Jack</span> 
 								<i class="icon-submenu lnr lnr-chevron-down"></i>
 							</a>
 							<ul class="dropdown-menu">

@@ -1,45 +1,135 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en" class="fullscreen-bg">
 
 <head>
+<title>Login</title>
 <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport"
-	content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-<title></title>
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<!-- VENDOR CSS -->
+<link rel="stylesheet" href="framework/css/bootstrap.min.css">
+<link rel="stylesheet" href="framework/vendor/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="framework/vendor/linearicons/style.css">
+<link rel="stylesheet" href="framework/vendor/toastr/toastr.min.css">
 
-<link href="./neighbor/css/mui.min.css" rel="stylesheet" />
-<link rel="stylesheet" type="text/css" href="./neighbor/css/font-awesome.min.css" />
-<link rel="stylesheet" type="text/css" href="./neighbor/css/app.css" />
-<link rel="stylesheet" type="text/css" href="./neighbor/js/swiper/css/swiper.css" />
-<link rel="stylesheet" href="./framework/vendor/toastr/toastr.min.css">
+<!-- MAIN CSS -->
+<link rel="stylesheet" href="framework/css/main.css">
+<!-- FOR DEMO PURPOSES ONLY. You should remove this in your project -->
+<link rel="stylesheet" href="framework/css/demo.css">
+<!-- GOOGLE FONTS -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+<!-- ICONS -->
+<link rel="apple-touch-icon" sizes="76x76" href="framework/img/apple-icon.png">
+<link rel="icon" type="image/png" sizes="96x96" href="framework/img/favicon.png">
 	
+	<script src="framework/vendor/jquery/jquery.min.js"></script>
+	<script src="framework/vendor/jquery/jquery.cookie.js"></script>
+	<script src="framework/vendor/bootstrap/js/bootstrap.min.js"></script>
 	
-<script src="./neighbor/js/mui.min.js"></script>
-<script src="./neighbor/js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
-<script src="./neighbor/js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
-<script src="./neighbor/js/swiper/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="./framework/vendor/toastr/toastr.min.js"></script>
-<script src="./framework/scripts/custom-toastr.js"></script>
+	<script src="framework/vendor/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="framework/vendor/toastr/toastr.min.js"></script>
+	<script src="framework/scripts/custom-toastr.js"></script>
 	
-<script type="text/javascript" charset="utf-8">
-	mui.init();
+</head>
 
+<body>
+	<!-- WRAPPER -->
+	<div id="wrapper">
+		<div class="vertical-align-wrap">
+			<div class="vertical-align-middle">
+				<div class="auth-box ">
+					<div class="left">
+						<div class="content">
+							<div class="header">
+								<div class="logo text-center">
+									<img src="framework/img/logo-dark.png" alt="Klorofil Logo">
+								</div>
+								<p class="lead">Login to your account</p>
+							</div>
+							<form class="form-auth-small" action="/accountLogin.ser" method="post">
+								<div class="form-group">
+									<label for="signin-email" class="control-label sr-only">帐号</label>
+									<input type="phone" class="form-control" name="phone"
+										id="signin-phone" value="" placeholder="帐号">
+								</div>
+								<div class="form-group">
+									<label for="signin-password" class="control-label sr-only">密码</label>
+									<input type="password" class="form-control" name="password"
+										id="signin-password" value="" placeholder="密码">
+								</div>
+								<div class="form-group clearfix">
+									<label class="fancy-checkbox element-left"> 
+									<input id="ck_rmbUser" type="checkbox"> <span>记住密码</span>
+									</label>
+								</div>
+								<button id="loginSubmit" type="button" class="btn btn-primary btn-lg btn-block">登录</button>
+								<div class="bottom">
+									<span class="helper-text"><i class="fa fa-lock"></i> <a
+										href="#">忘记密码?</a></span>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="right">
+						<div class="overlay"></div>
+						<div class="content text">
+							<h1 class="heading">心存希望，幸福就会降临你；心存梦想，机遇就会笼罩你。</h1>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+ 
+</body>
+
+<script type="text/javascript">
 	$(function() {
-		$("#acctLoginSubmit").click(function() {
-			if(check()){
-				login();
-			}
-		});
-		
-		$("#phoneLoginSubmit").click(function() {
-			//...
-		});
+		if ($.cookie("rmbUser") == "true") {
+			$("#ck_rmbUser").prop("checked", true);
+			$("#signin-phone").val($.cookie("signin-phone"));
+			//$("#signin-password").remove();
+			$("#signin-password").val($.cookie("signin-password"));
+		}
+		$("#loginSubmit").click(function(){ 
+			login(); 
+		}); 
 	});
+	
+	//记住用户名密码 
+	function save() {
+		if ($("#ck_rmbUser").prop("checked")) {
+			var username = $("#signin-phone").val();
+			var password = $("#signin-password").val();
+			$.cookie("rmbUser", "true", {
+				expires : 7
+			}); //存储一个带7天期限的cookie 
+			$.cookie("signin-phone", username, {
+				expires : 7
+			});
+			$.cookie("signin-password", password, {
+				expires : 7
+			});
+		} else {
+			$.cookie("rmbUser", "false", {
+				expire : -1
+			});
+			$.cookie("signin-phone", "", {
+				expires : -1
+			});
+			$.cookie("signin-password", "", {
+				expires : -1
+			});
+		}
+	};
+	
+	
 
 	function check() {
 		var username = $("#signin-phone").val();
 		var password = $("#signin-password").val();
-
+		
 		if (username == "" || username == "请输入用户名") {
 			$("#tip").text("请输入用户名!");
 			$("#signin-phone").focus();
@@ -57,9 +147,9 @@
 	function login() {
 		$.ajax({
 			type : "POST",
-			url : "/login",
+			url : "/accountLogin.ser",
 			data : {
-				username : $("#signin-phone").val(),
+				phone : $("#signin-phone").val(),
 				password : $("#signin-password").val()
 			},
 			dataType : "json",
@@ -67,12 +157,16 @@
 				return check();
 			},
 			success : function(data) {
-				if (data.success) {
-					location.href = "/index";
+				if (data.errorCode==0) {
+					$.cookie("signin-phone", $("#signin-phone").val(), {
+						expires : 7
+					});
+					//addCookie("signin-phone", $("#signin-phone").val(), 0);
+					save();
+					location.href = "/index.ser";
 				} else {
 					//错误消息提示，默认背景为浅红色 
-					toastr.options.positionClass = "toast-top-full-width";
-					toastr.info(data.msg);
+					toastr.error(data.errorMessage);  
 					return false;
 				}
 
@@ -80,92 +174,4 @@
 		});
 	}
 </script>
-</head>
-
-<body>
-
-	<!--to 程序员-->
-	<!--a 标签如果需要加 链接跳转，加data-href属性。后面接链接。-->
-	<!--<a href="" data-href="如果a链接跳转就把链接写到这里"></a>-->
-	<!--<div data-href="如果a链接跳转就把链接写到这里"></div>-->
-		
-		
-		
-		
-		<style type="text/css">
-			body{
-				background: #F1F1F1;
-			}
-		</style>
-		
-		
-		
-	<header class="mui-bar mui-bar-nav">
-		<h1 class="mui-title">欢迎登陆</h1>
-	</header>
-
-	<div class="mui-content login-content">
-
-		<!--banner 轮播-->
-		<div class="banner-slider">
-			<img src="./neighbor/img/login-img.png" />
-		</div>
-
-		<div style="padding: 0 10px;">
-			<div id="slider" class="mui-slider">
-				<div id="sliderSegmentedControl"
-					class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
-					<a class="mui-control-item mui-active" href="#item1mobile"> 账号登陆 </a>
-					<a class="mui-control-item" href="#item2mobile"> 手机登陆 </a>
-				</div>
-				<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-6"></div>
-				<div class="mui-slider-group">
-					<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
-						<form class="mui-input-group">
-							<div class="mui-input-row mui-input-row-icons">
-								<label class="ico-user"></label>
-								<input id="signin-phone" name="username" type="text" class="mui-input-clear" placeholder="请输入您的账号">
-							</div>
-							<div class="mui-input-row mui-password mui-input-row-icons">
-								<label class="ico-password"></label>
-								<input id="signin-password" name="password" type="password" class="mui-input-password" placeholder="请输入您的密码">
-							</div>
-						</form>
-						<button id="acctLoginSubmit"  type="button" class="mui-btn mui-btn-red mui-btn-block border-raduis">点击登录</button>
-					</div>
-					<div id="item2mobile" class="mui-slider-item mui-control-content">
-						<form class="mui-input-group">
-							<div class="mui-input-row mui-input-row-icons">
-								<label class="ico-tel"></label>
-								<input type="tel" class="mui-input-clear" placeholder="请输入您的手机号">
-							</div>
-							<div class="mui-input-row mui-input-row-icons">
-								<button type="button" class="mui-btn mui-btn-red">点击发送验证码</button>
-								<label class="ico-yzm"></label>
-								<input type="number" class="mui-input-clear" placeholder="请输入短信验证码" maxlength="6">
-							</div>
-
-						</form>
-						<button id="phoneLoginSubmit"  type="button" class="mui-btn mui-btn-red mui-btn-block border-raduis">点击登录</button>
-					</div>
-
-				</div>
-			</div>
-			<p class="mui-text-center" style="margin-top: 10px;">还可以选择以下登陆方式登陆</p>
-			<div class="other-login mui-text-center mui-content-padded">
-				<a href="#" data-href="#跳转链接写到这里才会生效" class="login-weixin"></a>
-				<a href="#" data-href="#跳转链接写到这里才会生效" class="login-qq"></a>
-			</div>
-
-			<p class="agree-tips">
-				登陆代表您同意
-				<a href="#" data-href="#跳转链接写到这里才会生效">《好邻居服务协议》</a>
-			</p>
-		</div>
-
-	</div>
-
-	<script src="./neighbor/js/config.js" type="text/javascript" charset="utf-8"></script>
-</body>
-
 </html>

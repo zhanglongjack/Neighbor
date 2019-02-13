@@ -20,8 +20,8 @@ import java.io.File;
 public class WebConfig implements WebMvcConfigurer {  
 	private static final Logger logger = LoggerFactory.getLogger(WebConfig.class);
   
-//    @Autowired  
-//    private LoginInterceptor loginInterceptor;  
+    @Autowired  
+    private LoginInterceptor loginInterceptor;  
     
 	@Autowired  
     private TokenLoginInterceptor tokenLoginInterceptor;
@@ -57,9 +57,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override  
     public void addInterceptors(InterceptorRegistry registry) {  
         // 日志拦截器  
-//        registry.addInterceptor(loginInterceptor).addPathPatterns("/**");  
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/*.ser","/**/*.ser","/").excludePathPatterns(notLoginInterceptPaths);    
         // 登录拦截器  
-        registry.addInterceptor(tokenLoginInterceptor).addPathPatterns("/*.req","/**/*.req","/").excludePathPatterns(notLoginInterceptPaths);  
+        registry.addInterceptor(tokenLoginInterceptor).addPathPatterns("/*.req","/**/*.req").excludePathPatterns(notLoginInterceptPaths);  
     }  
   
     @Override  
@@ -78,9 +78,9 @@ public class WebConfig implements WebMvcConfigurer {
   
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-    	registry.addRedirectViewController("/", "/index.req");
-        registry.addViewController("/index.req").setViewName("page/index");
-        registry.addViewController("/user.req").setViewName("page/user/UserCenter");
+    	registry.addRedirectViewController("/", "/index.ser");
+        registry.addViewController("/index.ser").setViewName("page/index");
+        registry.addViewController("/user.ser").setViewName("page/user/UserCenter");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
     

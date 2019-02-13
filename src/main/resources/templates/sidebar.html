@@ -4,18 +4,73 @@
     <body>
 		<!-- NAVBAR -->
 		<div th:fragment="sidebar-nav" id="sidebar-nav" class="sidebar">
+			<script th:inline="javascript" type="text/javascript">
+			/*<![CDATA[*/
+			var menuId = /*[[${session.menuId}]]*/;
+			/*]]>*/
+				$(function(){
+
+
+				})
+			</script>
 			<div class="sidebar-scroll">
 				<nav>
 					<ul class="nav"> 
 						<li><a href="/index" id="menu-1"><i class="lnr lnr-home"></i> <span>主页</span></a></li>
-						<li><a href="/customer/custInfoView" id="menu-2"><i class="lnr lnr-users"></i> <span>客户信息</span></a></li>
-						<li><a href="/revisit/revisitView" id="menu-3"><i class="lnr lnr-bubble"></i> <span>回访记录</span></a></li>
-						<li><a href="/orders/ordersView" id="menu-4"><i class="lnr lnr-license"></i> <span>订单信息</span></a></li>
-						<li><a href="/consume/consumeView" id="menu-5"><i class="glyphicon glyphicon-credit-card"></i> <span>会员消费</span></a></li>
-						<li><a href="/sign/signView" id="menu-6"><i class="glyphicon glyphicon-heart"></i> <span>客服签到记录</span></a></li>
+						<li><a href="#" data-href="/customer" id="menu-2"><i class="lnr lnr-users"></i> <span>客户信息</span></a></li>
+						<li><a href="#" data-href="/revisit" id="menu-3"><i class="lnr lnr-bubble"></i> <span>回访记录</span></a></li>
+						<li><a href="#" data-href="/orders" id="menu-4"><i class="lnr lnr-license"></i> <span>订单信息</span></a></li>
+						<li><a href="#" data-href="/consume" id="menu-5"><i class="glyphicon glyphicon-credit-card"></i> <span>会员消费</span></a></li>
+						<li><a href="#" data-href="/sign" id="menu-6"><i class="glyphicon glyphicon-heart"></i> <span>客服签到记录</span></a></li>
 						
-						<li th:if="${session.user.isAdmin()}" ><a href="/userList/userListView" id="menu-7"><i class="glyphicon glyphicon-headphones"></i> <span>客服管理</span></a></li>
-						<li th:if="${session.user.isAdmin()}"><a href="/serve/wechat/serveWechatView" id="menu-8"><i class="glyphicon glyphicon-phone"></i> <span>服务微信管理</span></a></li>
+						<li th:if="${session.user.isAdmin()}"><a href="#" data-href="/userList" id="menu-7"><i class="glyphicon glyphicon-headphones"></i> <span>客服管理</span></a></li>
+						<li th:if="${session.user.isAdmin()}"><a href="#" data-href="/serve/wechat" id="menu-8"><i class="glyphicon glyphicon-phone"></i> <span>服务微信管理</span></a></li>
+						
+						<li th:if="${session.user.isAdmin()}">
+							<a href="#costPage" data-toggle="collapse" id="menu-13">
+								<i class="glyphicon glyphicon-ruble"></i> 
+								<span>成本记录</span> 
+								<i class="icon-submenu lnr lnr-chevron-left"></i>
+							</a>
+							<div id="costPage" class="collapse">
+								<ul class="nav">
+									<li th:if="${session.user.isAdmin()}">
+										<a href="#" data-href="/procurement" id="menu-9">
+										<i class="glyphicon glyphicon-shopping-cart"></i> 
+										<span>采购信息</span></a>
+									</li>
+									<li th:if="${session.user.isAdmin()}">
+										<a href="#" data-href="/adRecharge" id="menu-10">
+										<i class="glyphicon glyphicon-cd"></i> 
+										<span>广告充值记录</span></a>
+									</li>
+									<li th:if="${session.user.isAdmin()}">
+										<a href="#" data-href="/adConsume" id="menu-11">
+										<i class="glyphicon glyphicon-hd-video"></i> 
+										<span>广告消费记录</span></a>
+									</li>
+									<li><a href="#" data-href="/serverSalary" id="menu-12">
+										<i class="glyphicon glyphicon-piggy-bank"></i> 
+										<span>薪资记录</span></a>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li th:if="${session.user.isAdmin()}">
+							<a href="#reportPage" data-toggle="collapse" id="menu-14">
+								<i class="lnr lnr-chart-bars"></i> 
+								<span>报表汇总</span> 
+								<i class="icon-submenu lnr lnr-chevron-left"></i>
+							</a>
+							<div id="reportPage" class="collapse" aria-expanded="false">
+								<ul class="nav">
+									<li><a href="#" data-href="/report/saleSummary" id="menu-sub-3">销售业绩汇总</a></li>
+									<li><a href="#" data-href="/report/saleSummary" id="menu-sub-1">客服销售业绩</a></li>
+									<li><a href="#" data-href="/report/saleSummary" id="menu-sub-2">广告消耗统计</a></li>
+								</ul>
+							</div>
+						</li>
+						
 						<!-- 
 						<li><a href="#" id="menu-6"><i class="lnr lnr-chart-bars"></i> <span>我的业绩</span></a></li>
 						

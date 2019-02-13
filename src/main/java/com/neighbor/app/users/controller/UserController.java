@@ -115,5 +115,7 @@ public class UserController {
 		userService.userConfigSetting(userConfig);
 		return new ResponseResult();
 	}
-
+	public static void main(String[] args) {
+		System.out.println(EncodeData.encode("123456"));
+	}
 }

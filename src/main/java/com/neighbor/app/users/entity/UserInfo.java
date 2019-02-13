@@ -53,7 +53,11 @@ public class UserInfo extends PageEntity {
     public void setUserRole(String userRole) {
         this.userRole = userRole;
     }
-
+    
+    public boolean isAdmin(){
+    	return "2".equals(userRole);
+    }
+    
     public String getCreateTimeStr() {
         if(createTime!=null){
             try {

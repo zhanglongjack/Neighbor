@@ -15,15 +15,16 @@ var initOrderCheck = function(){
 		if(discount && discount!=null&&value){
         	var afterDiscountAmt = value * discount;
         	$("#ModifyModal").find('.modal-body input[name="afterDiscountAmt"]').val(afterDiscountAmt);
-        	var userAmt = Number($("#ModifyModal").find('.modal-body input[name="userAmt"]').val());
-        	var deposits = Number($("#ModifyModal").find('.modal-body input[name="deposits"]').val());
-        	if(userAmt>0 && userAmt - afterDiscountAmt>=0){
-        		$("#ModifyModal").find('.modal-body input[name="payAmount"]').val(afterDiscountAmt);
-        	}else if(userAmt>0 && userAmt - afterDiscountAmt<0){
-        		$("#ModifyModal").find('.modal-body input[name="payAmount"]').val(userAmt);
-        	}else if(userAmt==0){
-        		$("#ModifyModal").find('.modal-body input[name="payAmount"]').val(deposits);
-        	}
+//        	var userAmt = Number($("#ModifyModal").find('.modal-body input[name="userAmt"]').val());
+//        	var deposits = Number($("#ModifyModal").find('.modal-body input[name="deposits"]').val());
+//        	if(userAmt>0 && userAmt - afterDiscountAmt>=0){
+//        		$("#ModifyModal").find('.modal-body input[name="payAmount"]').val(afterDiscountAmt);
+//        	}else if(userAmt>0 && userAmt - afterDiscountAmt<0){
+//        		$("#ModifyModal").find('.modal-body input[name="payAmount"]').val(userAmt);
+//        	}else if(userAmt==0){
+//        		$("#ModifyModal").find('.modal-body input[name="payAmount"]').val(deposits);
+//        	}
+        	computePayAmount();
         	
     	}
 	}
@@ -39,7 +40,7 @@ var initOrderCheck = function(){
 	 
 	
 	var computePayAmount = function(){
-		
+		var orderStatus = $("#ModifyModal").find('.modal-body select[name="orderStatus"] option:selected').val();
 		var afterDiscountAmt = Number($("#ModifyModal").find('.modal-body input[name="afterDiscountAmt"]').val());
     	var userAmt = Number($("#ModifyModal").find('.modal-body input[name="userAmt"]').val());
     	var deposits = Number($("#ModifyModal").find('.modal-body input[name="deposits"]').val());
@@ -47,7 +48,7 @@ var initOrderCheck = function(){
     		$("#ModifyModal").find('.modal-body input[name="payAmount"]').val(afterDiscountAmt);
     	}else if(userAmt>0 && userAmt - afterDiscountAmt<0){
     		$("#ModifyModal").find('.modal-body input[name="payAmount"]').val(userAmt);
-    	}else if(userAmt==0){
+    	}else if(userAmt==0 && Number(orderStatus)!=4){
     		$("#ModifyModal").find('.modal-body input[name="payAmount"]').val(deposits);
     	}
 	}
@@ -273,16 +274,16 @@ var initOrderCheck = function(){
                 validators: {
                     notEmpty: {
                         message: '手机号不能为空'
-                    },
-                    stringLength: {
-                        min: 11,
-                        max: 11,
-                        message: '手机号长度必须是由11位数字组成'
-                    },
-                    regexp: {
-                        regexp: /^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8])|(19[7]))\d{8}$/,
-                        message: '手机号格式不正确'
                     }
+//                    stringLength: {
+//                        min: 11,
+//                        max: 11,
+//                        message: '手机号长度必须是由11位数字组成'
+//                    },
+//                    regexp: {
+//                        regexp: /^((1[3,5,7,8][0-9])|(14[5,7])|(17[0,6,7,8])|(19[7]))\d{8}$/,
+//                        message: '手机号格式不正确'
+//                    }
                 }
             }
         }
@@ -291,7 +292,9 @@ var initOrderCheck = function(){
    });
     
    var checkWechatNo = function(){
+	    var checkWechatNoURL = "/customer/checkWechatNo";
     	var params = {oWechatNo:oWechatNoElement.val()};
+    	console.log(JSON.stringify(params));
     	$.ajax({
     		url: checkWechatNoURL,
     		data:params,
@@ -399,13 +402,17 @@ var initOrderCheck = function(){
 	function upatePayAmount(){
 		var orderStatus = $("#ModifyModal").find('.modal-body select[name="orderStatus"] option:selected').val();
 		var payAmountObj = $("#ModifyModal").find('.modal-body input[name="payAmount"]');
-		
+		$("#ModifyModal").find('.modal-body input[name="payAmount"]').attr("readonly","readonly");
 		if(Number(orderStatus)==3){
 			var cashOnDeliveryAmt = Number($("#ModifyModal").find('.modal-body input[name="cashOnDeliveryAmt"]').val());
 			payAmountObj.val((oldValue + cashOnDeliveryAmt).toFixed(2));
+		}else if(Number(orderStatus)==4){
+			$("#ModifyModal").find('.modal-body input[name="payAmount"]').removeAttr("readonly");
 		}else{
 			payAmountObj.val(oldValue.toFixed(2));
 		}
+		
+		
 	}
 	
 	

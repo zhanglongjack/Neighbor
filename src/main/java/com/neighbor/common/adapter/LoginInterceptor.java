@@ -11,8 +11,6 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.neighbor.app.users.entity.UserInfo;
@@ -40,10 +38,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			throws Exception {
 		String basePath = request.getContextPath();
 		String path = request.getRequestURI();
-		logger.info("basePath:"+basePath+" -------  path:"+path);
-
+		String menuId = request.getParameter("menuId");
+		logger.info(menuId+"basePath:"+basePath+" -------  path:"+path);
+		
 		if (!doLoginInterceptor(path, basePath)) {// 是否进行登陆拦截
-			logger.info("basePath:"+basePath+" ------- 不拦截  path:"+path);
 			return true;
 		}
 
@@ -61,15 +59,20 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 //				}
 //			}
 			
-		// 如果登录了，会把用户信息存进session
+		// 如果登录了，会把用户信息存进session 
 		HttpSession session = request.getSession();
 		UserInfo user = (UserInfo) session.getAttribute("user");
+		
+//		if(menuId!=null){
+//			logger.info("menuId===="+menuId);
+//			session.setAttribute("menuId", menuId);
+//		}
 		/*
 		 * User userInfo = new User(); userInfo.setId(users.get(0).getId());
 		 * userInfo.setName(users.get(0).getName());
 		 * userInfo.setPassword(users.get(0).getPassword());
 		 */
-		// 开发环节的设置，不登录的情况下自动登录
+		// 开发环节的设置，不登录的情况下自动登录 
 		/*
 		 * if(userInfo==null && IGNORE_LOGIN){ userInfo =
 		 * sysUserService.getUserInfoByUserID(2);
@@ -82,12 +85,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			 */
 
 			String requestType = request.getHeader("X-Requested-With");
-			// System.out.println(requestType);
 			if (requestType != null && requestType.equals("XMLHttpRequest")) {
+				logger.info("登录超时?"+requestType);
 				response.setHeader("sessionstatus", "timeout");
 				// response.setHeader("basePath",request.getContextPath());
 				response.getWriter().print("LoginTimeout");
-				return false;
+				
 			} else {
 				logger.info("尚未登录，跳转到登录界面");
 				response.sendRedirect("/login.html");
@@ -114,11 +117,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		notLoginPaths.add("/test.html");
 		notLoginPaths.add("/login.html");
 		notLoginPaths.add("/shutdown");
-		notLoginPaths.add("/login");
+		notLoginPaths.add("/login.ser");
+		notLoginPaths.add("/accountLogin.ser");
 		notLoginPaths.add("/register");
 		notLoginPaths.add("/kaptcha.jpg");
 		notLoginPaths.add("/kaptcha");
-		notLoginPaths.add("/api");
 		// notLoginPaths.add("/sys/logout");
 		// notLoginPaths.add("/loginTimeout");
 

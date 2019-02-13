@@ -16,7 +16,7 @@ var fileUploadInit = function(url){
         showRemove: true,//显示移除按钮
         showUpload: true,//是否显示上传按钮
         maxFileCount:1,
-        allowedFileExtensions:["xlsx"],
+        allowedFileExtensions:["xlsx","xls"],
         maxFilePreviewSize: 20240,
         elErrorContainer: "#errorBlock",
     	previewFileIconSettings: {
