@@ -740,6 +740,11 @@ public class DateUtils {
 		return formatter.format(date);
 	}
 
+	public static Date formatDate(String date ,String dateFormateStr) throws Exception{
+		SimpleDateFormat formatter = new SimpleDateFormat(dateFormateStr);
+		return formatter.parse(date);
+	}
+
 	
 	
 }

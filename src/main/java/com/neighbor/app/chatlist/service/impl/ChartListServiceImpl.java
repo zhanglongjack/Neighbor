@@ -114,6 +114,7 @@ public class ChartListServiceImpl implements ChatListService {
     public void modifyLastMessage(SocketMessage socketMessage) throws Exception {
         if(socketMessage.getTargetGroupId()==null||socketMessage.getTargetGroupId()==0){
             ChatList left = new ChatList();
+            Date chatLastDate = DateUtils.formatDate(socketMessage.getDate()+" "+socketMessage.getTime(),DateFormateType.LANG_FORMAT);
             left.setLastChatMessageContent(socketMessage.getContent());
             left.setLastChatDate(socketMessage.getDate());
             left.setLastChatTime(socketMessage.getTime());
@@ -121,6 +122,7 @@ public class ChartListServiceImpl implements ChatListService {
             left.setFriendId(socketMessage.getTargetUserId());
             left.setLastChatMessageType(socketMessage.getMsgType());
             left.setLastChatMessageId(socketMessage.getMsgId());
+            left.setLastChatDateTime(chatLastDate);
             chatListMapper.updateByFriendKeySelective(left);
             ChatList right = new ChatList();
             right.setLastChatMessageContent(socketMessage.getContent());
@@ -130,6 +132,7 @@ public class ChartListServiceImpl implements ChatListService {
             right.setFriendId(socketMessage.getSendUserId());
             right.setLastChatMessageType(socketMessage.getMsgType());
             right.setLastChatMessageId(socketMessage.getMsgId());
+            right.setLastChatDateTime(chatLastDate);
             chatListMapper.updateByFriendKeySelective(right);
         }
     }
