@@ -55,6 +55,7 @@ public class UserInfo extends PageEntity {
     }
     
     public boolean isAdmin(){
+//    	return Integer.parseInt(userRole)>0;
     	return "2".equals(userRole);
     }
     
