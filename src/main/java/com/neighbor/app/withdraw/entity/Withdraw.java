@@ -241,23 +241,29 @@ public class Withdraw extends PageEntity {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Withdraw{");
-        sb.append("id=").append(id);
-        sb.append(", orderNo='").append(orderNo).append('\'');
-        sb.append(", createTime=").append(createTime);
-        sb.append(", updateTime=").append(updateTime);
-        sb.append(", uId=").append(uId);
-        sb.append(", amount=").append(amount);
-        sb.append(", bankCardNo='").append(bankCardNo).append('\'');
-        sb.append(", branchInfo='").append(branchInfo).append('\'');
-        sb.append(", realName='").append(realName).append('\'');
-        sb.append(", states='").append(states).append('\'');
-        sb.append(", remarks='").append(remarks).append('\'');
-        sb.append(", availableAmount=").append(availableAmount);
-        sb.append(", createTimeStr='").append(createTimeStr).append('\'');
-        sb.append(", actualAmount=").append(actualAmount);
-        sb.append(", cost=").append(cost);
-        sb.append('}');
-        return sb.toString();
+        return "Withdraw{" +
+                "id=" + id +
+                ", recordId=" + recordId +
+                ", orderNo='" + orderNo + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", uId=" + uId +
+                ", amount=" + amount +
+                ", bankCardNo='" + bankCardNo + '\'' +
+                ", branchInfo='" + branchInfo + '\'' +
+                ", realName='" + realName + '\'' +
+                ", states='" + states + '\'' +
+                ", statesStr='" + statesStr + '\'' +
+                ", remarks='" + remarks + '\'' +
+                ", availableAmount=" + availableAmount +
+                ", createTimeStr='" + createTimeStr + '\'' +
+                ", actualAmount=" + actualAmount +
+                ", cost=" + cost +
+                ", isCustomer='" + isCustomer + '\'' +
+                ", transactionTypeDesc='" + transactionTypeDesc + '\'' +
+                ", phone='" + phone + '\'' +
+                ", verfiyCode='" + verfiyCode + '\'' +
+                ", shortDate='" + shortDate + '\'' +
+                '}';
     }
 }

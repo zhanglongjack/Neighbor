@@ -252,6 +252,16 @@ public class WithdrawServiceImpl implements WithdrawService {
         return result;
     }
 
+    @Override
+    public Long selectPageTotalCount(Withdraw withdraw) {
+        return withdrawMapper.selectPageTotalCount(withdraw);
+    }
+
+    @Override
+    public List<Withdraw> selectPageByObjectForList(Withdraw withdraw) {
+        return withdrawMapper.selectPageByObjectForList(withdraw);
+    }
+
     //检查是否是超管和客服的角色账号
     private boolean checkUserRole(UserInfo userInfo){
         if("1".equals(userInfo.getUserRole())||"2".equals(userInfo.getUserRole())){

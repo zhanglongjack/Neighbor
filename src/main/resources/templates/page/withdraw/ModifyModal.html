@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+	<title>test</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+</head>
+
+<body>
+<div th:fragment="dialog-content">
+<script th:inline="javascript">
+/*<![CDATA[*/
+	//var modifyInfo = /*[[${modifyInfo}]]*/;
+/*]]>*/
+ 
+$(function(){
+	initTimePicker();
+})
+</script>
+
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+			&times;
+		</button>
+		<h4 th:text="${'填写转账'+withdraw.statesStr+'备注'}" class="modal-title" id="ModifyModalTitle">
+			填写转账备注
+		</h4>
+	</div>
+	<div class="modal-body">
+		<form id="modifyDataFrom" class="form-horizontal" role="form">
+			<input id="modifyId"  type="hidden" value="1">
+			<input id="recordId" name="recordId" type="hidden" th:attr="value=${withdraw==null}?'':${withdraw.recordId}">
+			<input id="states" name="states" type="hidden" th:attr="value=${withdraw==null}?'':${withdraw.states}">
+			<input id="modifyModel" name="modifyModel" type="hidden" th:attr="value=${modifyModel==null}?'':${modifyModel}">
+			<div class="form-group">
+				<label class="col-sm-2 control-label">备注</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control"  placeholder="收款方可见，最多50个字，可不填" maxlength="50" name="remarks"
+						 >
+				</div>
+			</div>
+
+			<!-- 
+			<div class="form-group">
+				<label class="col-sm-2 control-label">等级</label> 
+				<div class="col-sm-10"> 
+					<select class="form-control" name="uLevel">
+						<option value="" >===客服等级===</option>
+						<option th:each="map:${session.staffLevelMap}" th:selected="${modifyInfo!=null&&modifyInfo.uLevel == map.key}" 
+								th:value="${map.key}" th:text="${map.value}"></option>
+					</select>
+				</div>
+			</div>
+			 
+			<div class="form-group">
+				<label class="col-sm-2 control-label">入职日期</label> 
+				<div class="col-sm-10">
+			  		<span class="input-group input-append date" datepicker-flag="datepicker">
+                        <input readonly type="text" class="form-control" name="entryDate"
+                            placeholder="yyyymmdd" data-date-format="yyyymmdd" 
+                            th:attr="value=${modifyInfo==null}?${#dates.format(#dates.createNow(), 'yyyyMMdd')}:${modifyInfo.entryDate}">
+                        <span class="input-group-addon add-on" style="background-color:white">
+                           <i class="glyphicon glyphicon-calendar"></i>
+                        </span>
+                    </span>
+				</div>
+			</div>
+			-->
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+		</button>
+		<button th:text="${'转账'+withdraw.statesStr}"  type="button" class="btn btn-primary" id="ModifyModalSubmit">
+			提交
+		</button>
+	</div>
+</div>
+</body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$("#ModifyModal").on("hidden.bs.modal", function() {  
+		    $(this).removeData("bs.modal");  
+		});
+        $('#modifyDataFrom').bootstrapValidator({
+            message: '输入无效,请重新输入',
+            group:'.form-group',
+            trigger: 'keyup focus',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                wechatNumber: {
+                    message: '客服微信号不合法',
+                    validators: {
+                        notEmpty: {
+                            message: '客服微信号不能为空'
+                        }
+                    }
+                },
+                name: {
+                    message: '姓名不合法',
+                    validators: {
+                        notEmpty: {
+                            message: '姓名不能为空'
+                        }
+                    }
+                },
+                phone: {
+                    message: '联系电话无效',
+                    validators: {
+                        notEmpty: {
+                            message: '联系电话不能为空'
+                        },
+                        stringLength: {
+                            min: 11,
+                            max: 11,
+                            message: '联系电话长度必须是11位'
+                        },
+                        regexp: {
+                            regexp: /^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8])|(19[7]))\d{8}$/,
+                            message: '联系电话格式不正确'
+                        }
+                    }
+                }
+            }
+        });
+	});
+</script>
+</html>

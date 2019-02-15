@@ -24,6 +24,8 @@
 						<li><a href="#" data-href="/sign" id="menu-6"><i class="glyphicon glyphicon-heart"></i> <span>客服签到记录</span></a></li>
 						
 						<li th:if="${session.user.isAdmin()}"><a href="#" data-href="/userList" id="menu-7"><i class="glyphicon glyphicon-headphones"></i> <span>客服管理</span></a></li>
+						<li th:if="${session.user.isAdmin()}"><a href="#" data-href="/withdrawList" id="menu-7"><i class="glyphicon glyphicon-headphones"></i> <span>提现单管理</span></a></li>
+						<li th:if="${session.user.isAdmin()}"><a href="#" data-href="/rechargeList" id="menu-7"><i class="glyphicon glyphicon-headphones"></i> <span>充值单管理</span></a></li>
 						<li th:if="${session.user.isAdmin()}"><a href="#" data-href="/serve/wechat" id="menu-8"><i class="glyphicon glyphicon-phone"></i> <span>服务微信管理</span></a></li>
 						
 						<li th:if="${session.user.isAdmin()}">
@@ -58,8 +60,8 @@
 						</li>
 						<li th:if="${session.user.isAdmin()}">
 							<a href="#reportPage" data-toggle="collapse" id="menu-14">
-								<i class="lnr lnr-chart-bars"></i> 
-								<span>报表汇总</span> 
+								<i class="lnr lnr-chart-bars"></i>
+								<span>报表汇总</span>
 								<i class="icon-submenu lnr lnr-chevron-left"></i>
 							</a>
 							<div id="reportPage" class="collapse" aria-expanded="false">
