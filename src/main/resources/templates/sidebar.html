@@ -16,11 +16,12 @@
 			<div class="sidebar-scroll">
 				<nav>
 					<ul class="nav"> 
-						<li><a href="/index" id="menu-1"><i class="lnr lnr-home"></i> <span>主页</span></a></li>
+						<li><a href="/" id="menu-1"><i class="lnr lnr-home"></i> <span>主页</span></a></li>
 						<li><a href="#" data-href="/customer" id="menu-2"><i class="lnr lnr-users"></i> <span>客户信息</span></a></li>
 						<li><a href="#" data-href="/revisit" id="menu-3"><i class="lnr lnr-bubble"></i> <span>回访记录</span></a></li>
-						<li><a href="#" data-href="/orders" id="menu-4"><i class="lnr lnr-license"></i> <span>订单信息</span></a></li>
-						<li><a href="#" data-href="/consume" id="menu-5"><i class="glyphicon glyphicon-credit-card"></i> <span>会员消费</span></a></li>
+						<li><a href="#" data-href="/product" id="menu-4"><i class="lnr lnr-license"></i> <span>产品管理</span></a></li>
+						<li><a href="#" data-href="/cms" id="menu-5"><i class="lnr lnr-license"></i> <span>广告管理</span></a></li>
+						<!--<li><a href="#" data-href="/consume" id="menu-5"><i class="glyphicon glyphicon-credit-card"></i> <span>会员消费</span></a></li>-->
 						<li><a href="#" data-href="/sign" id="menu-6"><i class="glyphicon glyphicon-heart"></i> <span>客服签到记录</span></a></li>
 						
 						<li th:if="${session.user.isAdmin()}"><a href="#" data-href="/userList" id="menu-7"><i class="glyphicon glyphicon-headphones"></i> <span>客服管理</span></a></li>
@@ -100,6 +101,5 @@
 		</div>
 		<!-- END NAVBAR -->
     </body>
-</script>
 
 </html>
