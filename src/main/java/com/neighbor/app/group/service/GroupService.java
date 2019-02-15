@@ -44,4 +44,11 @@ public interface GroupService {
     ResponseResult clearGroupApplyNum(UserInfo user, GroupApply groupApply);
 
     ResponseResult groupApply(UserInfo user, GroupApply groupApply) throws Exception;
+
+    Long selectPageTotalCount(Group group);
+
+    List<Group> selectPageByObjectForList(Group group);
+
+
+    void createGroup(Group group);
 }

@@ -58,6 +58,10 @@ public class UserInfo extends PageEntity {
 //    	return Integer.parseInt(userRole)>0;
     	return "2".equals(userRole);
     }
+    public boolean isKF(){
+//    	return Integer.parseInt(userRole)>0;
+        return "1".equals(userRole);
+    }
     
     public String getCreateTimeStr() {
         if(createTime!=null){

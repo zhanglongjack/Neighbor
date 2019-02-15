@@ -10,6 +10,7 @@ import com.neighbor.app.group.entity.GroupApply;
 import com.neighbor.app.group.entity.GroupMember;
 import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -296,5 +297,34 @@ public class GroupServiceImpl implements GroupService {
         result.addBody("resultList", pageList);
         result.addBody("pageTools", pageTools);
         return result;
+    }
+
+    @Override
+    public Long selectPageTotalCount(Group group) {
+        return groupMapper.selectPageTotalCount(group);
+    }
+
+    @Override
+    public List<Group> selectPageByObjectForList(Group group) {
+        return  groupMapper.selectPageByObjectForList(group);
+    }
+
+    @Override
+    public void createGroup(Group group) {
+        Date date = new Date();
+        group.setCreateTime(date);
+        group.setCreDate(DateUtils.getStringDateShort());
+        group.setCreTime(DateUtils.getTimeShort());
+        if(group.getGameId()==null){
+            group.setGameId(1L);
+        }
+        group.setStates("1");
+        groupMapper.insertSelective(group);
+        GroupMember groupMember = new GroupMember();
+        groupMember.setGroupId(group.getId());
+        groupMember.setMemberType("1");//群主
+        groupMember.setUserId(group.getGroupOwnerUserId());
+        groupMember.setCreateTime(date);
+        groupMemberMapper.insertSelective(groupMember);
     }
 }
