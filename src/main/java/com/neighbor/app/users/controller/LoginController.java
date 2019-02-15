@@ -57,7 +57,14 @@ public class LoginController {
 			HttpSession session = request.getSession();
 			user.setUserPassword("******");
 			logger.info("登录成功:" + user);
-			session.setAttribute("user", user);
+			if(user.isAdmin()){
+				session.setAttribute("user", user);
+			}else{
+				result.setErrorCode(1);
+				result.setErrorMessage("非系统管理员不允许登录");
+				logger.info("登录失败:" + result);
+			}
+			
 		}
 
 		return result;
