@@ -327,4 +327,39 @@ public class GroupServiceImpl implements GroupService {
         groupMember.setCreateTime(date);
         groupMemberMapper.insertSelective(groupMember);
     }
+
+    @Override
+    public void updateGroup(Group group) {
+        Group queryGroup = new Group();
+        queryGroup.setId(group.getGroupId());
+        queryGroup.setPageTools(new PageTools());
+        List<Group> list = selectPageByObjectForList(queryGroup);
+        Group temp = list.get(0);
+        Date date = new Date();
+        group.setUpdateTime(date);
+        groupMapper.updateByPrimaryKeySelective(group);
+        if(temp.getGroupOwnerUserId().longValue()!=group.getGroupOwnerUserId().longValue()){
+            GroupMember queryMember = new GroupMember();
+            queryMember.setUserId(group.getGroupOwnerUserId());
+            queryMember.setGroupId(group.getGroupId());
+            GroupMember updateMember = groupMemberMapper.selectGroupMember(queryMember);
+            queryMember.setUserId(temp.getGroupOwnerUserId());
+            GroupMember tempMember = groupMemberMapper.selectGroupMember(queryMember);
+            tempMember.setMemberType("0");//非群主
+            tempMember.setUpdateTime(date);
+            groupMemberMapper.updateByPrimaryKeySelective(tempMember);
+            if(updateMember!=null){
+                updateMember.setMemberType("1");//群主
+                updateMember.setUpdateTime(date);
+                groupMemberMapper.updateByPrimaryKeySelective(updateMember);
+            }else{
+                GroupMember groupMember = new GroupMember();
+                groupMember.setGroupId(group.getGroupId());
+                groupMember.setMemberType("1");//群主
+                groupMember.setUserId(group.getGroupOwnerUserId());
+                groupMember.setCreateTime(date);
+                groupMemberMapper.insertSelective(groupMember);
+            }
+        }
+    }
 }

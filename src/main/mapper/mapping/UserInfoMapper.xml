@@ -33,6 +33,8 @@
 		<where>
 		    <if test="upUserId != null">and upuser_id=#{upUserId}</if>
 		    <if test="userID != null">and id=#{userID}</if>
+			<if test="nickName != null and nickName.length()>0">and nick_name=#{nickName}</if>
+			<if test="mobilePhone != null and mobilePhone.length()>0">and mobile_phone=#{mobilePhone}</if>
 		</where>
 	</sql>
 	

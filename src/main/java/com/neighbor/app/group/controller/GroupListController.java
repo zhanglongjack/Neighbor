@@ -29,12 +29,22 @@ public class GroupListController {
 	@Autowired
 	private GroupService groupService;
 
+	@Autowired
+	private UserService userService;
+
 	@RequestMapping(value = "/primaryModalView.ser")
 	public String primaryModalView(Long id, String modifyModel, Model model) throws Exception {
 		logger.debug("primaryModalView request:" + id + ",model:" + model);
 		if (id != null) {
-			//Group group = groupService.s(id);
-			//model.addAttribute("modifyInfo", user);
+			Group query = new Group();
+			query.setId(id);
+			query.setPageTools(new PageTools());
+			List<Group> groups = groupService.selectPageByObjectForList(query);
+			Group group = null;
+			if(groups!=null&&groups.size()>0){
+				group = groups.get(0);
+			}
+			model.addAttribute("modifyInfo", group);
 		} 
 
 		model.addAttribute("modifyModel", modifyModel);
@@ -83,7 +93,30 @@ public class GroupListController {
 		if(!user.isAdmin()){
 			throw new Exception("很抱歉，您还没有权限~");
 		}
+		UserInfo userInfo = userService.selectByPrimaryKey(group.getGroupOwnerUserId());
+		if(userInfo==null){
+			throw new Exception("输入的群主编号不存在~");
+		}
 		groupService.createGroup(group);
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("success", true);
+		map.put("addNumber", 1);
+		return map;
+	}
+
+	@RequestMapping(value="/updateGroup.ser")
+	@ResponseBody
+	public Map<String,Object> updateGroup(Group group,@ModelAttribute("user") UserInfo user) throws Exception{
+		logger.info("updateGroup request:{}",user);
+		logger.info("updateGroup request:{}",group);
+		if(!user.isAdmin()){
+			throw new Exception("很抱歉，您还没有权限~");
+		}
+		UserInfo userInfo = userService.selectByPrimaryKey(group.getGroupOwnerUserId());
+		if(userInfo==null){
+			throw new Exception("输入的群主编号不存在~");
+		}
+		groupService.updateGroup(group);
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("success", true);
 		map.put("addNumber", 1);

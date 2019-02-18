@@ -51,4 +51,6 @@ public interface GroupService {
 
 
     void createGroup(Group group);
+
+    void updateGroup(Group group);
 }

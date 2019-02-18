@@ -99,16 +99,14 @@
 										<td th:text="${obj.groupOwnerUserId}"></td>
 										<td th:text="${obj.redPackAmountLimit}"></td>
 										<td>
-											<!--<div class="btn-group">
+											<div class="btn-group">
 												<a class="btn btn-default btn-sm " data-toggle="modal" data-target="#ModifyModal"
-													th:attr="href='/userList/primaryModalView.ser?modifyModel=userInfoEdit.ser&id='+${obj.id}" > 
+													th:attr="href='/groupList/primaryModalView.ser?modifyModel=updateGroup.ser&id='+${obj.id}" >
 													 <span class="glyphicon glyphicon-edit"></span>&nbsp;更新
 													 <i class="icon-star"></i>
 												</a>
-												<a class="btn btn-default btn-sm"  th:attr="data-user-id=${obj.id}"> 
-													 <span class="glyphicon glyphicon-cog"></span>&nbsp;密码重置
-												</a>
-											</div>-->
+
+											</div>
 										</td>
 									</tr>
 								</tbody>
