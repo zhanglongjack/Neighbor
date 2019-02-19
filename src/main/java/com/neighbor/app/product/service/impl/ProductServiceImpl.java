@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -61,6 +60,11 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    public List<ProductImg> listProductImg(ProductImg productImg) throws Exception {
+        List<ProductImg> imgList = productImgMapper.selectByParams(productImg);
+        return imgList;
+    }
+
     private void makeProductImgInfo(List<ProductImg> imgList, Product productThis) {
         for (ProductImg productImg : imgList) {
             if (StringUtil.isNotEmpty(productThis.getImgType())) {
@@ -83,7 +87,7 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    public void payAction(UserInfo userInfo, ProductOrder productOrder,ResponseResult result) {
+    public void payAction(UserInfo userInfo, ProductOrder productOrder, ResponseResult result) {
 
         Date currentTime = new Date();
         Long userId = userInfo.getId();
@@ -113,7 +117,93 @@ public class ProductServiceImpl implements ProductService {
 
         userWallet = userWalletService.selectByPrimaryUserId(userInfo.getId());
 
-        result.addBody("userWallet",userWallet);
+        result.addBody("userWallet", userWallet);
+    }
+
+    @Override
+    public int insertSelective(Product record) throws Exception {
+
+        Date currentTime = new Date();
+
+        record.setCreateTime(currentTime);
+        record.setUpdateTime(currentTime);
+        int count = productMapper.insertSelective(record);
+
+        for (String imgType : record.getImgType1()) {
+            ProductImg productImg = new ProductImg();
+            productImg.setCreateTime(currentTime);
+            productImg.setUpdateTime(currentTime);
+            productImg.setProductId(record.getId());
+            productImg.setImgType("1");
+            productImg.setUrl(imgType);
+            productImgMapper.insertSelective(productImg);
+        }
+        for (String imgType : record.getImgType2()) {
+            ProductImg productImg = new ProductImg();
+            productImg.setCreateTime(currentTime);
+            productImg.setUpdateTime(currentTime);
+            productImg.setProductId(record.getId());
+            productImg.setImgType("2");
+            productImg.setUrl(imgType);
+            productImgMapper.insertSelective(productImg);
+        }
+        for (String imgType : record.getImgType3()) {
+            ProductImg productImg = new ProductImg();
+            productImg.setCreateTime(currentTime);
+            productImg.setUpdateTime(currentTime);
+            productImg.setProductId(record.getId());
+            productImg.setImgType("3");
+            productImg.setUrl(imgType);
+            productImgMapper.insertSelective(productImg);
+        }
+
+        return count;
+    }
+
+    @Override
+    public int updateProduct(Product record) throws Exception {
+
+        Date currentTime = new Date();
+
+        int count = productMapper.updateByPrimaryKey(record);
+
+        productImgMapper.deleteByProductKey(record.getId());
+
+        for (String imgType : record.getImgType1()) {
+            ProductImg productImg = new ProductImg();
+            productImg.setCreateTime(currentTime);
+            productImg.setUpdateTime(currentTime);
+            productImg.setProductId(record.getId());
+            productImg.setImgType("1");
+            productImg.setUrl(imgType);
+            productImgMapper.insertSelective(productImg);
+        }
+        for (String imgType : record.getImgType2()) {
+            ProductImg productImg = new ProductImg();
+            productImg.setCreateTime(currentTime);
+            productImg.setUpdateTime(currentTime);
+            productImg.setProductId(record.getId());
+            productImg.setImgType("2");
+            productImg.setUrl(imgType);
+            productImgMapper.insertSelective(productImg);
+        }
+        for (String imgType : record.getImgType3()) {
+            ProductImg productImg = new ProductImg();
+            productImg.setCreateTime(currentTime);
+            productImg.setUpdateTime(currentTime);
+            productImg.setProductId(record.getId());
+            productImg.setImgType("3");
+            productImg.setUrl(imgType);
+            productImgMapper.insertSelective(productImg);
+        }
+
+        return count;
+    }
+
+    public void deleteProduct(Long productId) throws Exception {
+        productMapper.deleteByPrimaryKey(productId);
+
+        productImgMapper.deleteByProductKey(productId);
     }
 
 }
