@@ -1,5 +1,7 @@
 package com.neighbor.app.withdraw.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.withdraw.constants.WithdrawStatusDesc;
@@ -7,11 +9,14 @@ import com.neighbor.app.withdraw.entity.Withdraw;
 import com.neighbor.app.withdraw.service.WithdrawService;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.po.SocketMessage;
+import com.neighbor.common.websoket.util.WebSocketPushHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 @RequestMapping(value = "/withdrawList")
@@ -29,6 +35,9 @@ public class WithdrawListController {
     private static final Logger logger = LoggerFactory.getLogger(WithdrawListController.class);
     @Autowired
     private WithdrawService withdrawService;
+
+    @Autowired
+    private WebSocketPushHandler webSocketPushHandler;
 
     @RequestMapping(value = "/primaryModalView.ser")
     public String primaryModalView(Withdraw withdraw, String modifyModel, Model model) throws Exception {
@@ -89,6 +98,10 @@ public class WithdrawListController {
             ResponseResult result = withdrawService.modifyWithdraw(user,withdraw);
             logger.info("result >>>>>"+result);
             if(ErrorCodeDesc.success.getValue()==result.getErrorCode()){
+                if(WithdrawStatusDesc.failed.toString().equals(withdraw.getStates())){
+                    String nickName = StringUtils.isEmpty(user.getNickName())?user.getId()+"":user.getNickName();
+                    webSocketPushHandler.walletRefreshNotice(user.getId(),withdraw.getuId(),nickName);
+                }
                 map.put("success", true);
                 num=1;
             }else{

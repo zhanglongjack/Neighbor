@@ -248,6 +248,7 @@ public class WithdrawServiceImpl implements WithdrawService {
             balanceDetailCost.setTransactionId(withdraw.getId());
             balanceDetailService.insertSelective(balanceDetailCost);
             //result.addBody("userWallet",userWallet);
+            withdraw.setuId(temp.getuId());
         }
         return result;
     }

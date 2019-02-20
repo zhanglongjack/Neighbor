@@ -6,6 +6,7 @@ import com.neighbor.app.api.common.SpringUtil;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.constants.MessageDeleteStates;
 import com.neighbor.common.websoket.constants.MessageStatus;
 import com.neighbor.common.websoket.constants.WebSocketChatType;
 import com.neighbor.common.websoket.constants.WebSocketMsgType;
@@ -21,6 +22,7 @@ import org.springframework.web.socket.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -257,5 +259,22 @@ public class WebSocketPushHandler implements WebSocketHandler {
 		boolean isPushed = sendMessage(session, message);
 		logger.info("给指定用户:[{}]发信息是否成功:[{}]", userId, isPushed);
 		return isPushed;
+	}
+
+
+	public void walletRefreshNotice(Long sendUserId,Long targetUserId,String sendNickName){
+		String uuid = UUID.randomUUID().toString().replaceAll("-","");
+		String jsonStr = "{\"header\":{\"token\":\"system\",\"sign\":\"test\",\"requestId\":\""+uuid+"\"},\"sendUserId\":600017,\"masterMsgType\":\"2\",\"msgType\":\"WALLET_REFRESH\",\"chatType\":\"single\",\"content\":\"请求刷新用户钱包！\",\"targetUserId\":600018}";
+		SocketMessage socketMessage = JSON.parseObject(jsonStr,SocketMessage.class);
+		socketMessage.setRequestId(uuid);
+		socketMessage.setSendUserId(sendUserId);
+		socketMessage.setTargetUserId(targetUserId);
+		socketMessage.setStatus(MessageStatus.pushed_response+"");
+		socketMessage.setDate(DateUtils.getStringDateShort());
+		socketMessage.setTime(DateUtils.getTimeShort());
+		socketMessage.setTargetUserDeleteFlag(MessageDeleteStates.normal.getDes());
+		socketMessage.setSendUserDeleteFlag(MessageDeleteStates.normal.getDes());
+		socketMessage.setSendNickName(sendNickName);
+		socketMessageService.insertSelective(socketMessage);
 	}
 }

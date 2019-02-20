@@ -24,6 +24,7 @@ public class UserInfo extends PageEntity {
     private String sex;
 
     private String mobilePhone;
+    private String oldMobilePhone;
 
     private String realName;
 
@@ -221,7 +222,15 @@ public class UserInfo extends PageEntity {
 		this.downNumber = downNumber;
 	}
 
-	@Override
+    public String getOldMobilePhone() {
+        return oldMobilePhone;
+    }
+
+    public void setOldMobilePhone(String oldMobilePhone) {
+        this.oldMobilePhone = oldMobilePhone;
+    }
+
+    @Override
 	public String toString() {
 		return String.format(
 				"UserInfo [userID=%s, userPhoto=%s, nickName=%s, userAccount=%s, userPassword=%s, qrCode=%s, sex=%s, mobilePhone=%s, realName=%s, wechat=%s, qq=%s, robotSno=%s, regional=%s, upUserId=%s, createTime=%s, updateTime=%s, remark=%s, createTimeStr=%s, downNumber=%s]",
