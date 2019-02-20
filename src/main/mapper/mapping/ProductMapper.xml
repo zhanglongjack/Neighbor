@@ -18,7 +18,7 @@
   <sql id="dynamicWhere">
     <where>
       <if test="id != null">id=#{id}</if>
-
+      <if test="name != null and name != ''">name=#{name}</if>
     </where>
   </sql>
 
@@ -47,7 +47,7 @@
       #{contactDate,jdbcType=VARCHAR}, #{contactTime,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{score,jdbcType=DECIMAL}, #{productDesc,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.neighbor.app.product.entity.Product" >
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.neighbor.app.product.entity.Product" >
     insert into product
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

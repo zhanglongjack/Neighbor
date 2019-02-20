@@ -29,6 +29,10 @@ public class Product extends PageEntity {
     //==============下面是扩展属性=====================
     private String imgType;
     private List<ProductImg> productImgList=new ArrayList<>();
+    private List<String> imgType1;
+    private List<String> imgType2;
+    private List<String> imgType3;
+
 
     public Long getId() {
         return id;
@@ -108,5 +112,29 @@ public class Product extends PageEntity {
 
     public void setImgType(String imgType) {
         this.imgType = imgType;
+    }
+
+    public List<String> getImgType1() {
+        return imgType1;
+    }
+
+    public void setImgType1(List<String> imgType1) {
+        this.imgType1 = imgType1;
+    }
+
+    public List<String> getImgType2() {
+        return imgType2;
+    }
+
+    public void setImgType2(List<String> imgType2) {
+        this.imgType2 = imgType2;
+    }
+
+    public List<String> getImgType3() {
+        return imgType3;
+    }
+
+    public void setImgType3(List<String> imgType3) {
+        this.imgType3 = imgType3;
     }
 }

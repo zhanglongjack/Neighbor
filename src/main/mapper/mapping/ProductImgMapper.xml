@@ -18,6 +18,7 @@
   <sql id="dynamicWhere">
     <where>
       <if test="id != null">id=#{id}</if>
+      <if test="productId != null">product_id=#{productId}</if>
 
     </where>
   </sql>
@@ -40,6 +41,10 @@
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from product_img
     where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByProductKey" parameterType="java.lang.Long" >
+    delete from product_img
+    where product_id = #{productId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.neighbor.app.product.entity.ProductImg" >
     insert into product_img (id, create_time, update_time, 

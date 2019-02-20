@@ -9,6 +9,8 @@ import java.util.List;
 public interface ProductImgMapper {
     int deleteByPrimaryKey(Long id);
 
+    int deleteByProductKey(Long productId);
+
     int insert(ProductImg record);
 
     int insertSelective(ProductImg record);
