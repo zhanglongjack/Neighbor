@@ -23,27 +23,7 @@
 					
 					initTimePicker();
 					
-					$("a[data-user-id]").click(function(){
-						var id = $(this).attr("data-user-id");
-						var targetUrl = "/userList/pwdReset.ser";
-						$.ajax({ 
-							type:'post',  
-							url:targetUrl, 
-							cache: false,
-							data:{userID:id},  
-							dataType:'json', 
-							success:function(data){  
-								toastr.success("密码重置成功"); 
-								render(pageQueryParams);  // 渲染页面函数
-							},
-							error:function(data){ 
-								if(data.responseJSON){
-									toastr.error(dataParams+"密码重置失败:"+data.responseJSON.message); 
-								}
-							}
-						})
-					});
-					
+
 				});
 
 				function deleteProduct(productId,productName) {

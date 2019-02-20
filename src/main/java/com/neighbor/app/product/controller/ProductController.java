@@ -7,7 +7,6 @@ import com.neighbor.app.product.entity.ProductOrder;
 import com.neighbor.app.product.service.ProductService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.constants.EnvConstants;
-import com.neighbor.common.security.EncodeData;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import org.slf4j.Logger;
@@ -174,9 +173,9 @@ public class ProductController {
         ResponseResult result = new ResponseResult();
         try {
 
-            ProductImg productImg=new ProductImg();
+            ProductImg productImg = new ProductImg();
             productImg.setProductId(id);
-            List<ProductImg> productImgList=productService.listProductImg(productImg);
+            List<ProductImg> productImgList = productService.listProductImg(productImg);
             result.addBody("productImgList", productImgList);
 
         } catch (Exception e) {
@@ -189,7 +188,7 @@ public class ProductController {
 
     @RequestMapping(value = "/deleteImg.ser", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseResult deleteImg(String imgUrl,Long id) {
+    public ResponseResult deleteImg(String imgUrl, Long id) {
         logger.info("deleteImg begin ......");
 
         ResponseResult result = new ResponseResult();

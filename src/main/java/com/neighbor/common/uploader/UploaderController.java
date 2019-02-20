@@ -87,6 +87,17 @@ public class UploaderController {
         return result;
     }
 
+    @RequestMapping(value = "/saveCmsImg.ser", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult saveCmsImg(String suffix, String position, MultipartFile file) throws Exception {
+        logger.info("saveCmsImg file >>>> " + file);
+        String fileName = "t" + position + "--" + UUID.randomUUID().toString() + suffix;
+        String url = saveImage("cms", fileName, file);
+        ResponseResult result = new ResponseResult();
+        result.addBody("url", url);
+        return result;
+    }
+
     private String saveImage(String fileType, String fileName, MultipartFile file)
             throws UploaderException {
         try {

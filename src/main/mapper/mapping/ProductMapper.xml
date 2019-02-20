@@ -18,7 +18,9 @@
   <sql id="dynamicWhere">
     <where>
       <if test="id != null">id=#{id}</if>
-      <if test="name != null and name != ''">name=#{name}</if>
+      <if test="name != null and name != ''">
+        instr(name,#{name})
+      </if>
     </where>
   </sql>
 

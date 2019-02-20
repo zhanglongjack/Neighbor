@@ -23,28 +23,26 @@
 					
 					initTimePicker();
 					
-					$("a[data-user-id]").click(function(){
-						var id = $(this).attr("data-user-id");
-						var targetUrl = "/userList/pwdReset.ser";
-						$.ajax({ 
-							type:'post',  
-							url:targetUrl, 
-							cache: false,
-							data:{userID:id},  
-							dataType:'json', 
-							success:function(data){  
-								toastr.success("密码重置成功"); 
-								render(pageQueryParams);  // 渲染页面函数
-							},
-							error:function(data){ 
-								if(data.responseJSON){
-									toastr.error(dataParams+"密码重置失败:"+data.responseJSON.message); 
-								}
-							}
-						})
-					});
-					
 				});
+
+                function deleteCms(id) {
+                    if(window.confirm("是否确定删除？")){
+                        $.ajax({
+                            url: "/cms/deleteCms.ser",
+                            type: 'POST',
+                            data: {id:id},
+                            dataType: 'json',
+                            async:true,
+                            success: function(response) {
+                                $("#queryBTN").click();
+                            },
+                            error:function(rep,errMsg,exception){
+                                alert("删除的时候出现异常！")
+                            }
+                        });
+                    }
+                }
+
 			</script>
 			<h3 class="page-title">客服信息</h3>
 			<div class="row">
@@ -55,9 +53,13 @@
 							<div class="panel-body">
 
 									<div class="form-group col-sm-2">
-										<label>类型</label><br>
-										<input type="text" class="form-control"  placeholder="类型" name="cmsType"
-											th:attr="value=${queryObject==null}?'':${queryObject.cmsType}">
+										<label>位置</label><br>
+										<select class="form-control" name="position">
+											<option value="" >===请选择===</option>
+											<option value="1">主页面</option>
+											<option value="2">商城页面</option>
+										</select>
+
 									</div> 
 							</div>
 							<div class="panel-body border-up-down">
@@ -68,7 +70,7 @@
 											</button>
 										</div>
 										<div class="btn-group" style="margin:0px 5px;">
-											<a class="btn btn-default" th:attr="href='/userList/primaryModalView.ser?modifyModel=userInfoAdd.ser&id='" 
+											<a class="btn btn-default" th:attr="href='/cms/addModalView.ser'"
 												data-toggle="modal" data-target="#ModifyModal"> 
 												 <span class="fa fa-plus-square"></span>&nbsp;添加
 											</a>
@@ -81,26 +83,28 @@
 							<table class="table table-hover">
 								<thead>
 									<tr>
-										<th>类型</th>
+										<!--<th>类型</th>-->
 										<th>位置</th>
-										<th>url</th>
+										<th>内容</th>
 										<th>操作</th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr th:each="obj : ${resultList}">
-										<td th:text="${obj.cmsType}"></td>
-										<td th:text="${obj.position}"></td>
-										<td th:text="${obj.url}"></td>
+										<!--<td th:text="${obj.cmsType}"></td>-->
+										<td th:text="${obj.position=='1'}?'主页面':'商城页面'"></td>
+										<td >
+											<img class="screenshot" style="width: 120px;height: 50px;" th:attr="src='/file'+${obj.url}" /></td>
+										</td>
 										<td>
 											<div class="btn-group">
 												<a class="btn btn-default btn-sm " data-toggle="modal" data-target="#ModifyModal"
-													th:attr="href='/userList/primaryModalView.ser?modifyModel=userInfoEdit.ser&id='+${obj.id}" > 
+													th:attr="href='/cms/modifyModalView.ser?id='+${obj.id}" >
 													 <span class="glyphicon glyphicon-edit"></span>&nbsp;更新
 													 <i class="icon-star"></i>
 												</a>
-												<a class="btn btn-default btn-sm"  th:attr="data-user-id=${obj.id}"> 
-													 <span class="glyphicon glyphicon-cog"></span>&nbsp;密码重置
+												<a class="btn btn-default btn-sm"  th:onclick="'javascript:deleteCms(\''+${obj.id}+'\');'">
+													<span class="glyphicon glyphicon-remove"></span>&nbsp;删除
 												</a>
 											</div>
 										</td>

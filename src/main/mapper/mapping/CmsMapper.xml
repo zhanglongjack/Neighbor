@@ -22,7 +22,7 @@
 
     <sql id="dynamicWhere">
         <where>
-            <if test="position != null">position=#{position}</if>
+            <if test="position != null and position != ''">position=#{position}</if>
             <if test="id != null">id=#{id}</if>
 
         </where>
@@ -90,6 +90,38 @@
         jump_url,
       </if>
     </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contactDate != null" >
+        #{contactDate,jdbcType=VARCHAR},
+      </if>
+      <if test="contactTime != null" >
+        #{contactTime,jdbcType=VARCHAR},
+      </if>
+      <if test="cmsType != null" >
+        #{cmsType,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="cmsDesc != null" >
+        #{cmsDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="jumpUrl != null" >
+        #{jumpUrl,jdbcType=VARCHAR},
+      </if>
+    </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.cms.entity.Cms">
     update cms
@@ -110,7 +142,7 @@
         cms_type = #{cmsType,jdbcType=VARCHAR},
       </if>
       <if test="position != null">
-        position = #{cmsType,jdbcType=VARCHAR},
+        position = #{position,jdbcType=VARCHAR},
       </if>
       <if test="url != null">
         url = #{url,jdbcType=VARCHAR},

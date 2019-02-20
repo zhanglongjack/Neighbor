@@ -165,7 +165,7 @@ public class ProductServiceImpl implements ProductService {
 
         Date currentTime = new Date();
 
-        int count = productMapper.updateByPrimaryKey(record);
+        int count = productMapper.updateByPrimaryKeySelective(record);
 
         productImgMapper.deleteByProductKey(record.getId());
 
