@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -51,6 +52,7 @@ public class UserListController {
 		if (!user.isAdmin()) {
 			userInfo.setUserID(user.getId());
 		}
+		userInfo.setUserRole("1");//只查客服信息
 		Long size = userService.selectPageTotalCount(userInfo);
 		pageTools.setTotal(size);
 		Map<String,Object> result = new HashMap<String,Object>();
@@ -69,6 +71,7 @@ public class UserListController {
 
 		userInfo.setPageTools(pageTools);
 		ModelAndView mv = new ModelAndView("page/userList/Content :: container-fluid");
+		userInfo.setUserRole("1");//只查客服信息
 		Long size = userService.selectPageTotalCount(userInfo);
 		pageTools.setTotal(size);
 		List<UserInfo> ciList = userService.selectPageByObjectForList(userInfo);
@@ -85,6 +88,20 @@ public class UserListController {
 	@ResponseBody
 	public Map<String,Object> userInfoEdit(UserInfo userInfo){
 		logger.info("userInfoEdit request:{}",userInfo);
+		if(!userInfo.getOldMobilePhone().equals(userInfo.getMobilePhone())){
+			//检查手机号码是否被占用
+			UserInfo user = userService.selectByUserPhone(userInfo.getMobilePhone());
+			if(user!=null){
+
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("success", false);
+				map.put("editNumber", 0);
+				return map;
+			}
+		}
+		if(!StringUtils.isEmpty(userInfo.getUserPassword())){
+			userInfo.setUserPassword(EncodeData.encode(userInfo.getUserPassword()));
+		}
 		int num = userService.updateByPrimaryKeySelective(userInfo);
 		
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -97,7 +114,20 @@ public class UserListController {
 	@ResponseBody
 	public Map<String,Object> userInfoAdd(UserInfo userInfo) throws Exception{
 		logger.info("userInfoAdd request:{}",userInfo);
-		userInfo.setUserPassword(EncodeData.encode("123456"));
+		//检查手机号码是否被占用
+		UserInfo user = userService.selectByUserPhone(userInfo.getMobilePhone());
+		if(user!=null){
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("success", false);
+			map.put("editNumber", 0);
+			return map;
+		}
+		if(StringUtils.isEmpty(userInfo.getUserPassword())){
+			userInfo.setUserPassword(EncodeData.encode("123456"));//默认密码
+		}else{
+			userInfo.setUserPassword(EncodeData.encode(userInfo.getUserPassword()));
+		}
+		userInfo.setUserRole("1");//只查客服信息
 		int num = userService.insertSelective(userInfo);
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("success", true);

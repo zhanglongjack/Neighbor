@@ -157,9 +157,9 @@ public class RechargeServiceImpl implements RechargeService {
             Recharge temp = rechargeMapper.selectByPrimaryKey(recharge.getId());
             UserWallet updateWallet = new UserWallet();
             updateWallet.setAvailableAmount(temp.getAmount());
-            updateWallet.setuId(user.getId());
+            updateWallet.setuId(temp.getuId());
             userWalletService.updateWalletAmount(updateWallet);
-            UserWallet userWallet = userWalletService.selectByPrimaryUserId(user.getId());
+            UserWallet userWallet = userWalletService.selectByPrimaryUserId(temp.getuId());
 
             //充值交易明细
             BalanceDetail balanceDetail = new BalanceDetail();
@@ -177,6 +177,7 @@ public class RechargeServiceImpl implements RechargeService {
 
             balanceDetail.setTransactionId(temp.getId());
             balanceDetailService.insertSelective(balanceDetail);
+            recharge.setuId(temp.getuId());
         }
         return result;
     }

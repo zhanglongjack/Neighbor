@@ -10,7 +10,7 @@ public class SocketMessage {
 	private Long msgId;
 	private String requestId;
 	private String header;
-	private String masterMsgType;
+	private String masterMsgType;//1=消息或者2=通知
 	private String chatType;
 	private String msgType;
 	private Long sendUserId;

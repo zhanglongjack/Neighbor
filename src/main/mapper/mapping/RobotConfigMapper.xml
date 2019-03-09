@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neighbor.app.robot.dao.RobotConfigMapper">
+	<resultMap id="BaseResultMap" type="com.neighbor.app.robot.entity.RobotConfig">
+		<id column="robot_id" jdbcType="INTEGER" property="robotId" />
+		<result column="hit_chance" jdbcType="DECIMAL" property="hitChance" />
+		<result column="grap_chance" jdbcType="DECIMAL" property="grapChance" />
+		<result column="send_packet_chance" jdbcType="DECIMAL" property="sendPacketChance" />
+		<result column="status" jdbcType="DECIMAL" property="status" />
+		<result column="update_date_time" jdbcType="BIGINT" property="updateDateTime" />
+		
+		<association property="user" resultMap="com.neighbor.app.users.dao.UserInfoMapper.BaseResultMap" />
+		<association property="wallet" resultMap="com.neighbor.app.wallet.dao.UserWalletMapper.BaseResultMap" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		robot_id, hit_chance, grap_chance, send_packet_chance,status, update_date_time
+	</sql>
+	
+  	<sql id="dynamicWhere">
+		<where>
+		    <if test="id != null">and robot_id=#{robotId}</if>
+		    <if test="status != null">and status=#{status}</if>
+		</where>
+	</sql>
+	
+  	<sql id="pageDynamicWhere">
+		<where>
+		    <if test="robotId != null">and c.id=#{robotId}</if>
+		    <if test="status != null">and c.status=#{status}</if>
+		</where>
+	</sql>
+	
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+			c.*,u.*,w.*
+		from robot_config c
+		inner join users_info u on c.robot_id = u.robot_sno
+		inner join user_wallet w on w.u_id=u.id
+		where robot_id = #{robotId,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.robot.entity.RobotConfig"
+		resultMap="BaseResultMap">
+		select
+			c.*,u.*,w.*
+		from robot_config c
+		inner join users_info u on c.robot_id = u.robot_sno
+		inner join user_wallet w on w.u_id=u.id
+		<include refid="pageDynamicWhere" />
+		order by c.robot_id desc
+		limit
+		#{pageTools.rowIndex},#{pageTools.pageSize}
+	</select>
+
+	<select id="selectPageTotalCount" parameterType="com.neighbor.app.robot.entity.RobotConfig"
+		resultType="Long">
+		select
+			count(1)
+		from robot_config c
+		inner join users_info u on c.robot_id = u.robot_sno
+		inner join user_wallet w on w.u_id=u.id
+		<include refid="pageDynamicWhere" />
+	</select>
+	
+	<insert id="insertSelective" parameterType="com.neighbor.app.robot.entity.RobotConfig">
+		insert into robot_config
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="robotId != null">
+				robot_id,
+			</if>
+			<if test="hitChance != null">
+				hit_chance,
+			</if>
+			<if test="grapChance != null">
+				grap_chance,
+			</if>
+			<if test="sendPacketChance != null">
+				send_packet_chance,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="updateDateTime != null">
+				update_date_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="robotId != null">
+				#{robotId,jdbcType=INTEGER},
+			</if>
+			<if test="hitChance != null">
+				#{hitChance,jdbcType=DECIMAL},
+			</if>
+			<if test="grapChance != null">
+				#{grapChance,jdbcType=DECIMAL},
+			</if>
+			<if test="sendPacketChance != null">
+				#{sendPacketChance,jdbcType=DECIMAL},
+			</if>
+			<if test="status != null">
+				#{status},
+			</if>
+			<if test="updateDateTime != null">
+				#{updateDateTime,jdbcType=BIGINT},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.robot.entity.RobotConfig">
+		update robot_config
+		<set>
+			<if test="hitChance != null">
+				hit_chance = #{hitChance,jdbcType=DECIMAL},
+			</if>
+			<if test="grapChance != null">
+				grap_chance = #{grapChance,jdbcType=DECIMAL},
+			</if>
+			<if test="sendPacketChance != null">
+				send_packet_chance = #{sendPacketChance,jdbcType=DECIMAL},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="updateDateTime != null">
+				update_date_time = #{updateDateTime,jdbcType=BIGINT},
+			</if>
+		</set>
+		where robot_id = #{robotId,jdbcType=INTEGER}
+	</update>
+
+</mapper>

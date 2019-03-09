@@ -32,6 +32,7 @@ import com.neighbor.app.packet.service.PacketService;
 import com.neighbor.app.recharge.constants.ChannelTypeDesc;
 import com.neighbor.app.recharge.controller.RechargeController;
 import com.neighbor.app.recharge.entity.Recharge;
+import com.neighbor.app.robot.service.RobotConfigService;
 import com.neighbor.app.users.controller.LoginController;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
@@ -58,6 +59,7 @@ public class PacketServiceTest {
 	private GroupService groupService;
 	@Autowired
 	private UserWalletService userWalletService;
+	
 	@Test
 	public void test1() throws Exception{
 		Long gameId = 1L;

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+</head>
+<body>
+		<div th:fragment="container-fluid"  class="container-fluid">
+			<script type="text/javascript">
+				$(function(){
+					pageQueryParams.index = '[[${pageTools.index}]]';
+					pageQueryParams.pageSize = '[[${pageTools.pageSize}]]';
+					pageQueryParams.total = '[[${pageTools.total}]]';
+					
+					$("#queryBTN").click(function(){
+						var dataParams = $("#queryFrom").serialize(); 
+						pageQueryParams.fromQueryData=dataParams;
+						render(pageQueryParams);  // 渲染页面函数
+					});
+					
+					$("[data-toggle='popover']").popover();
+					
+					initTimePicker();
+
+
+				});
+			</script>
+			<h3 class="page-title">客服信息</h3>
+			<div class="row">
+				<div class="col-md-12">
+					<!-- TABLE HOVER -->
+					<div class="panel panel-info">
+						<form class="form-inline" id="queryFrom">
+							<div class="panel-body">
+									<div class="form-group col-sm-2">
+										<label>机器人编号</label><br> 
+										<input type="text" class="form-control"  placeholder="机器人编号" name="robotId" 
+											th:attr="value=${queryObject==null}?'':${queryObject.robotId}">
+									</div>
+									<div class="form-group col-sm-2">
+										<label>机器人昵称</label><br> 
+										<input type="text" class="form-control"  placeholder="机器人昵称" name="nickName" 
+											th:attr="value=${queryObject==null}?'':${queryObject.user==null?'':queryObject.user.nickName}">
+									</div> 
+							</div>
+							<div class="panel-body border-up-down">
+									<div class="btn-right"> 
+										<div class="btn-group">
+											<button id="queryBTN" type="button" class="btn btn-default">
+											<i class="fa fa-search"></i> 查询
+											</button>
+										</div>
+										<div class="btn-group" style="margin:0px 5px;">
+											<a class="btn btn-default" th:attr="href='/robot/primaryModalView.ser?modifyModel=robotAdd.ser&robotId='" 
+												data-toggle="modal" data-target="#ModifyModal"> 
+												 <span class="fa fa-plus-square"></span>&nbsp;添加客服
+											</a>
+										</div>
+										
+									</div>
+							</div>
+						</form>
+						<div class="panel-body table-responsive">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>机器人编号</th>
+										<th>机器人头像</th>
+										<th>机器人昵称</th>
+										<th>机器人电话</th>
+										<th>机器人钱包</th>
+										<th>机器人性别</th>
+										<th>中雷概率</th>
+										<th>抢包频率</th>
+										<th>发包频率</th>
+										<th>启用状态</th>
+										<th>操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="obj : ${resultList}">
+										<td th:text="${obj.robotId}"></td>
+										<td>
+											<img  th:attr="src='file/'+${obj.user.userPhoto}"/>
+										</td>
+										<td th:text="${obj.user.nickName}"></td>
+										<td th:text="${obj.user.mobilePhone}"></td>
+										<td th:text="${#numbers.formatCurrency(obj.wallet.availableAmount)}"></td>
+										<td th:text="${@commonConstants.getDictionarysBy('sex',obj.user.sex)}"></td>
+										<td th:text="${#numbers.formatPercent(obj.hitChance,0,0)}"></td> 
+										<td th:text="${#numbers.formatPercent(obj.grapChance,0,0)}"></td> 
+										<td th:text="${#numbers.formatPercent(obj.sendPacketChance,0,0)}"></td> 
+										<td>
+											<span class="label label-default" th:if="${obj.status==0}">未启用</span>
+											<span class="label label-success" th:if="${obj.status==1}">已启用</span>
+										</td> 
+										<td>
+											<div class="btn-group">
+												<a class="btn btn-default btn-sm " data-toggle="modal" data-target="#ModifyModal"
+													th:attr="href='/robot/primaryModalView.ser?modifyModel=robotEdit.ser&id='+${obj.robotId}" > 
+													 <span class="glyphicon glyphicon-edit"></span>&nbsp;更新
+													 <i class="icon-star"></i>
+												</a>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						
+						<div class="panel-footer">
+							<ul class="pagination" >
+
+							</ul>
+						</div>
+					</div>
+					<!-- END TABLE HOVER -->
+				</div>
+			</div>
+		</div>
+</body>
+</html>

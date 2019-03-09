@@ -1,24 +1,20 @@
 package com.neighbor.common.uploader;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
 import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.exception.UploaderException;
 import com.neighbor.common.util.FileUploadUtil;
 import com.neighbor.common.util.ResponseResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @Controller
 @RequestMapping(value = "/uploader")
@@ -58,7 +54,7 @@ public class UploaderController {
             }
             filepath = env.getProperty(EnvConstants.UPLOADER_FILEPATH) + retPath;
             FileUploadUtil.writeUploadFile(file, filepath, fileName);
-            return retPath+fileName;
+            return retPath + fileName;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new UploaderException();
@@ -78,5 +74,41 @@ public class UploaderController {
         ResponseResult result = new ResponseResult();
         result.addBody("url", url);
         return result;
+    }
+
+    @RequestMapping(value = "/saveProductImg.ser", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult saveProductImg(String suffix, String imgType, MultipartFile file) throws Exception {
+        logger.info("saveProductImg file >>>> " + file);
+        String fileName = "t" + imgType + "--" + UUID.randomUUID().toString() + suffix;
+        String url = saveImage("product", fileName, file);
+        ResponseResult result = new ResponseResult();
+        result.addBody("url", url);
+        return result;
+    }
+
+    @RequestMapping(value = "/saveCmsImg.ser", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult saveCmsImg(String suffix, String position, MultipartFile file) throws Exception {
+        logger.info("saveCmsImg file >>>> " + file);
+        String fileName = "t" + position + "--" + UUID.randomUUID().toString() + suffix;
+        String url = saveImage("cms", fileName, file);
+        ResponseResult result = new ResponseResult();
+        result.addBody("url", url);
+        return result;
+    }
+
+    private String saveImage(String fileType, String fileName, MultipartFile file)
+            throws UploaderException {
+        try {
+            String retPath = FileUploadUtil.split + FileUploadUtil.IMAGE + FileUploadUtil.split + fileType + FileUploadUtil.split;
+
+            String filepath = env.getProperty(EnvConstants.UPLOADER_FILEPATH) + retPath;
+            FileUploadUtil.writeUploadFile(file, filepath, fileName);
+            return retPath + fileName;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new UploaderException();
+        }
     }
 }

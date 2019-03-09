@@ -33,18 +33,20 @@ public abstract class AbstractMessageHandler implements WebSocketMessageHandler{
 		logger.info("开始处理通用消息接收处理:{}",msgInfo);
 		ResponseResult handleResult = new ResponseResult();
 		if(chatType == WebSocketChatType.single){
-			Friend friend = new Friend();
-			friend.setUserId(msgInfo.getSendUserId());
-			friend.setFriendUserId(msgInfo.getTargetUserId());
-			try {
-				Friend resultFriend = friendService.viewFriendByUserIdAndFriendId(friend);
-				if(resultFriend.getStates()=="2"){
-					handleResult.setErrorCode(4);
-					handleResult.setErrorMessage("双方非互为好友,消息发送失败");
-					return handleResult;
-				}
-			} catch (Exception e) {
+			if("1".equals(msgInfo.getMasterMsgType())){//消息类型需要判断 通知类型无需是好友也可发送（例如客服审核线下充值通知用户更新钱包）
+				Friend friend = new Friend();
+				friend.setUserId(msgInfo.getSendUserId());
+				friend.setFriendUserId(msgInfo.getTargetUserId());
+				try {
+					Friend resultFriend = friendService.viewFriendByUserIdAndFriendId(friend);
+					if(resultFriend.getStates()=="2"){
+						handleResult.setErrorCode(4);
+						handleResult.setErrorMessage("双方非互为好友,消息发送失败");
+						return handleResult;
+					}
+				} catch (Exception e) {
 
+				}
 			}
 			msgInfo.setTargetUserDeleteFlag(MessageDeleteStates.normal.getDes());
 			msgInfo.setSendUserDeleteFlag(MessageDeleteStates.normal.getDes());

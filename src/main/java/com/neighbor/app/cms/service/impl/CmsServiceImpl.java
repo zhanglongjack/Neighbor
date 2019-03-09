@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,7 +22,7 @@ public class CmsServiceImpl implements CmsService {
     @Autowired
     private CmsMapper cmsMapper;
 
-    public ResponseResult list(UserInfo user, Cms cms) throws Exception{
+    public ResponseResult list(UserInfo user, Cms cms) throws Exception {
 
         logger.info("广告列表...");
         ResponseResult result = new ResponseResult();
@@ -35,4 +36,36 @@ public class CmsServiceImpl implements CmsService {
 
     }
 
+    @Override
+    public int insertSelective(Cms record) throws Exception {
+        Date currentTime = new Date();
+
+        record.setCreateTime(currentTime);
+        record.setUpdateTime(currentTime);
+        record.setCmsType("1");
+        int count = cmsMapper.insertSelective(record);
+
+        return count;
+
+    }
+
+    public Cms viewCms(Cms cms) throws Exception {
+        cms = cmsMapper.selectByPrimaryKey(cms.getId());
+        return cms;
+    }
+
+    @Override
+    public int updateCms(Cms record) throws Exception {
+        Date currentTime = new Date();
+
+        record.setUpdateTime(currentTime);
+        int count = cmsMapper.updateByPrimaryKeySelective(record);
+
+        return count;
+
+    }
+
+    public void deleteCms(Long id) throws Exception {
+        cmsMapper.deleteByPrimaryKey(id);
+    }
 }

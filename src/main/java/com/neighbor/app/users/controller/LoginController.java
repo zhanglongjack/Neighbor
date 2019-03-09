@@ -1,15 +1,16 @@
 package com.neighbor.app.users.controller;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.validation.constraints.NotNull;
-
+import com.neighbor.app.api.common.ErrorCodeDesc;
+import com.neighbor.app.users.constants.UserContainer;
 import com.neighbor.app.users.entity.UserConfig;
+import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.app.users.service.UserService;
+import com.neighbor.app.wallet.entity.UserWallet;
+import com.neighbor.app.wallet.service.UserWalletService;
+import com.neighbor.common.exception.ParamsCheckException;
+import com.neighbor.common.security.EncodeData;
+import com.neighbor.common.sms.TencentSms;
+import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.util.StringUtil;
 import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
@@ -21,16 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.neighbor.app.api.common.ErrorCodeDesc;
-import com.neighbor.app.users.constants.UserContainer;
-import com.neighbor.app.users.entity.UserInfo;
-import com.neighbor.app.users.service.UserService;
-import com.neighbor.app.wallet.entity.UserWallet;
-import com.neighbor.app.wallet.service.UserWalletService;
-import com.neighbor.common.exception.ParamsCheckException;
-import com.neighbor.common.security.EncodeData;
-import com.neighbor.common.sms.TencentSms;
-import com.neighbor.common.util.ResponseResult;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Controller
 @Validated
@@ -57,7 +56,7 @@ public class LoginController {
 			HttpSession session = request.getSession();
 			user.setUserPassword("******");
 			logger.info("登录成功:" + user);
-			if(user.isAdmin()){
+			if(user.isAdmin()||user.isKF()){
 				session.setAttribute("user", user);
 			}else{
 				result.setErrorCode(1);
@@ -68,6 +67,14 @@ public class LoginController {
 		}
 
 		return result;
+	}
+
+	@RequestMapping(value = "/logout.ser")
+	public void logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession();
+		session.removeAttribute("user");
+		session.invalidate();
+		response.sendRedirect("/login.html");
 	}
 
 	@RequestMapping(value = "/accountLogin.req", method = RequestMethod.POST)

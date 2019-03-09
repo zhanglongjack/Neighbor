@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+	<title>test</title>
+
+	<style type="text/css">
+
+	</style>
+	<script src="/neighbor/js/jquery.form.js" type="text/javascript" charset="utf-8"></script>
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+</head>
+
+<body>
+<div th:fragment="dialog-content">
+	<script th:inline="javascript">
+        /*<![CDATA[*/
+        //var modifyInfo = /*[[${modifyInfo}]]*/;
+        /*]]>*/
+
+        $(function(){
+            initTimePicker();
+        })
+
+
+	</script>
+
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+			&times;
+		</button>
+		<h4 class="modal-title" id="ModifyModalTitle">
+			编辑广告信息
+		</h4>
+	</div>
+	<div class="modal-body">
+		<form id="modifyDataFrom" class="form-horizontal" role="form">
+			<input id="modifyId" name="id" type="hidden" th:attr="value=${modifyInfo==null}?'':${modifyInfo.id}">
+			<input id="url" name="id" type="hidden" th:attr="value=${modifyInfo==null}?'':${modifyInfo.url}">
+			<input id="modifyModel" name="modifyModel" type="hidden" value="cmsModify.ser">
+			<div class="form-group">
+				<label class="col-sm-2 control-label">位置</label>
+				<div class="col-sm-10">
+					<select class="form-control" name="position" id="positionSelect">
+						<option value="" >===请选择===</option>
+						<option th:selected="${modifyInfo.position=='1'}" value="1">主页面</option>
+						<option th:selected="${modifyInfo.position=='2'}" value="2">商城页面</option>
+					</select>
+
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">图片</label>
+				<div class="col-sm-10 form-inline" >
+					<input type="text" class="form-control" placeholder="选择图片" id="pic_val_1" readonly style="width:50% !important;"/>
+					&nbsp;&nbsp;&nbsp;
+					<input type="button" id="btn_upload_1" class="btn" value="上传图片"/>
+					&nbsp;&nbsp;&nbsp;
+					<span id="span1">
+					</span>
+				</div>
+			</div>
+
+
+		</form>
+		<form id="uploadImgForm1" enctype="multipart/form-data" method="post">
+			<input type="hidden" id="position" name="position">
+			<input type="hidden" id="suffix1" name="suffix">
+			<input type="file"
+				   onchange="checkFile(this);" style="display:none;"
+				   id="pic_file1" name="file"
+				   accept="jpg,gif,png,jpeg"/>
+		</form>
+
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+		</button>
+		<button type="button" class="btn btn-primary" id="ModifyModalSubmit">
+			提交
+		</button>
+	</div>
+</div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        $("#ModifyModal").on("hidden.bs.modal", function() {
+            $(this).removeData("bs.modal");
+        });
+
+        $('#modifyDataFrom').bootstrapValidator({
+            message: '输入无效,请重新输入',
+            group:'.form-group',
+            trigger: 'keyup focus',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            }
+        });
+
+        //选择图片
+        $("input#pic_val_1").click(function () {
+            $("input#pic_file1").click();
+        });
+
+
+        //上传图片
+        $("input#btn_upload_1").click(function () {
+            commonUpload();
+        });
+
+        initImg($("#url").val());
+
+    });
+
+    function commonUpload() {
+        var picUrl=$("#pic_val_1").val();
+
+        if (picUrl.length == 0) {
+            alert('请选择图片！');
+            return;
+        }
+
+        var picSuffix = picUrl.substring(picUrl.lastIndexOf('.')).toLowerCase();
+
+        $("#position").val($("#positionSelect").val());
+        $("#suffix1").val(picSuffix);
+
+        saveImg();
+    }
+
+    function initImg(imgUrl) {
+
+        var str = '<span>';
+        str += '<img class="screenshot" style="width: 30px;height: 40px;" src="/file' + imgUrl + '"  />';
+        str += '&nbsp;&nbsp;<span style="cursor: pointer" onclick="deleteImg(this)">删除</span>&nbsp;&nbsp;';
+        str += '<input name="url" type="hidden" value="' + imgUrl + '">';
+        str += '</span>';
+        $("#span1").append(str);
+
+        $("#btn_upload_1").hide();
+
+    }
+
+    function saveImg() {
+
+        var formValue="uploadImgForm1";
+
+        var options = {
+            url: "/uploader/saveCmsImg.ser",
+            type: "POST",
+            dataType: "json",
+            success: function (result) {
+                initImg(result.body.url);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("保存时出现异常！");
+            }
+        };
+        $("#"+formValue).ajaxSubmit(options);
+    }
+
+    function deleteImg(obj) {
+        var parentSpan=$(obj).parent();
+        var input=$(parentSpan).children("input");
+        // alert("input:"+$(input).val()+"---")
+        $(parentSpan).remove();
+
+        $("#btn_upload_1").show();
+
+        $.ajax({
+            url: "/cms/deleteImg.ser",
+            type: 'POST',
+            data: {imgUrl:$(input).val(),id:$("#modifyId").val()},
+            dataType: 'json',
+            async:true,
+            success: function(response) {
+
+            },
+            error:function(rep,errMsg,exception){
+
+            }
+        });
+
+    }
+
+    function checkFile(obj) {
+        var picUrl = $(obj).val();
+
+        $("#pic_val_1").val(picUrl);
+
+        var extns = [".jpg", ".gif", ".png", ".jpeg"];
+        var picExt = picUrl.substring(picUrl.lastIndexOf('.')).toLowerCase();
+        var isPic = false;
+        for (var i = 0; i < extns.length; ++i) {
+            if (extns[i] == picExt) {
+                isPic = true;
+                break;
+            }
+        }
+        if (!isPic && $("#pic_val_1").val().length > 0) {
+            $("#pic_val_1").val("");
+            alert("请选择图片格式的文件");
+            return;
+        }
+    }
+
+</script>
+</html>

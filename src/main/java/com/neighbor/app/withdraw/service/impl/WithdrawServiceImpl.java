@@ -248,8 +248,19 @@ public class WithdrawServiceImpl implements WithdrawService {
             balanceDetailCost.setTransactionId(withdraw.getId());
             balanceDetailService.insertSelective(balanceDetailCost);
             //result.addBody("userWallet",userWallet);
+            withdraw.setuId(temp.getuId());
         }
         return result;
+    }
+
+    @Override
+    public Long selectPageTotalCount(Withdraw withdraw) {
+        return withdrawMapper.selectPageTotalCount(withdraw);
+    }
+
+    @Override
+    public List<Withdraw> selectPageByObjectForList(Withdraw withdraw) {
+        return withdrawMapper.selectPageByObjectForList(withdraw);
     }
 
     //检查是否是超管和客服的角色账号

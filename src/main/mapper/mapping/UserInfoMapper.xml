@@ -20,9 +20,31 @@
 		<result column="remark" jdbcType="VARCHAR" property="remark" />
 		<result column="regional" jdbcType="VARCHAR" property="regional" />
 		<result column="user_role" jdbcType="VARCHAR" property="userRole" />
+	</resultMap>
+	
+	<resultMap id="BaseCountDwonResultMap" type="com.neighbor.app.users.entity.UserInfo">
+		<id column="id" jdbcType="BIGINT" property="userID" />
+		<result column="user_photo" jdbcType="VARCHAR" property="userPhoto" />
+		<result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+		<result column="user_account" jdbcType="VARCHAR" property="userAccount" />
+		<result column="user_password" jdbcType="VARCHAR" property="userPassword" />
+		<result column="qr_code" jdbcType="VARCHAR" property="qrCode" />
+		<result column="sex" jdbcType="VARCHAR" property="sex" />
+		<result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+		<result column="real_name" jdbcType="VARCHAR" property="realName" />
+		<result column="wechat" jdbcType="VARCHAR" property="wechat" />
+		<result column="qq" jdbcType="VARCHAR" property="qq" />
+		<result column="robot_sno" jdbcType="VARCHAR" property="robotSno" />
+		<result column="upuser_id" jdbcType="BIGINT" property="upUserId" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="regional" jdbcType="VARCHAR" property="regional" />
+		<result column="user_role" jdbcType="VARCHAR" property="userRole" />
 		<collection property="downNumber" column="id" select="com.neighbor.app.users.dao.UserInfoMapper.countDownNumber">
         </collection>
 	</resultMap>
+	
 	<sql id="Base_Column_List">
 		id, user_photo, nick_name, user_account, user_password, qr_code, sex,
 		mobile_phone,
@@ -33,12 +55,14 @@
 		<where>
 		    <if test="upUserId != null">and upuser_id=#{upUserId}</if>
 		    <if test="userID != null">and id=#{userID}</if>
+			<if test="nickName != null and nickName.length()>0">and nick_name=#{nickName}</if>
+			<if test="mobilePhone != null and mobilePhone.length()>0">and mobile_phone=#{mobilePhone}</if>
+			<if test="userRole != null and userRole.length()>0">and user_role=#{userRole}</if>
 		</where>
 	</sql>
 	
-	
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
-		resultMap="BaseResultMap">
+		resultMap="BaseCountDwonResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from users_info
@@ -54,7 +78,7 @@
 	</select>
 
 	<select id="selectByUserPhone" parameterType="String"
-		resultMap="BaseResultMap">
+		resultMap="BaseCountDwonResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from users_info
@@ -62,7 +86,7 @@
 	</select>
 
 	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.users.entity.UserInfo"
-		resultMap="BaseResultMap">
+		resultMap="BaseCountDwonResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from users_info
