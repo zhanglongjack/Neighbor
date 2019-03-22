@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.neighbor.app.group.entity.Group;
+import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.packet.constants.PacketContainer;
 import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.packet.entity.PacketDetail;
 import com.neighbor.app.packet.service.PacketService;
+import com.neighbor.app.robot.service.RobotConfigService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
@@ -31,6 +34,10 @@ public class PacketController {
 	private PacketContainer packetContainer;
 	@Autowired
 	private UserWalletService userWalletService;
+	@Autowired
+	private RobotConfigService robotConfigService;
+	@Autowired
+	private GroupService groupService;
 	
 	@RequestMapping(value = "/sendPacket.req", method = RequestMethod.POST)
 	@ResponseBody
@@ -43,6 +50,11 @@ public class PacketController {
 		result.addBody("wallet", wallet);
 		if(resultPacket!=null){
 			result.addBody("packet", resultPacket);
+			Group group = new Group();
+			group.setId(packet.getGroupId());
+			Group groupResult = groupService.selectByPrimeryId(packet.getGroupId());
+			robotConfigService.robotGrapPacket(packet.getGroupId(), groupResult.getId(), resultPacket);
+			
 		}else{
 			result.setErrorCode(1);
 			result.setErrorMessage("余额不足");

@@ -33,6 +33,8 @@ import com.neighbor.app.packet.dao.PacketMapper;
 import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.packet.entity.PacketDetail;
 import com.neighbor.app.packet.service.PacketService;
+import com.neighbor.app.robot.entity.RobotConfig;
+import com.neighbor.app.robot.service.RobotConfigService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
 import com.neighbor.app.wallet.entity.UserWallet;
@@ -63,6 +65,8 @@ public class PacketServiceImpl implements PacketService {
 	private GameService gameService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private RobotConfigService robotConfigService;
 	@Autowired
 	private CommissionService commissionService;
 	@Autowired
@@ -168,7 +172,16 @@ public class PacketServiceImpl implements PacketService {
 	@Transactional(readOnly = false, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public ResponseResult grabPacekt(Packet packet,UserInfo user,Long gameId) {
 		logger.info("开始抢红包:"+packet);
-
+		RobotConfig robot = null;
+		if(user.getRobotSno()!=null){
+			robot = robotConfigService.selectByPrimaryKey(Integer.parseInt(user.getRobotSno()));
+			if(!robot.isGrap()){
+				logger.info("机器人抢红包概率未中,结束");
+				return new ResponseResult();
+			}
+			logger.info("机器人抢红包开始");
+		}
+		
 		GroupMember member = groupService.selectGroupMemberBy(user.getId(), packet.getGroupId());
 		Packet cachePacket = packetContainer.get(packet.getId());
 		cachePacket = cachePacket!=null?cachePacket:packetMapper.selectByPrimaryKey(packet.getId());
@@ -211,14 +224,22 @@ public class PacketServiceImpl implements PacketService {
 		
 		String randomAmounts[] = lockPacket.getRandomAmountList();
 		detail.setGotAmount(new BigDecimal(randomAmounts[lockPacket.getCollectedNum()]));
+		String num = detail.getGotAmount().toPlainString();
+		boolean isGotBomb = Integer.parseInt(num.substring(num.length()-1))==lockPacket.getHitNum();
+		if(robot!=null){
+			if(isGotBomb&&!robot.isHit()){
+				logger.info("机器人抢红包中雷概率未中");
+				return  new ResponseResult();
+			}
+		}
+		
 		lockPacket.setCollectedNum(lockPacket.getCollectedNum() + 1);
 		lockPacket.setStatus(lockPacket.getCollectedNum() == lockPacket.getPacketNum()?PacketStatus.collected.toString():PacketStatus.uncollected.toString());
-		String num = detail.getGotAmount().toPlainString();
 		
 		detail.setdPacketId(lockPacket.getId());
 		detail.setGotUserId(user.getId());
 		detail.setFree("1".equals(member.getMemberType()));
-		detail.setGotBomb(Integer.parseInt(num.substring(num.length()-1))==lockPacket.getHitNum());
+		detail.setGotBomb(isGotBomb);
 		logger.info("是否需要分佣检查:"+detail);
 		logger.info("用户检查:"+user);
 		logger.info("群成员检查:"+member);

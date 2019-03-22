@@ -17,19 +17,21 @@
 				<nav>
 					<ul class="nav"> 
 						<li><a href="/index.ser" id="menu-1"><i class="lnr lnr-home"></i> <span>主页</span></a></li>
-						<li><a href="#" data-href="/robot" id="menu-2"><i class="lnr lnr-users"></i> <span>机器人维护</span></a></li>
-						<li><a href="#" data-href="/revisit" id="menu-3"><i class="lnr lnr-bubble"></i> <span>回访记录</span></a></li>
-						<li><a href="#" data-href="/product" id="menu-4"><i class="lnr lnr-license"></i> <span>产品管理</span></a></li>
-						<li><a href="#" data-href="/cms" id="menu-5"><i class="lnr lnr-license"></i> <span>广告管理</span></a></li>
-						<!--<li><a href="#" data-href="/consume" id="menu-5"><i class="glyphicon glyphicon-credit-card"></i> <span>会员消费</span></a></li>-->
-						<li><a href="#" data-href="/sign" id="menu-6"><i class="glyphicon glyphicon-heart"></i> <span>客服签到记录</span></a></li>
-						
+						<li><a href="#" data-href="/robot" id="menu-2"><i class="fa fa-android"></i> <span>机器人维护</span></a></li>
+						<li><a href="#" data-href="/product" id="menu-4"><i class="fa fa-product-hunt"></i> <span>产品管理</span></a></li>
+						<li><a href="#" data-href="/cms" id="menu-5"><i class="glyphicon glyphicon-facetime-video"></i> <span>广告管理</span></a></li>
 						<li th:if="${session.user.isAdmin()}"><a href="#" data-href="/userList" id="menu-7"><i class="glyphicon glyphicon-headphones"></i> <span>客服管理</span></a></li>
-						<li th:if="${session.user.isAdmin()||session.user.isKF()}"><a href="#" data-href="/withdrawList" id="menu-7"><i class="glyphicon glyphicon-headphones"></i> <span>提现单管理</span></a></li>
-						<li th:if="${session.user.isAdmin()||session.user.isKF()}"><a href="#" data-href="/rechargeList" id="menu-7"><i class="glyphicon glyphicon-headphones"></i> <span>充值单管理</span></a></li>
-						<li th:if="${session.user.isAdmin()}"><a href="#" data-href="/groupList" id="menu-7"><i class="glyphicon glyphicon-headphones"></i> <span>群管理</span></a></li>
-						<li th:if="${session.user.isAdmin()}"><a href="#" data-href="/serve/wechat" id="menu-8"><i class="glyphicon glyphicon-phone"></i> <span>服务微信管理</span></a></li>
+						<li th:if="${session.user.isAdmin()||session.user.isKF()}"><a href="#" data-href="/withdrawList" id="menu-7"><i class="glyphicon glyphicon-credit-card"></i> <span>提现单管理</span></a></li>
+						<li th:if="${session.user.isAdmin()||session.user.isKF()}"><a href="#" data-href="/rechargeList" id="menu-7"><i class="glyphicon glyphicon-usd"></i> <span>充值单管理</span></a></li>
+						<li th:if="${session.user.isAdmin()}"><a href="#" data-href="/groupList" id="menu-7"><i class="fa fa-users"></i> <span>群管理</span></a></li>
 						
+						<!-- 
+						<li><a href="#" data-href="/revisit" id="menu-3"><i class="lnr lnr-bubble"></i> <span>回访记录</span></a></li>
+
+						<li><a href="#" data-href="/consume" id="menu-5"><i class="glyphicon glyphicon-credit-card"></i> <span>会员消费</span></a></li>
+						<li><a href="#" data-href="/sign" id="menu-6"><i class="glyphicon glyphicon-heart"></i> <span>客服签到记录</span></a></li>
+
+						<li th:if="${session.user.isAdmin()}"><a href="#" data-href="/serve/wechat" id="menu-8"><i class="glyphicon glyphicon-phone"></i> <span>服务微信管理</span></a></li>
 						<li th:if="${session.user.isAdmin()}">
 							<a href="#costPage" data-toggle="collapse" id="menu-13">
 								<i class="glyphicon glyphicon-ruble"></i> 
@@ -75,7 +77,7 @@
 							</div>
 						</li>
 						
-						<!-- 
+						
 						<li><a href="#" id="menu-6"><i class="lnr lnr-chart-bars"></i> <span>我的业绩</span></a></li>
 						
 						

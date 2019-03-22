@@ -53,4 +53,8 @@ public interface GroupService {
     void createGroup(Group group);
 
     void updateGroup(Group group);
+
+	List<GroupMember> selectRobotGroupMemberBy(Long groupId);
+
+	Group selectByPrimeryId(Long groupId);
 }

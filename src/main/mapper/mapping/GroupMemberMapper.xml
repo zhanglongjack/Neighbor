@@ -57,6 +57,16 @@
     from `group_member` t
     <include refid="dynamicWhere" />
   </select>
+  
+  <select id="selectRobotGroupMemberBy" resultMap="BaseResultMap" parameterType="Long">
+    select
+    t.*
+    from `group_member` t
+    inner join users_info u on u.id = t.user_id
+    inner join robot_config c on c.robot_id=u.robot_sno
+    WHERE t.group_id=#{groupId}
+    and c.status = 1
+  </select>
 
   <select id="selectPageByObjectForList" parameterType="com.neighbor.app.group.entity.GroupMember"
           resultMap="BaseResultMap">

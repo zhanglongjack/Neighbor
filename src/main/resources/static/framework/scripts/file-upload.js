@@ -1,4 +1,22 @@
+    function ajaxUploadImage(v_url,succesCallBack) {
 
+        var formValue="uploadImgForm1";
+
+        var options = {
+            url: v_url,
+            type: "POST",
+            dataType: "json",
+            success: function (result) {
+            	succesCallBack&&succesCallBack(result);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            	toastr.error(msg);
+            }
+        };
+        $("#"+formValue).ajaxSubmit(options);
+    }
+
+    
 var fileUploadInit = function(url){
 	$("#ModifyModal").on("hidden.bs.modal", function() {  
 	    $(this).removeData("bs.modal");  

@@ -1,166 +1,356 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
-	<title>test</title>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>test</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 
 </head>
 
 <body>
-<div th:fragment="dialog-content">
-<script th:inline="javascript">
-/*<![CDATA[*/
-	//var modifyInfo = /*[[${modifyInfo}]]*/;
-/*]]>*/
- 
-$(function(){
-	$("#modalDailog").removeClass("modal-lg");
-	//$("#modalDailog").addClass("modal");
-	initTimePicker();
-})
-</script>
+	<div th:fragment="dialog-content">
+		<!--
+	<div>
+		<div class="modal fade" id="ModifyModal1" tabindex="-1" role="dialog" aria-labelledby="ModifyModalLabel" aria-hidden="true">
+			<div class="modal-dialog" id="modalDailog">
+				<div class="modal-content">
+						<div class="file-loading">
+							<input id="input-imprt" name="file" type="file" multiple>
+						</div>
+						<div id="errorBlock" class="help-block"></div>
+				</div> 
+			</div> 
+		</div>
+	</div>
+	 END DIALOG CONTENT -->
 
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-			&times;
-		</button>
-		<h4 class="modal-title" id="ModifyModalTitle">
-			填写机器人信息
-		</h4>
+
+		<link th:href="@{~/framework/vendor/fileinput/css/fileinput.css}" media="all" rel="stylesheet"
+			type="text/css" />
+		<style>
+.kv-avatar .krajee-default.file-preview-frame, .kv-avatar .krajee-default.file-preview-frame:hover
+	{
+	margin: 0;
+	padding: 0;
+	border: none;
+	box-shadow: none;
+	text-align: center;
+}
+
+.kv-avatar {
+	display: inline-block;
+}
+
+.kv-avatar .file-input {
+	display: table-cell;
+	width: 213px;
+}
+
+.kv-reqd {
+	color: red;
+	font-family: monospace;
+	font-weight: normal;
+}
+</style>
+		<script th:src="@{~/framework/vendor/fileinput/js/fileinput.js}" type="text/javascript"></script>
+		<script th:src="@{~/framework/vendor/fileinput/js/locales/zh.js}" type="text/javascript"></script>
+		<script th:src="@{~/framework/scripts/file-upload.js}" type="text/javascript"></script>
+		<script th:inline="javascript">
+			/*<![CDATA[*/
+			var modifyInfo = /*[[${modifyInfo}]]*/;
+			/*]]>*/
+
+			$(function() {
+				//$("#modalDailog").removeClass("modal-lg");
+				//$("#modalDailog").addClass("modal");
+				initTimePicker();
+
+				var btnCust = '<button type="button" class="btn btn-secondary" title="Add picture tags" ' + 'onclick="alert(\'Call your custom code here.\')">'
+						+ '<i class="glyphicon glyphicon-tag"></i>' + '</button>';
+			
+				var defaultAvatar = '<img src="./framework/img/default_avatar_male.jpg" alt="头像" ><h6 class="text-muted">点这里选择头像</h6>';
+				if(modifyInfo!=null){
+					defaultAvatar = '<img style="height:160px;width:160px;" src="./file/'+modifyInfo.user.userPhoto+'" alt="头像" ><h6 class="text-muted">点这里选择头像</h6>';
+				}
+				
+				$("#robot-avatar").fileinput({
+					uploadUrl : "/uploader/saveRobotAvatarImg.ser",
+					previewFileType : "image",
+					language : 'zh',
+					enctype : 'multipart/form-data',
+					overwriteInitial : false,
+					maxFileSize : 1500,
+					maxFileCount : 1,
+					uploadAsync : true, //默认异步上传
+					showPreview : true, //是否显示预览
+					showClose : true,
+					showCaption : false,
+					showBrowse : true,
+					showUpload : true,//是否显示上传按钮
+					browseLabel : "浏览",
+					showRemove : false,//显示移除按钮
+					browseOnZoneClick : true,
+					uploadClass : "btn btn-info",
+					uploadLabel : "上传",
+					uploadIcon : "<i class=\"glyphicon glyphicon-upload\"></i> ",
+					elErrorContainer : '#kv-avatar-errors-2',
+					msgErrorClass : 'alert alert-block alert-danger',
+					defaultPreviewContent : defaultAvatar,
+					allowedFileExtensions : [ "jpg", "png", "gif", "jpeg" ]
+				});
+
+				$("#robot-avatar").on("fileuploaded", function(event, data, previewId, index) {
+					console.log(JSON.stringify(data));
+					if (data.response && data.response.errorCode == 0) {
+						$("#userPhoto").val(data.response.body.url);
+					} else {
+						toastr.error("头像上传失败");
+					}
+				});
+				$('#robot-avatar').on('fileerror', function(event, data, msg) {
+					toastr.error(msg);
+				});
+
+			})
+		</script>
+
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h4 class="modal-title" id="ModifyModalTitle">填写机器人信息</h4>
+		</div>
+
+		<div class="modal-body">
+			<div id="kv-avatar-errors-2" class="center-block" style="width: 800px; display: none"></div>
+			<form id="modifyDataFrom" class="form-horizontal" role="form">
+				<input id="modifyId" name="robotId" type="hidden"
+					th:attr="value=${modifyInfo==null}?'':${modifyInfo.robotId}">
+				<input id="userId" name="user.userID" type="hidden"
+					th:attr="value=${modifyInfo==null?'':modifyInfo.user==null?'':modifyInfo.user.id}">
+				<input id="modifyModel" name="modifyModel" type="hidden"
+					th:attr="value=${modifyModel==null}?'':${modifyModel}">
+				<input id="userPhoto" name="user.userPhoto" type="hidden"
+					th:attr="value=${modifyInfo==null?'':modifyInfo.user==null?'':modifyInfo.user.userPhoto}">
+				<div class="row">
+					<div class="col-sm-4 text-center">
+						<div class="kv-avatar">
+							<div class="file-loading">
+								<input id="robot-avatar" name="file" type="file">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-sm-8">
+						<div class="row">
+
+							<div class="col-sm-5">
+								<div class="form-group">
+									<label for="nickName">机器人昵称</label>
+									<input type="text" class="form-control" placeholder="机器人昵称" name="user.nickName" required
+										th:attr="value=${modifyInfo==null?'':modifyInfo.user==null?'':modifyInfo.user.nickName}">
+								</div>
+							</div>
+							<div class="col-sm-1"></div>
+							<div class="col-sm-5">
+								<div class="form-group">
+									<label for="mobilePhone">机器人电话</label>
+									<input type="text" class="form-control" placeholder="机器人电话" name="user.mobilePhone"
+										required
+										th:attr="value=${modifyInfo==null?'':modifyInfo.user==null?'':modifyInfo.user.mobilePhone}">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-5">
+								<div class="form-group">
+									<label>机器人钱包</label>
+									<input type="text" class="form-control" placeholder="机器人钱包" name="wallet.availableAmount"
+										required
+										th:attr="value=${modifyInfo==null?'':modifyInfo.wallet==null?'':#numbers.formatDecimal(modifyInfo.wallet.availableAmount,3,2)}">
+								</div>
+							</div>
+							<div class="col-sm-1"></div>
+							<div class="col-sm-5">
+								<div class="form-group">
+									<label>机器人性别</label>
+									<select class="form-control" name="user.sex" required>
+										<option value="">===机器人性别===</option>
+										<option th:each="map:${@commonConstants.getDictionarysByKey('sex')}"
+											th:selected="${modifyInfo!=null&&modifyInfo.user!=null&&modifyInfo.user.sex == map.key}"
+											th:value="${map.key}" th:text="${map.value}"></option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-5">
+								<div class="form-group">
+									<label>中雷概率</label>
+									<input type="text" class="form-control" placeholder="中雷概率(0-1)" name="hitChance" required
+										th:attr="value=${modifyInfo==null?'':modifyInfo.hitChance}">
+								</div>
+							</div>
+							<div class="col-sm-1"></div>
+							<div class="col-sm-5">
+								<div class="form-group">
+									<label>抢包频率</label>
+									<input type="text" class="form-control" placeholder="抢包频率(0-1)" name="grapChance" required
+										th:attr="value=${modifyInfo==null?'':modifyInfo.grapChance}">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-5">
+								<div class="form-group">
+									<label>发包频率</label>
+									<input type="text" class="form-control" placeholder="发包频率(0-1)" name="sendPacketChance"
+										required th:attr="value=${modifyInfo==null?'':modifyInfo.sendPacketChance}">
+								</div>
+							</div>
+							<div class="col-sm-1"></div>
+							<div class="col-sm-5">
+								<div class="form-group">
+									<label>启用状态</label>
+									<select class="form-control" name="status">
+										<option value="">===启用状态===</option>
+										<option th:selected="${modifyInfo!=null&&modifyInfo.status == 0}" value="0">未启用</option>
+										<option th:selected="${modifyInfo!=null&&modifyInfo.status == 1}" value="1">已启用</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			<button type="button" class="btn btn-primary" id="ModifyModalSubmit">提交</button>
+		</div>
 	</div>
-	<div class="modal-body">
-		<form id="modifyDataFrom" class="form-horizontal" role="form">
-			<input id="modifyId" name="robotId" type="hidden" th:attr="value=${modifyInfo==null}?'':${modifyInfo.robotId}">
-			<input id="modifyModel" name="modifyModel" type="hidden" th:attr="value=${modifyModel==null}?'':${modifyModel}">
-			<div class="form-group">
-				<label class="col-sm-3 control-label">机器人昵称</label> 
-				<div class="col-sm-9">
-					<input type="text" class="form-control"  placeholder="机器人昵称" name="nickName" 
-						th:attr="value=${modifyInfo==null?'':modifyInfo.user==null?'':modifyInfo.user.nickName}">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">机器人电话</label> 
-				<div class="col-sm-9"> 
-					<input type="text" class="form-control"  placeholder="机器人电话" name="mobilePhone" 
-						th:attr="value=${modifyInfo==null?'':modifyInfo.user==null?'':modifyInfo.user.mobilePhone}">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">机器人头像</label> 
-				<div class="col-sm-9"> 
-					<input type="text" class="form-control"  placeholder="机器人头像" name="userPhoto" 
-						th:attr="value=${modifyInfo==null?'':modifyInfo.user==null?'':modifyInfo.user.userPhoto}">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">机器人钱包</label> 
-				<div class="col-sm-9"> 
-					<input type="text" class="form-control"  placeholder="机器人钱包" name="availableAmount" 
-						th:attr="value=${modifyInfo==null?'':modifyInfo.wallet==null?'':modifyInfo.wallet.availableAmount}">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">机器人性别</label> 
-				<div class="col-sm-9"> 
-					<select class="form-control" name="sex">
-						<option value="" >===机器人性别===</option>
-						<option th:each="map:${@commonConstants.getDictionarysByKey('sex')}" 
-								th:selected="${modifyInfo!=null&&modifyInfo.user!=null&&modifyInfo.user.sex == map.key}" 
-								th:value="${map.key}" th:text="${map.value}"></option>
-					</select>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">中雷概率</label> 
-				<div class="col-sm-9"> 
-					<input type="text" class="form-control"  placeholder="中雷概率(1-100)" name="hitChance" 
-						th:attr="value=${modifyInfo==null?'':#numbers.formatInteger(modifyInfo.hitChance*100,0)}">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">抢包频率</label> 
-				<div class="col-sm-9"> 
-					<input type="text" class="form-control"  placeholder="抢包频率(1-100)" name="grapChance" 
-						th:attr="value=${modifyInfo==null?'':#numbers.formatInteger(modifyInfo.grapChance*100,0)}">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">发包频率</label> 
-				<div class="col-sm-9"> 
-					<input type="text" class="form-control"  placeholder="发包频率(1-100)" name="sendPacketChance" 
-						th:attr="value=${modifyInfo==null?'':#numbers.formatInteger(modifyInfo.sendPacketChance*100,0)}">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">启用状态</label> 
-				<div class="col-sm-9">  
-					<select class="form-control" name="status">
-						<option value="" >===启用状态===</option>
-						<option th:selected="${modifyInfo!=null&&modifyInfo.status == 0}" value="0">未启用</option>
-						<option th:selected="${modifyInfo!=null&&modifyInfo.status == 1}" value="1">已启用</option>
-					</select>
-				</div>
-			</div>
-		</form>
-	</div>
-	<div class="modal-footer">
-		<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-		</button>
-		<button type="button" class="btn btn-primary" id="ModifyModalSubmit">
-			提交
-		</button>
-	</div>
-</div>
 </body>
 <script type="text/javascript">
 	$(document).ready(function() {
-		
-		$("#ModifyModal").on("hidden.bs.modal", function() {  
-		    $(this).removeData("bs.modal");  
-		}); 
-		
-	    $('#modifyDataFrom').bootstrapValidator({
-	        message: '输入无效,请重新输入',
-	        group:'.form-group',
-	        trigger: 'keyup focus',
-	        feedbackIcons: {
-	            valid: 'glyphicon glyphicon-ok',
-	            invalid: 'glyphicon glyphicon-remove',
-	            validating: 'glyphicon glyphicon-refresh'
-	        },
-	        fields: {
-	        	nickName: {
-	                message: '机器人昵称不合法',
-	                validators: {
-	                    notEmpty: {
-	                        message: '机器人昵称不能为空'
-	                    }
-	                }
-	            }, 
-	            mobilePhone: {
-	                message: '联系电话无效',
-	                validators: {
-	                	notEmpty: {
-	                        message: '联系电话不能为空'
-	                    },
-	                    stringLength: {
-	                        min: 11,
-	                        max: 11,
-	                        message: '联系电话长度必须是11位'
-	                    },
-	                    regexp: {
-	                        regexp: /^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8])|(19[7]))\d{8}$/,
-	                        message: '联系电话格式不正确'
-	                    }
-	                }
-	            }
-	        }
-	    });
+
+		$("#ModifyModal").on("hidden.bs.modal", function() {
+			$(this).removeData("bs.modal");
+		});
+
+		$('#modifyDataFrom').bootstrapValidator({
+			message : '输入无效,请重新输入',
+			group : '.form-group',
+			trigger : 'keyup focus',
+			feedbackIcons : {
+				valid : 'glyphicon glyphicon-ok',
+				invalid : 'glyphicon glyphicon-remove',
+				validating : 'glyphicon glyphicon-refresh'
+			},
+			fields : {
+				nickName : {
+					message : '机器人昵称输入不合法',
+					validators : {
+						notEmpty : {
+							message : '机器人昵称不能为空'
+						}
+					}
+				},
+				hitChance : {
+					message : '中雷概率输入不合法',
+					validators : {
+						numeric : {
+							message : '中雷概率必须是数字'
+						},
+						notEmpty : {
+							message : '中雷概率不能为空'
+						},
+						callback : {
+							callback : function(value, validator, $field) {
+								//validator.updateStatus('cashOnDeliveryAmt', 'NOT_VALIDATED').validateField('cashOnDeliveryAmt');
+
+								if (value >= 0 && value<=1) {
+									return true;
+								}
+								return  {
+			                        valid: false,
+			                        message: '中雷概率必须是0到1之间'
+			                    };
+ 
+							}
+						}
+					}
+				},
+				grapChance : {
+					message : '抢包频率输入不合法',
+					validators : {
+						numeric : {
+							message : '抢包频率必须是数字'
+						},
+						notEmpty : {
+							message : '抢包频率不能为空'
+						},
+						callback : {
+							callback : function(value, validator, $field) {
+								if (value >= 0 && value<=1) {
+									return true;
+								}
+								return  {
+			                        valid: false,
+			                        message: '抢包频率必须是0到1之间'
+			                    };
+ 
+							}
+						}
+					}
+				},
+				sendPacketChance : {
+					message : '发包频率输入不合法',
+					validators : {
+						numeric : {
+							message : '发包频率必须是数字'
+						},
+						notEmpty : {
+							message : '发包频率不能为空'
+						},
+						callback : {
+							callback : function(value, validator, $field) {
+								if (value >= 0 && value<=1) {
+									return true;
+								}
+								return  {
+			                        valid: false,
+			                        message: '发包频率必须是0到1之间'
+			                    };
+ 
+							}
+						}
+					}
+				},
+				mobilePhone : {
+					message : '联系电话输入无效',
+					validators : {
+						notEmpty : {
+							message : '联系电话不能为空'
+						},
+						stringLength : {
+							min : 11,
+							max : 11,
+							message : '联系电话长度必须是11位'
+						},
+						regexp : {
+							regexp : /^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8])|(19[7]))\d{8}$/,
+							message : '联系电话格式不正确'
+						}
+					}
+				}
+			}
+		});
 	});
 </script>
 </html>

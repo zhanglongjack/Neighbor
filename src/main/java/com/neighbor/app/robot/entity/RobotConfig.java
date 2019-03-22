@@ -21,6 +21,8 @@ public class RobotConfig extends PageEntity {
 	private UserInfo user;
 	private UserWallet wallet;
 
+	// 查询条件属性
+	
 	public UserInfo getUser() {
 		return user;
 	}
@@ -96,4 +98,13 @@ public class RobotConfig extends PageEntity {
 	public void setUpdateDateTime(Long updateDateTime) {
 		this.updateDateTime = updateDateTime;
 	}
+
+	@Override
+	public String toString() {
+		return String.format(
+				"RobotConfig [robotId=%s, hitChance=%s, grapChance=%s, sendPacketChance=%s, status=%s, updateDateTime=%s, user=%s, wallet=%s]",
+				robotId, hitChance, grapChance, sendPacketChance, status, updateDateTime, user, wallet);
+	}
+	
+	
 }

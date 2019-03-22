@@ -362,4 +362,14 @@ public class GroupServiceImpl implements GroupService {
             }
         }
     }
+
+	@Override
+	public List<GroupMember> selectRobotGroupMemberBy(Long groupId) {
+		return groupMemberMapper.selectRobotGroupMemberBy(groupId);
+	}
+
+	@Override
+	public Group selectByPrimeryId(Long groupId) {
+		return groupMapper.selectByPrimaryKey(groupId);
+	}
 }

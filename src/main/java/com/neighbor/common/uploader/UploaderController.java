@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,31 +27,41 @@ public class UploaderController {
     @Autowired
     private Environment env;
 
+    @RequestMapping(value = "/imgView.ser")
+    public String imgView(String imgSrc, String modifyModel, Model model) throws Exception {
+        logger.debug("primaryModalView request:" + imgSrc + ",model:" + model);
+        model.addAttribute("modifyModel", modifyModel);
+        model.addAttribute("imgSrc", imgSrc);
+        logger.debug("primaryModalView model : " + model);
+
+        return "page/common/ImageModal";
+    }
+     
     @RequestMapping(value = "/saveImg.req", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult saveImg(@ModelAttribute("user") UserInfo user, String fileType, Long friendId,
                                   String fileName, MultipartFile file) throws Exception {
         logger.info("saveImg file >>>> " + file);
         logger.info("friendId >> " + friendId);
-        String url = saveImage(user, fileType, friendId, fileName, file);
+        String url = saveImage(user.getId()+"", fileType, friendId, fileName, file);
         ResponseResult result = new ResponseResult();
         result.addBody("url", url);
         return result;
     }
 
-    private String saveImage(UserInfo user, String fileType, Long friendId, String fileName, MultipartFile file)
+    private String saveImage(String rootPath, String fileType, Long friendId, String fileName, MultipartFile file)
             throws UploaderException {
         try {
             String retPath = null;
             String filepath = null;
             if (fileType != null) {
                 retPath = FileUploadUtil.split + FileUploadUtil.IMAGE + FileUploadUtil.split
-                        + UploaderImgType.getDesByValue(fileType) + FileUploadUtil.split + user.getId()
+                        + UploaderImgType.getDesByValue(fileType) + FileUploadUtil.split + rootPath
                         + FileUploadUtil.split;
             }
             if ((fileType == null && friendId != null && friendId != null)
                     || UploaderImgType.chat.toString().equals(fileType)) {
-                retPath = FileUploadUtil.chatImagePath(user.getId(), friendId);
+                retPath = FileUploadUtil.chatImagePath(rootPath, friendId);
             }
             filepath = env.getProperty(EnvConstants.UPLOADER_FILEPATH) + retPath;
             FileUploadUtil.writeUploadFile(file, filepath, fileName);
@@ -66,7 +77,7 @@ public class UploaderController {
     public ResponseResult saveAvatarImg(@ModelAttribute("user") UserInfo user, String fileType, Long friendId,
                                         String fileName, MultipartFile file) throws Exception {
 
-        String url = saveImage(user, fileType, friendId, fileName, file);
+        String url = saveImage(user.getId()+"", fileType, friendId, fileName, file);
         UserInfo userInfo = new UserInfo();
         userInfo.setUserID(user.getId());
         userInfo.setUserPhoto(url);
@@ -74,6 +85,19 @@ public class UploaderController {
         ResponseResult result = new ResponseResult();
         result.addBody("url", url);
         return result;
+    }
+    
+    @RequestMapping(value = "/saveRobotAvatarImg.ser", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult saveRobotAvatarImg(@RequestParam("file") MultipartFile file) throws Exception {
+    	logger.info("saveRobotAvatarImg file >>>> " + file);
+    	String filename = file.getOriginalFilename();
+    	String suffix=filename.substring(filename.lastIndexOf("."));
+    	String newFileName = "robot_"+System.currentTimeMillis()+""+UUID.randomUUID().toString()+""+suffix;
+    	String url = saveImage("robot", newFileName, file); 
+    	ResponseResult result = new ResponseResult();
+    	result.addBody("url", url);
+    	return result;
     }
 
     @RequestMapping(value = "/saveProductImg.ser", method = RequestMethod.POST)

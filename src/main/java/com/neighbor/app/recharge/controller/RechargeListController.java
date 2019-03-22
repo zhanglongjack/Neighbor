@@ -46,16 +46,6 @@ public class RechargeListController {
 
         return "page/recharge/ModifyModal";
     }
-    @RequestMapping(value = "/imgView.ser")
-    public String imgView(String imgSrc, String modifyModel, Model model) throws Exception {
-        logger.debug("primaryModalView request:" + imgSrc + ",model:" + model);
-        model.addAttribute("modifyModel", modifyModel);
-        model.addAttribute("imgSrc", imgSrc);
-        logger.debug("primaryModalView model : " + model);
-
-        return "page/recharge/ImageModal";
-    }
-
 
     @RequestMapping(value = "/pageView.ser")
     @ResponseBody

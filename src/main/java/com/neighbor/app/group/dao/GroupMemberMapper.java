@@ -26,4 +26,7 @@ public interface GroupMemberMapper {
     GroupMember selectGroupMember(GroupMember record);
 
 	List<GroupMember> selectBySelective(GroupMember groupMember);
+
+	List<GroupMember> selectRobotGroupMemberBy(Long groupId);
+
 }

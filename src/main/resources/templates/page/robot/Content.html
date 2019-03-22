@@ -82,10 +82,16 @@
 									<tr th:each="obj : ${resultList}">
 										<td th:text="${obj.robotId}"></td>
 										<td>
-											<img  th:attr="src='file/'+${obj.user.userPhoto}"/>
+											<a th:if="${obj.user.userPhoto!=null}" data-toggle="modal" data-target="#ModifyModal"
+												th:attr="href='/uploader/imgView.ser?imgSrc=/file/'+${obj.user.userPhoto}">
+												<img class="img-rounded" style="width: 40px; height: 50px;"
+													th:attr="src='/file/'+${obj.user.userPhoto}" alt="看大图"/>
+											</a>
 										</td>
 										<td th:text="${obj.user.nickName}"></td>
-										<td th:text="${obj.user.mobilePhone}"></td>
+										<td th:text="${obj.user.mobilePhone}" >
+										
+										</td>
 										<td th:text="${#numbers.formatCurrency(obj.wallet.availableAmount)}"></td>
 										<td th:text="${@commonConstants.getDictionarysBy('sex',obj.user.sex)}"></td>
 										<td th:text="${#numbers.formatPercent(obj.hitChance,0,0)}"></td> 

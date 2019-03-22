@@ -59,8 +59,28 @@ public class PacketServiceTest {
 	private GroupService groupService;
 	@Autowired
 	private UserWalletService userWalletService;
-	
+	@Autowired
+	private RobotConfigService robotConfigService;
+
 	@Test
+	public void testRobotGrapPacket() throws Exception{
+		Long gameId = 1L;
+		Packet packet = new Packet();
+		packet.setAmount(new BigDecimal(100));
+		packet.setPacketNum(7);
+		packet.setHitNum(1);
+		packet.setUserId(600023L);
+		packet.setGroupId(100001L);
+		UserWallet wallet = userWalletService.selectByPrimaryUserId(packet.getUserId());
+		final Packet packet1 = packetService.sendPacket(packet, wallet);
+		logger.info("开始抢红包测试");
+		robotConfigService.robotGrapPacket(packet.getGroupId(), gameId, packet1);
+		
+		Thread.sleep(100000);
+	}
+	
+	
+	
 	public void test1() throws Exception{
 		Long gameId = 1L;
 		Packet packet = new Packet();

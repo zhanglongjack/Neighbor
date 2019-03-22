@@ -63,4 +63,8 @@ public class FileUploadUtil {
         return split+FileUploadUtil.IMAGE+split+FileUploadUtil.CHAT+split+godId+split+friendId+split;
     }
 
+	public static String chatImagePath(String rootPath, Long friendId) {
+		return split+FileUploadUtil.IMAGE+split+FileUploadUtil.CHAT+split+rootPath+split+friendId+split;
+	}
+
 }

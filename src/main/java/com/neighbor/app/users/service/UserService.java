@@ -2,8 +2,10 @@ package com.neighbor.app.users.service;
 
 import java.util.List;
 
+import com.neighbor.app.robot.entity.RobotConfig;
 import com.neighbor.app.users.entity.UserConfig;
 import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.app.wallet.entity.UserWallet;
 
 public interface UserService {
 
@@ -38,5 +40,9 @@ public interface UserService {
     Long selectPageTotalCount(UserInfo queryUser);
 
     List<UserInfo> selectPageByObjectForList(UserInfo queryUser);
+
+	UserInfo buildRobotInfo(UserInfo record, RobotConfig robot, UserWallet wallet);
+
+	void updateRobotInfo(UserInfo user, RobotConfig robot, UserWallet wallet);
 
 }

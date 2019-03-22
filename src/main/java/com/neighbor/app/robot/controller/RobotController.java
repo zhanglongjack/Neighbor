@@ -18,7 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.neighbor.app.robot.entity.RobotConfig;
 import com.neighbor.app.robot.service.RobotConfigService;
 import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.app.users.service.UserService;
+import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.util.PageTools;
+import com.neighbor.common.util.ResponseResult;
 
 @Controller
 @RequestMapping(value = "/robot")
@@ -27,7 +30,11 @@ public class RobotController {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private RobotConfigService robotConfigService;
-
+	@Autowired
+	private UserService userService;
+    @Autowired
+    private UserWalletService userWalletService;
+    
 	@RequestMapping(value = "/primaryModalView.ser")
 	public String primaryModalView(Integer id, String modifyModel, Model model) throws Exception {
 		logger.debug("primaryModalView request:" + id + ",model:" + model);
@@ -76,26 +83,22 @@ public class RobotController {
 
 	@RequestMapping(value="/robotEdit.ser")
 	@ResponseBody
-	public Map<String,Object> userInfoEdit(RobotConfig robot){
+	public ResponseResult userInfoEdit(RobotConfig robot){
 		logger.info("userInfoEdit request:{}",robot);
-		int num = robotConfigService.updateByPrimaryKeySelective(robot);
+		userService.updateRobotInfo(robot.getUser(),robot,robot.getWallet());
 		
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("success", true);
-		map.put("editNumber", num);
-		return map;
+		return new ResponseResult();
 	}
 	
 	@RequestMapping(value="/robotAdd.ser")
 	@ResponseBody
-	public Map<String,Object> userInfoAdd(RobotConfig robot) throws Exception{
+	public ResponseResult userInfoAdd(RobotConfig robot) throws Exception{
 		logger.info("userInfoAdd request:{}",robot);
-		int num = robotConfigService.insertSelective(robot);
-		
+		userService.buildRobotInfo(robot.getUser(),robot,robot.getWallet());
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("success", true);
-		map.put("addNumber", num);
-		return map;
+//		map.put("addNumber", num);
+		return new ResponseResult();
 	}
 
 

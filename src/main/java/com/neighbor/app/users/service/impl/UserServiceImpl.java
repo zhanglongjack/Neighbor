@@ -1,5 +1,16 @@
 package com.neighbor.app.users.service.impl;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.neighbor.app.robot.entity.RobotConfig;
+import com.neighbor.app.robot.service.RobotConfigService;
 import com.neighbor.app.users.constants.UserContainer;
 import com.neighbor.app.users.dao.UserConfigMapper;
 import com.neighbor.app.users.dao.UserInfoMapper;
@@ -8,14 +19,6 @@ import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,7 +35,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserWalletService userWalletService;
-
+    
+	@Autowired
+	private RobotConfigService robotConfigService;
+	
     @Override
     public int deleteByPrimaryKey(Long uId) {
         return userInfoMapper.deleteByPrimaryKey(uId);
@@ -104,8 +110,8 @@ public class UserServiceImpl implements UserService {
     public UserInfo builderUserInfo(UserInfo record) {
         logger.info("创建用户信息:" + record);
         insertSelective(record);
-        record.setNickName(record.getId() + "");
-        record.setUserAccount(record.getId() + "");
+        record.setNickName(record.getNickName()==null?record.getId() + "":record.getNickName());
+        record.setUserAccount(record.getUserAccount()==null?record.getId() + "":record.getUserAccount());
         updateByPrimaryKeySelective(record);
 
         logger.info("创建用户设置信息:" + record);
@@ -120,5 +126,42 @@ public class UserServiceImpl implements UserService {
 
         return record;
     }
+    
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public UserInfo buildRobotInfo(UserInfo record,RobotConfig robot,UserWallet wallet) {
+    	logger.info("创建机器人配置信息:" + robot);
+    	robotConfigService.insertSelective(robot);
+    	
+    	record.setRobotSno(robot.getRobotId()+"");
+    	logger.info("创建用户信息:" + record);
+    	insertSelective(record);
+    	
+//    	record.setNickName(record.getNickName()==null?record.getId() + "":record.getNickName());
+//    	record.setUserAccount(record.getUserAccount()==null?record.getId() + "":record.getUserAccount());
+    	updateByPrimaryKeySelective(record);
+    	
+        logger.info("创建用户设置信息:" + record);
+        UserConfig config = new UserConfig();
+        config.setNoPasswordPay("0");
+        insertUserConfigSelective(config);
+    	
+    	logger.info("创建钱包信息:" + record);
+    	wallet.setuId(record.getId());
+    	userWalletService.insertSelective(wallet);
+    	
+    	return record;
+    }
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void updateRobotInfo(UserInfo user, RobotConfig robot, UserWallet wallet) {
+		updateByPrimaryKeySelective(user);
+		robotConfigService.updateByPrimaryKeySelective(robot);
+		
+		UserWallet walletResult = userWalletService.selectByPrimaryUserId(user.getId());
+		wallet.setId(walletResult.getId());
+		userWalletService.updateByPrimaryKeySelective(wallet);
+	}
 
 }

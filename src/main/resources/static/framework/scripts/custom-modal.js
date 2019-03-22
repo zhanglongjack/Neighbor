@@ -21,9 +21,13 @@ function modifyModal(){
 					data:dataParams,  
 					dataType:'json', 
 					success:function(data){  
-						toastr.success(id ? "更新成功!":"添加成功!"); 
-						render(pageQueryParams);  // 渲染页面函数
-						$('#ModifyModal').modal('toggle')
+						if(data.errorCode==0){
+							toastr.success(id ? "更新成功!":"添加成功!"); 
+							render(pageQueryParams);  // 渲染页面函数
+							$('#ModifyModal').modal('toggle')
+						}else{
+							toastr.error(id ? "更新失败!":"添加失败!"); 
+						}
 						//window.location.href="/custInfoView?index="+currPage+"&pageSize="+currPageSize;
 					},
 					error:function(data){ 

@@ -50,8 +50,7 @@
 		inner join user_wallet w on w.u_id=u.id
 		<include refid="pageDynamicWhere" />
 		order by c.robot_id desc
-		limit
-		#{pageTools.rowIndex},#{pageTools.pageSize}
+		limit #{pageTools.rowIndex},#{pageTools.pageSize}
 	</select>
 
 	<select id="selectPageTotalCount" parameterType="com.neighbor.app.robot.entity.RobotConfig"
@@ -64,7 +63,7 @@
 		<include refid="pageDynamicWhere" />
 	</select>
 	
-	<insert id="insertSelective" parameterType="com.neighbor.app.robot.entity.RobotConfig">
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="robotId" parameterType="com.neighbor.app.robot.entity.RobotConfig">
 		insert into robot_config
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="robotId != null">
