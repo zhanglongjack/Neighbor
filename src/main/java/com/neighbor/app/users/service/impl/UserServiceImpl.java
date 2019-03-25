@@ -134,6 +134,7 @@ public class UserServiceImpl implements UserService {
     	robotConfigService.insertSelective(robot);
     	
     	record.setRobotSno(robot.getRobotId()+"");
+    	record.setUpUserId(1L);
     	logger.info("创建用户信息:" + record);
     	insertSelective(record);
     	
