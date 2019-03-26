@@ -6,6 +6,7 @@ import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
 import com.neighbor.common.security.EncodeData;
 import com.neighbor.common.util.PageTools;
+import com.neighbor.common.util.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +88,7 @@ public class GroupListController {
 
 	@RequestMapping(value="/addGroup.ser")
 	@ResponseBody
-	public Map<String,Object> addGroup(Group group,@ModelAttribute("user") UserInfo user) throws Exception{
+	public ResponseResult addGroup(Group group, @ModelAttribute("user") UserInfo user) throws Exception{
 		logger.info("addGroup request:{}",user);
 		logger.info("addGroup request:{}",group);
 		if(!user.isAdmin()){
@@ -101,12 +102,12 @@ public class GroupListController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("success", true);
 		map.put("addNumber", 1);
-		return map;
+		return new ResponseResult();
 	}
 
 	@RequestMapping(value="/updateGroup.ser")
 	@ResponseBody
-	public Map<String,Object> updateGroup(Group group,@ModelAttribute("user") UserInfo user) throws Exception{
+	public ResponseResult updateGroup(Group group,@ModelAttribute("user") UserInfo user) throws Exception{
 		logger.info("updateGroup request:{}",user);
 		logger.info("updateGroup request:{}",group);
 		if(!user.isAdmin()){
@@ -120,7 +121,7 @@ public class GroupListController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("success", true);
 		map.put("addNumber", 1);
-		return map;
+		return new ResponseResult();
 	}
 
 /*	@RequestMapping(value="/userInfoEdit.ser")

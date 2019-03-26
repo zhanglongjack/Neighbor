@@ -89,7 +89,7 @@ public class WithdrawListController {
 
     @RequestMapping(value="/auditEdit.ser")
     @ResponseBody
-    public Map<String,Object> auditEdit(@ModelAttribute("user") UserInfo user,Withdraw withdraw){
+    public ResponseResult auditEdit(@ModelAttribute("user") UserInfo user,Withdraw withdraw){
         logger.info("auditEdit userInfo:{}",user);
         logger.info("auditEdit withdraw:{}",withdraw);
         Map<String,Object> map = new HashMap<String,Object>();
@@ -112,7 +112,7 @@ public class WithdrawListController {
             logger.error(e.getMessage(),e);
         }
         map.put("editNumber", num);
-        return map;
+        return new ResponseResult();
     }
 }
 

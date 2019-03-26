@@ -87,7 +87,7 @@ public class RechargeListController {
 
     @RequestMapping(value="/auditEdit.ser")
     @ResponseBody
-    public Map<String,Object> auditEdit(@ModelAttribute("user") UserInfo user,Recharge recharge){
+    public ResponseResult auditEdit(@ModelAttribute("user") UserInfo user,Recharge recharge){
         logger.info("auditEdit userInfo:{}",user);
         logger.info("auditEdit recharge:{}",recharge);
         Map<String,Object> map = new HashMap<String,Object>();
@@ -110,7 +110,7 @@ public class RechargeListController {
             logger.error(e.getMessage(),e);
         }
         map.put("editNumber", num);
-        return map;
+        return new ResponseResult();
     }
 }
 

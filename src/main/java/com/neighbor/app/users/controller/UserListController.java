@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.neighbor.common.util.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,8 +87,9 @@ public class UserListController {
 
 	@RequestMapping(value="/userInfoEdit.ser")
 	@ResponseBody
-	public Map<String,Object> userInfoEdit(UserInfo userInfo){
+	public ResponseResult userInfoEdit(UserInfo userInfo){
 		logger.info("userInfoEdit request:{}",userInfo);
+		ResponseResult result = new ResponseResult();
 		if(!userInfo.getOldMobilePhone().equals(userInfo.getMobilePhone())){
 			//检查手机号码是否被占用
 			UserInfo user = userService.selectByUserPhone(userInfo.getMobilePhone());
@@ -96,7 +98,7 @@ public class UserListController {
 				Map<String,Object> map = new HashMap<String,Object>();
 				map.put("success", false);
 				map.put("editNumber", 0);
-				return map;
+				return result;
 			}
 		}
 		if(!StringUtils.isEmpty(userInfo.getUserPassword())){
@@ -107,20 +109,21 @@ public class UserListController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("success", true);
 		map.put("editNumber", num);
-		return map;
+		return result;
 	}
 	
 	@RequestMapping(value="/userInfoAdd.ser")
 	@ResponseBody
-	public Map<String,Object> userInfoAdd(UserInfo userInfo) throws Exception{
+	public ResponseResult userInfoAdd(UserInfo userInfo) throws Exception{
 		logger.info("userInfoAdd request:{}",userInfo);
+		ResponseResult result = new ResponseResult();
 		//检查手机号码是否被占用
 		UserInfo user = userService.selectByUserPhone(userInfo.getMobilePhone());
 		if(user!=null){
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("success", false);
 			map.put("editNumber", 0);
-			return map;
+			return result;
 		}
 		if(StringUtils.isEmpty(userInfo.getUserPassword())){
 			userInfo.setUserPassword(EncodeData.encode("123456"));//默认密码
@@ -132,18 +135,18 @@ public class UserListController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("success", true);
 		map.put("addNumber", num);
-		return map;
+		return result;
 	}
 	
 	@RequestMapping(value="/pwdReset.ser")
 	@ResponseBody
-	public Map<String,Object> pwdReset(UserInfo userInfo) throws Exception{
+	public ResponseResult pwdReset(UserInfo userInfo) throws Exception{
 		logger.info("pwdReset request:{}",userInfo);
 		userInfo.setUserPassword(EncodeData.encode("123456"));
 		userService.updateByPrimaryKeySelective(userInfo);
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("success", true);
-		return map;
+		return new ResponseResult();
 	}
 	
 	
