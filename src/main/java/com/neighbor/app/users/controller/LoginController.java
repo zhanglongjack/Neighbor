@@ -170,7 +170,7 @@ public class LoginController {
 	@RequestMapping(value = "/sendSMS.req", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseResult sendSMS(@Length(message = "手机长度最少11位", min = 11) @NotNull(message = "手机号不能为空") String phone) {
-		String code = null;// TencentSms.createVerifyCode();
+		String code = TencentSms.createVerifyCode();
 		logger.info("发送验证码:" + phone);
 		TencentSms.smsSend(code, phone);
 		return new ResponseResult();
