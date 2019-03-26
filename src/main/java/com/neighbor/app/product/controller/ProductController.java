@@ -130,13 +130,13 @@ public class ProductController {
 
     @RequestMapping(value = "/productAdd.ser")
     @ResponseBody
-    public Map<String, Object> productAdd(UserInfo userInfo, Product product) throws Exception {
+    public ResponseResult productAdd(UserInfo userInfo, Product product) throws Exception {
         logger.info("productAdd request:{}", product);
         int num = productService.insertSelective(product);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("success", true);
         map.put("addNumber", num);
-        return map;
+        return new ResponseResult();
     }
 
     @RequestMapping(value = "/modifyModalView.ser")
@@ -156,13 +156,13 @@ public class ProductController {
 
     @RequestMapping(value = "/productModify.ser")
     @ResponseBody
-    public Map<String, Object> productModify(UserInfo userInfo, Product product) throws Exception {
+    public ResponseResult productModify(UserInfo userInfo, Product product) throws Exception {
         logger.info("productModify request:{}", product);
         int num = productService.updateProduct(product);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("success", true);
         map.put("addNumber", num);
-        return map;
+        return new ResponseResult();
     }
 
     @RequestMapping(value = "/loadImg.ser", method = RequestMethod.POST)
