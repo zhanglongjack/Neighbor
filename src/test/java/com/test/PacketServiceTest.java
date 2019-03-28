@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,8 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -40,6 +37,7 @@ import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.service.SocketMessageService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = StartNeighbor.class)
@@ -61,8 +59,16 @@ public class PacketServiceTest {
 	private UserWalletService userWalletService;
 	@Autowired
 	private RobotConfigService robotConfigService;
+	@Autowired
+	private SocketMessageService socketMessageService;
 
 	@Test
+	public void testSocketMsgUpdate() throws Exception{
+		socketMessageService.updateWalletRefreshMsg(600018l);
+		
+		Thread.sleep(30000);
+	}
+	
 	public void testRobotGrapPacket() throws Exception{
 		Long gameId = 1L;
 		Packet packet = new Packet();

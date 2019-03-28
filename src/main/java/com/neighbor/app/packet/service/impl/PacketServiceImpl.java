@@ -45,6 +45,7 @@ import com.neighbor.common.util.BigDecimalUtil;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.RedPackageUtil;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.util.WebSocketPushHandler;
 
 @Service
 public class PacketServiceImpl implements PacketService {
@@ -633,6 +634,9 @@ public class PacketServiceImpl implements PacketService {
 		return packetMapper.selectPacketBySelective(packet);
 	}
 
+	
+	@Autowired
+	private WebSocketPushHandler webSocketPushHandler; 
 	@Override
 	@Transactional(readOnly = false, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public void expirePacketHandle(Long packetId) {
@@ -673,7 +677,11 @@ public class PacketServiceImpl implements PacketService {
 		userWalletService.updateWalletAmount(wallet);
 		
 		packetMapper.updateByPrimaryKeySelective(lockPacket);
-		logger.info("过期红包已处理退回:{}",lockPacket);
+		
+		logger.info("添加更新余额的消息通知");
+		webSocketPushHandler.walletRefreshNotice(null, lockPacket.getUserId(), "系统通知");
+
+		logger.info("过期红包已处理退回结束,退回红包信息:{}",lockPacket);
 	
 	}
 	

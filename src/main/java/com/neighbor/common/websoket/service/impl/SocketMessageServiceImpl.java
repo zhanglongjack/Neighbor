@@ -213,4 +213,16 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		socketMessageMapper.deleteByLessMsgId(msg.getMsgId());
 		
 	}
+
+	@Override
+	public void updateWalletRefreshMsg(Long targetUserId) {
+		new Thread(){
+			@Override
+			public void run() {
+				socketMessageMapper.updateWalletRefreshMsg(targetUserId);
+			};
+		}.start();
+		
+	}
+	
 }

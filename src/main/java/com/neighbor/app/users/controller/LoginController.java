@@ -1,5 +1,25 @@
 package com.neighbor.app.users.controller;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.users.constants.UserContainer;
 import com.neighbor.app.users.entity.UserConfig;
@@ -12,24 +32,7 @@ import com.neighbor.common.security.EncodeData;
 import com.neighbor.common.sms.TencentSms;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.util.StringUtil;
-import org.hibernate.validator.constraints.Length;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import com.neighbor.common.websoket.service.SocketMessageService;
 
 @Controller
 @Validated
@@ -42,6 +45,10 @@ public class LoginController {
 	private UserContainer userContainer;
 	@Autowired
 	private UserWalletService userWalletService;
+	@Autowired
+	private SocketMessageService socketMessageService;
+	
+	
 
 	// mv.setViewName("forward:/login.html");
 	// mv.setViewName("redirect:/login.html");
@@ -164,13 +171,16 @@ public class LoginController {
 			userConfig.setHaveVoice(UserConfig.HaveVoiceDesc.haveVoice.getValue());
 			userService.insertUserConfigSelective(userConfig);
 		}
+			
+		socketMessageService.updateWalletRefreshMsg(user.getId());
+		
 		result.addBody("userConfig", userConfig);
 	}
 
 	@RequestMapping(value = "/sendSMS.req", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseResult sendSMS(@Length(message = "手机长度最少11位", min = 11) @NotNull(message = "手机号不能为空") String phone) {
-		String code = null;// TencentSms.createVerifyCode();
+		String code = TencentSms.createVerifyCode();
 		logger.info("发送验证码:" + phone);
 		TencentSms.smsSend(code, phone);
 		return new ResponseResult();

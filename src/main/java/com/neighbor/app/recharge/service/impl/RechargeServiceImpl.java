@@ -49,11 +49,11 @@ public class RechargeServiceImpl implements RechargeService {
     public ResponseResult recharge(UserInfo user, Recharge recharge) throws Exception {
         ResponseResult responseResult = new ResponseResult();
         //判断验证码
-        boolean isValid = recharge.getVerfiyCode().equals(TencentSms.smsCache.get(recharge.getPhone()));
+/*        boolean isValid = recharge.getVerfiyCode().equals(TencentSms.smsCache.get(recharge.getPhone()));
         if (!isValid) {
             logger.info("验证码错误");
             throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "验证码错误");
-        }
+        }*/
         Date date = new Date();
         UserWallet userWallet = userWalletService.selectByPrimaryUserId(user.getId());
         recharge.setId(null);
@@ -64,7 +64,7 @@ public class RechargeServiceImpl implements RechargeService {
         if(ChannelTypeDesc.offline.toString().equals(recharge.getChannelType())){
             recharge.setStates(RechargeStatusDesc.initial.toString());
             rechargeMapper.insertSelective(recharge);
-            TencentSms.smsCache.remove(recharge.getPhone());
+            //TencentSms.smsCache.remove(recharge.getPhone());
             return  responseResult;
         }else{
             recharge.setStates(RechargeStatusDesc.success.toString());

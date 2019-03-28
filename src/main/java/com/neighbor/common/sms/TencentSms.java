@@ -3,6 +3,7 @@ package com.neighbor.common.sms;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import javax.validation.constraints.NotNull;
 
@@ -33,8 +34,10 @@ public class TencentSms {
 	 */
 	public static final Map<String,String> smsCache = new HashMap<String,String>();
 	public static String createVerifyCode(){
-		return  (int)(Math.random()*100000)+"";
+		String v = Math.random()*Math.random()+"";
+		return  v.substring(2,8);
 	}
+	
 	private static SmsSingleSender  ssender=null;
 	static{
 		checkSender();
@@ -73,8 +76,11 @@ public class TencentSms {
 	}
 	
 	public static void main(String[] args) {
-		TencentSms.smsSend("123456", "15999585921");
-		System.err.println("第一条发送完成");
+		for(int i=0;i<100;i++){
+			System.out.println(createVerifyCode());
+		}
+//		TencentSms.smsSend("123456", "15999585921");
+//		System.err.println("第一条发送完成");
 //		TencentSms.smsSend("666666", "15999585921");
 //		System.err.println("第二条发送完成");
 	}
