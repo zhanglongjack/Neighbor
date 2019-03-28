@@ -390,6 +390,16 @@
         
     </update>
     
+    <update id="updateWalletRefreshMsg" parameterType="java.lang.Long">
+		update chat_message 
+		set status = 'complete'
+		
+		where target_user_id = #{userId}
+        and master_msg_type='2'
+        and msg_type='WALLET_REFRESH'
+        and status not in ('complete') 
+    </update>
+    
     <insert id="insertMsgBackup"  parameterType="java.lang.Long">
 		 INSERT INTO chat_message_backup
 		 (<include refid="Base_Column_List"/>)

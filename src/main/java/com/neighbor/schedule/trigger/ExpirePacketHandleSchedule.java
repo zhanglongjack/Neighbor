@@ -19,6 +19,7 @@ public class ExpirePacketHandleSchedule {
 	
 	@Autowired
 	private PacketService packetService; 
+
 	/**
 	 * 个人消息定时推送任务
 	 */

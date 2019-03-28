@@ -52,6 +52,8 @@ public interface SocketMessageService {
 
 	void insertMsgBackup(SocketMessage msg);
 
+	void updateWalletRefreshMsg(Long targetUserId);
+
 	
 
 
