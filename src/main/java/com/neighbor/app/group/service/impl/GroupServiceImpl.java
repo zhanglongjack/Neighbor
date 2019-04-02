@@ -372,4 +372,14 @@ public class GroupServiceImpl implements GroupService {
 	public Group selectByPrimeryId(Long groupId) {
 		return groupMapper.selectByPrimaryKey(groupId);
 	}
+
+	@Override
+	public List<Group> selectPageByRobotGroupRelation(Group queryObject) {
+		return groupMapper.selectPageByRobotGroupRelation(queryObject);
+	}
+
+	@Override
+	public Long selectPageTotalCountByRobotGroupRelation(Group queryObject) {
+		return groupMapper.selectPageTotalCountByRobotGroupRelation(queryObject);
+	}
 }

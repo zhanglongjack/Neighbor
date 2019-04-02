@@ -22,6 +22,11 @@
     <result column="show_msg_switch" property="showMsgSwitch" jdbcType="VARCHAR" />
     <result column="show_nick_name_switch" property="showNickNameSwitch" jdbcType="VARCHAR" />
   </resultMap>
+
+  <resultMap id="robotGroupRelationResultMap" type="com.neighbor.app.group.entity.Group" extends="BaseResultMap" >
+		<association property="game" resultMap="com.neighbor.app.game.dao.GameMapper.BaseResultMap" />
+		<association property="robot" resultMap="com.neighbor.app.robot.dao.RobotConfigMapper.BaseResultMap" />
+  </resultMap>
   
   <sql id="Base_Column_List" >
      g.id, g.create_time, g.update_time, g.cre_date, g.cre_time, g.group_name, g.user_num, g.online_num,
@@ -101,6 +106,39 @@
     <include refid="Base_Column_List" />
     from `group`  g
     <include refid="dynamicWhere" />
+  </select>
+  
+  <sql id="robotGroupRelationDynamicWhere">
+    <where>
+      <if test="id != null">and g.id=#{id}</if>
+      <if test="groupName != null and groupName.length()>0">and g.group_name like CONCAT(#{groupName},'%')</if>
+      <if test="game.gameName != null and game.gameName.length()>0">and gm.game_name like CONCAT(#{game.gameName},'%')</if>
+      <if test="game.gameType != null">and gm.game_type=#{game.gameType}</if>
+    </where>
+  </sql>
+  
+  <select id="selectPageByRobotGroupRelation" parameterType="com.neighbor.app.group.entity.Group"
+          resultMap="robotGroupRelationResultMap">
+	select 
+		g.*,gm.*,rc.* 
+	from neighbor_dev.group g
+	inner join game gm on gm.id=g.game_id
+	left join (select * from robot_group_relation rg where rg.r_robot_id = #{robot.robotId}) t on t.r_group_id = g.id
+	left join robot_config rc on rc.robot_id=t.r_robot_id
+ 	<include refid="robotGroupRelationDynamicWhere" />
+    order by g.id
+    limit #{pageTools.rowIndex},#{pageTools.pageSize}
+  </select>
+  
+  <select id="selectPageTotalCountByRobotGroupRelation" parameterType="com.neighbor.app.group.entity.Group"
+          resultType="Long">
+	select 
+		count(1)
+	from neighbor_dev.group g
+	inner join game gm on gm.id=g.game_id
+	left join (select * from robot_group_relation rg where rg.r_robot_id = #{robot.robotId}) t on t.r_group_id = g.id
+	left join robot_config rc on rc.robot_id=t.r_robot_id
+	<include refid="robotGroupRelationDynamicWhere" />
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >

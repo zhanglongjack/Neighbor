@@ -73,6 +73,10 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 				ExecutorService fixedThreadPool = null;
 				List<GroupMember> memberList = groupService.selectRobotGroupMemberBy(groupId);
 				try {
+					if(memberList.size()==0){
+						logger.info("无机器人配置");
+						return;
+					}
 					logger.info("有多少群成员:"+memberList.size());
 					fixedThreadPool = Executors.newFixedThreadPool(memberList.size() > 32 ? 32 : memberList.size());
 					List<Future<Long>> futureList = new ArrayList<Future<Long>>();
@@ -106,13 +110,11 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 					for (Future<Long> future : futureList) {
 						try {
 							future.get(100, TimeUnit.SECONDS);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						} catch (Exception e) { }
 					}
 					logger.info("机器抢红包结束");
 				} catch (Exception e) {
-					logger.error("机器人抢红包异常");
+					logger.error("机器人抢红包异常:"+e.getMessage(),e);
 				} finally {
 					if (fixedThreadPool != null) {
 						fixedThreadPool.shutdown();

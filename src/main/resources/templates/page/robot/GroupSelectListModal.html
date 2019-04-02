@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+<title>test</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+</head>
+
+<body>
+	<div th:fragment="dialog-content"> 
+
+<link rel="stylesheet" th:href="@{~/framework/table/bootstrap-table.css}">
+<script th:src="@{~/framework/table/bootstrap-table.min.js}"></script>
+ 
+ <!-- Latest compiled and minified Locales -->
+ <script th:src="@{~/framework/table/locale/bootstrap-table-zh-CN.min.js}"></script>
+</style>
+		<script th:inline="javascript">
+			/*<![CDATA[*/
+			var robotId = /*[[${robotId}]]*/;
+			/*]]>*/
+			
+		</script>
+
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h4 class="modal-title" id="ModifyModalTitle">分配所属群</h4>
+		</div>
+
+		<div class="modal-body">
+              <div class="table-responsive-sm">
+
+                <div id="toolbar">
+                  <div class="form-inline" role="form">
+                    <div class="form-group">
+                      <input name="id" class="form-control" type="text" placeholder="编号">
+                    </div>
+                    <div class="form-group">
+                      <input name="groupName" class="form-control" type="text" placeholder="群名称">
+                    </div>
+                    <div class="form-group">
+                      <input name="game.gameName" class="form-control" type="text" placeholder="游戏名称">
+                    </div>
+                    <div class="form-group">
+                         <select class="form-control" name="game.gameType" id="gameType">
+                         	<option value="">===游戏类型===</option> 
+                         	<option value="1">红包游戏</option> 
+                         	<option value="2">猜猜乐</option> 
+                         	<option value="3">休闲游戏</option> 
+                         	<option value="4">福利群</option> 
+                         </select>
+                    </div>
+                    <button id="ok" type="submit" class="btn btn-primary">查询</button>
+                    <button id="submitBTN" type="submit" class="btn btn-primary">提交修改</button>
+                  </div>
+                </div>
+
+                <table class="table table-hover"
+                    id="table"
+                    data-toggle="table"
+                    data-id-field="id"
+                    data-buttons-class="primary"
+                    data-toolbar="#toolbar"
+                    data-search="false"
+                    data-search-align="left"
+                    data-click-to-select="true"
+                    data-method="post"
+                    data-silent-sort="false"
+                    data-show-refresh="false"
+                    data-show-toggle="false"
+                    data-show-fullscreen="false"
+                    data-show-columns="false"
+                    data-detail-view="false"
+                    data-show-export="false"
+                    data-minimum-count-columns="2"
+                    data-show-pagination-switch="false"
+                    data-pagination="true"
+                    data-pagination-h-align="left"
+                    data-pagination-detail-h-align="right"
+                    data-pagination-pre-text="上一页"
+                    data-pagination-next-text="下一页"
+                    data-page-number="1"
+                    data-page-size="10"
+                    data-page-list="[10, 25, 50, 100, ALL]"
+                    data-query-params="queryParams"
+                    data-show-footer="false"
+                    data-content-type="application/x-www-form-urlencoded"
+                    data-side-pagination="server"
+                    data-response-handler="responseHandler">
+                    
+                  <thead>
+                    <tr>
+                      <th data-field="state" data-checkbox="true"></th>
+                      <th data-field="id">群编号</th>
+                      <th data-field="groupName">群名称</th>
+                      <th data-field="game.gameName">游戏名称</th>
+                      <th data-field="game.gameType">游戏类型</th>
+                    </tr>
+                  </thead>
+                </table>				
+               </div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+		</div>
+	</div>
+ 
+ 
+		        <div id="loadingModal1" class="modal fade" data-keyboard="false"
+		            data-backdrop="static" data-role="dialog"
+		            aria-labelledby="myModalLabel" aria-hidden="true">
+		            <div id="loading" class="loading">加载中。。。</div>
+		        </div>
+</body>
+<script type="text/javascript"> 
+var $table = $('#table')
+var $ok = $('#ok')
+var selections = []
+
+$(function() {
+	$("#ModifyModal").on("hidden.bs.modal", function() {
+		$(this).removeData("bs.modal");
+	});
+	
+  initTable()
+  $ok.click(function () {
+    $table.bootstrapTable('refresh')
+  })
+  
+  $table.on('check-all.bs.table',
+  function (e,rows) {
+      var groupIds = $.map(rows, function (row) {
+          return row.id
+      })
+      console.log("全选按钮事件:"+JSON.stringify(groupIds.join(',')))
+     
+	  ajax("/gobotGroupRelation/batchRobotGroupAdd.ser",{
+		  robotId:robotId,
+		  ids:groupIds
+	  },function(){
+		  toastr.error("机器人群全选调整失败"); 
+		  $table.bootstrapTable('checkAll')
+	  })
+
+  })
+  $table.on('uncheck-all.bs.table',
+  function (e,rows) {
+      var groupIds = $.map(rows, function (row) {
+        return row.id
+      })
+      console.log("全不选择按钮事件:"+JSON.stringify(groupIds))
+      ajax("/gobotGroupRelation/robotGroupDelete.ser",{
+		  robotId:robotId,
+		  groupIdInStr:groupIds.join(',')
+	  },function(){
+		  toastr.error("机器人群全不选调整失败"); 
+		  $table.bootstrapTable('uncheckAll');
+	  })
+  })
+  
+  $table.on('check.bs.table',
+  function (e,row) {
+      console.log("check选择按钮事件:"+JSON.stringify(row.id))
+      ajax("/gobotGroupRelation/robotGroupAdd.ser",{
+		  robotId:robotId,
+		  groupId:row.id
+	  },function(){
+		  toastr.error("机器人群调整失败:群编号"+row.id); 
+		  $table.bootstrapTable('checkBy', {field: 'id', values:[row.id]})
+	  })
+	  
+  })
+  $table.on('uncheck.bs.table',
+  function (e,row) {
+	  console.log("uncheck选择按钮事件:"+JSON.stringify(row.id))
+	  ajax("/gobotGroupRelation/robotGroupDelete.ser",{
+		  robotId:robotId,
+		  groupId:row.id
+	  },function(){
+		  toastr.error("机器人群调整失败:群编号"+row.id); 
+		  $table.bootstrapTable('uncheckBy', {field: 'id', values:[row.id]})
+	  })
+      
+  })
+  
+  $table.on('all.bs.table', function (e, name, args) {
+    console.log(name, args)
+  })
+});
+function ajax(reqURL,paramsData,errorCallback){
+	$('#loadingModal1').modal('show');
+	$.ajax({
+		url: reqURL,
+		type: 'POST',
+		data: paramsData,
+		dataType: 'json',
+		success: function(response) {
+			console.log(JSON.stringify(response)); 
+			if(response.errorCode==1){
+				errorCallback&&errorCallback()
+			}
+			$('#loadingModal1').modal('hide');
+			
+			
+		},
+		error:function(rep,errMsg,exception){
+			if(rep.responseText=="LoginTimeout"){
+				location.href="/login.html";
+			}
+			errorCallback&&errorCallback(rep,errMsg,exception)
+			console.log(JSON.stringify(rep));
+		}
+	});
+}
+
+
+function getIdSelections() {
+  return $.map($table.bootstrapTable('getSelections'), function (row) {
+    return row.id
+  })
+}
+
+function responseHandler(res) {
+  $.each(res.rows, function (i, row) {
+    row.state = row.robot&&row.robot.robotId!=null
+  })
+  return res
+}
+
+
+function initTable() {
+  $table.bootstrapTable('destroy').bootstrapTable({
+	url:"/groupList/robotOwnGroupPage.ser", 
+	queryParams : function(params) {//上传服务器的参数
+		console.log("机器人编号有吗?"+robotId)
+		var temp = {
+			'pageTools.pageSize' : params.limit, // 每页显示数量
+			'pageTools.index' : (params.offset / params.limit) + 1, //当前页码 
+ 			'robot.robotId':robotId
+		};
+		$('#toolbar').find('input[name],select[name]').each(function () {
+			temp[$(this).attr('name')] = $(this).val()
+		})
+		
+		console.log("分页查询1:"+JSON.stringify(temp))
+		return temp;
+	}
+  })
+  
+
+    
+
+
+}
+
+
+</script>
+</html>

@@ -119,6 +119,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		notLoginPaths.add("/shutdown");
 		notLoginPaths.add("/login.ser");
 		notLoginPaths.add("/accountLogin.ser");
+		notLoginPaths.add("/data.js");
 		notLoginPaths.add("/register");
 		notLoginPaths.add("/kaptcha.jpg");
 		notLoginPaths.add("/kaptcha");

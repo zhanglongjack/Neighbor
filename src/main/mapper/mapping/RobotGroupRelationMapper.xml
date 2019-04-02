@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neighbor.app.robot.dao.RobotGroupRelationMapper">
+  <resultMap id="BaseResultMap" type="com.neighbor.app.robot.entity.RobotGroupRelationKey">
+    <id column="r_robot_id" jdbcType="INTEGER" property="robotId" />
+    <id column="r_group_id" jdbcType="BIGINT" property="groupId" />
+  </resultMap>
+  
+  <sql id="dynamicWhere">
+    <where>  
+      <if test="groupIdInStr != null and groupIdInStr.length()>0">and r_group_id in (${groupIdInStr}) </if>
+      <if test="robotIdInStr != null and robotIdInStr.length()>0">and r_robot_id in (${robotIdInStr}) </if>
+      <if test="groupIdNotInStr != null and groupIdNotInStr.length()>0">and r_group_id not in (${groupIdNotInStr}) </if>
+      <if test="robotIdNotInStr != null and robotIdNotInStr.length()>0">and r_robot_id not in (${robotIdNotInStr}) </if>
+      <if test="robotId != null">and r_robot_id=#{robotId}</if>
+      <if test="groupId != null">and r_group_id=#{groupId}</if> 
+    </where>
+  </sql>
+  
+  <select id="selectRelationListBy" parameterType="com.neighbor.app.robot.entity.RobotGroupRelationKey"
+  	resultMap="BaseResultMap">
+    select * from robot_group_relation
+	<include refid="dynamicWhere" />
+  </select>
+  
+  <delete id="deleteRelationBy" parameterType="com.neighbor.app.robot.entity.RobotGroupRelationKey">
+    delete from robot_group_relation
+    <include refid="dynamicWhere" />
+  </delete>
+  
+  <insert id="insertSelective" parameterType="com.neighbor.app.robot.entity.RobotGroupRelationKey">
+    insert into robot_group_relation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="robotId != null">
+        r_robot_id,
+      </if>
+      <if test="groupId != null">
+        r_group_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="robotId != null">
+        #{robotId,jdbcType=INTEGER},
+      </if>
+      <if test="groupId != null">
+        #{groupId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  
+</mapper>

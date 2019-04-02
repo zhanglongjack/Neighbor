@@ -1,5 +1,7 @@
 package com.neighbor.app.users.controller;
 
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +51,31 @@ public class LoginController {
 	private SocketMessageService socketMessageService;
 	
 	
+	
+	
+	@RequestMapping(value = "/data.js", method = RequestMethod.GET)
+	@ResponseBody
+	public String dataJS(String domain) throws Exception {
+		logger.info("跨域处理逻辑:"+domain);
+		 URL url;    
+	        try {    
+	             url = new URL("http://"+domain.trim());    
+	             URLConnection co =  url.openConnection();  
+	             co.setConnectTimeout(2000);  
+	             co.connect();  
+	            // System.out.println("连接可用");    
+	        } catch (Exception e1) {   
+	             //System.out.println("连接打不开!");    
+	             url = null;    
+	        } 
+		
+		boolean isTrue=false;
+		if(url!=null){
+			logger.info("域名有效");
+		}
+		
+		return "infoData = {flag: "+isTrue+", wx:'"+domain+"'}";
+	}
 
 	// mv.setViewName("forward:/login.html");
 	// mv.setViewName("redirect:/login.html");

@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.neighbor.app.api.common.ErrorCodeDesc;
-import com.neighbor.app.users.controller.LoginController;
 import com.neighbor.common.util.ResponseResult;
  
 @ControllerAdvice
 public class ControllerExceptionAdvice {
-	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ControllerExceptionAdvice.class);
 	
  
     /**

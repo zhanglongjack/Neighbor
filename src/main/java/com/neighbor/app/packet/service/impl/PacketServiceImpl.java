@@ -134,6 +134,7 @@ public class PacketServiceImpl implements PacketService {
 		logger.info("减少钱包可用");
 		userWalletService.updateWalletAmount(userWallet);
 		UserWallet lastWallet = userWalletService.selectByPrimaryUserId(userWallet.getuId());
+		wallet.setAvailableAmount(lastWallet.getAvailableAmount());
 		// 发红包交易明细
 		BalanceDetail balanceDetail = new BalanceDetail();
 		balanceDetail.setAmount(record.getAmount().negate());

@@ -57,4 +57,8 @@ public interface GroupService {
 	List<GroupMember> selectRobotGroupMemberBy(Long groupId);
 
 	Group selectByPrimeryId(Long groupId);
+
+	List<Group> selectPageByRobotGroupRelation(Group queryObject);
+
+	Long selectPageTotalCountByRobotGroupRelation(Group queryObject);
 }
