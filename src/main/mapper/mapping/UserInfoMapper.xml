@@ -69,6 +69,15 @@
 		where id = #{userID,jdbcType=BIGINT}
 	</select>
 	
+	
+	<select id="selectByRobotId" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from users_info
+		where robot_sno = #{robotId}
+	</select>
+	
 	<select id="countDownNumber" parameterType="java.lang.Long"
 		resultType="java.lang.Long">
 		select

@@ -2,8 +2,8 @@ package com.neighbor.app.robot.service;
 
 import java.util.List;
 
-import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.robot.entity.RobotConfig;
+import com.neighbor.schedule.util.GrapPacketData;
 
 public interface RobotConfigService {
 
@@ -17,5 +17,6 @@ public interface RobotConfigService {
 
     List<RobotConfig> selectPageByObjectForList(RobotConfig record);
 
-	void robotGrapPacket(Long groupId, Long gameId, Packet packet);
+	void robotGrapPacket(GrapPacketData data);
+
 }

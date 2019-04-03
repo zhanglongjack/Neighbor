@@ -12,7 +12,12 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 100000
 COMMENT = '机器人配置表';
 
- 
+DROP TABLE IF EXISTS `robot_group_relation`;
+CREATE TABLE `robot_group_relation` (
+  `r_robot_id` int(11) NOT NULL COMMENT '机器人编号',
+  `r_group_id` bigint(20) NOT NULL COMMENT '群编号',
+  PRIMARY KEY (`r_robot_id`,`r_group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='机器人和群的关联表'
 
 INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('未知', '0', '1', 'sex', '性别');
 INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('男', '1', '1', 'sex', '性别');

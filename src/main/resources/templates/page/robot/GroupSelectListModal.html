@@ -56,7 +56,6 @@
                          </select>
                     </div>
                     <button id="ok" type="submit" class="btn btn-primary">查询</button>
-                    <button id="submitBTN" type="submit" class="btn btn-primary">提交修改</button>
                   </div>
                 </div>
 
@@ -144,7 +143,6 @@ $(function() {
 		  ids:groupIds
 	  },function(){
 		  toastr.error("机器人群全选调整失败"); 
-		  $table.bootstrapTable('checkAll')
 	  })
 
   })
@@ -159,7 +157,6 @@ $(function() {
 		  groupIdInStr:groupIds.join(',')
 	  },function(){
 		  toastr.error("机器人群全不选调整失败"); 
-		  $table.bootstrapTable('uncheckAll');
 	  })
   })
   
@@ -171,7 +168,6 @@ $(function() {
 		  groupId:row.id
 	  },function(){
 		  toastr.error("机器人群调整失败:群编号"+row.id); 
-		  $table.bootstrapTable('checkBy', {field: 'id', values:[row.id]})
 	  })
 	  
   })
@@ -183,7 +179,6 @@ $(function() {
 		  groupId:row.id
 	  },function(){
 		  toastr.error("机器人群调整失败:群编号"+row.id); 
-		  $table.bootstrapTable('uncheckBy', {field: 'id', values:[row.id]})
 	  })
       
   })

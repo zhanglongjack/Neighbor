@@ -165,4 +165,9 @@ public class UserServiceImpl implements UserService {
 		userWalletService.updateByPrimaryKeySelective(wallet);
 	}
 
+	@Override
+	public UserInfo selectByRobotId(Long robotId) {
+		return userInfoMapper.selectByRobotId(robotId);
+	}
+
 }

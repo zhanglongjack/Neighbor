@@ -11,17 +11,29 @@ import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.robot.dao.RobotGroupRelationMapper;
 import com.neighbor.app.robot.entity.RobotGroupRelationKey;
 import com.neighbor.app.robot.service.RobotGroupRelationService;
+import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.app.users.service.UserService;
 
 @Service
 public class RobotGroupRelationServiceImpl implements RobotGroupRelationService {
 
 	@Autowired
 	private RobotGroupRelationMapper robotGroupRelationMapper;
-
+	@Autowired
+	private GroupService groupService;
+	@Autowired
+	private UserService userService;
 	
-	@Override
-	public int insertSelective(RobotGroupRelationKey record) {
-		return robotGroupRelationMapper.insertSelective(record);
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public int insertSelective(RobotGroupRelationKey relation) {
+		List<RobotGroupRelationKey> resultList = selectRelationListBy(relation);
+		if(resultList.size()>0){
+			return 0;
+		}
+		UserInfo user = userService.selectByRobotId(relation.getRobotId());
+		groupService.addGroupMember(relation.getGroupId(), user.getId(), null);
+		return robotGroupRelationMapper.insertSelective(relation);
 	}
 
 	@Override
@@ -42,16 +54,8 @@ public class RobotGroupRelationServiceImpl implements RobotGroupRelationService 
 			RobotGroupRelationKey relation = new RobotGroupRelationKey();
 			relation.setGroupId(record.getGroupId()==null?key:record.getGroupId());
 			relation.setRobotId(record.getRobotId()==null?key:record.getRobotId());
-			
-			List<RobotGroupRelationKey> resultList = selectRelationListBy(relation);
-			if(resultList.size()==0){
-				insertSelective(relation);
-			}
+			insertSelective(relation);
 		}
-		
-		
-		
-		
 		
 	}
 	
