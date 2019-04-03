@@ -8,7 +8,7 @@ public interface RobotGroupRelationService {
 
     int insertSelective(RobotGroupRelationKey record);
 
-	int deleteRobotRelationByGroups(RobotGroupRelationKey record);
+	int deleteRobotRelationByGroups(RobotGroupRelationKey record) throws Exception;
 
 	List<RobotGroupRelationKey> selectRelationListBy(RobotGroupRelationKey record);
 

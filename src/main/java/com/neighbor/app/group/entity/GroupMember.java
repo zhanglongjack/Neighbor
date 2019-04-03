@@ -110,6 +110,7 @@ public class GroupMember {
 
     public void setId(Long id) {
         this.id = id;
+        this.memberId=id;
     }
 
     public Date getCreateTime() {

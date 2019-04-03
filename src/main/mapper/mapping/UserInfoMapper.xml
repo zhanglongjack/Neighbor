@@ -68,6 +68,13 @@
 		from users_info
 		where id = #{userID,jdbcType=BIGINT}
 	</select>
+	<select id="selectNickNameByPrimaryKey" parameterType="java.lang.Long"
+		resultType="String">
+		select
+		nick_name
+		from users_info
+		where id = #{userID,jdbcType=BIGINT}
+	</select>
 	
 	
 	<select id="selectByRobotId" parameterType="java.lang.Long"

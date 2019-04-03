@@ -25,7 +25,7 @@ public class RobotGroupRelationController {
 
 	@RequestMapping(value="/robotGroupDelete.ser")
 	@ResponseBody
-	public ResponseResult robotGroupDelete(RobotGroupRelationKey record){
+	public ResponseResult robotGroupDelete(RobotGroupRelationKey record) throws Exception{
 		logger.info("robotGroupDelete request:{}",record);
 		robotGroupRelationService.deleteRobotRelationByGroups(record);
 		return new ResponseResult();

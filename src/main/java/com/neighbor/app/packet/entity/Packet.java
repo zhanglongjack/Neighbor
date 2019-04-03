@@ -2,6 +2,7 @@ package com.neighbor.app.packet.entity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.neighbor.app.common.entity.PageEntity;
@@ -32,6 +33,7 @@ public class Packet extends PageEntity{
     private Integer collectedNum;
 
     private String remarke;
+    private String nickName;
     
     private String randomAmount = "";
     private String randomAmountList[] = null;
@@ -209,15 +211,25 @@ public class Packet extends PageEntity{
 	public void setSendTimeLess(String sendTimeLess) {
 		this.sendTimeLess = sendTimeLess;
 	}
+	
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
 
 	@Override
 	public String toString() {
 		return String.format(
-				"Packet [id=%s, userId=%s, receiveUserId=%s, groupId=%s, amount=%s, packetNum=%s, hitNum=%s, sendDate=%s, sendTime=%s, status=%s, collectedNum=%s, remarke=%s, randomAmount=%s, detailList=%s]",
-				id, userId, receiveUserId, groupId, amount, packetNum, hitNum, sendDate, sendTime, status, collectedNum,
-				remarke, randomAmount, detailList);
+				"Packet [id=%s, userId=%s, headUrl=%s, receiveUserId=%s, groupId=%s, amount=%s, packetNum=%s, hitNum=%s, sendDate=%s, sendTime=%s, status=%s, collectedNum=%s, remarke=%s, nickName=%s, randomAmount=%s, randomAmountList=%s, detailList=%s, createYear=%s, groupIdIsNotNull=%s, sendDateLess=%s, sendTimeLess=%s]",
+				id, userId, headUrl, receiveUserId, groupId, amount, packetNum, hitNum, sendDate, sendTime, status,
+				collectedNum, remarke, nickName, randomAmount, Arrays.toString(randomAmountList), detailList,
+				createYear, groupIdIsNotNull, sendDateLess, sendTimeLess);
 	}
- 
+
+
 
 
     

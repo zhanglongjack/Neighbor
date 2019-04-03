@@ -14,20 +14,18 @@
 		<result column="head_url" jdbcType="VARCHAR" property="headUrl" />
 	</resultMap>
 	
-	<resultMap id="resultWithParentMap" type="com.neighbor.app.packet.entity.PacketDetail">
-		<id column="id" jdbcType="BIGINT" property="id" />
-		<result column="d_packet_id" jdbcType="BIGINT" property="dPacketId" />
-		<result column="got_user_id" jdbcType="BIGINT" property="gotUserId" />
-		<result column="got_amount" jdbcType="DECIMAL" property="gotAmount" />
-		<result column="is_got_bomb" jdbcType="VARCHAR" property="isGotBomb" />
-		<result column="is_free" jdbcType="VARCHAR" property="isFree" />
-		<result column="is_maximum" jdbcType="VARCHAR" property="isMaximum" />
-		<result column="create_date" jdbcType="VARCHAR" property="createDate" />
-		<result column="create_time" jdbcType="VARCHAR" property="createTime" />
-		<result column="head_url" jdbcType="VARCHAR" property="headUrl" />
-		<collection property="packet" column="d_packet_id" select="com.neighbor.app.packet.dao.PacketMapper.selectByPrimaryKey">
+	<resultMap id="resultWithParentMap" type="com.neighbor.app.packet.entity.PacketDetail" extends="BaseResultMap">
+		<collection property="packet" column="d_packet_id" 
+		select="com.neighbor.app.packet.dao.PacketMapper.selectByPrimaryKey">
         </collection>
 	</resultMap>
+	
+	<resultMap id="resultWithNickNameMap" type="com.neighbor.app.packet.entity.PacketDetail"  extends="BaseResultMap">
+		<collection column="got_user_id"  property="nickName" ofType="String" 
+		select="com.neighbor.app.users.dao.UserInfoMapper.selectNickNameByPrimaryKey">
+		</collection>
+	</resultMap>
+	
 	<sql id="Base_Column_List">
 		id, d_packet_id, got_user_id, got_amount, is_got_bomb,
 		is_free,
@@ -97,7 +95,7 @@
 	</select>
 
 	<select id="selectPacketDetailByPacketId" parameterType="java.lang.Long"
-		resultMap="BaseResultMap">
+		resultMap="resultWithNickNameMap">
 		select
 		<include refid="Base_Column_List" />
 		from packet_detail

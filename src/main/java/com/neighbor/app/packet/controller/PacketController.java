@@ -45,6 +45,7 @@ public class PacketController {
 	@ResponseBody
 	public ResponseResult sendPacket(@ModelAttribute("user") UserInfo user, Packet packet) throws Exception {
 		packet.setUserId(user.getId());
+		packet.setNickName(user.getNickName());
 		logger.info("sendPacket request : " + packet);
 		UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
 		Packet resultPacket = packetService.sendPacket(packet,wallet);

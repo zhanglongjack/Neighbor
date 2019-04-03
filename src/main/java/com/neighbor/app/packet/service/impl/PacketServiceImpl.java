@@ -214,6 +214,7 @@ public class PacketServiceImpl implements PacketService {
 		logger.info("还有剩余红包数量[{}],开始处理",lockPacket.getPacketNum() - lockPacket.getCollectedNum());
 		PacketDetail detail = new PacketDetail();
 		detail.setHeadUrl(user.getUserPhoto());
+		detail.setNickName(user.getNickName());
 //		if(lockPacket.getGroupId()!=null && lockPacket.getCollectedNum()+1== lockPacket.getPacketNum()){
 //			// 由系统抢
 //			detail.setIsFree("1");
@@ -580,7 +581,7 @@ public class PacketServiceImpl implements PacketService {
 		}
 		if(status == PacketStatus.collected || status == PacketStatus.uncollected && packet.getCollectedNum()== packet.getPacketNum()){
 			logger.info("红包已抢完");
-			resultResp.setErrorCode(1);
+			resultResp.setErrorCode(4);
 			resultResp.setErrorMessage("红包已抢完");
 			return resultResp;
 		}
