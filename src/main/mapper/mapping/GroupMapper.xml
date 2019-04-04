@@ -121,7 +121,7 @@
           resultMap="robotGroupRelationResultMap">
 	select 
 		g.*,gm.*,rc.* 
-	from neighbor_dev.group g
+	from group g
 	inner join game gm on gm.id=g.game_id
 	left join (select * from robot_group_relation rg where rg.r_robot_id = #{robot.robotId}) t on t.r_group_id = g.id
 	left join robot_config rc on rc.robot_id=t.r_robot_id
@@ -134,7 +134,7 @@
           resultType="Long">
 	select 
 		count(1)
-	from neighbor_dev.group g
+	from group g
 	inner join game gm on gm.id=g.game_id
 	left join (select * from robot_group_relation rg where rg.r_robot_id = #{robot.robotId}) t on t.r_group_id = g.id
 	left join robot_config rc on rc.robot_id=t.r_robot_id
