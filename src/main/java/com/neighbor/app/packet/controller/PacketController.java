@@ -73,7 +73,9 @@ public class PacketController {
 		data.setGroupId(packet.getGroupId());
 		data.setPacket(packet);
 		try {
-			taskQueue.offer(data);
+			logger.info("开始尝试加人机器人抢红包队列任务");
+			boolean isOk = taskQueue.offer(data);
+			logger.info("是否加入机器人抢红包队列任务中?{}",isOk);
 		} catch (Exception e) {
 			logger.error("线程启动",e);
 		}

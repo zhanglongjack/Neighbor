@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.neighbor.app.packet.constants.PacketContainer;
 import com.neighbor.app.packet.constants.PacketStatus;
 import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.packet.service.PacketService;
@@ -19,6 +20,8 @@ public class ExpirePacketHandleSchedule {
 	
 	@Autowired
 	private PacketService packetService; 
+	@Autowired
+	private PacketContainer packetContainer; 
 
 	/**
 	 * 个人消息定时推送任务
@@ -27,21 +30,41 @@ public class ExpirePacketHandleSchedule {
 	public void userMsgPush() {
 		 logger.info("开始执行红包过去检查任务");
 		try {
+			String today = DateUtils.getStringDateShort();
 			Packet packetParam = new Packet();
 			packetParam.setStatus(PacketStatus.uncollected.toString());
 			packetParam.setGroupIdIsNotNull("1");
-			packetParam.setSendDateLess(DateUtils.getStringDateShort());
+			packetParam.setSendDateLess(today);
 			
 			handle(packetParam);
 			
 			packetParam.setSendDateLess(null);
-			packetParam.setSendDate(DateUtils.getStringDateShort());
+			packetParam.setSendDate(today);
 			packetParam.setSendTimeLess(DateUtils.getTimeBy(-3));
 			handle(packetParam);
+			
+			clearPacketCache(today);
 			
 		} catch (Exception e) {
 			logger.error("处理一对一单人消息推送异常",e);
 		} 
+	}
+
+	private void clearPacketCache(String today) {
+		for(Long key : packetContainer.packetMap.keySet()){
+			Packet packet = packetService.selectByPrimaryKey(key);
+			
+			if(today.equals(packet.getSendDate())){
+				String tenMinite = DateUtils.getTimeBy(-10);
+				Long beforeTen = Long.parseLong(tenMinite.replaceAll(":", "")) ;
+				Long sendTie = Long.parseLong(packet.getSendDate().replaceAll(":", "")) ;
+				if(sendTie<beforeTen){
+					packetContainer.clearMap(key);
+				}
+			}else{
+				packetContainer.clearMap(key);
+			}
+		}
 	}
 	
 	public void handle(Packet packetParam) {

@@ -682,7 +682,7 @@ public class PacketServiceImpl implements PacketService {
 		
 		logger.info("添加更新余额的消息通知");
 		webSocketPushHandler.walletRefreshNotice(null, lockPacket.getUserId(), "系统通知");
-
+		
 		logger.info("过期红包已处理退回结束,退回红包信息:{}",lockPacket);
 	
 	}
