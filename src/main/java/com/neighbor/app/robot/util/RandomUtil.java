@@ -12,11 +12,9 @@ public class RandomUtil {
 	
 	public static int getRandomBy(int bound){
 		int result =  random.nextInt(bound);
-		logger.info("生成随机数:"+result);
+		//logger.info("生成随机数:"+result);
 		return result;
 	}
-
-
 	public static String getNickName(){
 		return "好领居玩家_"+getRandomBy(1000000);
 	}

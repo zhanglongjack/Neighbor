@@ -367,7 +367,7 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public List<GroupMember> selectRobotGroupMemberBy(GroupMember member) {
-		return groupMemberMapper.selectRobotGroupMemberBy(member);
+		return groupMemberMapper.selectRobotGroupMemberBy(member); 
 	}
 
 	@Override

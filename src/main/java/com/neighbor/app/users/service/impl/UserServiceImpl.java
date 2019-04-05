@@ -2,6 +2,7 @@ package com.neighbor.app.users.service.impl;
 
 import java.util.List;
 
+import com.neighbor.app.robot.util.RandomUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,10 +108,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public UserInfo builderUserInfo(UserInfo record) {
+    public UserInfo builderUserInfo(UserInfo record) throws Exception{
         logger.info("创建用户信息:" + record);
+
+        String reCode = null;
+        boolean b = true;
+        for(int idx = 10;idx<=10;idx--){
+            reCode = RandomUtil.getReCode();
+            UserInfo userInfo = selectByReCode(reCode);
+            if(userInfo == null){
+                b = false;
+                break;
+            }
+        }
+        if(b){
+            //尝试多次生成code出现重复，请稍后重试
+            throw new Exception("重试多次！");
+        }
+        record.setNickName(RandomUtil.getNickName());
+        record.setReCode(reCode);
         insertSelective(record);
-        record.setNickName(record.getNickName()==null?record.getId() + "":record.getNickName());
         record.setUserAccount(record.getUserAccount()==null?record.getId() + "":record.getUserAccount());
         updateByPrimaryKeySelective(record);
 
@@ -170,4 +187,8 @@ public class UserServiceImpl implements UserService {
 		return userInfoMapper.selectByRobotId(robotId);
 	}
 
+    @Override
+    public UserInfo selectByReCode(String reCode) {
+        return userInfoMapper.selectByReCode(reCode);
+    }
 }

@@ -25,4 +25,5 @@ public interface UserInfoMapper {
 
 	UserInfo selectByRobotId(Long robotId);
 
+    UserInfo selectByReCode(String reCode);
 }

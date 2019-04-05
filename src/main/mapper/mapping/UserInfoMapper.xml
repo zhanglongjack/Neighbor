@@ -46,10 +46,11 @@
 		<collection property="downNumber" column="id" select="com.neighbor.app.users.dao.UserInfoMapper.countDownNumber">
         </collection>
 	</resultMap>
-
+	
 	<resultMap id="JoinQueryResultMap" type="com.neighbor.app.users.entity.UserInfo"  extends="BaseResultMap"> 
     	<result column="user_id" property="userID" jdbcType="BIGINT" />
 	</resultMap>
+	
 	
 	<sql id="Base_Column_List">
 		id, user_photo, nick_name, user_account, user_password, qr_code, sex,
@@ -327,5 +328,4 @@
 		</set>
 		where id = #{userID,jdbcType=BIGINT}
 	</update>
-	 
 </mapper>
