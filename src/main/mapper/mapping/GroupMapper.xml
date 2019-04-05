@@ -28,6 +28,11 @@
 		<association property="robot" resultMap="com.neighbor.app.robot.dao.RobotConfigMapper.BaseResultMap" />
   </resultMap>
   
+  <resultMap id="JoinQueryResultMap" type="com.neighbor.app.group.entity.Group"  extends="BaseResultMap"> 
+    	<result column="group_id" property="groupId" jdbcType="BIGINT" />
+  </resultMap>
+
+  
   <sql id="Base_Column_List" >
      g.id, g.create_time, g.update_time, g.cre_date, g.cre_time, g.group_name, g.user_num, g.online_num,
     g.group_notice, g.group_head_img_url, g.states,g.game_id,g.red_pack_amount_limit
@@ -121,7 +126,7 @@
           resultMap="robotGroupRelationResultMap">
 	select 
 		g.*,gm.*,rc.* 
-	from group g
+	from `group` g
 	inner join game gm on gm.id=g.game_id
 	left join (select * from robot_group_relation rg where rg.r_robot_id = #{robot.robotId}) t on t.r_group_id = g.id
 	left join robot_config rc on rc.robot_id=t.r_robot_id
@@ -134,7 +139,7 @@
           resultType="Long">
 	select 
 		count(1)
-	from group g
+	from `group` g
 	inner join game gm on gm.id=g.game_id
 	left join (select * from robot_group_relation rg where rg.r_robot_id = #{robot.robotId}) t on t.r_group_id = g.id
 	left join robot_config rc on rc.robot_id=t.r_robot_id

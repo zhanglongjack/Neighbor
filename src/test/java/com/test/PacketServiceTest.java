@@ -23,13 +23,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.neighbor.StartNeighbor;
 import com.neighbor.app.group.entity.GroupMember;
 import com.neighbor.app.group.service.GroupService;
+import com.neighbor.app.packet.dao.PacketDetailMapper;
 import com.neighbor.app.packet.dao.PacketMapper;
 import com.neighbor.app.packet.entity.Packet;
+import com.neighbor.app.packet.entity.PacketDetail;
 import com.neighbor.app.packet.service.PacketService;
 import com.neighbor.app.recharge.constants.ChannelTypeDesc;
 import com.neighbor.app.recharge.controller.RechargeController;
 import com.neighbor.app.recharge.entity.Recharge;
-import com.neighbor.app.robot.service.RobotConfigService;
 import com.neighbor.app.users.controller.LoginController;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
@@ -48,6 +49,8 @@ public class PacketServiceTest {
 	@Autowired
 	private PacketService packetService;
 	@Autowired
+	private PacketDetailMapper packetDetailService;
+	@Autowired
 	private LoginController loginController;
 	@Autowired
 	private RechargeController rechargeController;
@@ -58,19 +61,24 @@ public class PacketServiceTest {
 	@Autowired
 	private UserWalletService userWalletService;
 	@Autowired
-	private RobotConfigService robotConfigService;
-	@Autowired
 	private SocketMessageService socketMessageService;
 
 	@Test
 	public void testSocketMsgUpdate() throws Exception{
-		socketMessageService.updateWalletRefreshMsg(600018l);
+		List<PacketDetail> a = packetDetailService.selectPacketDetailByPacketId(37L);
 		
-		Thread.sleep(30000);
+		System.err.println(a);
+		
+		Packet packet = packetService.selectByPrimaryKey(37L);
+		
+		System.out.println(packet);
+		
+		//socketMessageService.updateWalletRefreshMsg(600018l);
+		
+		//Thread.sleep(30000);
 	}
 	
 	public void testRobotGrapPacket() throws Exception{
-		Long gameId = 1L;
 		Packet packet = new Packet();
 		packet.setAmount(new BigDecimal(100));
 		packet.setPacketNum(7);
@@ -78,9 +86,7 @@ public class PacketServiceTest {
 		packet.setUserId(600023L);
 		packet.setGroupId(100001L);
 		UserWallet wallet = userWalletService.selectByPrimaryUserId(packet.getUserId());
-		final Packet packet1 = packetService.sendPacket(packet, wallet);
-		logger.info("开始抢红包测试");
-		robotConfigService.robotGrapPacket(packet.getGroupId(), gameId, packet1);
+		packetService.sendPacket(packet, wallet);
 		
 		Thread.sleep(100000);
 	}

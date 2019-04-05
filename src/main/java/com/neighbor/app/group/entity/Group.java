@@ -137,7 +137,9 @@ public class Group extends PageEntity{
     }
 
     public void setId(Long id) {
-        this.id = id;
+    	if(this.id==null){
+    		this.id = id;
+    	}
     }
 
     public Date getCreateTime() {
@@ -229,6 +231,16 @@ public class Group extends PageEntity{
            this.id=groupId;
         }
         this.groupId = groupId;
+    }
+
+    private Long enterUserId;
+
+    public Long getEnterUserId() {
+        return enterUserId;
+    }
+
+    public void setEnterUserId(Long enterUserId) {
+        this.enterUserId = enterUserId;
     }
 
     @Override

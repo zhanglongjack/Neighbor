@@ -57,7 +57,7 @@ public class ExpirePacketHandleSchedule {
 			if(today.equals(packet.getSendDate())){
 				String tenMinite = DateUtils.getTimeBy(-10);
 				Long beforeTen = Long.parseLong(tenMinite.replaceAll(":", "")) ;
-				Long sendTie = Long.parseLong(packet.getSendDate().replaceAll(":", "")) ;
+				Long sendTie = Long.parseLong(packet.getSendTime().replaceAll(":", "")) ;
 				if(sendTie<beforeTen){
 					packetContainer.clearMap(key);
 				}

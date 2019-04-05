@@ -54,11 +54,12 @@ public interface GroupService {
 
     void updateGroup(Group group);
 
-	List<GroupMember> selectRobotGroupMemberBy(Long groupId);
+	List<GroupMember> selectRobotGroupMemberBy(GroupMember member);
 
 	Group selectByPrimeryId(Long groupId);
 
 	List<Group> selectPageByRobotGroupRelation(Group queryObject);
 
 	Long selectPageTotalCountByRobotGroupRelation(Group queryObject);
+
 }

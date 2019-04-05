@@ -254,10 +254,12 @@ public class PacketServiceImpl implements PacketService {
 		packetDetailMapper.insertSelective(detail);
 		logger.info("抢到的红包是[{}]尾数是[{}]信息:{},",num,Integer.parseInt(num.substring(num.length()-1)),detail);
 		UserWallet senderWallet = userWalletService.selectByPrimaryUserId(lockPacket.getUserId());
-		// 处理踩雷
-		handleHitBomb(detail.isGotBomb(), lockPacket.getAmount(), lastWallet,senderWallet);
-		// 抢包中奖处理 
-		handleLottery(gameId, lastWallet, detail.getGotAmount());
+		if(!detail.isFree()){
+			// 处理踩雷
+			handleHitBomb(detail.isGotBomb(), lockPacket.getAmount(), lastWallet,senderWallet);
+			// 抢包中奖处理 
+			handleLottery(gameId, lastWallet, detail.getGotAmount());
+		}
 		// 发包中奖检查和最佳检查处理
 		handleReward(gameId,lockPacket,senderWallet);
 		// 抢红包处理
@@ -280,8 +282,8 @@ public class PacketServiceImpl implements PacketService {
 	 */
 	private void handleFreePacketCommission(PacketDetail detail,Long gameId,Long senderUserId) {
 		UserInfo groupMasterUser = userService.selectByPrimaryKey(detail.getGotUserId());
-		UserInfo upUser = userService.selectByPrimaryKey(detail.getGotUserId());
-		distributeCommission(detail.getGotAmount(),groupMasterUser, upUser.getUpUserId(), 1,gameId,senderUserId);
+		UserInfo sendUser = userService.selectByPrimaryKey(senderUserId);
+		distributeCommission(detail.getGotAmount(),groupMasterUser, sendUser.getUpUserId(),senderUserId, 1,gameId);
 		
 		// 系统还有25%
 		String distributeProportion = env.getProperty("sys.commission.percent");
@@ -315,15 +317,14 @@ public class PacketServiceImpl implements PacketService {
 		userCommission.setGainTime(DateUtils.getTimeShort());
 		logger.info("保存佣金信息"+userCommission);
 		commissionService.insertSelective(userCommission);
-		// 更新发包上级金额
+		// 更新超级管理金额
 		UserWallet userWallet = new UserWallet();
 		userWallet.setuId(sysUserId);
 		userWallet.setAvailableAmount(amount);
 		userWalletService.updateWalletAmount(userWallet);
 		
-		
 		UserInfo sysMasterUser = userService.selectByPrimaryKey(sysUserId);
-		distributeCommission(amount,sysMasterUser, groupMasterUser.getUpUserId(), 1,gameId,groupMasterUser.getId());
+		distributeCommission(amount,sysMasterUser, groupMasterUser.getUpUserId(),groupMasterUser.getId(), 1,gameId);
 		
 //		distributeCommissionBySys(amount, groupMasterUser.getUpUserId(), 1,gameId);
 	}
@@ -350,14 +351,14 @@ public class PacketServiceImpl implements PacketService {
 //		userWalletService.updateWalletAmount(userWallet);
 //	}
 
-	private void distributeCommission(BigDecimal amount,UserInfo groupMasterUser, Long upUserId,int upLevel,Long gameId,Long senderUserId){
+	private void distributeCommission(BigDecimal amount,UserInfo splitUser, Long upUser,Long sendUserId,int upLevel,Long gameId){
 		if(upLevel>5){
 			logger.info("最多5级分佣");
 			return;
 		}
-		logger.info("分佣级别[{}],群主用户:{}",upLevel,groupMasterUser);
-		UserInfo user = userService.selectByPrimaryKey(upUserId);
-		UserWallet groupMasterWallet = userWalletService.selectByPrimaryUserId(groupMasterUser.getId());
+		logger.info("分佣级别[{}],扣佣用户:{}",upLevel,splitUser);
+		UserInfo user = userService.selectByPrimaryKey(upUser);
+		UserWallet groupMasterWallet = userWalletService.selectByPrimaryUserId(splitUser.getId());
 		
 		String value = commonConstants.getGameRuleCommissionBy(gameId, RuleTypeDesc.rebate, upLevel+"");
 		BigDecimal distributeProportion=new BigDecimal(value);
@@ -388,7 +389,7 @@ public class PacketServiceImpl implements PacketService {
 		// 发包上级按比例获得佣金,添加佣金记录
 		UserCommission userCommission = new UserCommission();
 		userCommission.setCommisionAmt(distributeCommission);
-		userCommission.setDownUserId(senderUserId);
+		userCommission.setDownUserId(sendUserId);
 		userCommission.setDownLevel(upLevel+"");
 		userCommission.setOwnUser(user.getId());
 		userCommission.setGainProportion(distributeProportion.toEngineeringString());
@@ -401,8 +402,9 @@ public class PacketServiceImpl implements PacketService {
 		userWallet.setAvailableAmount(distributeCommission);
 		userWalletService.updateWalletAmount(userWallet);
 		
+		logger.info("是否还有上级:{}",user.getUpUserId()!=null);
 		if(user.getUpUserId()!=null){
-			distributeCommission(amount,groupMasterUser, user.getUpUserId(), ++upLevel,gameId,senderUserId);
+			distributeCommission(amount,splitUser, user.getUpUserId(),sendUserId, ++upLevel,gameId);
 		}
 	}
 

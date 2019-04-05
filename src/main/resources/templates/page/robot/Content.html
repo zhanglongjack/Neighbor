@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-
+    <meta http-equiv="Cache-Control" content="no-cache" /> 
 </head>
 <body>
 		<div th:fragment="container-fluid"  class="container-fluid">
@@ -110,7 +110,7 @@
 												</a>
 												<a class="btn btn-default btn-sm " data-toggle="modal" data-target="#ModifyModal"
 													th:attr="href='/groupList/groupSelectListModal.ser?id='+${obj.robotId}" > 
-													 <span class="glyphicon glyphicon-edit"></span>&nbsp;分配群
+													 <span class="glyphicon glyphicon-edit"></span>&nbsp;分配
 													 <i class="icon-star"></i>
 												</a>
 											</div>

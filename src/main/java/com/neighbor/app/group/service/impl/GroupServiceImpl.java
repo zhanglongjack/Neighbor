@@ -326,6 +326,8 @@ public class GroupServiceImpl implements GroupService {
         groupMember.setUserId(group.getGroupOwnerUserId());
         groupMember.setCreateTime(date);
         groupMemberMapper.insertSelective(groupMember);
+
+
     }
 
     @Override
@@ -364,8 +366,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
 	@Override
-	public List<GroupMember> selectRobotGroupMemberBy(Long groupId) {
-		return groupMemberMapper.selectRobotGroupMemberBy(groupId);
+	public List<GroupMember> selectRobotGroupMemberBy(GroupMember member) {
+		return groupMemberMapper.selectRobotGroupMemberBy(member);
 	}
 
 	@Override

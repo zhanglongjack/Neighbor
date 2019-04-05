@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class UserWallet {
     private Long id;
+    private Long walletId;
 
 	private Date createTime;
 
@@ -72,6 +73,15 @@ public class UserWallet {
 
 	public void setuId(Long uId) {
 		this.uId = uId;
+	}
+
+	public Long getWalletId() {
+		return walletId;
+	}
+
+	public void setWalletId(Long walletId) {
+		this.walletId = walletId;
+		this.id=walletId;
 	}
 
 	public BigDecimal getScore() {

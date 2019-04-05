@@ -19,4 +19,6 @@ public interface RobotConfigService {
 
 	void robotGrapPacket(GrapPacketData data);
 
+	List<RobotConfig> selectRobotBy();
+
 }

@@ -66,7 +66,9 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 	public void robotGrapPacket(GrapPacketData data){
 		logger.info("队列开始抢红包:{}",data);
 		ExecutorService fixedThreadPool = null;
-		List<GroupMember> memberList = groupService.selectRobotGroupMemberBy(data.getGroupId());
+		GroupMember memberParam = new GroupMember();
+		memberParam.setGroupId(data.getGroupId());
+		List<GroupMember> memberList = groupService.selectRobotGroupMemberBy(memberParam);
 		try {
 			if(memberList.size()==0){
 				logger.info("无机器人配置");
@@ -116,6 +118,12 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 			}
 		}
 	
+	}
+
+	@Override
+	public List<RobotConfig> selectRobotBy() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
