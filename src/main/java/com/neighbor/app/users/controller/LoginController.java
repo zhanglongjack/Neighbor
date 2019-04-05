@@ -98,10 +98,10 @@ public class LoginController {
 	@RequestMapping(value = "/registerLogin.req", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseResult registerLogin(@NotNull(message = "手机号不能为空") String phone,
-			@NotNull(message = "验证码不能为空") String verfiyCode, String onlyLogin, Long upUserId) throws Exception {
-
+			@NotNull(message = "验证码不能为空") String verfiyCode, String onlyLogin, String reCode) throws Exception {
+		UserInfo userUp = null;
 		if (StringUtil.isEmpty(onlyLogin) || !onlyLogin.equals("1")) {
-			UserInfo userUp = userService.selectByPrimaryKey(upUserId);
+			 userUp = userService.selectByReCode(reCode);
 			if (userUp == null) {
 				logger.info("上级人员不存在......");
 				throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "上级人员不存在......");
@@ -123,14 +123,14 @@ public class LoginController {
 			record.setUserPhoto("img/head-user2.png");
 			record.setMobilePhone(phone);
 			record.setUserAccount(phone);
-			record.setUpUserId(upUserId);
+			record.setUpUserId(userUp.getId());
 
 			user = userService.builderUserInfo(record);
 
 		} else if (!isValid) {
 			logger.info("验证吗输入错误");
 			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "验证码错误");
-		} else if (user.getId().equals(upUserId)) {
+		} else if (user.getReCode().equals(reCode)) {
 			if (StringUtil.isEmpty(onlyLogin) || !onlyLogin.equals("1")) {
 				logger.info("上级人员不能是本人......");
 				throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "上级人员不能是本人......");
@@ -170,9 +170,9 @@ public class LoginController {
 	@RequestMapping(value = "/sendSMS.req", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseResult sendSMS(@Length(message = "手机长度最少11位", min = 11) @NotNull(message = "手机号不能为空") String phone) {
-		String code = TencentSms.createVerifyCode();
+		//String code = TencentSms.createVerifyCode();
 		logger.info("发送验证码:" + phone);
-		TencentSms.smsSend(code, phone);
+		TencentSms.smsSend(null, phone);
 		return new ResponseResult();
 	}
 

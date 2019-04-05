@@ -208,6 +208,16 @@ public class Group {
         this.groupId = groupId;
     }
 
+    private Long enterUserId;
+
+    public Long getEnterUserId() {
+        return enterUserId;
+    }
+
+    public void setEnterUserId(Long enterUserId) {
+        this.enterUserId = enterUserId;
+    }
+
     @Override
     public String toString() {
         return "Group{" +

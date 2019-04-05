@@ -23,4 +23,5 @@ public interface UserInfoMapper {
 
     int userPasswordEdit(UserInfo record);
 
+    UserInfo selectByReCode(String reCode);
 }

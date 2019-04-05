@@ -47,6 +47,9 @@ public class UserInfo extends PageEntity {
     private Long downNumber ;
     private String userRole;//用户角色,0是正常用户，1是客服,2是超管
 
+    private String reCode;//推荐代码 唯一
+
+
     public String getUserRole() {
         return userRole;
     }
@@ -228,6 +231,14 @@ public class UserInfo extends PageEntity {
 
     public void setOldMobilePhone(String oldMobilePhone) {
         this.oldMobilePhone = oldMobilePhone;
+    }
+
+    public String getReCode() {
+        return reCode;
+    }
+
+    public void setReCode(String reCode) {
+        this.reCode = reCode;
     }
 
     @Override

@@ -18,3 +18,5 @@ INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `
 INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('男', '1', '1', 'sex', '性别');
 INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('女', '2', '1', 'sex', '性别');
 commit;
+
+alter table users_info add re_code varchar(50) DEFAULT null COMMENT '我的推荐码';

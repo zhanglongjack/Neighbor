@@ -35,7 +35,7 @@ public interface UserService {
 //
 //	UserInfo selectByName(String username);
 
-    UserInfo builderUserInfo(UserInfo record);
+    UserInfo builderUserInfo(UserInfo record) throws Exception;
 
     Long selectPageTotalCount(UserInfo queryUser);
 
@@ -44,5 +44,7 @@ public interface UserService {
 	UserInfo buildRobotInfo(UserInfo record, RobotConfig robot, UserWallet wallet);
 
 	void updateRobotInfo(UserInfo user, RobotConfig robot, UserWallet wallet);
+
+    UserInfo selectByReCode(String reCode);
 
 }

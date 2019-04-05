@@ -20,6 +20,7 @@
 		<result column="remark" jdbcType="VARCHAR" property="remark" />
 		<result column="regional" jdbcType="VARCHAR" property="regional" />
 		<result column="user_role" jdbcType="VARCHAR" property="userRole" />
+		<result column="re_code" jdbcType="VARCHAR" property="reCode" />
 	</resultMap>
 	
 	<resultMap id="BaseCountDwonResultMap" type="com.neighbor.app.users.entity.UserInfo">
@@ -41,6 +42,7 @@
 		<result column="remark" jdbcType="VARCHAR" property="remark" />
 		<result column="regional" jdbcType="VARCHAR" property="regional" />
 		<result column="user_role" jdbcType="VARCHAR" property="userRole" />
+		<result column="re_code" jdbcType="VARCHAR" property="reCode" />
 		<collection property="downNumber" column="id" select="com.neighbor.app.users.dao.UserInfoMapper.countDownNumber">
         </collection>
 	</resultMap>
@@ -48,7 +50,8 @@
 	<sql id="Base_Column_List">
 		id, user_photo, nick_name, user_account, user_password, qr_code, sex,
 		mobile_phone,
-		real_name, wechat, qq, robot_sno, upuser_id, create_time, update_time, remark,regional,user_role
+		real_name, wechat, qq, robot_sno, upuser_id, create_time, update_time, remark,regional
+		,user_role,re_code
 	</sql>
 	
   	<sql id="dynamicWhere">
@@ -60,13 +63,21 @@
 			<if test="userRole != null and userRole.length()>0">and user_role=#{userRole}</if>
 		</where>
 	</sql>
-	
+
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseCountDwonResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from users_info
 		where id = #{userID,jdbcType=BIGINT}
+	</select>
+
+	<select id="selectByReCode" parameterType="java.lang.String"
+			resultMap="BaseCountDwonResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from users_info
+		where re_code = #{reCode,jdbcType=VARCHAR} limit 1
 	</select>
 	
 	<select id="countDownNumber" parameterType="java.lang.Long"
@@ -162,7 +173,9 @@
 			<if test="userRole != null">
 				user_role,
 			</if>
-
+			<if test="reCode != null">
+				re_code,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="userPhoto != null">
@@ -215,6 +228,9 @@
 			</if>
 			<if test="userRole != null">
 				#{userRole,jdbcType=VARCHAR},
+			</if>
+			<if test="reCode != null">
+				#{reCode,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
@@ -271,6 +287,9 @@
 			</if>
 			<if test="userRole != null">
 				user_role = #{userRole,jdbcType=VARCHAR},
+			</if>
+			<if test="reCode != null">
+				re_code = #{reCode,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where id = #{userID,jdbcType=BIGINT}
