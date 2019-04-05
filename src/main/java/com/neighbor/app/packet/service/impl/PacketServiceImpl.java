@@ -45,6 +45,7 @@ import com.neighbor.common.util.BigDecimalUtil;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.RedPackageUtil;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.util.WebSocketPushHandler;
 
 @Service
 public class PacketServiceImpl implements PacketService {
@@ -133,6 +134,7 @@ public class PacketServiceImpl implements PacketService {
 		logger.info("减少钱包可用");
 		userWalletService.updateWalletAmount(userWallet);
 		UserWallet lastWallet = userWalletService.selectByPrimaryUserId(userWallet.getuId());
+		wallet.setAvailableAmount(lastWallet.getAvailableAmount());
 		// 发红包交易明细
 		BalanceDetail balanceDetail = new BalanceDetail();
 		balanceDetail.setAmount(record.getAmount().negate());
@@ -212,6 +214,7 @@ public class PacketServiceImpl implements PacketService {
 		logger.info("还有剩余红包数量[{}],开始处理",lockPacket.getPacketNum() - lockPacket.getCollectedNum());
 		PacketDetail detail = new PacketDetail();
 		detail.setHeadUrl(user.getUserPhoto());
+		detail.setNickName(user.getNickName());
 //		if(lockPacket.getGroupId()!=null && lockPacket.getCollectedNum()+1== lockPacket.getPacketNum()){
 //			// 由系统抢
 //			detail.setIsFree("1");
@@ -578,7 +581,7 @@ public class PacketServiceImpl implements PacketService {
 		}
 		if(status == PacketStatus.collected || status == PacketStatus.uncollected && packet.getCollectedNum()== packet.getPacketNum()){
 			logger.info("红包已抢完");
-			resultResp.setErrorCode(1);
+			resultResp.setErrorCode(4);
 			resultResp.setErrorMessage("红包已抢完");
 			return resultResp;
 		}
@@ -633,6 +636,9 @@ public class PacketServiceImpl implements PacketService {
 		return packetMapper.selectPacketBySelective(packet);
 	}
 
+	
+	@Autowired
+	private WebSocketPushHandler webSocketPushHandler; 
 	@Override
 	@Transactional(readOnly = false, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public void expirePacketHandle(Long packetId) {
@@ -673,7 +679,11 @@ public class PacketServiceImpl implements PacketService {
 		userWalletService.updateWalletAmount(wallet);
 		
 		packetMapper.updateByPrimaryKeySelective(lockPacket);
-		logger.info("过期红包已处理退回:{}",lockPacket);
+		
+		logger.info("添加更新余额的消息通知");
+		webSocketPushHandler.walletRefreshNotice(null, lockPacket.getUserId(), "系统通知");
+		
+		logger.info("过期红包已处理退回结束,退回红包信息:{}",lockPacket);
 	
 	}
 	

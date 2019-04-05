@@ -1,6 +1,5 @@
 package com.neighbor.app.robot.service.impl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.neighbor.app.group.entity.GroupMember;
 import com.neighbor.app.group.service.GroupService;
-import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.packet.service.PacketService;
 import com.neighbor.app.robot.dao.RobotConfigMapper;
 import com.neighbor.app.robot.entity.RobotConfig;
@@ -25,6 +23,7 @@ import com.neighbor.app.robot.util.RandomUtil;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.schedule.util.GrapPacketData;
 
 @Service
 public class RobotConfigServiceImpl implements RobotConfigService {
@@ -64,63 +63,59 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 	}
 
 	@Override
-	public void robotGrapPacket(Long groupId, Long gameId, Packet packet) {
-		
-		new Thread(){
-			@Override
-			public void run() {
-				logger.info("线程启动");
-				ExecutorService fixedThreadPool = null;
-				List<GroupMember> memberList = groupService.selectRobotGroupMemberBy(groupId);
-				try {
-					logger.info("有多少群成员:"+memberList.size());
-					fixedThreadPool = Executors.newFixedThreadPool(memberList.size() > 32 ? 32 : memberList.size());
-					List<Future<Long>> futureList = new ArrayList<Future<Long>>();
-					for (int i = 0; i < memberList.size(); i++) {
-						final GroupMember member = memberList.get(i);
-						futureList.add(fixedThreadPool.submit(new Callable<Long>() {
-							@Override
-							public Long call() throws Exception {
-								UserInfo user = null;
-								try {
-									user = userService.selectByPrimaryKey(member.getUserId());
-									int second = RandomUtil.getRandomBy(100 * 300)+500;
-									logger.info("机器编号{}睡眠:{}",user.getRobotSno(),(second));
-									Thread.sleep(second);// 睡second毫秒后抢
-									
-									ResponseResult result = packetService.grabPacekt(packet, user, gameId);
-									logger.info("机器编号{}抢完红包的信息:"+result,user.getRobotSno());
-									if (result.getErrorCode() == 0) {
-										return member.getUserId();
-									}
-									return null;
-								} catch (Exception e) {
-									e.printStackTrace();
-									logger.error("异常的用户:" + user);
-									return null;
-								}
-							}
-						}));
-					}
-
-					for (Future<Long> future : futureList) {
+	public void robotGrapPacket(GrapPacketData data){
+		logger.info("队列开始抢红包:{}",data);
+		ExecutorService fixedThreadPool = null;
+		List<GroupMember> memberList = groupService.selectRobotGroupMemberBy(data.getGroupId());
+		try {
+			if(memberList.size()==0){
+				logger.info("无机器人配置");
+				return;
+			}
+			logger.info("有多少群成员:"+memberList.size());
+			fixedThreadPool = Executors.newFixedThreadPool(memberList.size() > 32 ? 32 : memberList.size());
+			List<Future<Long>> futureList = new ArrayList<Future<Long>>();
+			for (int i = 0; i < memberList.size(); i++) {
+				final GroupMember member = memberList.get(i);
+				futureList.add(fixedThreadPool.submit(new Callable<Long>() {
+					@Override
+					public Long call() throws Exception {
+						UserInfo user = null;
 						try {
-							future.get(100, TimeUnit.SECONDS);
+							user = userService.selectByPrimaryKey(member.getUserId());
+							int second = RandomUtil.getRandomBy(100 * 200)+500;
+							logger.info("机器编号{}睡眠:{}",user.getRobotSno(),(second));
+							Thread.sleep(second);// 睡second毫秒后抢
+							
+							ResponseResult result = packetService.grabPacekt(data.getPacket(), user, data.getGameId());
+							logger.info("机器编号{}抢完红包的信息:"+result,user.getRobotSno());
+							if (result.getErrorCode() == 0) {
+								return member.getUserId();
+							}
+							return null;
 						} catch (Exception e) {
 							e.printStackTrace();
+							logger.error("异常的用户:" + user);
+							return null;
 						}
 					}
-					logger.info("机器抢红包结束");
-				} catch (Exception e) {
-					logger.error("机器人抢红包异常");
-				} finally {
-					if (fixedThreadPool != null) {
-						fixedThreadPool.shutdown();
-					}
-				}
+				}));
 			}
-		}.start();
 
+			for (Future<Long> future : futureList) {
+				try {
+					future.get(100, TimeUnit.SECONDS);
+				} catch (Exception e) { }
+			}
+			logger.info("机器抢红包结束");
+		} catch (Exception e) {
+			logger.error("机器人抢红包异常:"+e.getMessage(),e);
+		} finally {
+			if (fixedThreadPool != null) {
+				fixedThreadPool.shutdown();
+			}
+		}
+	
 	}
 
 }

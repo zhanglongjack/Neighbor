@@ -56,6 +56,8 @@
 	font-weight: normal;
 }
 </style>
+		<link rel="stylesheet" th:href="@{~/framework/bootstrap-select-1.13.7/css/bootstrap-select.min.css}">
+		<script th:src="@{~/framework/bootstrap-select-1.13.7/js/bootstrap-select.min.js}" type="text/javascript"></script>
 		<script th:src="@{~/framework/vendor/fileinput/js/fileinput.js}" type="text/javascript"></script>
 		<script th:src="@{~/framework/vendor/fileinput/js/locales/zh.js}" type="text/javascript"></script>
 		<script th:src="@{~/framework/scripts/file-upload.js}" type="text/javascript"></script>
@@ -68,7 +70,13 @@
 				//$("#modalDailog").removeClass("modal-lg");
 				//$("#modalDailog").addClass("modal");
 				initTimePicker();
-
+		        $('.selectpicker').selectpicker({
+	                'selectedText':'cat',
+	                 'noneSelectedText':'请选择',
+	                 'deselectAllText':'全不选',
+	                 'selectAllText': '全选',
+	             })
+		
 				var btnCust = '<button type="button" class="btn btn-secondary" title="Add picture tags" ' + 'onclick="alert(\'Call your custom code here.\')">'
 						+ '<i class="glyphicon glyphicon-tag"></i>' + '</button>';
 			

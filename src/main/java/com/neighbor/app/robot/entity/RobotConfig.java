@@ -6,7 +6,7 @@ import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 
 public class RobotConfig extends PageEntity {
-	private Integer robotId;
+	private Long robotId;
 
 	private Double hitChance;
 
@@ -40,22 +40,22 @@ public class RobotConfig extends PageEntity {
 	}
 
 	public boolean isHit() {
-		return RandomUtil.getRandomBy(100) <= hitChance * 100;
+		return hitChance!=null && RandomUtil.getRandomBy(100) <= hitChance * 100;
 	}
 
 	public boolean isSend() {
-		return RandomUtil.getRandomBy(100) <= sendPacketChance * 100;
+		return sendPacketChance!=null && RandomUtil.getRandomBy(100) <= sendPacketChance * 100;
 	}
 
 	public boolean isGrap() {
-		return RandomUtil.getRandomBy(100) <= grapChance * 100;
+		return grapChance!=null && RandomUtil.getRandomBy(100) <= grapChance * 100;
 	}
 
-	public Integer getRobotId() {
+	public Long getRobotId() {
 		return robotId;
 	}
 
-	public void setRobotId(Integer robotId) {
+	public void setRobotId(Long robotId) {
 		this.robotId = robotId;
 	}
 

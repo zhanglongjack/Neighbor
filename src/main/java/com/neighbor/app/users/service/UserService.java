@@ -45,6 +45,8 @@ public interface UserService {
 
 	void updateRobotInfo(UserInfo user, RobotConfig robot, UserWallet wallet);
 
+	UserInfo selectByRobotId(Long robotId);
+
     UserInfo selectByReCode(String reCode);
 
 }

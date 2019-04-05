@@ -1,5 +1,27 @@
 package com.neighbor.app.users.controller;
 
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.users.constants.UserContainer;
 import com.neighbor.app.users.entity.UserConfig;
@@ -12,24 +34,7 @@ import com.neighbor.common.security.EncodeData;
 import com.neighbor.common.sms.TencentSms;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.util.StringUtil;
-import org.hibernate.validator.constraints.Length;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import com.neighbor.common.websoket.service.SocketMessageService;
 
 @Controller
 @Validated
@@ -42,6 +47,35 @@ public class LoginController {
 	private UserContainer userContainer;
 	@Autowired
 	private UserWalletService userWalletService;
+	@Autowired
+	private SocketMessageService socketMessageService;
+	
+	
+	
+	
+	@RequestMapping(value = "/data.js", method = RequestMethod.GET)
+	@ResponseBody
+	public String dataJS(String domain) throws Exception {
+		logger.info("跨域处理逻辑:"+domain);
+		 URL url;    
+	        try {    
+	             url = new URL("http://"+domain.trim());    
+	             URLConnection co =  url.openConnection();  
+	             co.setConnectTimeout(2000);  
+	             co.connect();  
+	            // System.out.println("连接可用");    
+	        } catch (Exception e1) {   
+	             //System.out.println("连接打不开!");    
+	             url = null;    
+	        } 
+		
+		boolean isTrue=false;
+		if(url!=null){
+			logger.info("域名有效");
+		}
+		
+		return "infoData = {flag: "+isTrue+", wx:'"+domain+"'}";
+	}
 
 	// mv.setViewName("forward:/login.html");
 	// mv.setViewName("redirect:/login.html");
@@ -164,6 +198,9 @@ public class LoginController {
 			userConfig.setHaveVoice(UserConfig.HaveVoiceDesc.haveVoice.getValue());
 			userService.insertUserConfigSelective(userConfig);
 		}
+			
+		socketMessageService.updateWalletRefreshMsg(user.getId());
+		
 		result.addBody("userConfig", userConfig);
 	}
 

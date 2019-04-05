@@ -1,6 +1,5 @@
 package com.test;
 
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -11,7 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neighbor.StartNeighbor;
+import com.neighbor.app.game.entity.Game;
+import com.neighbor.app.group.entity.Group;
 import com.neighbor.app.robot.entity.RobotConfig;
 import com.neighbor.app.robot.service.RobotConfigService;
 
@@ -40,4 +43,16 @@ public class RobotServiceTest {
 		
 	}
 	 
+	public static void main(String[] args) {
+		 ObjectMapper mapper = new ObjectMapper();
+		 Group group = new Group();
+		 group.setRobot(new RobotConfig());
+//		 group.setGame(new Game());
+		 try {
+			System.out.println(mapper.writeValueAsString(group));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	} 
 }

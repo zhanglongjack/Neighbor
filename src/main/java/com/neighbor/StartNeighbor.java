@@ -1,11 +1,16 @@
 package com.neighbor;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import com.neighbor.schedule.util.GrapPacketData;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import nz.net.ultraq.thymeleaf.decorators.strategies.GroupingStrategy;
@@ -28,5 +33,10 @@ public class StartNeighbor {
 	@Bean
 	public LayoutDialect layoutDialect() {
 		return new LayoutDialect(new GroupingStrategy());
+	}
+	
+	@Bean
+	public BlockingQueue<GrapPacketData> getRobotQueue() {
+		return new LinkedBlockingQueue<GrapPacketData>(2);
 	}
 }

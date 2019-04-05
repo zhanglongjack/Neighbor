@@ -42,6 +42,8 @@ public interface SocketMessageMapper {
 	void insertMsgBackup(Long msgId);
 
 	void deleteByLessMsgId(Long msgId);
+
+	void updateWalletRefreshMsg(Long targetUserId);
 	
 	
 }

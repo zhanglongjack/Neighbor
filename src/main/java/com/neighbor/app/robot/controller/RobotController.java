@@ -19,7 +19,6 @@ import com.neighbor.app.robot.entity.RobotConfig;
 import com.neighbor.app.robot.service.RobotConfigService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
-import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 
@@ -31,9 +30,7 @@ public class RobotController {
 	@Autowired
 	private RobotConfigService robotConfigService;
 	@Autowired
-	private UserService userService;
-    @Autowired
-    private UserWalletService userWalletService;
+	private UserService userService; 
     
 	@RequestMapping(value = "/primaryModalView.ser")
 	public String primaryModalView(Integer id, String modifyModel, Model model) throws Exception {

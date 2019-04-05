@@ -1,5 +1,7 @@
 package com.neighbor.app.packet.controller;
 
+import java.util.concurrent.BlockingQueue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +18,12 @@ import com.neighbor.app.packet.constants.PacketContainer;
 import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.packet.entity.PacketDetail;
 import com.neighbor.app.packet.service.PacketService;
-import com.neighbor.app.robot.service.RobotConfigService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.schedule.util.GrapPacketData;
 
 @Controller
 @RequestMapping(value = "/packet")
@@ -35,14 +37,15 @@ public class PacketController {
 	@Autowired
 	private UserWalletService userWalletService;
 	@Autowired
-	private RobotConfigService robotConfigService;
-	@Autowired
 	private GroupService groupService;
+	@Autowired
+	private BlockingQueue<GrapPacketData> taskQueue;
 	
 	@RequestMapping(value = "/sendPacket.req", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseResult sendPacket(@ModelAttribute("user") UserInfo user, Packet packet) throws Exception {
 		packet.setUserId(user.getId());
+		packet.setNickName(user.getNickName());
 		logger.info("sendPacket request : " + packet);
 		UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
 		Packet resultPacket = packetService.sendPacket(packet,wallet);
@@ -53,7 +56,8 @@ public class PacketController {
 			Group group = new Group();
 			group.setId(packet.getGroupId());
 			Group groupResult = groupService.selectByPrimeryId(packet.getGroupId());
-			robotConfigService.robotGrapPacket(packet.getGroupId(), groupResult.getId(), resultPacket);
+			
+			addGrapPacketTask(groupResult.getId(), groupResult.getGameId(), resultPacket);
 			
 		}else{
 			result.setErrorCode(1);
@@ -61,6 +65,20 @@ public class PacketController {
 		}
 		
 		return result;
+	}
+	
+	private void addGrapPacketTask(Long groupId, Long gameId, Packet packet) {
+		GrapPacketData data = new GrapPacketData();
+		data.setGameId(gameId);
+		data.setGroupId(packet.getGroupId());
+		data.setPacket(packet);
+		try {
+			logger.info("开始尝试加人机器人抢红包队列任务");
+			boolean isOk = taskQueue.offer(data);
+			logger.info("是否加入机器人抢红包队列任务中?{}",isOk);
+		} catch (Exception e) {
+			logger.error("线程启动",e);
+		}
 	}
 	
 	@RequestMapping(value = "/grabPacekt.req", method = RequestMethod.POST)
