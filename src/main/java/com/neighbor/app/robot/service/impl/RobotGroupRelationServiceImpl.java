@@ -1,7 +1,5 @@
 package com.neighbor.app.robot.service.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,19 +25,19 @@ public class RobotGroupRelationServiceImpl implements RobotGroupRelationService 
 	
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public int insertSelective(RobotGroupRelationKey relation) {
-		List<RobotGroupRelationKey> resultList = selectRelationListBy(relation);
-		if(resultList.size()>0){
-			return 0;
+	public void insertSelective(RobotGroupRelationKey relation) {
+		Long count = selectRelationCountBy(relation);
+		if(count>0){
+			return;
 		}
 		UserInfo user = userService.selectByRobotId(relation.getRobotId());
 		groupService.addGroupMember(relation.getGroupId(), user.getId(), null);
-		return robotGroupRelationMapper.insertSelective(relation);
+		return;
 	}
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public int deleteRobotRelationByGroups(RobotGroupRelationKey record) throws Exception {
+	public void deleteRobotRelationByGroups(RobotGroupRelationKey record) throws Exception {
     	
     	if(record.getGroupId()!=null && record.getRobotId()!=null){
     		exitGroup(record.getRobotId(), record.getGroupId());
@@ -56,8 +54,6 @@ public class RobotGroupRelationServiceImpl implements RobotGroupRelationService 
     			exitGroup(Long.parseLong(robotId), record.getGroupId());
     		}
     	}
-    	
-		return robotGroupRelationMapper.deleteRelationBy(record);
 	}
 
 	private void exitGroup(Long robotId, Long groupId) throws Exception {
@@ -67,9 +63,8 @@ public class RobotGroupRelationServiceImpl implements RobotGroupRelationService 
 		groupService.exitGroup(user, member);
 	}
  
-	@Override
-	public List<RobotGroupRelationKey> selectRelationListBy(RobotGroupRelationKey record) {
-		return robotGroupRelationMapper.selectRelationListBy(record);
+	private Long selectRelationCountBy(RobotGroupRelationKey record) {
+		return robotGroupRelationMapper.selectRelationCountBy(record);
 	}
 
     @Override
