@@ -1,6 +1,7 @@
 package com.neighbor.app.packet.service.impl;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -118,6 +119,7 @@ public class PacketServiceImpl implements PacketService {
 		record.setSendDate(DateUtils.getStringDateShort());
 		record.setSendTime(DateUtils.getTimeShort());
 		record.setStatus(PacketStatus.uncollected.toString());
+		record.setCollectedNum(0);
 //		String str = "";
 //		Packet packetGenerate = new Packet();
 //		packetGenerate.setAmount(record.getAmount());
@@ -125,7 +127,7 @@ public class PacketServiceImpl implements PacketService {
 //		for(int i=record.getPacketNum();i>0;i--){
 //			str+=","+getRandomMoney(packetGenerate);
 //		}
-		record.setRandomAmount(RedPackageUtil.generate(record.getAmount().doubleValue(), record.getPacketNum()));
+//		record.setRandomAmount(RedPackageUtil.generate(record.getAmount().doubleValue(), record.getPacketNum()));
 		
 		UserWallet userWallet = new UserWallet();
 		userWallet.setuId(record.getUserId());
@@ -169,6 +171,17 @@ public class PacketServiceImpl implements PacketService {
 		Long b = 10L;
 		System.out.println(a == b);
 	}
+	
+	private Packet computePacketRemain(Packet packet){
+		List<PacketDetail> detailList = packet.getDetailList();
+		double sum = 0;
+		for(PacketDetail detail : detailList){
+			sum+=detail.getGotAmount().doubleValue();
+		}
+		packet.remainMoney -= sum;
+		packet.remainSize -= detailList.size();
+		return packet;
+	}
 	 
 	@Override
 	@Transactional(readOnly = false, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
@@ -204,37 +217,38 @@ public class PacketServiceImpl implements PacketService {
 		if(resultResp.getErrorCode()!=0){
 			return resultResp;
 		}
-		logger.info("开始锁表");
+		logger.info("开始锁表,红包id:{}",cachePacket.getId());
 		Packet lockPacket = lockPacketByPrimaryKey(cachePacket.getId());
-		logger.info("上锁再检查实际是否还有剩余红包数:[{}]",lockPacket.getPacketNum() - lockPacket.getCollectedNum());
+		computePacketRemain(lockPacket);
+		logger.info("红包编号:{},上锁后再检查实际是否还有剩余红包数:[{}]",lockPacket.getId(),lockPacket.remainSize);
 		resultResp = checLeftoverPacket(lockPacket.getStatus(),lockPacket,user.getId());
 		if(resultResp.getErrorCode()!=0){
 			return resultResp;
 		}
-		logger.info("还有剩余红包数量[{}],开始处理",lockPacket.getPacketNum() - lockPacket.getCollectedNum());
+		
+		logger.info("还有剩余红包数量[{}],开始处理",lockPacket.remainSize);
 		PacketDetail detail = new PacketDetail();
 		detail.setHeadUrl(user.getUserPhoto());
 		detail.setNickName(user.getNickName());
-//		if(lockPacket.getGroupId()!=null && lockPacket.getCollectedNum()+1== lockPacket.getPacketNum()){
-//			// 由系统抢
-//			detail.setIsFree("1");
-//			// 然后修改状态为抢完
-//			lockPacket.setCollectedNum(lockPacket.getPacketNum());
-//			lockPacket.setStatus(PacketStatus.collected.toString());
-//		}else{
-//			
-//		}
-		
-		String randomAmounts[] = lockPacket.getRandomAmountList();
-		detail.setGotAmount(new BigDecimal(randomAmounts[lockPacket.getCollectedNum()]));
-		String num = detail.getGotAmount().toPlainString();
-		boolean isGotBomb = Integer.parseInt(num.substring(num.length()-1))==lockPacket.getHitNum();
+		detail.setRemainMoney(new BigDecimal(lockPacket.remainMoney+""));
+		detail.setRemainSize((long)lockPacket.remainSize);
+
+//		String randomAmounts[] = lockPacket.getRandomAmountList();
+//		detail.setGotAmount(new BigDecimal(randomAmounts[lockPacket.getCollectedNum()]));
+		double resultNum = 0;
 		if(robot!=null){
-			if(isGotBomb&&!robot.isHit()){
+			resultNum = RedPackageUtil.getRandomMoney(lockPacket, robot.isHit());
+			if(resultNum==0){
 				logger.info("机器人抢红包中雷概率未中");
 				return  new ResponseResult();
 			}
+		}else{
+			resultNum = RedPackageUtil.getRandomMoney(lockPacket, true);
 		}
+		
+		detail.setGotAmount(BigDecimalUtil.rounding(resultNum));
+		String num = detail.getGotAmount().toPlainString();
+		boolean isGotBomb = Integer.parseInt(num.substring(num.length()-1))==lockPacket.getHitNum();
 		
 		lockPacket.setCollectedNum(lockPacket.getCollectedNum() + 1);
 		lockPacket.setStatus(lockPacket.getCollectedNum() == lockPacket.getPacketNum()?PacketStatus.collected.toString():PacketStatus.uncollected.toString());
@@ -437,6 +451,7 @@ public class PacketServiceImpl implements PacketService {
 	 */
 	private void handleLottery(long gameId, UserWallet graperWallet, BigDecimal grapAmount) {
 		GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.award, grapAmount.doubleValue()); 
+		logger.info("中奖检查,抢包金额:{},游戏编号:{},游戏规则:{}",grapAmount.toPlainString(),gameId,gameRule);
 		if(gameRule==null){
 			return;
 		}

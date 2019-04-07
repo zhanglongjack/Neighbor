@@ -40,15 +40,15 @@ public class RobotConfig extends PageEntity {
 	}
 
 	public boolean isHit() {
-		return hitChance!=null && RandomUtil.getRandomBy(100) <= hitChance * 100;
+		return hitChance!=null && RandomUtil.getRandomBy(100)+1 <= hitChance * 100;
 	}
 
 	public boolean isSend() {
-		return sendPacketChance!=null && RandomUtil.getRandomBy(100) <= sendPacketChance * 100;
+		return sendPacketChance!=null && RandomUtil.getRandomBy(100)+1 <= sendPacketChance * 100;
 	}
 
 	public boolean isGrap() {
-		return grapChance!=null && RandomUtil.getRandomBy(100) <= grapChance * 100;
+		return grapChance!=null && RandomUtil.getRandomBy(100)+1 <= grapChance * 100;
 	}
 
 	public Long getRobotId() {

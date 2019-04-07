@@ -141,12 +141,17 @@
   
   <select id="selectPageTotalCountByRobotGroupRelation" parameterType="com.neighbor.app.group.entity.Group"
           resultType="Long">
-	select 
-		count(1)
+	select count(1)
 	from `group` g
-	inner join game gm on gm.id=g.game_id
-	left join (select * from robot_group_relation rg where rg.r_robot_id = #{robot.robotId}) t on t.r_group_id = g.id
-	left join robot_config rc on rc.robot_id=t.r_robot_id
+    inner join game gm on gm.id=g.game_id
+    left join (
+		select 
+			gmb.group_id,rc.*
+		from group_member gmb
+		left join users_info u on u.id = gmb.user_id
+		left join robot_config rc on rc.robot_id = u.robot_sno 
+		where rc.robot_id = #{robot.robotId}
+	) t on t.group_id=g.id
 	<include refid="robotGroupRelationDynamicWhere" />
   </select>
   

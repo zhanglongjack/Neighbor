@@ -66,6 +66,7 @@
 								<thead>
 									<tr>
 										<th>机器人编号</th>
+										<th>机器用户编号</th>
 										<th>机器人头像</th>
 										<th>机器人昵称</th>
 										<th>机器人电话</th>
@@ -81,6 +82,7 @@
 								<tbody>
 									<tr th:each="obj : ${resultList}">
 										<td th:text="${obj.robotId}"></td>
+										<td th:text="${obj.user.id}"></td>
 										<td>
 											<a th:if="${obj.user.userPhoto!=null}" data-toggle="modal" data-target="#ModifyModal"
 												th:attr="href='/uploader/imgView.ser?imgSrc=/file/'+${obj.user.userPhoto}">

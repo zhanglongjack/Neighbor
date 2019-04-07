@@ -22,6 +22,8 @@ public class PacketDetail extends PageEntity{
     private Boolean isFree;
 
     private Boolean isMaximum;
+    private Long remainSize;
+    private BigDecimal remainMoney;
 
     private String createDate = DateUtils.getStringDateShort();
 
@@ -135,6 +137,22 @@ public class PacketDetail extends PageEntity{
 
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
+	}
+
+	public Long getRemainSize() {
+		return remainSize;
+	}
+
+	public void setRemainSize(Long remainSize) {
+		this.remainSize = remainSize;
+	}
+
+	public BigDecimal getRemainMoney() {
+		return remainMoney;
+	}
+
+	public void setRemainMoney(BigDecimal remainMoney) {
+		this.remainMoney = remainMoney;
 	}
 
 	@Override

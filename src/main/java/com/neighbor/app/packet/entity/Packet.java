@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neighbor.app.common.entity.PageEntity;
 
 public class Packet extends PageEntity{
@@ -34,10 +35,16 @@ public class Packet extends PageEntity{
 
     private String remarke;
     private String nickName;
+    @JsonIgnore
+    public int remainSize; // 剩余的红包数量
+    @JsonIgnore
+    public Double remainMoney;//  剩余的钱
     
+    @JsonIgnore
     private String randomAmount = "";
+    @JsonIgnore
     private String randomAmountList[] = null;
-    
+    @JsonIgnore
     private List<PacketDetail> detailList = new ArrayList<PacketDetail>();
 
     //query
@@ -100,6 +107,7 @@ public class Packet extends PageEntity{
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+        this.remainMoney = this.amount.doubleValue();
     }
 
     public Integer getPacketNum() {
@@ -108,6 +116,7 @@ public class Packet extends PageEntity{
 
     public void setPacketNum(Integer packetNum) {
         this.packetNum = packetNum;
+        this.remainSize = this.packetNum;
     }
 
     public Integer getHitNum() {
