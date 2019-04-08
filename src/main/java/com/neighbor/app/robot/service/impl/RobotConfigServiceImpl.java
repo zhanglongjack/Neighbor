@@ -121,9 +121,13 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 	}
 
 	@Override
-	public List<RobotConfig> selectRobotBy() {
-		// TODO Auto-generated method stub
-		return null;
+	public void batchUpdateRobotStatus(Long[] ids,int status) {
+		RobotConfig robot = new RobotConfig();
+		robot.setStatus(status);
+		for(Long id : ids){
+			robot.setRobotId(id);
+			robotConfigMapper.updateByPrimaryKeySelective(robot);
+		}
 	}
 
 }

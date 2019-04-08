@@ -3,9 +3,13 @@ package com.neighbor;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.sql.DataSource;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.ApplicationPidFileWriter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -29,7 +33,7 @@ public class StartNeighbor {
 		app.addListeners(new ApplicationPidFileWriter());
 		app.run(args);
 	}
-
+	
 	@Bean
 	public LayoutDialect layoutDialect() {
 		return new LayoutDialect(new GroupingStrategy());

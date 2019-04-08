@@ -70,12 +70,6 @@
 				//$("#modalDailog").removeClass("modal-lg");
 				//$("#modalDailog").addClass("modal");
 				initTimePicker();
-		        $('.selectpicker').selectpicker({
-	                'selectedText':'cat',
-	                 'noneSelectedText':'请选择',
-	                 'deselectAllText':'全不选',
-	                 'selectAllText': '全选',
-	             })
 		
 				var btnCust = '<button type="button" class="btn btn-secondary" title="Add picture tags" ' + 'onclick="alert(\'Call your custom code here.\')">'
 						+ '<i class="glyphicon glyphicon-tag"></i>' + '</button>';
@@ -119,6 +113,7 @@
 						toastr.error("头像上传失败");
 					}
 				});
+				
 				$('#robot-avatar').on('fileerror', function(event, data, msg) {
 					toastr.error(msg);
 				});
@@ -146,7 +141,7 @@
 					<div class="col-sm-4 text-center">
 						<div class="kv-avatar">
 							<div class="file-loading">
-								<input id="robot-avatar" name="file" type="file">
+								<input id="robot-avatar" name="file" type="file" class="form-control">
 							</div>
 						</div>
 					</div>
@@ -356,9 +351,34 @@
 							message : '联系电话格式不正确'
 						}
 					}
+				},
+				file:{
+					message : '请先上传头像',
+					validators : {
+						callback : {
+							callback : function(value, validator, $field) {
+								if($("#robot-avatar").val().length==0&&$("#userPhoto").val().length==0){
+									return  {
+				                        valid: false,
+				                        message: '头像不能为空'
+				                    };
+								}
+								if($("#userPhoto").val().length==0){
+									return  {
+				                        valid: false,
+				                        message: '请先上传头像'
+				                    };
+								}
+
+								return true;
+							}
+						}
+					}
+					
 				}
 			}
 		});
+		
 	});
 </script>
 </html>

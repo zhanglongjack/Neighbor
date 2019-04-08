@@ -1,10 +1,8 @@
 package com.neighbor.app.packet.service.impl;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.Map; 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,23 +89,6 @@ public class PacketServiceImpl implements PacketService {
 		return packetMapper.updateByPrimaryKeySelective(record);
 	}
 	
-	public static double getRandomMoney(Packet packet) {
-	    // remainSize 剩余的红包数量
-	    // remainMoney 剩余的钱
-	    if (packet.getPacketNum() == 1) {
-	    	packet.setPacketNum(packet.getPacketNum()-1);
-	        return (double) Math.round(packet.getAmount().doubleValue() * 100) / 100;
-	    }
-	    Random r     = new Random();
-	    double min   = 0.01; //
-	    double max   = packet.getAmount().doubleValue()/packet.getPacketNum().intValue()*2;
-	    double money = r.nextDouble() * max;
-	    money = money <= min ? 0.01: money;
-	    money = Math.floor(money * 100) / 100;
-	    packet.setPacketNum(packet.getPacketNum()-1);
-	    packet.setAmount(packet.getAmount().subtract(new BigDecimal(money)));
-	    return money;
-	}
 
 	@Override
 	@Transactional(readOnly = false, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
