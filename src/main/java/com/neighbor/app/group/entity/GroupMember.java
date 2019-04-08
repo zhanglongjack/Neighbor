@@ -1,9 +1,13 @@
 package com.neighbor.app.group.entity;
 
-import com.neighbor.common.util.PageTools;
+import java.util.Date;
+
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
+import com.neighbor.app.robot.entity.RobotConfig;
+import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.app.wallet.entity.UserWallet;
+import com.neighbor.common.util.PageTools;
 
 public class GroupMember {
     private Long id;
@@ -42,8 +46,45 @@ public class GroupMember {
     private Long memberId;
 
     private String friendUserIds;
+    
+    private UserInfo user;
+    private RobotConfig robot;
+    private Group group;
+    private UserWallet wallet;
 
-    public String getFriendUserIds() {
+    public UserInfo getUser() {
+		return user;
+	}
+
+	public void setUser(UserInfo user) {
+		this.user = user;
+	}
+
+	public RobotConfig getRobot() {
+		return robot;
+	}
+
+	public void setRobot(RobotConfig robot) {
+		this.robot = robot;
+	}
+
+	public Group getGroup() {
+		return group;
+	}
+
+	public void setGroup(Group group) {
+		this.group = group;
+	}
+
+	public UserWallet getWallet() {
+		return wallet;
+	}
+
+	public void setWallet(UserWallet wallet) {
+		this.wallet = wallet;
+	}
+
+	public String getFriendUserIds() {
         return friendUserIds;
     }
 
@@ -110,6 +151,7 @@ public class GroupMember {
 
     public void setId(Long id) {
         this.id = id;
+        this.memberId=id;
     }
 
     public Date getCreateTime() {

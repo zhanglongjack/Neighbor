@@ -13,6 +13,7 @@ public class PacketDetail extends PageEntity{
 
     private Long gotUserId;
     private String headUrl;
+    private String nickName;
 
     private BigDecimal gotAmount;
 
@@ -21,6 +22,8 @@ public class PacketDetail extends PageEntity{
     private Boolean isFree;
 
     private Boolean isMaximum;
+    private Long remainSize;
+    private BigDecimal remainMoney;
 
     private String createDate = DateUtils.getStringDateShort();
 
@@ -128,11 +131,37 @@ public class PacketDetail extends PageEntity{
 		this.headUrl = headUrl;
 	}
 
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public Long getRemainSize() {
+		return remainSize;
+	}
+
+	public void setRemainSize(Long remainSize) {
+		this.remainSize = remainSize;
+	}
+
+	public BigDecimal getRemainMoney() {
+		return remainMoney;
+	}
+
+	public void setRemainMoney(BigDecimal remainMoney) {
+		this.remainMoney = remainMoney;
+	}
+
 	@Override
 	public String toString() {
 		return String.format(
-				"PacketDetail [id=%s, dPacketId=%s, gotUserId=%s, gotAmount=%s, isGotBomb=%s, isFree=%s, isMaximum=%s, createDate=%s, createTime=%s]",
-				id, dPacketId, gotUserId, gotAmount, isGotBomb, isFree, isMaximum, createDate, createTime);
+				"PacketDetail [id=%s, dPacketId=%s, gotUserId=%s, headUrl=%s, nickName=%s, gotAmount=%s, isGotBomb=%s, isFree=%s, isMaximum=%s, createDate=%s, createTime=%s, packet=%s, createYear=%s]",
+				id, dPacketId, gotUserId, headUrl, nickName, gotAmount, isGotBomb, isFree, isMaximum, createDate,
+				createTime, packet, createYear);
 	}
-    
+
+
 }

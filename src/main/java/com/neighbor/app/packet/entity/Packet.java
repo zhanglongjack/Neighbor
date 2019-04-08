@@ -2,8 +2,10 @@ package com.neighbor.app.packet.entity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neighbor.app.common.entity.PageEntity;
 
 public class Packet extends PageEntity{
@@ -32,10 +34,17 @@ public class Packet extends PageEntity{
     private Integer collectedNum;
 
     private String remarke;
+    private String nickName;
+    @JsonIgnore
+    public int remainSize; // 剩余的红包数量
+    @JsonIgnore
+    public Double remainMoney;//  剩余的钱
     
+    @JsonIgnore
     private String randomAmount = "";
+    @JsonIgnore
     private String randomAmountList[] = null;
-    
+    @JsonIgnore
     private List<PacketDetail> detailList = new ArrayList<PacketDetail>();
 
     //query
@@ -98,6 +107,7 @@ public class Packet extends PageEntity{
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+        this.remainMoney = this.amount.doubleValue();
     }
 
     public Integer getPacketNum() {
@@ -106,6 +116,7 @@ public class Packet extends PageEntity{
 
     public void setPacketNum(Integer packetNum) {
         this.packetNum = packetNum;
+        this.remainSize = this.packetNum;
     }
 
     public Integer getHitNum() {
@@ -209,15 +220,25 @@ public class Packet extends PageEntity{
 	public void setSendTimeLess(String sendTimeLess) {
 		this.sendTimeLess = sendTimeLess;
 	}
+	
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
 
 	@Override
 	public String toString() {
 		return String.format(
-				"Packet [id=%s, userId=%s, receiveUserId=%s, groupId=%s, amount=%s, packetNum=%s, hitNum=%s, sendDate=%s, sendTime=%s, status=%s, collectedNum=%s, remarke=%s, randomAmount=%s, detailList=%s]",
-				id, userId, receiveUserId, groupId, amount, packetNum, hitNum, sendDate, sendTime, status, collectedNum,
-				remarke, randomAmount, detailList);
+				"Packet [id=%s, userId=%s, headUrl=%s, receiveUserId=%s, groupId=%s, amount=%s, packetNum=%s, hitNum=%s, sendDate=%s, sendTime=%s, status=%s, collectedNum=%s, remarke=%s, nickName=%s, randomAmount=%s, randomAmountList=%s, detailList=%s, createYear=%s, groupIdIsNotNull=%s, sendDateLess=%s, sendTimeLess=%s]",
+				id, userId, headUrl, receiveUserId, groupId, amount, packetNum, hitNum, sendDate, sendTime, status,
+				collectedNum, remarke, nickName, randomAmount, Arrays.toString(randomAmountList), detailList,
+				createYear, groupIdIsNotNull, sendDateLess, sendTimeLess);
 	}
- 
+
+
 
 
     

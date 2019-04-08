@@ -3,127 +3,273 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-
+<meta http-equiv="Cache-Control" content="no-cache" />
 </head>
 <body>
-		<div th:fragment="container-fluid"  class="container-fluid">
-			<script type="text/javascript">
-				$(function(){
-					pageQueryParams.index = '[[${pageTools.index}]]';
-					pageQueryParams.pageSize = '[[${pageTools.pageSize}]]';
-					pageQueryParams.total = '[[${pageTools.total}]]';
-					
-					$("#queryBTN").click(function(){
-						var dataParams = $("#queryFrom").serialize(); 
-						pageQueryParams.fromQueryData=dataParams;
-						render(pageQueryParams);  // 渲染页面函数
-					});
-					
-					$("[data-toggle='popover']").popover();
-					
-					initTimePicker();
-
-
+	<div th:fragment="container-fluid" class="container-fluid">
+<link rel="stylesheet" th:href="@{~/framework/table/bootstrap-table.min.css}">
+<script th:src="@{~/framework/table/bootstrap-table.min.js}"></script>
+<script th:src="@{~/framework/table/locale/bootstrap-table-zh-CN.min.js}"></script>
+		<script type="text/javascript">
+			var $masterTable = $('#master-table')
+			var $queryBtn = $('#queryBtn')
+			var $startBtn = $('#startBtn')
+			var $stopBtn = $('#stopBtn')
+			
+			$(function() {
+				$("#ModifyModal").on("hidden.bs.modal", function() {
+					$(this).removeData("bs.modal");
 				});
-			</script>
-			<h3 class="page-title">客服信息</h3>
-			<div class="row">
-				<div class="col-md-12">
-					<!-- TABLE HOVER -->
-					<div class="panel panel-info">
-						<form class="form-inline" id="queryFrom">
-							<div class="panel-body">
-									<div class="form-group col-sm-2">
-										<label>机器人编号</label><br> 
-										<input type="text" class="form-control"  placeholder="机器人编号" name="robotId" 
-											th:attr="value=${queryObject==null}?'':${queryObject.robotId}">
-									</div>
-									<div class="form-group col-sm-2">
-										<label>机器人昵称</label><br> 
-										<input type="text" class="form-control"  placeholder="机器人昵称" name="nickName" 
-											th:attr="value=${queryObject==null}?'':${queryObject.user==null?'':queryObject.user.nickName}">
-									</div> 
-							</div>
-							<div class="panel-body border-up-down">
-									<div class="btn-right"> 
-										<div class="btn-group">
-											<button id="queryBTN" type="button" class="btn btn-default">
-											<i class="fa fa-search"></i> 查询
-											</button>
-										</div>
-										<div class="btn-group" style="margin:0px 5px;">
-											<a class="btn btn-default" th:attr="href='/robot/primaryModalView.ser?modifyModel=robotAdd.ser&robotId='" 
-												data-toggle="modal" data-target="#ModifyModal"> 
-												 <span class="fa fa-plus-square"></span>&nbsp;添加客服
-											</a>
-										</div>
-										
-									</div>
-							</div>
-						</form>
-						<div class="panel-body table-responsive">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th>机器人编号</th>
-										<th>机器人头像</th>
-										<th>机器人昵称</th>
-										<th>机器人电话</th>
-										<th>机器人钱包</th>
-										<th>机器人性别</th>
-										<th>中雷概率</th>
-										<th>抢包频率</th>
-										<th>发包频率</th>
-										<th>启用状态</th>
-										<th>操作</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="obj : ${resultList}">
-										<td th:text="${obj.robotId}"></td>
-										<td>
-											<a th:if="${obj.user.userPhoto!=null}" data-toggle="modal" data-target="#ModifyModal"
-												th:attr="href='/uploader/imgView.ser?imgSrc=/file/'+${obj.user.userPhoto}">
-												<img class="img-rounded" style="width: 40px; height: 50px;"
-													th:attr="src='/file/'+${obj.user.userPhoto}" alt="看大图"/>
-											</a>
-										</td>
-										<td th:text="${obj.user.nickName}"></td>
-										<td th:text="${obj.user.mobilePhone}" >
-										
-										</td>
-										<td th:text="${#numbers.formatCurrency(obj.wallet.availableAmount)}"></td>
-										<td th:text="${@commonConstants.getDictionarysBy('sex',obj.user.sex)}"></td>
-										<td th:text="${#numbers.formatPercent(obj.hitChance,0,0)}"></td> 
-										<td th:text="${#numbers.formatPercent(obj.grapChance,0,0)}"></td> 
-										<td th:text="${#numbers.formatPercent(obj.sendPacketChance,0,0)}"></td> 
-										<td>
-											<span class="label label-default" th:if="${obj.status==0}">未启用</span>
-											<span class="label label-success" th:if="${obj.status==1}">已启用</span>
-										</td> 
-										<td>
-											<div class="btn-group">
-												<a class="btn btn-default btn-sm " data-toggle="modal" data-target="#ModifyModal"
-													th:attr="href='/robot/primaryModalView.ser?modifyModel=robotEdit.ser&id='+${obj.robotId}" > 
-													 <span class="glyphicon glyphicon-edit"></span>&nbsp;更新
-													 <i class="icon-star"></i>
-												</a>
-											</div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						
-						<div class="panel-footer">
-							<ul class="pagination" >
 
-							</ul>
+				initTable()
+				$queryBtn.click(function() {
+					$masterTable.bootstrapTable('refresh')
+				});
+				$startBtn.click(function() {
+					var ids = getIdSelections();
+					if(ids&&ids.length>0){
+						ajax("/robot/robotStart.ser",{ids:ids},function(){
+							$masterTable.bootstrapTable('refresh')
+						});
+					}else{
+						toastr.error("请选择至少一行");
+					}
+				});
+				$stopBtn.click(function() {
+					var ids = getIdSelections();
+					if(ids&&ids.length>0){
+						ajax("/robot/robotStop.ser",{ids:ids},function(){
+							$masterTable.bootstrapTable('refresh')
+						}); 
+					}else{
+						toastr.error("请选择至少一行");
+					}
+				})
+				
+			});
+
+			function ajax(reqURL, paramsData,succesCallback, errorCallback) {
+				$('#loadingModal').modal('show');
+				$.ajax({
+					url : reqURL,
+					type : 'POST',
+					data : paramsData,
+					dataType : 'json',
+					success : function(response) {
+						console.log(JSON.stringify(response));
+						$('#loadingModal').modal('hide');
+						if (response.errorCode == 1) {
+							errorCallback && errorCallback()
+						}
+						
+						succesCallback&&succesCallback(response);
+					},
+					error : function(rep, errMsg, exception) {
+						if (rep.responseText == "LoginTimeout") {
+							location.href = "/login.html";
+						}
+						$('#loadingModal').modal('hide');
+						console.log(JSON.stringify(rep));
+						errorCallback && errorCallback(rep, errMsg, exception)
+						
+					}
+				});
+			}
+
+			function getIdSelections() {
+				return $.map($masterTable.bootstrapTable('getSelections'), function(row) {
+					return row.robotId
+				})
+			}
+
+			function responseHandler(res) {
+				$.each(res.rows, function(i, row) {
+					row.state = row.robot && row.robot.robotId != null
+				})
+				return res
+			}
+
+			function initTable() {
+				$masterTable.bootstrapTable('destroy').bootstrapTable({
+					url : "/robot/loadPageAjax.ser",
+					queryParams : function(params) {//上传服务器的参数
+						var temp = {
+							'pageTools.pageSize' : params.limit, // 每页显示数量
+							'pageTools.index' : (params.offset / params.limit) + 1 //当前页码 
+							
+						};
+						var robotId = $("input[name='robotId']").val();
+						if(robotId&&robotId.length>0){
+							var reg = /^\d+$/;
+							if (!reg.test(robotId)) {
+								$("input[name='robotId']").focus();
+								toastr.error("请输入正确的机器人编号")
+								return false;
+							}
+						}
+						var userID = $("input[name='user.userID']").val();
+						if(userID&&userID.length>0){
+							var reg = /^\d+$/;
+							if (!reg.test(userID)) {
+								$("input[name='user.userID']").focus();
+								toastr.error("请输入正确的机器人帐号")
+								return false;
+							}
+						}
+						$('#query-params').find('input[name],select[name]').each(function() {
+							temp[$(this).attr('name')] = $(this).val()
+						})
+
+						console.log("分页查询1:" + JSON.stringify(temp))
+						return temp;
+					}
+				})
+			}
+			var sexList = ["未知","男","女"];
+			function sexFormatter(value) {
+				var result = sexList[value]
+				return '<div> ' + result + '</div>'
+			}
+			function priceFormatter(value) {
+				return '<div> $' + (value.toFixed(2)) + '</div>'
+			}
+			function nameFormatter(value, row) {
+				var url = "/file/" + value;
+				return '<a data-toggle="modal" data-target="#ModifyModal"' + 
+				'href="/uploader/imgView.ser?imgSrc=' + url + '"+ >'
+				+ '<img class="img-rounded" style="width: 40px; height: 50px;" src="'+url+'" alt="看大图"/></a>'
+			}
+			function persentFormatter(value, row) {
+				var result = value*100;
+				return '<div> ' + result + '%</div>'
+			}
+			function statusFormatter(value, row) {
+				if(value==0){
+					return '<span class="label label-warning" >未启用</span>'
+				}
+				return '<span class="label label-success" >已启用</span>'
+				//return '<button id="button" class="btn btn-success">已启用</button>';
+				//return '<div class="switch switch-large"> <input type="checkbox" checked /> </div>'
+			}
+			function operationFormatter(value, row) {
+				var id = row.robotId;
+				if(row.status==0){
+					//return '<button id="button" class="btn btn-success">已启用</button>'
+				}
+				//return '<span class="label label-success" >已启用</span>'
+				return ['<a class="btn btn-default btn-sm " data-toggle="modal" data-target="#ModifyModal"'+
+				'href="/robot/primaryModalView.ser?modifyModel=robotEdit.ser&id='+id+'">'+
+				'<span class="glyphicon glyphicon-edit"></span>更新<i class="icon-star"></i></a>'
+				+
+				'<a class="btn btn-default btn-sm" data-toggle="modal" data-target="#ModifyModal"'+
+				'href="/groupList/groupSelectListModal.ser?id='+id+'" >'+
+				'<span class="glyphicon glyphicon-edit"></span>分配<i class="icon-star"></i></a>'
+				]
+			}
+		</script>
+		
+		<h3 class="page-title">客服信息</h3>
+		<div class="row">
+			<div class="col-md-12">
+				<!-- TABLE HOVER -->
+				<div class="panel panel-info">
+					<div class="panel-body">
+						<div id="query-params">
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<input name="robotId" class="form-control" type="text"
+										placeholder="机器人编号">
+								</div>
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<input name="user.userID" class="form-control" type="text"
+										placeholder="机器人帐号">
+								</div>
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<input name="user.nickName" class="form-control" type="text"
+										placeholder="机器人昵称">
+								</div>
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<select class="form-control" name="user.sex">
+										<option value="">===机器人性别===</option> 
+										<option value="0">未知</option> 
+										<option value="1">男</option> 
+										<option value="2">女</option> 
+									</select>
+								</div>
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<select class="form-control" name="status">
+										<option value="">=====状   态=====</option> 
+										<option value="0">未启动</option> 
+										<option value="1">已启动</option> 
+									</select>
+								</div>
+
 						</div>
+						<div id="master-toolbar">
+							<button id="queryBtn" type="submit" class="btn btn-primary col-lg-3 col-md-3 col-sm-3">查询</button>
+							<button id="addBtn" href="/robot/primaryModalView.ser?modifyModel=robotAdd.ser&id=" data-toggle="modal" data-target="#ModifyModal" type="submit" class="btn btn-primary col-lg-3 col-md-3 col-sm-3">添加</button>
+							<button id="startBtn" type="submit" class="btn btn-success col-lg-3 col-md-3 col-sm-3">启用</button>
+							<button id="stopBtn" type="submit" class="btn btn-warning col-lg-3 col-md-3 col-sm-3">停用</button>
+						</div>
+					</div> 
+					<div class="panel-body table-responsive-sm">
+						<table class="table table-hover" 
+							id="master-table" 
+							data-toggle="table"
+							data-id-field="robotId" 
+							data-buttons-class="primary"
+							data-toolbar="#master-toolbar"
+							data-toolbar-align="right"
+							data-search="false"
+							data-search-align="left" 
+							data-click-to-select="false"
+							data-method="post" 
+							data-silent-sort="false"
+							data-show-refresh="false" 
+							data-show-toggle="false"
+							data-show-fullscreen="false" 
+							data-show-columns="true"
+							data-buttons-align="right"
+							data-detail-view="false" 
+							data-show-export="false"
+							data-minimum-count-columns="2"
+							data-show-pagination-switch="false" 
+							data-pagination="true"
+							data-pagination-h-align="left"
+							data-pagination-detail-h-align="right"
+							data-pagination-pre-text="上一页" 
+							data-pagination-next-text="下一页"
+							data-page-number="1" 
+							data-page-size="10"
+							data-page-list="[10, 25, 50, 100, ALL]"
+							data-show-footer="false"
+							data-content-type="application/x-www-form-urlencoded"
+							data-side-pagination="server"
+							data-response-handler="responseHandler">
+
+							<thead>
+								<tr>
+									<th data-field="state" data-checkbox="true" data-align="center" data-with="20"></th>
+									<th data-field="robotId">机器人编号</th>
+									<th data-field="user.id">机器人帐号</th>
+									<th data-field="user.userPhoto" data-formatter="nameFormatter" data-align="center">机器人头像</th>
+									<th data-field="user.nickName">机器人昵称</th>
+									<th data-field="user.mobilePhone">机器人电话</th>
+									<th data-field="wallet.availableAmount"
+										data-formatter="priceFormatter">机器人钱包</th>
+									<th data-field="user.sex" data-formatter="sexFormatter" data-align="center">机器人性别</th>
+									<th data-field="hitChance" data-formatter="persentFormatter" data-align="left">中雷概率</th>
+									<th data-field="grapChance" data-formatter="persentFormatter" data-align="left">抢包频率</th>
+									<th data-field="sendPacketChance" data-formatter="persentFormatter" data-align="left">发包频率</th>
+									<th data-field="status" data-formatter="statusFormatter" data-align="center">状态</th>
+									<th data-formatter="operationFormatter">操作</th>
+								</tr>
+							</thead>
+						</table>
 					</div>
-					<!-- END TABLE HOVER -->
 				</div>
+				<!-- END TABLE HOVER -->
 			</div>
 		</div>
+	</div>
 </body>
 </html>

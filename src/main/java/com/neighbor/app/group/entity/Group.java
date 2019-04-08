@@ -1,10 +1,13 @@
 package com.neighbor.app.group.entity;
 
+import com.neighbor.app.common.entity.PageEntity;
+import com.neighbor.app.game.entity.Game;
+import com.neighbor.app.robot.entity.RobotConfig;
 import com.neighbor.common.util.PageTools;
 
 import java.util.Date;
 
-public class Group {
+public class Group extends PageEntity{
     private Long id;
     private Long groupId;
 
@@ -41,7 +44,27 @@ public class Group {
 
     private String showNickNameSwitch;
 
-    public String getShowMsgSwitch() {
+    private RobotConfig robot;
+    
+    private Game game;
+ 
+	public RobotConfig getRobot() {
+		return robot;
+	}
+
+	public void setRobot(RobotConfig robot) {
+		this.robot = robot;
+	}
+
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
+	public String getShowMsgSwitch() {
         return showMsgSwitch;
     }
 
@@ -114,7 +137,9 @@ public class Group {
     }
 
     public void setId(Long id) {
-        this.id = id;
+    	if(this.id==null){ 
+    		this.id = id;
+    	}
     }
 
     public Date getCreateTime() {
@@ -208,23 +233,24 @@ public class Group {
         this.groupId = groupId;
     }
 
-    @Override
-    public String toString() {
-        return "Group{" +
-                "id=" + id +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", creDate='" + creDate + '\'' +
-                ", creTime='" + creTime + '\'' +
-                ", groupName='" + groupName + '\'' +
-                ", userNum=" + userNum +
-                ", onlineNum=" + onlineNum +
-                ", groupNotice='" + groupNotice + '\'' +
-                ", groupHeadImgUrl='" + groupHeadImgUrl + '\'' +
-                ", states='" + states + '\'' +
-                ", gameId=" + gameId +
-                ", redPackAmountLimit='" + redPackAmountLimit + '\'' +
-                ", pageTools=" + pageTools +
-                '}';
+    private Long enterUserId;
+
+    public Long getEnterUserId() {
+        return enterUserId;
     }
+
+    public void setEnterUserId(Long enterUserId) {
+        this.enterUserId = enterUserId;
+    }
+
+    @Override
+	public String toString() {
+		return String.format(
+				"Group [id=%s, groupId=%s, createTime=%s, updateTime=%s, creDate=%s, creTime=%s, groupName=%s, userNum=%s, onlineNum=%s, groupNotice=%s, groupHeadImgUrl=%s, states=%s, gameId=%s, redPackAmountLimit=%s, userId=%s, gameType=%s, groupOwnerUserId=%s, showMsgSwitch=%s, showNickNameSwitch=%s, robot=%s, game=%s, pageTools=%s]",
+				id, groupId, createTime, updateTime, creDate, creTime, groupName, userNum, onlineNum, groupNotice,
+				groupHeadImgUrl, states, gameId, redPackAmountLimit, userId, gameType, groupOwnerUserId, showMsgSwitch,
+				showNickNameSwitch, robot, game, pageTools);
+	}
+    
+    
 }

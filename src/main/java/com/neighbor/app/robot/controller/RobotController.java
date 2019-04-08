@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,7 +20,6 @@ import com.neighbor.app.robot.entity.RobotConfig;
 import com.neighbor.app.robot.service.RobotConfigService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
-import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 
@@ -31,9 +31,7 @@ public class RobotController {
 	@Autowired
 	private RobotConfigService robotConfigService;
 	@Autowired
-	private UserService userService;
-    @Autowired
-    private UserWalletService userWalletService;
+	private UserService userService; 
     
 	@RequestMapping(value = "/primaryModalView.ser")
 	public String primaryModalView(Integer id, String modifyModel, Model model) throws Exception {
@@ -67,17 +65,32 @@ public class RobotController {
 			@ModelAttribute("user") UserInfo user) throws Exception {
 		logger.debug("loadPage Robot request:" + robot + " page info ===" + pageTools);
 	
-		robot.setPageTools(pageTools);
+//		robot.setPageTools(pageTools);
 		ModelAndView mv = new ModelAndView("page/robot/Content :: container-fluid");
+//		Long size = robotConfigService.selectPageTotalCount(robot);
+//		pageTools.setTotal(size);
+//		List<RobotConfig> ciList = robotConfigService.selectPageByObjectForList(robot);
+//		logger.debug("loadPage Robot result list info =====:" + ciList);
+//		
+//		mv.addObject("resultList", ciList);
+//		mv.addObject("pageTools", pageTools);
+//		mv.addObject("queryObject", robot);
+		
+		return mv;
+	}
+	
+	@RequestMapping(value = "/loadPageAjax.ser")
+	@ResponseBody
+	public Map<String,Object> loadPage(RobotConfig robot, @ModelAttribute("user") UserInfo user) throws Exception {
+		logger.debug("loadPage Robot request:{}" , robot );
+		
 		Long size = robotConfigService.selectPageTotalCount(robot);
-		pageTools.setTotal(size);
 		List<RobotConfig> ciList = robotConfigService.selectPageByObjectForList(robot);
 		logger.debug("loadPage Robot result list info =====:" + ciList);
 		
-		mv.addObject("resultList", ciList);
-		mv.addObject("pageTools", pageTools);
-		mv.addObject("queryObject", robot);
-
+		Map<String,Object> mv = new HashMap<String,Object>();
+		mv.put("rows", ciList);
+		mv.put("total", size);
 		return mv;
 	}
 
@@ -87,6 +100,21 @@ public class RobotController {
 		logger.info("userInfoEdit request:{}",robot);
 		userService.updateRobotInfo(robot.getUser(),robot,robot.getWallet());
 		
+		return new ResponseResult();
+	}
+	
+	@RequestMapping(value="/robotStart.ser")
+	@ResponseBody
+	public ResponseResult robotStart(@RequestParam(value="ids[]")Long ids[]){
+		logger.info("robotStart request:{}",ids+"");
+		robotConfigService.batchUpdateRobotStatus(ids,1);
+		return new ResponseResult();
+	}
+	@RequestMapping(value="/robotStop.ser")
+	@ResponseBody
+	public ResponseResult robotStop(@RequestParam(value="ids[]")Long ids[]){
+		logger.info("robotStop request:{}",ids+"");
+		robotConfigService.batchUpdateRobotStatus(ids,0);
 		return new ResponseResult();
 	}
 	

@@ -12,9 +12,17 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 100000
 COMMENT = '机器人配置表';
 
- 
+DROP TABLE IF EXISTS `robot_group_relation`; 
 
 INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('未知', '0', '1', 'sex', '性别');
 INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('男', '1', '1', 'sex', '性别');
 INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('女', '2', '1', 'sex', '性别');
 commit;
+
+alter table users_info add re_code varchar(50) DEFAULT null COMMENT '我的推荐码';
+
+
+
+ALTER TABLE `neighbor_dev`.`packet_detail` 
+ADD COLUMN `remain_size` BIGINT(20) NULL AFTER `head_url`,
+ADD COLUMN `remain_money` DECIMAL(20,2) NULL AFTER `remain_size`;

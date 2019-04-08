@@ -326,6 +326,8 @@ public class GroupServiceImpl implements GroupService {
         groupMember.setUserId(group.getGroupOwnerUserId());
         groupMember.setCreateTime(date);
         groupMemberMapper.insertSelective(groupMember);
+
+
     }
 
     @Override
@@ -364,12 +366,22 @@ public class GroupServiceImpl implements GroupService {
     }
 
 	@Override
-	public List<GroupMember> selectRobotGroupMemberBy(Long groupId) {
-		return groupMemberMapper.selectRobotGroupMemberBy(groupId);
+	public List<GroupMember> selectRobotGroupMemberBy(GroupMember member) {
+		return groupMemberMapper.selectRobotGroupMemberBy(member); 
 	}
 
 	@Override
 	public Group selectByPrimeryId(Long groupId) {
 		return groupMapper.selectByPrimaryKey(groupId);
+	}
+
+	@Override
+	public List<Group> selectPageByRobotGroupRelation(Group queryObject) {
+		return groupMapper.selectPageByRobotGroupRelation(queryObject);
+	}
+
+	@Override
+	public Long selectPageTotalCountByRobotGroupRelation(Group queryObject) {
+		return groupMapper.selectPageTotalCountByRobotGroupRelation(queryObject);
 	}
 }

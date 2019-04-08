@@ -1,25 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.neighbor.app.packet.dao.PacketMapper">
-	<resultMap id="BaseResultMap" type="com.neighbor.app.packet.entity.Packet">
-		<id column="id" jdbcType="BIGINT" property="id" />
-		<result column="s_user_id" jdbcType="VARCHAR" property="userId" />
-		<result column="send_head_url" jdbcType="VARCHAR" property="headUrl" />
-		<result column="receive_user_id" jdbcType="BIGINT" property="receiveUserId" />
-		<result column="group_id" jdbcType="BIGINT" property="groupId" />
-		<result column="amount" jdbcType="DECIMAL" property="amount" />
-		<result column="packet_num" jdbcType="INTEGER" property="packetNum" />
-		<result column="hit_num" jdbcType="INTEGER" property="hitNum" />
-		<result column="send_date" jdbcType="VARCHAR" property="sendDate" />
-		<result column="send_time" jdbcType="VARCHAR" property="sendTime" />
-		<result column="status" jdbcType="VARCHAR" property="status" />
-		<result column="collected_num" jdbcType="VARCHAR" property="collectedNum" />
-		<result column="remarke" jdbcType="VARCHAR" property="remarke" />
-		<result column="random_amount" jdbcType="VARCHAR" property="randomAmount" />
-		<collection property="detailList" javaType="ArrayList" ofType="com.neighbor.app.packet.entity.PacketDetail" 
-					select="com.neighbor.app.packet.dao.PacketDetailMapper.selectPacketDetailByPacketId" column="id">
-		</collection>
-	</resultMap>
 	
 	<resultMap id="selectiveResultMap" type="com.neighbor.app.packet.entity.Packet">
 		<id column="id" jdbcType="BIGINT" property="id" />
@@ -36,6 +17,15 @@
 		<result column="collected_num" jdbcType="VARCHAR" property="collectedNum" />
 		<result column="remarke" jdbcType="VARCHAR" property="remarke" />
 		<result column="random_amount" jdbcType="VARCHAR" property="randomAmount" /> 
+	</resultMap>
+	
+	<resultMap id="BaseResultMap" type="com.neighbor.app.packet.entity.Packet" extends="selectiveResultMap">
+		<collection column="s_user_id"  property="nickName" ofType="String" 
+		select="com.neighbor.app.users.dao.UserInfoMapper.selectNickNameByPrimaryKey">
+		</collection>
+		<collection property="detailList" javaType="ArrayList" ofType="com.neighbor.app.packet.entity.PacketDetail" 
+					select="com.neighbor.app.packet.dao.PacketDetailMapper.selectPacketDetailByPacketId" column="id">
+		</collection>
 	</resultMap>
 	
 	<sql id="Base_Column_List">

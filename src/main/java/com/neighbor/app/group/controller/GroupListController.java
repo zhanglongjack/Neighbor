@@ -1,12 +1,13 @@
 package com.neighbor.app.group.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.neighbor.app.group.entity.Group;
 import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
-import com.neighbor.common.security.EncodeData;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.util.WebSocketPushHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class GroupListController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private WebSocketPushHandler webSocketPushHandler;
 
 	@RequestMapping(value = "/primaryModalView.ser")
 	public String primaryModalView(Long id, String modifyModel, Model model) throws Exception {
@@ -86,6 +90,33 @@ public class GroupListController {
 		return mv;
 	}
 
+	
+	@RequestMapping(value = "/groupSelectListModal.ser")
+	public String groupSelectListModal(Integer id, Model model) throws Exception {
+		logger.debug("GroupSelectListModal request:" + id + ",model:" + model);
+		model.addAttribute("robotId", id);
+		
+		logger.debug("GroupSelectListModal model : " + model);
+		
+		return "page/robot/GroupSelectListModal";
+	}
+
+	@RequestMapping(value = "/robotOwnGroupPage.ser")
+	@ResponseBody
+	public Map<String,Object> robotOwnGroupPage(Group queryObject,@ModelAttribute("user") UserInfo user) throws Exception {
+		logger.debug("robotOwnGroupPage request:" + queryObject + " user info ==="+user);
+		
+		Long size = groupService.selectPageTotalCountByRobotGroupRelation(queryObject);
+		List<Group> ciList = groupService.selectPageByRobotGroupRelation(queryObject);
+		logger.debug("robotOwnGroupPage result list info =====:" + ciList);
+		
+		Map<String,Object> mv = new HashMap<String,Object>();
+		mv.put("rows", ciList);
+		mv.put("total", size);
+//		mv.put("queryObject", queryObject);
+		return mv;
+	}
+
 	@RequestMapping(value="/addGroup.ser")
 	@ResponseBody
 	public ResponseResult addGroup(Group group, @ModelAttribute("user") UserInfo user) throws Exception{
@@ -102,6 +133,13 @@ public class GroupListController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("success", true);
 		map.put("addNumber", 1);
+		Group query  = new Group();
+		query.setPageTools(new PageTools());
+		query.setId(group.getId());
+		List<Group> pageList = groupService.selectPageByObjectForList(query);
+		Group temp = pageList.get(0);
+		temp.setEnterUserId(userInfo.getId());
+		webSocketPushHandler.groupRefreshNotice(user.getId(),userInfo.getId(), JSON.toJSONString(temp));
 		return new ResponseResult();
 	}
 

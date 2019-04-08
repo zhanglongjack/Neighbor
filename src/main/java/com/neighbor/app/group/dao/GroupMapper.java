@@ -22,4 +22,8 @@ public interface GroupMapper {
 	List<Group> selectAll();
 
 	List<Group> selectBySelective(Group record);
+
+	List<Group> selectPageByRobotGroupRelation(Group queryObject);
+
+	Long selectPageTotalCountByRobotGroupRelation(Group queryObject);
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neighbor.app.robot.dao.RobotGroupRelationMapper">
+  <resultMap id="BaseResultMap" type="com.neighbor.app.robot.entity.RobotGroupRelationKey">
+    <id column="r_robot_id" jdbcType="INTEGER" property="robotId" />
+    <id column="r_group_id" jdbcType="BIGINT" property="groupId" />
+  </resultMap>
+  
+  <sql id="dynamicWhere">
+    <where>  
+      <if test="groupIdNotInStr != null and groupIdNotInStr.length()>0">and gm.group_id not in (${groupIdNotInStr}) </if>
+      <if test="groupIdInStr != null and groupIdInStr.length()>0">and gm.group_id in (${groupIdInStr}) </if>
+      <if test="groupId != null">and gm.group_id=#{groupId}</if> 
+      
+      <if test="robotIdNotInStr != null and robotIdNotInStr.length()>0">and rc.robot_id not in (${robotIdNotInStr}) </if>
+      <if test="robotIdInStr != null and robotIdInStr.length()>0">and rc.robot_id in (${robotIdInStr}) </if>
+      <if test="robotId != null">and rc.robot_id=#{robotId}</if>
+    </where>
+  </sql>
+  
+  <select id="selectRelationCountBy" parameterType="com.neighbor.app.robot.entity.RobotGroupRelationKey"
+  	resultType="Long">
+	 select count(1) from group_member gm
+	 inner join users_info u on u.id = gm.user_id
+	 inner join robot_config rc on rc.robot_id = u.robot_sno
+	 <include refid="dynamicWhere" />
+  </select>
+  
+ 
+  
+</mapper>

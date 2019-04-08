@@ -12,27 +12,27 @@
 		<result column="create_date" jdbcType="VARCHAR" property="createDate" />
 		<result column="create_time" jdbcType="VARCHAR" property="createTime" />
 		<result column="head_url" jdbcType="VARCHAR" property="headUrl" />
+		<result column="remain_size" jdbcType="VARCHAR" property="remainSize" />
+		<result column="remain_money" jdbcType="VARCHAR" property="remainMoney" />
 	</resultMap>
 	
-	<resultMap id="resultWithParentMap" type="com.neighbor.app.packet.entity.PacketDetail">
-		<id column="id" jdbcType="BIGINT" property="id" />
-		<result column="d_packet_id" jdbcType="BIGINT" property="dPacketId" />
-		<result column="got_user_id" jdbcType="BIGINT" property="gotUserId" />
-		<result column="got_amount" jdbcType="DECIMAL" property="gotAmount" />
-		<result column="is_got_bomb" jdbcType="VARCHAR" property="isGotBomb" />
-		<result column="is_free" jdbcType="VARCHAR" property="isFree" />
-		<result column="is_maximum" jdbcType="VARCHAR" property="isMaximum" />
-		<result column="create_date" jdbcType="VARCHAR" property="createDate" />
-		<result column="create_time" jdbcType="VARCHAR" property="createTime" />
-		<result column="head_url" jdbcType="VARCHAR" property="headUrl" />
-		<collection property="packet" column="d_packet_id" select="com.neighbor.app.packet.dao.PacketMapper.selectByPrimaryKey">
+	<resultMap id="resultWithParentMap" type="com.neighbor.app.packet.entity.PacketDetail" extends="BaseResultMap">
+		<collection property="packet" column="d_packet_id" 
+		select="com.neighbor.app.packet.dao.PacketMapper.selectByPrimaryKey">
         </collection>
 	</resultMap>
+	
+	<resultMap id="resultWithNickNameMap" type="com.neighbor.app.packet.entity.PacketDetail"  extends="BaseResultMap">
+		<collection column="got_user_id"  property="nickName" ofType="String" 
+		select="com.neighbor.app.users.dao.UserInfoMapper.selectNickNameByPrimaryKey">
+		</collection>
+	</resultMap>
+	
 	<sql id="Base_Column_List">
 		id, d_packet_id, got_user_id, got_amount, is_got_bomb,
 		is_free,
 		is_maximum, create_date,
-		create_time,head_url
+		create_time,head_url,remain_size,remain_money
 	</sql>
 
 	<sql id="dynamicWhere">
@@ -97,7 +97,7 @@
 	</select>
 
 	<select id="selectPacketDetailByPacketId" parameterType="java.lang.Long"
-		resultMap="BaseResultMap">
+		resultMap="resultWithNickNameMap">
 		select
 		<include refid="Base_Column_List" />
 		from packet_detail
@@ -139,6 +139,12 @@
 			<if test="headUrl != null">
 				head_url,
 			</if>
+			<if test="remainSize != null">
+				remain_size,
+			</if>
+			<if test="remainMoney != null">
+				remain_money,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null">
@@ -171,8 +177,15 @@
 			<if test="headUrl != null">
 				#{headUrl,jdbcType=VARCHAR},
 			</if>
+			<if test="remainSize != null">
+				#{remainSize},
+			</if>
+			<if test="remainMoney != null">
+				#{remainMoney},
+			</if>
 		</trim>
 	</insert>
+	
 	<update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.packet.entity.PacketDetail">
 		update packet_detail
 		<set>

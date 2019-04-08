@@ -9,7 +9,7 @@ import com.neighbor.app.commission.entity.UserCommission;
 import com.neighbor.app.commission.service.CommissionService;
 
 @Service
-public class CommissionImpl implements CommissionService{
+public class CommissionServiceImpl implements CommissionService{
 	
 	@Autowired
 	private UserCommissionMapper userCommissionMapper;

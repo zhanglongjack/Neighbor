@@ -21,6 +21,13 @@
     <result column="friendDesc" property="friendDesc" jdbcType="VARCHAR" />
     <result column="friendHeadUrl" property="friendHeadUrl" jdbcType="VARCHAR" />
   </resultMap>
+  
+  <resultMap id="MemberUserRobotInfoResultMap" type="com.neighbor.app.group.entity.GroupMember" extends="BaseResultMap" >
+    <association property="user" resultMap="com.neighbor.app.users.dao.UserInfoMapper.JoinQueryResultMap" /> 
+    <association property="robot" resultMap="com.neighbor.app.robot.dao.RobotConfigMapper.BaseResultMap" />
+    <association property="group" resultMap="com.neighbor.app.group.dao.GroupMapper.JoinQueryResultMap" />
+    <association property="wallet" resultMap="com.neighbor.app.wallet.dao.UserWalletMapper.BaseResultMap" />
+  </resultMap>
 
   <sql id="Base_Column_List" >
     id, create_time, update_time, group_id, user_id, member_type, show_msg_switch, show_nick_name_switch, 
@@ -58,14 +65,16 @@
     <include refid="dynamicWhere" />
   </select>
   
-  <select id="selectRobotGroupMemberBy" resultMap="BaseResultMap" parameterType="Long">
+  <select id="selectRobotGroupMemberBy" resultMap="MemberUserRobotInfoResultMap" parameterType="com.neighbor.app.group.entity.GroupMember">
     select
-    t.*
+    t.*,u.*,c.*,g.*,w.*
     from `group_member` t
+    inner join `group` g on g.id = t.group_id
     inner join users_info u on u.id = t.user_id
+    inner join user_wallet w on w.u_id=u.id
     inner join robot_config c on c.robot_id=u.robot_sno
-    WHERE t.group_id=#{groupId}
-    and c.status = 1
+    WHERE c.status = 1 
+    <if test="groupId != null">and t.group_id=#{groupId}</if>
   </select>
 
   <select id="selectPageByObjectForList" parameterType="com.neighbor.app.group.entity.GroupMember"
