@@ -58,7 +58,8 @@
 			<div class="form-group">
 				<label class="col-sm-2 control-label">图片</label>
 				<div class="col-sm-10 form-inline" >
-					<input type="text" class="form-control" placeholder="选择图片" id="pic_val_1" readonly style="width:50% !important;"/>
+					<input type="hidden" value="上传图片成功" name="successUploadFile">
+					<input type="text" class="form-control" placeholder="选择图片" name="picFile"  id="pic_val_1" readonly style="width:50% !important;"/>
 					&nbsp;&nbsp;&nbsp;
 					<input type="button" id="btn_upload_1" class="btn" value="上传图片"/>
 					&nbsp;&nbsp;&nbsp;
@@ -103,6 +104,36 @@
                 valid: 'glyphicon glyphicon-ok',
                 invalid: 'glyphicon glyphicon-remove',
                 validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                position: {
+                    message: '请选择位置!',
+                    validators: {
+                        notEmpty: {
+                            message: '请选择位置！'
+                        }
+                    }
+                },
+                successUploadFile: {
+                    message: '图片信息异常!',
+                    validators: {
+                        notEmpty: {
+                            message: '图片信息异常！'
+                        }
+                    }
+                },
+                picFile: {
+                    message: '请上传图片！',
+                    validators: {
+                        notEmpty: {
+                            message: '请上传图片！'
+                        },
+                        identical: {
+                            field:"successUploadFile",
+                            message: '请上传图片！'
+                        }
+                    }
+                }
             }
         });
 
@@ -148,6 +179,9 @@
 
         $("#btn_upload_1").hide();
 
+        $("#pic_val_1").val("上传图片成功");
+        $("#pic_val_1").hide();
+
     }
 
     function saveImg() {
@@ -174,8 +208,6 @@
         // alert("input:"+$(input).val()+"---")
         $(parentSpan).remove();
 
-        $("#btn_upload_1").show();
-
         $.ajax({
             url: "/cms/deleteImg.ser",
             type: 'POST',
@@ -183,6 +215,9 @@
             dataType: 'json',
             async:true,
             success: function(response) {
+                $("#pic_val_1").val("");
+                $("#pic_val_1").show();
+                $("#btn_upload_1").show();
 
             },
             error:function(rep,errMsg,exception){
