@@ -47,6 +47,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int insertSelective(UserInfo record) {
+        String reCode = null;
+        boolean b = true;
+        for(int idx = 10;idx<=10;idx--){
+            reCode = RandomUtil.getReCode();
+            UserInfo userInfo = selectByReCode(reCode);
+            if(userInfo == null){
+                b = false;
+                break;
+            }
+        }
+        record.setNickName(RandomUtil.getNickName());
+        record.setReCode(reCode);
         int count = userInfoMapper.insertSelective(record);
         userContainer.buildUserInfo();
         return count;
@@ -111,22 +123,6 @@ public class UserServiceImpl implements UserService {
     public UserInfo builderUserInfo(UserInfo record) throws Exception{
         logger.info("创建用户信息:" + record);
 
-        String reCode = null;
-        boolean b = true;
-        for(int idx = 10;idx<=10;idx--){
-            reCode = RandomUtil.getReCode();
-            UserInfo userInfo = selectByReCode(reCode);
-            if(userInfo == null){
-                b = false;
-                break;
-            }
-        }
-        if(b){
-            //尝试多次生成code出现重复，请稍后重试
-            throw new Exception("重试多次！");
-        }
-        record.setNickName(RandomUtil.getNickName());
-        record.setReCode(reCode);
         insertSelective(record);
         record.setUserAccount(record.getUserAccount()==null?record.getId() + "":record.getUserAccount());
         updateByPrimaryKeySelective(record);
