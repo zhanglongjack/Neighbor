@@ -1,12 +1,14 @@
 package com.neighbor.app.transfer.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.transfer.entity.Transfer;
 import com.neighbor.app.transfer.po.TransferReq;
 import com.neighbor.app.transfer.service.TransferService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.util.WebSocketPushHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +22,19 @@ public class TransferController {
     private static final Logger logger = LoggerFactory.getLogger(TransferController.class);
     @Autowired
     private TransferService transferService;
+
+    @Autowired
+    private WebSocketPushHandler webSocketPushHandler;
     //直接转账
     @RequestMapping(value = "/transfer.req",method= RequestMethod.POST)
     @ResponseBody
     public ResponseResult transfer(@ModelAttribute("user") UserInfo user, TransferReq transfer) throws Exception{
         logger.info("transfer request : " + transfer);
         ResponseResult result  = transferService.transfer(user,transfer);
+        /*if(result.getErrorCode()== ErrorCodeDesc.success.getValue()){
+            Transfer temp = (Transfer)result.getBody().get("transfer");
+            //webSocketPushHandler.transferNotice(temp.getuId(),temp.getTransferUserId(), JSON.toJSONString(temp));
+        }*/
         return result;
     }
     //查询转账记录

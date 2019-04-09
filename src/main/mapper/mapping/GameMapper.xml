@@ -11,6 +11,41 @@
   <sql id="Base_Column_List" >
     id, create_time, update_time, game_name, game_type
   </sql>
+  
+  <sql id="dynamicWhere">
+    <where>
+      <if test="id != null">and id=#{id}</if>
+      <if test="createTime != null ">and create_time=#{createTime}</if>
+      <if test="updateTime != null ">and update_time=#{updateTime}</if>
+      <if test="gameName != null and gameName.length()>0">and game_name=#{gameName}</if>
+      <if test="gameType != null">and game_type=#{gameType}</if>
+    </where>
+  </sql>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from game
+    order by create_time
+  </select>
+
+  <select id="selectPageByObjectForList" parameterType="com.neighbor.app.game.entity.Game"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from game
+    <include refid="dynamicWhere" />
+    order by create_time desc
+    limit #{pageTools.rowIndex},#{pageTools.pageSize}
+  </select>
+
+  <select id="selectPageTotalCount" parameterType="com.neighbor.app.game.entity.Game"
+          resultType="Long">
+    select
+    count(1)
+    from game
+    <include refid="dynamicWhere" />
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -21,12 +56,8 @@
     delete from game
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.neighbor.app.game.entity.Game" >
-    insert into game (id, create_time, update_time, 
-      game_name, game_type)
-    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{gameName,jdbcType=VARCHAR}, #{gameType,jdbcType=BIGINT})
-  </insert>
+
+
   <insert id="insertSelective" parameterType="com.neighbor.app.game.entity.Game" >
     insert into game
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -80,14 +111,6 @@
         game_type = #{gameType,jdbcType=BIGINT},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.neighbor.app.game.entity.Game" >
-    update game
-    set create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      game_name = #{gameName,jdbcType=VARCHAR},
-      game_type = #{gameType,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
