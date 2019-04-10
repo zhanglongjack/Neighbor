@@ -7,6 +7,7 @@ import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.util.GroupMsgPushHandler;
 import com.neighbor.common.websoket.util.WebSocketPushHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,6 +141,7 @@ public class GroupListController {
 		Group temp = pageList.get(0);
 		temp.setEnterUserId(userInfo.getId());
 		webSocketPushHandler.groupRefreshNotice(user.getId(),userInfo.getId(), JSON.toJSONString(temp));
+		GroupMsgPushHandler.addGroupSessions(userInfo.getId(),group.getId());
 		return new ResponseResult();
 	}
 

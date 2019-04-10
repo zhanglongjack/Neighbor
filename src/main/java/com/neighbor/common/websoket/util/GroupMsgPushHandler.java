@@ -456,4 +456,29 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 		logger.info("给指定群[{}]指定用户:[{}]发信息是否成功:[{}]", groupId, userId, isPushed);
 		return isPushed;
 	}
+
+	/**
+	 * 新建群 或者 添加用户进群
+	 *
+	 * @return true:成功,false:失败
+	 */
+	public static boolean addGroupSessions(Long userId, Long groupId) {
+		boolean b = false;
+		if(allConnectUserSessions.containsKey(userId)){
+			if(groupSessions.containsKey(groupId)){
+				Map<Long,WebSocketSession> map = groupSessions.get(groupId);
+				if(!map.containsKey(userId)){
+					map.put(userId,allConnectUserSessions.get(userId));
+					b=true;
+				}
+			}else{
+				Map<Long,WebSocketSession> groupUserSession = new HashMap<Long, WebSocketSession>();
+				groupUserSession.put(userId,allConnectUserSessions.get(userId));
+				groupSessions.put(groupId,groupUserSession);
+				b=true;
+			}
+		}
+		return b;
+	}
+
 }
