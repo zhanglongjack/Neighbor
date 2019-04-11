@@ -19,4 +19,6 @@ public interface UserCommissionMapper {
     
     List<UserCommission> selectPageByObjectForList(UserCommission commission);
 
+    UserCommission selectAmountBy(Long ownUserId);
+
 }

@@ -14,4 +14,6 @@ public interface CommissionService {
     Long selectPageTotalCount(UserCommission commission);
 
 	List<UserCommission> selectPageByObjectForList(UserCommission commission);
+
+	UserCommission selectAmountBy(Long ownUserId);
 }

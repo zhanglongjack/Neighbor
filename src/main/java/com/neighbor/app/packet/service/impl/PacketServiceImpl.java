@@ -241,7 +241,7 @@ public class PacketServiceImpl implements PacketService {
 		logger.info("是否需要分佣检查:"+detail);
 		logger.info("用户检查:"+user);
 		logger.info("群成员检查:"+member);
-		if( member.getUserId()!=user.getId() && detail.isFree()){
+		if( lockPacket.getUserId() != user.getId() && detail.isFree()){
 			logger.info("开始分佣处理");
 			handleFreePacketCommission(detail,gameId,lockPacket.getUserId());
 		}

@@ -39,4 +39,9 @@ public class CommissionServiceImpl implements CommissionService{
 		return userCommissionMapper.selectPageByObjectForList(commission);
 	}
 
+	@Override
+	public UserCommission selectAmountBy(Long ownUserId) {
+		return userCommissionMapper.selectAmountBy(ownUserId);
+	}
+
 }

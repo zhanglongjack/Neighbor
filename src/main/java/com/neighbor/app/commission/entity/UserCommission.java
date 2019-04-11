@@ -26,6 +26,9 @@ public class UserCommission extends PageEntity {
 
 	private UserInfo downUser;
 
+	private BigDecimal totalAmt;
+	private BigDecimal todayAmt;
+	
 	// query
 	private String greaterGainDate;
 	
@@ -115,6 +118,22 @@ public class UserCommission extends PageEntity {
 
 	public void setGreaterGainDate(String greaterGainDate) {
 		this.greaterGainDate = greaterGainDate;
+	}
+
+	public BigDecimal getTotalAmt() {
+		return totalAmt;
+	}
+
+	public void setTotalAmt(BigDecimal totalAmt) {
+		this.totalAmt = totalAmt;
+	}
+
+	public BigDecimal getTodayAmt() {
+		return todayAmt;
+	}
+
+	public void setTodayAmt(BigDecimal todayAmt) {
+		this.todayAmt = todayAmt;
 	}
 
 	@Override
