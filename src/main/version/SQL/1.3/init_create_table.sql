@@ -23,6 +23,14 @@ alter table users_info add re_code varchar(50) DEFAULT null COMMENT '我的推�
 
 
 
-ALTER TABLE `neighbor_dev`.`packet_detail` 
+ALTER TABLE `packet_detail` 
 ADD COLUMN `remain_size` BIGINT(20) NULL AFTER `head_url`,
 ADD COLUMN `remain_money` DECIMAL(20,2) NULL AFTER `remain_size`;
+
+
+
+INSERT INTO `neighbordb`.`user_wallet` (`update_time`, `u_id`, `score`, `available_amount`, `freeze_amount`) 
+VALUES ( '2019-01-04 16:56:47', '1', '0.00', '2125.4700', '0.0000');
+
+INSERT INTO `neighbordb`.`users_info` (id, `user_photo`, `nick_name`, `user_account`, `user_password`, `sex`, `mobile_phone`, `create_time`, `update_time`, `user_role`, `re_code`) 
+VALUES (1, 'img/head-user2.png', 'trewww', '1', 'e10adc3949ba59abbe56e057f20f883e', '2', '15999585910', '2019-01-13 19:46:19', '2019-01-13 19:46:19', '2', '7d4af105');

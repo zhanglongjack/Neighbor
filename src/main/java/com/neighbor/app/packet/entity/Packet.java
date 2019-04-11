@@ -44,7 +44,7 @@ public class Packet extends PageEntity{
     private String randomAmount = "";
     @JsonIgnore
     private String randomAmountList[] = null;
-    @JsonIgnore
+    
     private List<PacketDetail> detailList = new ArrayList<PacketDetail>();
 
     //query

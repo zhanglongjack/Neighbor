@@ -53,7 +53,10 @@ public class ExpirePacketHandleSchedule {
 	private void clearPacketCache(String today) {
 		for(Long key : packetContainer.packetMap.keySet()){
 			Packet packet = packetService.selectByPrimaryKey(key);
-			
+			if(packet ==null){
+				packetContainer.clearMap(key);
+				continue;
+			}
 			if(today.equals(packet.getSendDate())){
 				String tenMinite = DateUtils.getTimeBy(-10);
 				Long beforeTen = Long.parseLong(tenMinite.replaceAll(":", "")) ;
