@@ -112,7 +112,8 @@ public class ChartListServiceImpl implements ChatListService {
 
     @Override
     public void modifyLastMessage(SocketMessage socketMessage) throws Exception {
-        if(socketMessage.getTargetGroupId()==null||socketMessage.getTargetGroupId()==0){
+        //单条消息才更新。
+        if((socketMessage.getTargetGroupId()==null||socketMessage.getTargetGroupId()==0)&&"1".equals(socketMessage.getMasterMsgType())){
             ChatList left = new ChatList();
             Date chatLastDate = DateUtils.formatDate(socketMessage.getDate()+" "+socketMessage.getTime(),DateFormateType.LANG_FORMAT);
             left.setLastChatMessageContent(socketMessage.getContent());

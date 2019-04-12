@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+		<div th:fragment="container-fluid"  class="container-fluid">
+			<script type="text/javascript">
+				$(function(){
+					pageQueryParams.index = '[[${pageTools.index}]]';
+					pageQueryParams.pageSize = '[[${pageTools.pageSize}]]';
+					pageQueryParams.total = '[[${pageTools.total}]]';
+					
+					$("#queryBTN").click(function(){
+						var dataParams = $("#queryFrom").serialize(); 
+						pageQueryParams.fromQueryData=dataParams;
+						render(pageQueryParams);  // 渲染页面函数
+					});
+					
+					$("[data-toggle='popover']").popover();
+					
+					initTimePicker();
+					
+
+				});
+			</script>
+			<h3 class="page-title">游戏管理</h3>
+			<div class="row">
+				<div class="col-md-12">
+					<!-- TABLE HOVER -->
+					<div class="panel panel-info">
+						<form class="form-inline" id="queryFrom">
+							<div class="panel-body">
+									<div class="form-group col-sm-2">
+										<label>游戏名称</label><br>
+										<input type="text" class="form-control"  placeholder="游戏名称" name="gameName"
+											   th:attr="value=${queryObject==null}?'':${queryObject.gameName}">
+									</div>
+									<div class="form-group col-sm-2">
+										<label>游戏类型</label><br>
+										<select class="form-control" name="gameType">
+											<option value="" >===请选择===</option>
+											<option th:each="map:${@commonConstants.getDictionarysByKey('gameType')}"
+													th:selected="${map.key} eq ${queryObject.gameType}"
+													th:value="${map.key}" th:text="${map.value}"></option>
+										</select>
+
+									</div>
+							</div>
+							<div class="panel-body border-up-down">
+									<div class="btn-right"> 
+										<div class="btn-group">
+											<button id="queryBTN" type="button" class="btn btn-default">
+											<i class="fa fa-search"></i> 查询
+											</button>
+										</div>
+										<div class="btn-group" style="margin:0px 5px;">
+											<a class="btn btn-default" th:attr="href='/gameList/primaryModalView.ser?modifyModel=addGame.ser&id='"
+											   data-toggle="modal" data-target="#ModifyModal">
+												<span class="fa fa-plus-square"></span>&nbsp;添加游戏
+											</a>
+										</div>
+									</div>
+
+							</div>
+						</form>
+						<div class="panel-body table-responsive">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>编号</th>
+										<th>创建时间</th>
+										<th>游戏类型</th>
+										<th>游戏名称</th>
+										<th>操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="obj : ${resultList}">
+										<td th:text="${obj.id}"></td>
+										<td th:text="${obj.createTimeStr}"></td>
+										<td th:text="${obj.gameTypeStr}"></td>
+										<td th:text="${obj.gameName}"></td>
+										<td>
+											<div  class="btn-group">
+												<a class="btn btn-default btn-sm " data-toggle="modal" data-target="#ModifyModal"
+													th:attr="href='/gameList/primaryModalView.ser?modifyModel=editGame.ser&id='+${obj.id}" >
+													 <span class="glyphicon glyphicon-edit"></span>&nbsp;编辑
+													 <i class="icon-star"></i>
+												</a>
+												<a th:if="${obj.gameType=='1'}" class="btn btn-default btn-sm" data-toggle="modal" data-target="#ModifyModal"  th:attr="href='/gameList/primaryModalView.ser?modifyModel=editRule.ser&recordId='+${obj.id}" >
+													 <span class="glyphicon glyphicon-cog"></span>&nbsp;配置规则
+												</a>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						
+						<div class="panel-footer">
+							<ul class="pagination" >
+
+							</ul>
+						</div>
+					</div>
+					<!-- END TABLE HOVER -->
+				</div>
+			</div>
+		</div>
+
+</body>
+</html>

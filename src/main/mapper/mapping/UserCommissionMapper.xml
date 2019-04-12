@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.neighbor.app.commission.dao.UserCommissionMapper">
-	<resultMap id="BaseResultMap"
-		type="com.neighbor.app.commission.entity.UserCommission">
+	<resultMap id="BaseResultMap" type="com.neighbor.app.commission.entity.UserCommission">
 		<id column="id" jdbcType="BIGINT" property="id" />
 		<result column="own_user" jdbcType="BIGINT" property="ownUser" />
 		<result column="d_user_id" jdbcType="BIGINT" property="downUserId" />
@@ -38,6 +37,15 @@
 		<include refid="Base_Column_List" />
 		from user_commision
 		where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectAmountBy" parameterType="java.lang.Long"
+		resultType="com.neighbor.app.commission.entity.UserCommission">
+		select
+			sum(commision_amt) totalAmt,
+			sum(CASE gain_date when date_format(now(),'%Y-%m-%d') then commision_amt else 0 end) todayAmt
+		from user_commision 
+        where own_user = #{ownUser}
 	</select>
 
 	<select id="selectPageByObjectForList" parameterType="com.neighbor.app.commission.entity.UserCommission"

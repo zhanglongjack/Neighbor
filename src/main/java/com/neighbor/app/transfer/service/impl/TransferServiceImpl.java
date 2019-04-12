@@ -1,5 +1,6 @@
 package com.neighbor.app.transfer.service.impl;
 
+import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.balance.entity.BalanceDetail;
 import com.neighbor.app.balance.po.TransactionItemDesc;
 import com.neighbor.app.balance.po.TransactionSubTypeDesc;
@@ -45,6 +46,8 @@ public class TransferServiceImpl implements TransferService {
 
 
 
+
+
 	/**
      * 内部转账方法
      * @param req
@@ -54,88 +57,7 @@ public class TransferServiceImpl implements TransferService {
 	@Override
 	@Transactional(readOnly = false,rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
 	public ResponseResult transfer(UserInfo userInfo , TransferReq req) throws Exception {
-		ResponseResult responseResult = new ResponseResult();
-		UserWallet userWallet = userWalletService.selectByPrimaryUserId(userInfo.getId());
-		BigDecimal amount = new BigDecimal(req.getAmount());
-		if(userWallet==null){
-			responseResult.setErrorCode(1);//失败
-			responseResult.setErrorMessage("用户不存在！");
-			return responseResult;
-		}
-		UserWallet transferUser = userWalletService.selectByPrimaryUserId(req.getTransferUserId());
-		if(transferUser==null){
-			responseResult.setErrorCode(1);//失败
-			responseResult.setErrorMessage("转账用户不存在！");
-			return responseResult;
-		}
-		if(userWallet.getAvailableAmount().compareTo(amount)<0){
-			responseResult.setErrorCode(1);//失败
-			responseResult.setErrorMessage("可用余额不足！当前余额："+userWallet.getAvailableAmount());
-			return responseResult;
-		}
-		UserWallet updateWallet = new UserWallet();
-		updateWallet.setAvailableAmount(amount.negate());
-		updateWallet.setuId(userInfo.getId());
-		userWalletService.updateWalletAmount(updateWallet);
-		userWallet = userWalletService.selectByPrimaryUserId(userInfo.getId());
-		UserWallet updateTransferUserWallet = new UserWallet();
-		updateTransferUserWallet.setAvailableAmount(amount);
-		updateTransferUserWallet.setuId(req.getTransferUserId());
-		userWalletService.updateWalletAmount(updateTransferUserWallet);
-		transferUser = userWalletService.selectByPrimaryUserId(req.getTransferUserId());
-
-		Date date = new Date();
-		//转出交易
-		Transfer transfer = new Transfer();
-		BeanUtils.copyProperties(req,transfer);
-		transfer.setuId(userInfo.getId());
-		transfer.setAmount(amount);
-		transfer.setAvailableAmount(userWallet.getAvailableAmount());
-		transfer.setCreateTime(date);
-		transfer.setBeginTime(DateUtils.formatDateStr(date, DateFormateType.LANG_FORMAT));
-		transfer.setOrderNo(OrderUtils.getOrderNo(OrderUtils.TRANSFER));
-		transfer.setTransferWay(TransferWayDesc.out.toString());
-		transfer.setStates(TransferStatusDesc.success.toString());
-		transferMapper.insertSelective(transfer);
-		//转出交易明细
-		BalanceDetail balanceDetailOut = new BalanceDetail();
-		balanceDetailOut.setAmount(amount);
-		balanceDetailOut.setAvailableAmount(transfer.getAvailableAmount());
-		balanceDetailOut.setuId(transfer.getuId());
-		balanceDetailOut.setTransactionType(TransactionTypeDesc.payment.toString());
-		balanceDetailOut.setTransactionSubType(TransactionSubTypeDesc.transferOut.toString());
-		balanceDetailOut.setRemarks(TransactionItemDesc.transfer.getDes()+StringUtil.split_
-				+TransactionSubTypeDesc.transferOut.getDes()+transferUser.getuId());
-		balanceDetailOut.setTransactionId(transfer.getId());
-		balanceDetailService.insertSelective(balanceDetailOut);
-
-
-		//转入交易
-		Transfer transferIn = new Transfer();
-		BeanUtils.copyProperties(transfer,transferIn);
-		transferIn.setId(null);
-		transferIn.setuId(transferUser.getuId());
-		transferIn.setAvailableAmount(transferUser.getAvailableAmount());
-		transferIn.setTransferWay(TransferWayDesc.in.toString());
-		transferIn.setOrderNo(OrderUtils.getOrderNo(OrderUtils.TRANSFER));
-        transferIn.setTransferUserId(userInfo.getId());
-		transferMapper.insertSelective(transferIn);
-
-		//转入交易明细
-		BalanceDetail balanceDetailIn = new BalanceDetail();
-		balanceDetailIn.setAmount(amount);
-		balanceDetailIn.setAvailableAmount(transferUser.getAvailableAmount());
-		balanceDetailIn.setuId(transferUser.getuId());
-		balanceDetailIn.setTransactionType(TransactionTypeDesc.receipt.toString());
-		balanceDetailIn.setTransactionSubType(TransactionSubTypeDesc.transferIn.toString());
-		balanceDetailIn.setRemarks(TransactionItemDesc.transfer.getDes()+StringUtil.split_
-				+TransactionSubTypeDesc.transferIn.getDes()+transfer.getuId());
-		balanceDetailIn.setTransactionId(transferIn.getId());
-		balanceDetailService.insertSelective(balanceDetailIn);
-		TransferResp transferResp = new TransferResp();
-		transferResp.setOrderNo(transfer.getOrderNo());
-		responseResult.addBody("resp",transferResp);
-		responseResult.addBody("userWallet",userWallet);
+		ResponseResult responseResult = transferForChat(userInfo,req);
 		return responseResult;
 	}
 

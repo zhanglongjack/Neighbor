@@ -1,6 +1,7 @@
 package com.neighbor.app.game.service;
 
 import com.neighbor.app.game.constants.RuleTypeDesc;
+import com.neighbor.app.game.entity.Game;
 import com.neighbor.app.game.entity.GameRule;
 import com.neighbor.common.util.ResponseResult;
 
@@ -11,6 +12,8 @@ public interface GameService {
     int deleteRuleByPrimaryKey(Long id);
 
     int insertRuleSelective(GameRule record);
+
+    Long selectPageTotalCount(Game game);
 
     GameRule selectRuleByPrimaryKey(Long id);
 
@@ -29,4 +32,10 @@ public interface GameService {
 	GameRule ruleMatching(long gameId, RuleTypeDesc award, double value);
 
 	List<GameRule> ruleCommissionRecord(Long gameId, int ruleType);
+
+    List<Game> selectPageByObjectForList(Game game);
+
+    int updateByGame(Game game);
+    Game selectByPrimaryKey(Long id);
+    int insertSelective(Game game);
 }

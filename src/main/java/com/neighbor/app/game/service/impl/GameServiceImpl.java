@@ -3,6 +3,8 @@ package com.neighbor.app.game.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.neighbor.app.game.dao.GameMapper;
+import com.neighbor.app.game.entity.Game;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,29 @@ public class GameServiceImpl implements GameService {
     private static final Logger logger = LoggerFactory.getLogger(GameServiceImpl.class);
     @Autowired
     private GameRuleMapper gameRuleMapper;
+
+    @Autowired
+    private GameMapper gameMapper;
+
+    @Override
+    public Long selectPageTotalCount(Game game) {
+        return gameMapper.selectPageTotalCount(game);
+    }
+
+    @Override
+    public List<Game> selectPageByObjectForList(Game game) {
+        return gameMapper.selectPageByObjectForList(game);
+    }
+
+    @Override
+    public int updateByGame(Game game) {
+        return gameMapper.updateByPrimaryKeySelective(game);
+    }
+
+    @Override
+    public Game selectByPrimaryKey(Long id) {
+        return gameMapper.selectByPrimaryKey(id);
+    }
 
     @Override
     public int deleteRuleByPrimaryKey(Long id) {
@@ -117,8 +142,9 @@ public class GameServiceImpl implements GameService {
     	gameRule.setRuleType(ruleType);
     	return gameRuleMapper.selectBySelective(gameRule); 
     }
-    
-    
-    
 
+    @Override
+    public int insertSelective(Game game) {
+        return gameMapper.insertSelective(game);
+    }
 }

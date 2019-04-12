@@ -67,22 +67,14 @@ public class CommissionController {
 		return result;
 	}
 	
-//	@RequestMapping(value = "/queryRecommend.req",method=RequestMethod.POST)
-//	@ResponseBody
-//	public ResponseResult queryRecommendPage(@ModelAttribute("user") UserInfo user,PageTools pageTools) {
-//		logger.info("queryRecommendPage request user >>> " +user.toString());
-//		logger.info("queryRecommendPage request pageTools >>> " +pageTools);
-//		UserInfo userInfo = new UserInfo();
-//		userInfo.setUpuserId(user.getId());
-//		userInfo.setPageTools(pageTools);
-//		Long size = userService.selectPageTotalCount(userInfo);
-//		pageTools.setTotal(size);
-//		List<UserInfo> resultList = userService.selectPageByObjectForList(userInfo);
-//		
-//		ResponseResult result = new ResponseResult();
-//		result.addBody("resultList", resultList);
-//		result.addBody("pageTools", pageTools);
-//		logger.info("queryRecommendPage response : " +pageTools);
-//		return result;
-//	}
+	@RequestMapping(value = "/queryRecommendAmount.req",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseResult queryRecommendAmount(@ModelAttribute("user") UserInfo user) {
+		logger.info("queryRecommendAmount request user >>> " +user.toString());
+		UserCommission commission = commissionService.selectAmountBy(user.getId());
+		
+		ResponseResult result = new ResponseResult();
+		result.addBody("commission", commission);
+		return result;
+	}
 }
