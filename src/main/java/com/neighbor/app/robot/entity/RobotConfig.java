@@ -1,7 +1,7 @@
 package com.neighbor.app.robot.entity;
 
 import com.neighbor.app.common.entity.PageEntity;
-import com.neighbor.app.robot.util.RandomUtil;
+import com.neighbor.app.common.util.RandomUtil;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 

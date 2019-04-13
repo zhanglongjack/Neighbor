@@ -326,7 +326,9 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 		if (session.isOpen()) {
 			session.close();
 		}
-		userGroupExit(user.getId());
+		if(user!=null){
+			userGroupExit(user.getId());
+		}
 
 	}
 

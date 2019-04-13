@@ -16,17 +16,17 @@ import com.neighbor.StartNeighbor;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = StartNeighbor.class)
+//@RunWith(SpringRunner.class)
+//@SpringBootTest(classes = StartNeighbor.class)
 public class ExecutorsTest {
 
-    @Autowired
-	private UserWalletService userWalletService;
+//    @Autowired
+//	private UserWalletService userWalletService;
     
 	@Test
 	public void test(){
 		
-		CountDownLatch count = new CountDownLatch(500);
+		CountDownLatch count = new CountDownLatch(10);
 		ExecutorService fixedThreadPool = Executors.newFixedThreadPool(300);
 		for(int i =0;i<300;i++){
 			fixedThreadPool.execute(new Runnable(){
@@ -39,7 +39,7 @@ public class ExecutorsTest {
 						count.countDown();
 						System.out.println("计数减:"+count.getCount());
 						count.await();
-						//System.out.println("计数到达数值:"+count.getCount());
+						System.out.println("计数到达数值:"+count.getCount());
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -62,7 +62,7 @@ public class ExecutorsTest {
 						count.countDown();
 						System.out.println("计数减:"+count.getCount());
 						count.await();
-						//System.out.println("计数到达数值:"+count.getCount());
+						System.out.println("计数到达数值:"+count.getCount());
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

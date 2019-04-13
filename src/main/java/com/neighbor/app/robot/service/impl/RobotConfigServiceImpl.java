@@ -13,17 +13,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.neighbor.app.common.util.RandomUtil;
 import com.neighbor.app.group.entity.GroupMember;
 import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.packet.service.PacketService;
 import com.neighbor.app.robot.dao.RobotConfigMapper;
+import com.neighbor.app.robot.entity.GrapPacketData;
 import com.neighbor.app.robot.entity.RobotConfig;
 import com.neighbor.app.robot.service.RobotConfigService;
-import com.neighbor.app.robot.util.RandomUtil;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
 import com.neighbor.common.util.ResponseResult;
-import com.neighbor.schedule.util.GrapPacketData;
 
 @Service
 public class RobotConfigServiceImpl implements RobotConfigService {

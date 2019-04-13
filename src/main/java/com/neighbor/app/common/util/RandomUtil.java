@@ -1,4 +1,4 @@
-package com.neighbor.app.robot.util;
+package com.neighbor.app.common.util;
 
 import java.util.Random;
 import java.util.UUID;

@@ -75,6 +75,8 @@
     inner join robot_config c on c.robot_id=u.robot_sno
     WHERE c.status = 1 
     <if test="groupId != null">and t.group_id=#{groupId}</if>
+    <if test="userId != null ">and t.user_id=#{userId}</if>
+    <if test="robot != null and robot.robotId != null">and c.robot_id=#{robot.robotId}</if>
   </select>
 
   <select id="selectPageByObjectForList" parameterType="com.neighbor.app.group.entity.GroupMember"

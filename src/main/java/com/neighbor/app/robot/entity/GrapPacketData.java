@@ -1,4 +1,4 @@
-package com.neighbor.schedule.util;
+package com.neighbor.app.robot.entity;
 
 import com.neighbor.app.packet.entity.Packet;
 

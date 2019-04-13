@@ -2,8 +2,8 @@ package com.neighbor.app.robot.service;
 
 import java.util.List;
 
+import com.neighbor.app.robot.entity.GrapPacketData;
 import com.neighbor.app.robot.entity.RobotConfig;
-import com.neighbor.schedule.util.GrapPacketData;
 
 public interface RobotConfigService {
 
