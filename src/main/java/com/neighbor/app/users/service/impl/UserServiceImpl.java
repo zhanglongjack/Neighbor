@@ -36,10 +36,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserWalletService userWalletService;
-    
+
 	@Autowired
 	private RobotConfigService robotConfigService;
-	
+
     @Override
     public int deleteByPrimaryKey(Long uId) {
         return userInfoMapper.deleteByPrimaryKey(uId);
@@ -65,6 +65,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public int insertUserConfigSelective(UserConfig record) {
+        record.setHaveShock(UserConfig.HaveShockDesc.haveShock.getValue());
+        record.setHaveVoice(UserConfig.HaveVoiceDesc.haveVoice.getValue());
         int count = userConfigMapper.insertSelective(record);
         return count;
     }
@@ -139,31 +141,31 @@ public class UserServiceImpl implements UserService {
 
         return record;
     }
-    
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public UserInfo buildRobotInfo(UserInfo record,RobotConfig robot,UserWallet wallet) {
     	logger.info("创建机器人配置信息:" + robot);
     	robotConfigService.insertSelective(robot);
-    	
+
     	record.setRobotSno(robot.getRobotId()+"");
     	record.setUpUserId(1L);
     	logger.info("创建用户信息:" + record);
     	insertSelective(record);
-    	
+
 //    	record.setNickName(record.getNickName()==null?record.getId() + "":record.getNickName());
 //    	record.setUserAccount(record.getUserAccount()==null?record.getId() + "":record.getUserAccount());
     	updateByPrimaryKeySelective(record);
-    	
+
         logger.info("创建用户设置信息:" + record);
         UserConfig config = new UserConfig();
         config.setNoPasswordPay("0");
         insertUserConfigSelective(config);
-    	
+
     	logger.info("创建钱包信息:" + record);
     	wallet.setuId(record.getId());
     	userWalletService.insertSelective(wallet);
-    	
+
     	return record;
     }
 
@@ -172,7 +174,7 @@ public class UserServiceImpl implements UserService {
 	public void updateRobotInfo(UserInfo user, RobotConfig robot, UserWallet wallet) {
 		updateByPrimaryKeySelective(user);
 		robotConfigService.updateByPrimaryKeySelective(robot);
-		
+
 		UserWallet walletResult = userWalletService.selectByPrimaryUserId(user.getId());
 		wallet.setId(walletResult.getId());
 		userWalletService.updateByPrimaryKeySelective(wallet);

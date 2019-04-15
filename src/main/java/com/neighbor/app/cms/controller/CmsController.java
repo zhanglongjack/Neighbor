@@ -81,13 +81,13 @@ public class CmsController {
 
     @RequestMapping(value = "/cmsAdd.ser")
     @ResponseBody
-    public Map<String, Object> cmsAdd(UserInfo userInfo, Cms cms) throws Exception {
+    public ResponseResult cmsAdd(UserInfo userInfo, Cms cms) throws Exception {
         logger.info("cmsAdd request:{}", cms);
         int num = cmsService.insertSelective(cms);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("success", true);
         map.put("addNumber", num);
-        return map;
+        return new ResponseResult();
     }
 
     @RequestMapping(value = "/modifyModalView.ser")
@@ -107,13 +107,13 @@ public class CmsController {
 
     @RequestMapping(value = "/cmsModify.ser")
     @ResponseBody
-    public Map<String, Object> cmsModify(UserInfo userInfo, Cms cms) throws Exception {
+    public ResponseResult cmsModify(UserInfo userInfo, Cms cms) throws Exception {
         logger.info("cmsModify request:{}", cms);
         int num = cmsService.updateCms(cms);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("success", true);
         map.put("addNumber", num);
-        return map;
+        return new ResponseResult();
     }
 
     @RequestMapping(value = "/deleteImg.ser", method = RequestMethod.POST)
