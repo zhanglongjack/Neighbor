@@ -10,6 +10,21 @@ public enum RuleTypeDesc {
         this.des = des;
     }
 
+    public String getDes() {
+        return des;
+    }
+
+    public static String getRuleTypeStr(Integer i){
+        if(i==1){
+            return RuleTypeDesc.rebate.getDes();
+        }else if(i==2){
+            return RuleTypeDesc.award.getDes();
+        }else if(i==3){
+            return RuleTypeDesc.thunder.getDes();
+        }
+        return null;
+    }
+
     public int getValue() {
         return value;
     }

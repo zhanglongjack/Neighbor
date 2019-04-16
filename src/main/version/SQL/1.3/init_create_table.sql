@@ -34,3 +34,5 @@ VALUES ( '2019-01-04 16:56:47', '1', '0.00', '2125.4700', '0.0000');
 
 INSERT INTO `neighbordb`.`users_info` (id, `user_photo`, `nick_name`, `user_account`, `user_password`, `sex`, `mobile_phone`, `create_time`, `update_time`, `user_role`, `re_code`) 
 VALUES (1, 'img/head-user2.png', 'trewww', '1', 'e10adc3949ba59abbe56e057f20f883e', '2', '15999585910', '2019-01-13 19:46:19', '2019-01-13 19:46:19', '2', '7d4af105');
+
+alter table game add url varchar(500) DEFAULT null COMMENT '规则图片地址';

@@ -66,6 +66,42 @@
 	
 	<script th:src="@{~/framework/scripts/file-upload.js}" type="text/javascript"></script>
 <script type="text/javascript" >
+	function commonOpen(preUrl,data){
+        $("#modalDailog").addClass("modal-lg");
+        if(data==undefined){
+            data = '';
+        }
+        var reqURL=preUrl+"/pageView.ser";
+        //$("#loading").show();
+        $('#main-content').empty();
+        $('#loadingModal').modal('show');
+        console.log("ttt=="+reqURL);
+        $.ajax({
+            url: reqURL,
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                console.log(JSON.stringify(response));
+                pageQueryParams.total = response.pageTools.total;
+                pageQueryParams.index = 1;
+                pageQueryParams.pageSize = response.pageTools.pageSize;
+                pageQueryParams.fromQueryData = data;
+                pageQueryParams.preUrl= preUrl;
+                pageQueryParams.pageUrl = preUrl+"/loadPage.ser";
+
+                render(pageQueryParams);  // 渲染页面函数
+            },
+            error:function(rep,errMsg,exception){
+                if(rep.responseText=="LoginTimeout"){
+                    location.href="/login.html";
+                }
+                console.log(JSON.stringify(rep));
+            }
+        });
+
+    }
+
 	$(function(){
 		
 		$("[data-toggle='popover']").popover({html:true});
@@ -96,38 +132,10 @@
 			if(!preUrl){
 				return;
 			}
-			$("#modalDailog").addClass("modal-lg");
-			
-			var reqURL=preUrl+"/pageView.ser";
-			//$("#loading").show();
-			$('#main-content').empty();
-			$('#loadingModal').modal('show');
-			console.log("ttt=="+reqURL);
-			$.ajax({
-				url: reqURL,
-				type: 'POST',
-				data: '',
-				dataType: 'json',
-				success: function(response) {
-					console.log(JSON.stringify(response));
-					pageQueryParams.total = response.pageTools.total;
-					pageQueryParams.index = 1;
-					pageQueryParams.pageSize = response.pageTools.pageSize;
-					pageQueryParams.fromQueryData = null;
-					pageQueryParams.preUrl= preUrl; 
-					pageQueryParams.pageUrl = preUrl+"/loadPage.ser";
-					
-					render(pageQueryParams);  // 渲染页面函数
-				},
-				error:function(rep,errMsg,exception){
-					if(rep.responseText=="LoginTimeout"){
-						location.href="/login.html";
-					}
-					console.log(JSON.stringify(rep));
-				}
-			});
-			
+            commonOpen(preUrl);
 		});
+
+
 	})
 </script>
 

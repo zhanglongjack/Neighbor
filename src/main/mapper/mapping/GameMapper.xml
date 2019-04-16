@@ -7,9 +7,10 @@
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="game_name" property="gameName" jdbcType="VARCHAR" />
     <result column="game_type" property="gameType" jdbcType="BIGINT" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, create_time, update_time, game_name, game_type
+    id, create_time, update_time, game_name, game_type,url
   </sql>
   
   <sql id="dynamicWhere">
@@ -19,6 +20,7 @@
       <if test="updateTime != null ">and update_time=#{updateTime}</if>
       <if test="gameName != null and gameName.length()>0">and game_name=#{gameName}</if>
       <if test="gameType != null">and game_type=#{gameType}</if>
+      <if test="url != null and url.length()>0">and url=#{url}</if>
     </where>
   </sql>
   <select id="selectAll" resultMap="BaseResultMap">
@@ -58,7 +60,7 @@
   </delete>
 
 
-  <insert id="insertSelective" parameterType="com.neighbor.app.game.entity.Game" >
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.neighbor.app.game.entity.Game" >
     insert into game
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -75,6 +77,9 @@
       </if>
       <if test="gameType != null" >
         game_type,
+      </if>
+      <if test="url != null and url.length()>0">
+        url,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -93,6 +98,9 @@
       <if test="gameType != null" >
         #{gameType,jdbcType=BIGINT},
       </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.game.entity.Game" >
@@ -109,6 +117,9 @@
       </if>
       <if test="gameType != null" >
         game_type = #{gameType,jdbcType=BIGINT},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

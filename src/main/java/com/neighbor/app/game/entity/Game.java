@@ -11,6 +11,7 @@ public class Game  extends PageEntity {
 
     private Date createTime;
     private String createTimeStr;
+    private String url;
 
     private Date updateTime;
 
@@ -90,5 +91,11 @@ public class Game  extends PageEntity {
         this.gameType = gameType;
     }
 
+    public String getUrl() {
+        return url;
+    }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

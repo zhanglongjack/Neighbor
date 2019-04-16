@@ -10,6 +10,21 @@ public enum RuleSubTypeDesc {
         this.des = des;
     }
 
+    public String getDes() {
+        return des;
+    }
+
+    public static String getRuleSubTypeStr(Integer i){
+        if(i==1){
+            return RuleSubTypeDesc.single.getDes();
+        }else if(i==2){
+            return RuleSubTypeDesc.continuity.getDes();
+        }else if(i==3){
+            return RuleSubTypeDesc.same.getDes();
+        }
+        return null;
+    }
+
     public int getValue() {
         return value;
     }

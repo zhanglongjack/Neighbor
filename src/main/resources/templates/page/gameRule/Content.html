@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>游戏规则列表</title>
+</head>
+<body>
+		<div th:fragment="container-fluid"  class="container-fluid">
+			<script type="text/javascript">
+				$(function(){
+					pageQueryParams.index = '[[${pageTools.index}]]';
+					pageQueryParams.pageSize = '[[${pageTools.pageSize}]]';
+					pageQueryParams.total = '[[${pageTools.total}]]';
+					
+					$("#queryBTN").click(function(){
+						var dataParams = $("#queryFrom").serialize(); 
+						pageQueryParams.fromQueryData=dataParams;
+						render(pageQueryParams);  // 渲染页面函数
+					});
+					
+					$("[data-toggle='popover']").popover();
+					
+					initTimePicker();
+					
+
+				});
+                function del(id) {
+                    if(window.confirm("是否确定删除？")){
+                        $.ajax({
+                            url: "/gameRuleList/del.ser",
+                            type: 'POST',
+                            data: {id:id},
+                            dataType: 'json',
+                            async:true,
+                            success: function(response) {
+                                $("#queryBTN").click();
+                            },
+                            error:function(rep,errMsg,exception){
+                                alert("删除的时候出现异常！")
+                            }
+                        });
+                    }
+                }
+
+            </script>
+			<h3 class="page-title">游戏规则管理</h3>
+			<div class="row">
+				<div class="col-md-12">
+					<!-- TABLE HOVER -->
+					<div class="panel panel-info">
+						<form class="form-inline" id="queryFrom">
+							<div class="panel-body">
+                                    <div class="form-group col-sm-2">
+                                        <label>游戏编号</label><br>
+                                        <input type="text" class="form-control" readonly="readonly"  placeholder="游戏编号" name="gameId"
+                                               th:attr="value=${queryObject==null}?'':${queryObject.gameId}">
+                                    </div>
+									<div class="form-group col-sm-2">
+										<label>游戏规则</label><br>
+										<select class="form-control" name="ruleType">
+											<option value="" >===请选择===</option>
+											<option th:each="map:${@commonConstants.getDictionarysByKey('ruleType')}"
+													th:selected="${map.key} eq ${queryObject.ruleType}"
+													th:value="${map.key}" th:text="${map.value}"></option>
+										</select>
+
+									</div>
+									<div class="form-group col-sm-2">
+										<label>游戏子规则</label><br>
+										<select class="form-control" name="ruleSubType">
+											<option value="" >===请选择===</option>
+											<option th:each="map:${@commonConstants.getDictionarysByKey('ruleSubType')}"
+													th:selected="${map.key} eq ${queryObject.ruleSubType}"
+													th:value="${map.key}" th:text="${map.value}"></option>
+										</select>
+
+									</div>
+							</div>
+							<div class="panel-body border-up-down">
+									<div class="btn-right"> 
+										<div class="btn-group">
+											<button id="queryBTN" type="button" class="btn btn-default">
+											<i class="fa fa-search"></i> 查询
+											</button>
+										</div>
+										<div class="btn-group" style="margin:0px 5px;">
+											<a class="btn btn-default" th:attr="href='/gameRuleList/primaryModalView.ser?modifyModel=addGameRule.ser&gameId='+${queryObject.gameId}"
+											   data-toggle="modal" data-target="#ModifyModal">
+												<span class="fa fa-plus-square"></span>&nbsp;添加游戏规则
+											</a>
+										</div>
+									</div>
+
+							</div>
+						</form>
+						<div class="panel-body table-responsive">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>编号</th>
+										<th>创建时间</th>
+										<th>游戏规则类型</th>
+										<th>游戏子规则类型</th>
+										<th>固定值</th>
+										<th>奖励值</th>
+										<th>操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="obj : ${resultList}">
+										<td th:text="${obj.id}"></td>
+										<td th:text="${obj.createTimeStr}"></td>
+										<td th:text="${obj.ruleTypeStr}"></td>
+										<td th:text="${obj.ruleSubTypeStr}"></td>
+										<td th:text="${obj.ruleCode}"></td>
+										<td th:text="${obj.ruleValue}"></td>
+										<td>
+											<div  class="btn-group">
+												<!--<a class="btn btn-default btn-sm " data-toggle="modal" data-target="#ModifyModal"
+													th:attr="href='/gameRuleList/primaryModalView.ser?modifyModel=editGameRule.ser&id='+${obj.id}" >
+													 <span class="glyphicon glyphicon-edit"></span>&nbsp;编辑
+													 <i class="icon-star"></i>
+												</a>-->
+                                                <a class="btn btn-default btn-sm"  th:onclick="'javascript:del(\''+${obj.id}+'\');'">
+                                                    <span class="glyphicon glyphicon-remove"></span>&nbsp;删除
+                                                </a>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						
+						<div class="panel-footer">
+							<ul class="pagination" >
+
+							</ul>
+						</div>
+					</div>
+					<!-- END TABLE HOVER -->
+				</div>
+			</div>
+		</div>
+
+</body>
+</html>

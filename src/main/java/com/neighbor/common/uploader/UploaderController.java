@@ -122,6 +122,19 @@ public class UploaderController {
         return result;
     }
 
+    @RequestMapping(value = "/saveGameRuleImg.ser", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult saveGameRuleImg(@RequestParam("file") MultipartFile file) throws Exception {
+        logger.info("saveGameRuleImg file >>>> " + file);
+        String filename = file.getOriginalFilename();
+        String suffix=filename.substring(filename.lastIndexOf("."));
+        String newFileName = UUID.randomUUID().toString()+""+suffix;
+        String url = saveImage("gameRule", newFileName, file);
+        ResponseResult result = new ResponseResult();
+        result.addBody("url", url);
+        return result;
+    }
+
     private String saveImage(String fileType, String fileName, MultipartFile file)
             throws UploaderException {
         try {

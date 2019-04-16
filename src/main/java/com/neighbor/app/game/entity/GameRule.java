@@ -1,6 +1,11 @@
 package com.neighbor.app.game.entity;
 
 import com.neighbor.app.common.entity.PageEntity;
+import com.neighbor.app.game.constants.RuleSubTypeDesc;
+import com.neighbor.app.game.constants.RuleTypeDesc;
+import com.neighbor.common.util.DateFormateType;
+import com.neighbor.common.util.DateUtils;
+import com.neighbor.common.util.StringUtil;
 
 import java.util.Date;
 
@@ -8,12 +13,14 @@ public class GameRule extends PageEntity {
     private Long id;
 
     private Date createTime;
+    private String createTimeStr;
 
     private Date updateTime;
 
     private Long gameId;
 
     private Integer ruleType;//1:返佣规则,2:中奖规则,3:中雷规则
+    private String ruleTypeStr;
 
     private String matchingParam;//匹配的值
 
@@ -22,6 +29,8 @@ public class GameRule extends PageEntity {
     private String ruleValue;
 
     private String ruleSubType;// 1:单个值,2:顺子,3:同数
+    private String ruleSubTypeStr;
+
 
     private String schemeCode;//确定值值列表
 
@@ -104,6 +113,39 @@ public class GameRule extends PageEntity {
 
     public void setSchemeCode(String schemeCode) {
         this.schemeCode = schemeCode;
+    }
+
+    public String getRuleTypeStr() {
+        if(ruleType!=null){
+            return RuleTypeDesc.getRuleTypeStr(ruleType);
+        }
+        return ruleTypeStr;
+    }
+
+    public void setRuleTypeStr(String ruleTypeStr) {
+        this.ruleTypeStr = ruleTypeStr;
+    }
+
+    public String getRuleSubTypeStr() {
+        if(StringUtil.isNotEmpty(ruleSubType)){
+            return RuleSubTypeDesc.getRuleSubTypeStr(Integer.valueOf(ruleSubType));
+        }
+        return ruleSubTypeStr;
+    }
+
+    public void setRuleSubTypeStr(String ruleSubTypeStr) {
+        this.ruleSubTypeStr = ruleSubTypeStr;
+    }
+
+    public String getCreateTimeStr() {
+        if(createTime!=null){
+            return DateUtils.formatDateStr(createTime, DateFormateType.LANG_FORMAT);
+        }
+        return createTimeStr;
+    }
+
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
     }
 
     @Override

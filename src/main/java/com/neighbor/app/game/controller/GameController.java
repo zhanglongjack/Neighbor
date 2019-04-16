@@ -1,19 +1,17 @@
 package com.neighbor.app.game.controller;
 
-import com.neighbor.app.bankcard.entity.BankCard;
-import com.neighbor.app.game.constants.RuleTypeDesc;
-import com.neighbor.app.game.dao.GameRuleMapper;
-import com.neighbor.app.game.entity.Game;
 import com.neighbor.app.game.entity.GameRule;
 import com.neighbor.app.game.service.GameService;
-import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 @RequestMapping(value = "/game")
 @SessionAttributes("user")

@@ -7,7 +7,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-
+	<script src="/neighbor/js/jquery.form.js" type="text/javascript" charset="utf-8"></script>
 </head>
 
 <body>
@@ -16,10 +16,6 @@
 /*<![CDATA[*/
 	//var modifyInfo = /*[[${modifyInfo}]]*/;
 /*]]>*/
- 
-$(function(){
-	initTimePicker();
-})
 </script>
 
 	<div class="modal-header">
@@ -34,6 +30,7 @@ $(function(){
 		<form id="modifyDataFrom" class="form-horizontal" role="form">
 			<input id="modifyId"  type="hidden" th:attr="value=${modifyInfo==null}?'':${modifyInfo.id}">
 			<input id="id" name="id" type="hidden" th:attr="value=${modifyInfo==null}?'':${modifyInfo.id}">
+			<input id="imgUrl"   type="hidden" th:attr="value=${modifyInfo==null}?'':${modifyInfo.url}">
 			<input id="modifyModel" name="modifyModel" type="hidden" th:attr="value=${modifyModel==null}?'':${modifyModel}">
 			<div class="form-group">
 				<label class="col-sm-2 control-label">游戏名称</label>
@@ -51,6 +48,19 @@ $(function(){
 								th:selected="${map.key} eq ${modifyInfo.gameType}"
 								th:value="${map.key}" th:text="${map.value}"></option>
 					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">游戏规则图片</label>
+				<div class="col-sm-10 form-inline" >
+					<input type="hidden" value="上传图片成功" name="successUploadFile">
+					<input type="text" class="form-control" placeholder="选择图片" name="picFile" id="pic_val_1" readonly style="width:50% !important;"/>
+					&nbsp;&nbsp;&nbsp;
+					<input type="button" id="btn_upload_1" class="btn" value="上传图片"/>
+					&nbsp;&nbsp;&nbsp;
+					<span id="span1">
+
+					</span>
 				</div>
 			</div>
 			<!-- 
@@ -79,6 +89,14 @@ $(function(){
 				</div>
 			</div>
 			-->
+		</form>
+		<form id="uploadImgForm1" enctype="multipart/form-data" method="post">
+			<input type="hidden" id="position" name="position">
+			<input type="hidden" id="suffix1" name="suffix">
+			<input type="file"
+				   onchange="checkFile(this);" style="display:none;"
+				   id="pic_file1" name="file"
+				   accept="jpg,gif,png,jpeg"/>
 		</form>
 	</div>
 	<div class="modal-footer">
@@ -114,9 +132,153 @@ $(function(){
 	                        message: '游戏名不能为空'
 	                    }
 	                }
-	            }
+	            },
+                successUploadFile: {
+                    message: '图片信息异常!',
+                    validators: {
+                        notEmpty: {
+                            message: '图片信息异常！'
+                        }
+                    }
+                },
+                picFile: {
+                    message: '请上传图片！',
+                    validators: {
+                        notEmpty: {
+                            message: '请上传图片！'
+                        },
+                        identical: {
+                            field:"successUploadFile",
+                            message: '请上传图片！'
+                        }
+                    }
+                }
 	        }
 	    });
+
+        //选择图片
+        $("input#pic_val_1").click(function () {
+            $("input#pic_file1").click();
+        });
+
+
+        //上传图片
+        $("input#btn_upload_1").click(function () {
+            commonUpload();
+        });
+
+        var imgUrl = $("#imgUrl").val();
+        if(imgUrl!=undefined&&imgUrl.length>0){
+            initImg(imgUrl);
+		}
 	});
+
+    function commonUpload() {
+        var picUrl=$("#pic_val_1").val();
+
+        if (picUrl.length == 0) {
+            alert('请选择图片！');
+            return;
+        }
+
+        var picSuffix = picUrl.substring(picUrl.lastIndexOf('.')).toLowerCase();
+
+        $("#position").val($("#positionSelect").val());
+        $("#suffix1").val(picSuffix);
+
+        saveImg();
+    }
+
+    function saveImg() {
+
+        var formValue="uploadImgForm1";
+
+        var options = {
+            url: "/uploader/saveGameRuleImg.ser",
+            type: "POST",
+            dataType: "json",
+            success: function (result) {
+
+                var str = '<span>';
+                str += '<img class="screenshot" style="width: 30px;height: 40px;" src="/file' + result.body.url + '"  />';
+                str += '&nbsp;&nbsp;<span style="cursor: pointer" onclick="deleteImg(this)">删除</span>&nbsp;&nbsp;';
+                str += '<input name="url" type="hidden" value="' + result.body.url + '">';
+                str += '</span>';
+                $("#span1").append(str);
+
+                $("#btn_upload_1").hide();
+
+                $("#pic_val_1").val("上传图片成功");
+                $("#pic_val_1").hide();
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("保存时出现异常！");
+            }
+        };
+        $("#"+formValue).ajaxSubmit(options);
+    }
+
+    function deleteImg(obj) {
+        var parentSpan=$(obj).parent();
+        var input=$(parentSpan).children("input");
+        // alert("input:"+$(input).val()+"---")
+        $(parentSpan).remove();
+
+        $.ajax({
+            url: "/gameList/deleteImg.ser",
+            type: 'POST',
+            data: {imgUrl:$(input).val()},
+            dataType: 'json',
+            async:true,
+            success: function(response) {
+                $("#pic_val_1").val("");
+                $("#pic_val_1").show();
+                $("#btn_upload_1").show();
+
+            },
+            error:function(rep,errMsg,exception){
+
+            }
+        });
+
+    }
+
+    function checkFile(obj) {
+        var picUrl = $(obj).val();
+
+        $("#pic_val_1").val(picUrl);
+
+        var extns = [".jpg", ".gif", ".png", ".jpeg"];
+        var picExt = picUrl.substring(picUrl.lastIndexOf('.')).toLowerCase();
+        var isPic = false;
+        for (var i = 0; i < extns.length; ++i) {
+            if (extns[i] == picExt) {
+                isPic = true;
+                break;
+            }
+        }
+        if (!isPic && $("#pic_val_1").val().length > 0) {
+            $("#pic_val_1").val("");
+            alert("请选择图片格式的文件");
+            return;
+        }
+    }
+
+    function initImg(imgUrl) {
+
+        var str = '<span>';
+        str += '<img class="screenshot" style="width: 30px;height: 40px;" src="/file' + imgUrl + '"  />';
+        str += '&nbsp;&nbsp;<span style="cursor: pointer" onclick="deleteImg(this)">删除</span>&nbsp;&nbsp;';
+        str += '<input name="url" type="hidden" value="' + imgUrl + '">';
+        str += '</span>';
+        $("#span1").append(str);
+
+        $("#btn_upload_1").hide();
+
+        $("#pic_val_1").val("上传图片成功");
+        $("#pic_val_1").hide();
+
+    }
 </script>
 </html>

@@ -1,25 +1,22 @@
 package com.neighbor.app.game.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.game.entity.Game;
-import com.neighbor.app.game.entity.GameRule;
 import com.neighbor.app.game.service.GameService;
-import com.neighbor.app.group.entity.Group;
-import com.neighbor.app.recharge.constants.RechargeStatusDesc;
-import com.neighbor.app.recharge.entity.Recharge;
 import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +29,8 @@ public class GameListController {
     private static final Logger logger = LoggerFactory.getLogger(GameListController.class);
     @Autowired
     private GameService gameService;
+    @Autowired
+    private Environment env;
 
     @RequestMapping(value = "/primaryModalView.ser")
     public String primaryModalView(Long id, String modifyModel, Model model) throws Exception {
@@ -110,5 +109,25 @@ public class GameListController {
         game.setCreateTime(new Date());
         gameService.insertSelective(game);
         return new ResponseResult();
+    }
+
+    @RequestMapping(value = "/deleteImg.ser", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult deleteImg(String imgUrl, Long id) {
+        logger.info("deleteImg begin ......");
+
+        ResponseResult result = new ResponseResult();
+        try {
+
+            String filepath = env.getProperty(EnvConstants.UPLOADER_FILEPATH) + imgUrl;
+            File file = new File(filepath);
+            file.delete();
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            result.setErrorCode(ErrorCodeDesc.failed.getValue());
+        }
+
+        return result;
     }
 }
