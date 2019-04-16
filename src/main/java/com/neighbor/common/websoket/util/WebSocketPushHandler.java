@@ -28,13 +28,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class WebSocketPushHandler implements WebSocketHandler {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	// private static final Logger logger =
-	// LoggerFactory.getLogger(WebSocketPushHandler.class);
 	private static final Map<Long, WebSocketSession> userSessions = new ConcurrentHashMap<Long, WebSocketSession>();
-	private static final Map<Long, Map<Long, WebSocketSession>> groupSessions = new ConcurrentHashMap<Long, Map<Long, WebSocketSession>>();
-
+	//private static final Map<Long, Map<Long, WebSocketSession>> groupSessions = new ConcurrentHashMap<Long, Map<Long, WebSocketSession>>();
+	
 	@Autowired
 	private SocketMessageService socketMessageService;
+
+	public Map<Long, WebSocketSession> getUsersessions() {
+		return userSessions;
+	}
 
 	// 用户进入系统监听
 	@Override
@@ -124,15 +126,15 @@ public class WebSocketPushHandler implements WebSocketHandler {
 					handler.successCallBack(msgInfo, chatType, msgType);
 					// sendResponseMessage(msgInfo.getSendUserId(),result);
 				} else if (WebSocketChatType.multiple == chatType && isResponse) {
-					logger.info("收到群发消息:" + msgInfo.getContent());
-					// 消息消息发回,表示消息已接收
-					msgInfo.setStatus(MessageStatus.pushed_response + "");
-					// 消息推送
-					List<Long> pushedUsers = sendMessagesToGroup(msgInfo.getSendUserId(), msgInfo.getTargetGroupId(),
-							handleResult);
-					// 成功推送的用户
-					msgInfo.setPushedUsers(pushedUsers);
-					handler.successCallBack(msgInfo, chatType, msgType);
+//					logger.info("收到群发消息:" + msgInfo.getContent());
+//					// 消息消息发回,表示消息已接收
+//					msgInfo.setStatus(MessageStatus.pushed_response + "");
+//					// 消息推送
+//					List<Long> pushedUsers = sendMessagesToGroup(msgInfo.getSendUserId(), msgInfo.getTargetGroupId(),
+//							handleResult);
+//					// 成功推送的用户
+//					msgInfo.setPushedUsers(pushedUsers);
+//					handler.successCallBack(msgInfo, chatType, msgType);
 
 				} else {
 					msgInfo.setStatus(MessageStatus.response_failed + "");
@@ -184,32 +186,32 @@ public class WebSocketPushHandler implements WebSocketHandler {
 		return false;
 	}
 
-	/**
-	 * 给指定群发消息
-	 *
-	 * @return
-	 */
-	public List<Long> sendMessagesToGroup(Long userId, Long groupId, ResponseResult result) {
-		logger.info("给指定群发消息:" + result);
-		TextMessage message = new TextMessage(JSON.toJSONString(result));
-		Map<Long, WebSocketSession> groupSession = groupSessions.get(groupId);
-		List<Long> sendUserList = new ArrayList<Long>();
-		for (Long key : groupSession.keySet()) {
-			WebSocketSession userSession = groupSession.get(key);
-			UserInfo user = (UserInfo) userSession.getAttributes().get("user");
-			if (user.getId().equals(userId)) {
-				sendUserList.add(user.getId());
-				continue;
-			}
-
-			boolean isSend = sendMessage(userSession, message);
-			if (isSend) {
-				sendUserList.add(user.getId());
-			}
-		}
-
-		return sendUserList;
-	}
+//	/**
+//	 * 给指定群发消息
+//	 *
+//	 * @return
+//	 */
+//	public List<Long> sendMessagesToGroup(Long userId, Long groupId, ResponseResult result) {
+//		logger.info("给指定群发消息:" + result);
+//		TextMessage message = new TextMessage(JSON.toJSONString(result));
+//		Map<Long, WebSocketSession> groupSession = groupSessions.get(groupId);
+//		List<Long> sendUserList = new ArrayList<Long>();
+//		for (Long key : groupSession.keySet()) {
+//			WebSocketSession userSession = groupSession.get(key);
+//			UserInfo user = (UserInfo) userSession.getAttributes().get("user");
+//			if (user.getId().equals(userId)) {
+//				sendUserList.add(user.getId());
+//				continue;
+//			}
+//
+//			boolean isSend = sendMessage(userSession, message);
+//			if (isSend) {
+//				sendUserList.add(user.getId());
+//			}
+//		}
+//
+//		return sendUserList;
+//	}
 
 	/**
 	 * 系统给所有的用户发送消息

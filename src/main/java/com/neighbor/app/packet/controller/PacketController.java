@@ -18,12 +18,12 @@ import com.neighbor.app.packet.constants.PacketContainer;
 import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.packet.entity.PacketDetail;
 import com.neighbor.app.packet.service.PacketService;
+import com.neighbor.app.robot.entity.GrapPacketData;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
-import com.neighbor.schedule.util.GrapPacketData;
 
 @Controller
 @RequestMapping(value = "/packet")

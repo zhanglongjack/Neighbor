@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors; 
+import java.util.concurrent.Executors;
 
+import com.neighbor.app.common.util.RandomUtil;
 import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.robot.entity.RobotConfig;
-import com.neighbor.app.robot.util.RandomUtil;
 
 public class RedPackageUtil {
 	public static double getRandomMoney(Packet packet,boolean isHit) {

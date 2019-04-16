@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.neighbor.app.robot.entity.RobotConfig;
 import com.neighbor.app.robot.service.RobotConfigService;
+import com.neighbor.app.robot.util.RobotAutoSendPacket;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
 import com.neighbor.common.util.PageTools;
@@ -32,6 +33,8 @@ public class RobotController {
 	private RobotConfigService robotConfigService;
 	@Autowired
 	private UserService userService; 
+	@Autowired
+	private RobotAutoSendPacket robotAutoSendPacket; 
     
 	@RequestMapping(value = "/primaryModalView.ser")
 	public String primaryModalView(Integer id, String modifyModel, Model model) throws Exception {
@@ -108,6 +111,7 @@ public class RobotController {
 	public ResponseResult robotStart(@RequestParam(value="ids[]")Long ids[]){
 		logger.info("robotStart request:{}",ids+"");
 		robotConfigService.batchUpdateRobotStatus(ids,1);
+		robotAutoSendPacket.addGrapRobotBy(ids);
 		return new ResponseResult();
 	}
 	@RequestMapping(value="/robotStop.ser")

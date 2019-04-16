@@ -1,7 +1,6 @@
-package com.neighbor.schedule.util;
+package com.neighbor.app.robot.util;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +9,11 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import com.neighbor.app.robot.entity.GrapPacketData;
 import com.neighbor.app.robot.service.RobotConfigService;
 
 @Component 
-public class Consumer implements ApplicationRunner,Runnable {
+public class GrapPacketConsumer implements ApplicationRunner,Runnable {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private BlockingQueue<GrapPacketData> robotQueue;
@@ -33,7 +33,7 @@ public class Consumer implements ApplicationRunner,Runnable {
 			while (isRunning) {
 				try {
 					logger.info("开始取队列数据");
-					GrapPacketData data = robotQueue.poll(60, TimeUnit.SECONDS);
+					GrapPacketData data = robotQueue.take();
 					logger.info("检查是否获得队列数据:{}",data);
 					if (null != data) {
 						robotConfigService.robotGrapPacket(data);
