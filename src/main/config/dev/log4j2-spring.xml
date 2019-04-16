@@ -8,7 +8,7 @@
   <Properties>
     <!-- 格式化输出：%date表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度 %msg：日志消息，%n是换行符-->
     <!-- %logger{3} 表示 Logger 包名名字最长3个,从类开始如: websoket.util.WebSocketPushHandler -->
-    <property name="LOG_PATTERN" value="[%-5level] %date{HH:mm:ss.SSS} [%-t] %logger{2} - [code line:%L] - %msg%n" />
+    <property name="LOG_PATTERN" value="[%-5level] %date{yyyyMMdd HH:mm:ss.SSS} [%-t] %logger{2} - [code line:%L] - %msg%n" />
     <!-- 定义日志存储的路径，不要配置相对路径 -->
     <property name="FILE_PATH" value="D://log" />
     <property name="FILE_NAME" value="neighbor" />
@@ -35,7 +35,7 @@
       <PatternLayout pattern="${LOG_PATTERN}"/>
       <Policies>
         <!--interval属性用来指定多久滚动一次，默认是1 hour-->
-        <TimeBasedTriggeringPolicy interval="3"/>
+        <TimeBasedTriggeringPolicy interval="1"/>
         <SizeBasedTriggeringPolicy size="50MB"/>
       </Policies>
       <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖-->
@@ -49,7 +49,7 @@
       <PatternLayout pattern="${LOG_PATTERN}"/>
       <Policies>
         <!--interval属性用来指定多久滚动一次，默认是1 hour-->
-        <TimeBasedTriggeringPolicy interval="12"/>
+        <TimeBasedTriggeringPolicy interval="1"/>
         <SizeBasedTriggeringPolicy size="50MB"/>
       </Policies>
       <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖-->
@@ -63,11 +63,11 @@
       <PatternLayout pattern="${LOG_PATTERN}"/>
       <Policies>
         <!--interval属性用来指定多久滚动一次，默认是1 hour-->
-        <TimeBasedTriggeringPolicy interval="12"/>
+        <TimeBasedTriggeringPolicy interval="1"/>
         <SizeBasedTriggeringPolicy size="50MB"/>
       </Policies>
       <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖-->
-      <DefaultRolloverStrategy max="20"/>
+      <DefaultRolloverStrategy max="24"/>
     </RollingFile>
 
   </appenders>

@@ -38,7 +38,7 @@ public class RobotAutoSendPacket {
 	private BlockingQueue<GrapPacketData> taskQueue;
 
 	private static int limitAmount = 1000;
-	private static int sleepChance = 300;
+//	private static int sleepChance = 300;
 	private static int threadPoolSize = 300;
 	private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(threadPoolSize);
 	private static Map<String,Long> runRobot = new HashMap<>();
@@ -107,23 +107,28 @@ public class RobotAutoSendPacket {
 		GroupMember member = paramMember;
 		boolean isRunning = checkMemberSendPacket(member);
 		while (isRunning) {
-			sendPacket(member);
-			int chance = (int) (100 - member.getRobot().getSendPacketChance()*100);
-			chance = RandomUtil.getRandomBy((int)(sleepChance*(chance/100)));
-			int seconds = (chance>10?chance:10) * 1000;
 			try {
-				logger.info("机器人[{}]休眠[{}]毫秒后再发包",member.getUserId(),seconds);
-				Thread.sleep(seconds);
-			} catch (Exception e) {
-			}
+				sendPacket(member);
+				int chance = (int) (100 - member.getRobot().getSendPacketChance()*100);
+				chance = RandomUtil.getRandomBy((int)(chance*10));
+				int seconds = (chance>10?chance:10) * 1000;
+				try {
+					logger.info("机器人[{}]休眠[{}]毫秒后再发包",member.getUserId(),seconds);
+					Thread.sleep(seconds);
+				} catch (Exception e) {
+				}
 
-			List<GroupMember> checkMemberList = groupService.selectRobotGroupMemberBy(member);
-			if(checkMemberList.size()>0){
-				isRunning = checkMemberSendPacket(checkMemberList.get(0));
-			}else{
-				isRunning = false;
+				List<GroupMember> checkMemberList = groupService.selectRobotGroupMemberBy(member);
+				if(checkMemberList.size()>0){
+					member = checkMemberList.get(0);
+					isRunning = checkMemberSendPacket(member);
+				}else{
+					isRunning = false;
+				}
+				logger.debug("机器人[{}]是否进行下一轮发送红包工作:{}",member.getUserId(),isRunning);
+			} catch (Exception e) { 
+				logger.error("机器人发红包异常,机器用户编号:"+member.getUserId(),e);
 			}
-			logger.debug("机器人[{}]是否进行下一轮发送红包工作:{}",member.getUserId(),isRunning);
 		}
 		
 		String key = getRunRobotKey(member);
@@ -155,12 +160,12 @@ public class RobotAutoSendPacket {
 
 		try {
 			Packet resultPacket = packetService.sendPacket(packet, member.getWallet());
+			groupMsgPushHandler.pushMessageToGroup(packet);
 			addGrapPacketTask(member.getGroupId(), member.getGroup().getGameId(), resultPacket);
 		} catch (Exception e) {
 			logger.error("机器人发红包出现异常,机器人编号:{},异常信息:{}", member.getRobot().getRobotId(), e);
 		}
-
-		groupMsgPushHandler.pushMessageToGroup(packet);
+		
 		logger.info("红包信息配置推送完成");
 	}
 
