@@ -38,11 +38,11 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	@Override
 	public int insertSelective(SocketMessage record) {
 		int r = socketMessageMapper.insertSelective(record);
-		try {
+		/*try {
 			chatListService.modifyLastMessage(record);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 		return r;
 	}
 

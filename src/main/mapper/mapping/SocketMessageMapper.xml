@@ -73,8 +73,9 @@
             resultMap="BaseResultMap">
      select b.* from (
 		select c.* from chat_message c 
-		where c.`status`= 'complete' 
-		and c.master_msg_type='1'
+		where c.`status`= 'complete'
+        and c.chat_type = 'single'
+        and c.master_msg_type='1'
 		and c.send_user_id = #{friendId,jdbcType=BIGINT} 
 		and c.target_user_id = #{userId,jdbcType=BIGINT}
         and c.target_user_delete_Flag = '0'
@@ -84,6 +85,7 @@
 		where  a.send_user_id = #{userId,jdbcType=BIGINT} 
 		and a.master_msg_type='1'
 		and a.target_user_id = #{friendId,jdbcType=BIGINT}
+        and a.chat_type = 'single'
         and a.send_user_delete_flag = '0'
         <if test="msgId != null ">  <![CDATA[ and msg_id < #{msgId,jdbcType=BIGINT} ]]> </if>
       ) b
