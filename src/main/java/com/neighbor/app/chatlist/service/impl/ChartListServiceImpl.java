@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -37,6 +38,34 @@ public class ChartListServiceImpl implements ChatListService {
         List<ChatList> pageList = chatListMapper.selectPageByObjectForList(chatList);
         PageTools pageTools = chatList.getPageTools();
         pageTools.setTotal(total);
+        if(pageList!=null&&pageList.size()>0){
+            for(ChatList cl : pageList){
+                HashMap hashMap = new HashMap(2);
+                hashMap.put("userId",cl.getUserId());
+                hashMap.put("friendId",cl.getFriendId());
+                hashMap.put("rowIndex",0);
+                hashMap.put("pageSize",1);
+                List<SocketMessage> socketMessageList = socketMessageService.selectPageByObjectForList(hashMap);
+                if(socketMessageList!=null&&socketMessageList.size()>0){
+                    SocketMessage socketMessage = socketMessageList.get(0);
+                    cl.setLastChatMessageId(socketMessage.getMsgId());
+                    cl.setLastChatMessageType(socketMessage.getMsgType());
+                    cl.setLastChatMessageContent(socketMessage.getContent());
+                    cl.setLastChatDateTime(DateUtils.formatDate(socketMessage.getDate()+" "+socketMessage.getTime(),DateFormateType.LANG_FORMAT));
+                    cl.setLastChatDate(socketMessage.getDate());
+                    cl.setLastChatTime(socketMessage.getTime());
+                }else{
+                    cl.setLastChatMessageId(null);
+                    cl.setLastChatMessageType(null);
+                    cl.setLastChatMessageContent(null);
+                    cl.setLastChatDateTime(null);
+                    cl.setLastChatDate(null);
+                    cl.setLastChatTime(null);
+                }
+            }
+        }
+
+
         result.addBody("resultList", pageList);
         result.addBody("pageTools", pageTools);
         return result;
