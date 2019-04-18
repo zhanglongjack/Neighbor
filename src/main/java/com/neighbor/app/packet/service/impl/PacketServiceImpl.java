@@ -2,14 +2,13 @@ package com.neighbor.app.packet.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map; 
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,20 +99,11 @@ public class PacketServiceImpl implements PacketService {
 		record.setSendDate(DateUtils.getStringDateShort());
 		record.setSendTime(DateUtils.getTimeShort());
 		record.setStatus(PacketStatus.uncollected.toString());
-		record.setCollectedNum(0);
-//		String str = "";
-//		Packet packetGenerate = new Packet();
-//		packetGenerate.setAmount(record.getAmount());
-//		packetGenerate.setPacketNum(record.getPacketNum());
-//		for(int i=record.getPacketNum();i>0;i--){
-//			str+=","+getRandomMoney(packetGenerate);
-//		}
-//		record.setRandomAmount(RedPackageUtil.generate(record.getAmount().doubleValue(), record.getPacketNum()));
-		
+		record.setCollectedNum(0); 
 		UserWallet userWallet = new UserWallet();
 		userWallet.setuId(record.getUserId());
 		userWallet.setAvailableAmount(record.getAmount().negate());
-//		userWallet.setFreezeAmount(record.getAmount().negate());
+		
 		logger.info("减少钱包可用");
 		userWalletService.updateWalletAmount(userWallet);
 		UserWallet lastWallet = userWalletService.selectByPrimaryUserId(userWallet.getuId());
@@ -165,7 +155,7 @@ public class PacketServiceImpl implements PacketService {
 	}
 	 
 	@Override
-	@Transactional(readOnly = false, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+	@Transactional(readOnly = false, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public ResponseResult grabPacekt(Packet packet,UserInfo user,Long gameId) {
 		logger.info("开始抢红包:"+packet);
 		RobotConfig robot = null;
@@ -638,14 +628,14 @@ public class PacketServiceImpl implements PacketService {
 	@Autowired
 	private WebSocketPushHandler webSocketPushHandler; 
 	@Override
-	@Transactional(readOnly = false, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+	@Transactional(readOnly = false, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public void expirePacketHandle(Long packetId) {
 		Packet lockPacket = lockPacketByPrimaryKey(packetId);
 		UserWallet lastWallet = userWalletService.selectByPrimaryUserId(lockPacket.getUserId());
 		
 		if(lockPacket.getCollectedNum()==0){
 			lockPacket.setStatus(PacketStatus.all_back.toString());
-		}else if(lockPacket.getCollectedNum()<7){
+		}else if(lockPacket.getCollectedNum()<lockPacket.getPacketNum()){
 			lockPacket.setStatus(PacketStatus.part_back.toString());
 		}else{
 			logger.info("红包已领完:{}",lockPacket);
@@ -682,7 +672,6 @@ public class PacketServiceImpl implements PacketService {
 		webSocketPushHandler.walletRefreshNotice(null, lockPacket.getUserId(), "系统通知");
 		
 		logger.info("过期红包已处理退回结束,退回红包信息:{}",lockPacket);
-	
 	}
 	
 	

@@ -36,3 +36,17 @@ INSERT INTO `neighbordb`.`users_info` (id, `user_photo`, `nick_name`, `user_acco
 VALUES (1, 'img/head-user2.png', 'trewww', '1', 'e10adc3949ba59abbe56e057f20f883e', '2', '15999585910', '2019-01-13 19:46:19', '2019-01-13 19:46:19', '2', '7d4af105');
 
 alter table game add url varchar(500) DEFAULT null COMMENT '规则图片地址';
+
+
+
+INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`remarke`) VALUES (6,'红包游戏','1',1,NULL,'gameType','游戏类型');
+INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`remarke`) VALUES (7,'猜猜乐','2',1,NULL,'gameType','游戏类型');
+INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`remarke`) VALUES (8,'休闲游戏','3',1,NULL,'gameType','游戏类型');
+INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`remarke`) VALUES (9,'福利群','4',1,NULL,'gameType','游戏类型');
+INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`remarke`) VALUES (10,'返佣规则','1',1,NULL,'ruleType','游戏规则');
+INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`remarke`) VALUES (11,'中奖规则','2',1,NULL,'ruleType','游戏规则');
+INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`remarke`) VALUES (12,'中雷规则','3',1,NULL,'ruleType','游戏规则');
+INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`remarke`) VALUES (13,'单个值','1',1,NULL,'ruleSubType','游戏子规则');
+INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`remarke`) VALUES (14,'顺子','2',1,NULL,'ruleSubType','游戏子规则');
+INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`remarke`) VALUES (15,'同数','3',1,NULL,'ruleSubType','游戏子规则');
+
