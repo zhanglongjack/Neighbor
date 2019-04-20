@@ -3,8 +3,10 @@ package com.neighbor.app.game.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.neighbor.app.chatlist.entity.ChatList;
 import com.neighbor.app.game.dao.GameMapper;
 import com.neighbor.app.game.entity.Game;
+import com.neighbor.app.users.entity.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,5 +148,17 @@ public class GameServiceImpl implements GameService {
     @Override
     public int insertSelective(Game game) {
         return gameMapper.insertSelective(game);
+    }
+
+    @Override
+    public ResponseResult listRecord(UserInfo user, Game game) {
+        ResponseResult result = new ResponseResult();
+        Long total = gameMapper.selectPageTotalCount(game);
+        List<Game> pageList = gameMapper.selectPageByObjectForList(game);
+        PageTools pageTools = game.getPageTools();
+        pageTools.setTotal(total);
+        result.addBody("resultList", pageList);
+        result.addBody("pageTools", pageTools);
+        return result;
     }
 }

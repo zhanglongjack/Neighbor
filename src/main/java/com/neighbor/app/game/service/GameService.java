@@ -3,6 +3,7 @@ package com.neighbor.app.game.service;
 import com.neighbor.app.game.constants.RuleTypeDesc;
 import com.neighbor.app.game.entity.Game;
 import com.neighbor.app.game.entity.GameRule;
+import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.ResponseResult;
 
 import java.util.List;
@@ -38,4 +39,6 @@ public interface GameService {
     int updateByGame(Game game);
     Game selectByPrimaryKey(Long id);
     int insertSelective(Game game);
+
+    ResponseResult listRecord(UserInfo user, Game game);
 }
