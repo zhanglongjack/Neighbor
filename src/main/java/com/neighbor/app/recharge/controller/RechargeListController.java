@@ -5,12 +5,9 @@ import com.neighbor.app.recharge.constants.RechargeStatusDesc;
 import com.neighbor.app.recharge.entity.Recharge;
 import com.neighbor.app.recharge.service.RechargeService;
 import com.neighbor.app.users.entity.UserInfo;
-import com.neighbor.app.withdraw.constants.WithdrawStatusDesc;
-import com.neighbor.app.withdraw.entity.Withdraw;
-import com.neighbor.app.withdraw.service.WithdrawService;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
-import com.neighbor.common.websoket.util.WebSocketPushHandler;
+import com.neighbor.common.websoket.service.SocketMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +31,8 @@ public class RechargeListController {
     private static final Logger logger = LoggerFactory.getLogger(RechargeListController.class);
     @Autowired
     private RechargeService rechargeService;
-    @Autowired
-    private WebSocketPushHandler webSocketPushHandler;
+	@Autowired
+	private SocketMessageService socketMessageService; 
 
     @RequestMapping(value = "/primaryModalView.ser")
     public String primaryModalView(Recharge recharge, String modifyModel, Model model) throws Exception {
@@ -98,7 +95,7 @@ public class RechargeListController {
             if(ErrorCodeDesc.success.getValue()==result.getErrorCode()){
                 if(RechargeStatusDesc.success.toString().equals(recharge.getStates())){
                     String nickName = StringUtils.isEmpty(user.getNickName())?user.getId()+"":user.getNickName();
-                    webSocketPushHandler.walletRefreshNotice(user.getId(),recharge.getuId(),nickName);
+                    socketMessageService.walletRefreshNotice(user.getId(),recharge.getuId(),nickName);
                 }
                 map.put("success", true);
                 num=1;

@@ -44,6 +44,8 @@ public interface SocketMessageMapper {
 	void deleteByLessMsgId(Long msgId);
 
 	void updateWalletRefreshMsg(Long targetUserId);
+
+	Long selectWalletRefreshCountBySelective(Long targetUserId);
 	
 	
 }

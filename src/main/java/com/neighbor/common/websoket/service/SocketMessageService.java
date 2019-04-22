@@ -54,6 +54,10 @@ public interface SocketMessageService {
 
 	void updateWalletRefreshMsg(Long targetUserId);
 
+	void walletRefreshNotice(Long sendUserId, Long groupMasterUId, String nickName);
+
+	void groupRefreshNotice(Long sendUserId, Long targetUserId, String content);
+
 	
 
 

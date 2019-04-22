@@ -3,6 +3,7 @@ package com.neighbor.app.packet.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,8 @@ import com.neighbor.app.balance.entity.BalanceDetail;
 import com.neighbor.app.balance.po.TransactionSubTypeDesc;
 import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.balance.service.BalanceDetailService;
-import com.neighbor.app.commission.entity.UserCommission;
-import com.neighbor.app.commission.service.CommissionService;
+import com.neighbor.app.commission.entity.CommissionHandleTask;
+import com.neighbor.app.commission.service.CommissionHandleTaskService;
 import com.neighbor.app.game.constants.RuleTypeDesc;
 import com.neighbor.app.game.entity.GameRule;
 import com.neighbor.app.game.service.GameService;
@@ -34,16 +35,14 @@ import com.neighbor.app.packet.service.PacketService;
 import com.neighbor.app.robot.entity.RobotConfig;
 import com.neighbor.app.robot.service.RobotConfigService;
 import com.neighbor.app.users.entity.UserInfo;
-import com.neighbor.app.users.service.UserService;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
-import com.neighbor.common.constants.CommonConstants;
 import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.util.BigDecimalUtil;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.RedPackageUtil;
 import com.neighbor.common.util.ResponseResult;
-import com.neighbor.common.websoket.util.WebSocketPushHandler;
+import com.neighbor.common.websoket.service.SocketMessageService;
 
 @Service
 public class PacketServiceImpl implements PacketService {
@@ -61,18 +60,18 @@ public class PacketServiceImpl implements PacketService {
 	@Autowired
 	private GroupService groupService;
 	@Autowired
-	private GameService gameService;
+	private GameService gameService; 
 	@Autowired
-	private UserService userService;
-	@Autowired
-	private RobotConfigService robotConfigService;
-	@Autowired
-	private CommissionService commissionService;
-	@Autowired
-	private CommonConstants commonConstants;
+	private RobotConfigService robotConfigService; 
     @Autowired
     private Environment env;
-    
+	@Autowired
+	private BlockingQueue<CommissionHandleTask> commisionHandleTaskQueue;
+	@Autowired
+	private CommissionHandleTaskService commissionHandleTaskService;
+	@Autowired
+	private SocketMessageService socketMessageService; 
+	
 	@Override
 	public int insertSelective(Packet record) {
 		return packetMapper.insertSelective(record);
@@ -172,7 +171,12 @@ public class PacketServiceImpl implements PacketService {
 		Packet cachePacket = packetContainer.get(packet.getId());
 		cachePacket = cachePacket!=null?cachePacket:packetMapper.selectByPrimaryKey(packet.getId());
 		
+		Double limitAmount = Double.parseDouble(env.getProperty(EnvConstants.ROBOT_GRAP_LIMIT_AMOUNT));
 		UserWallet lastWallet = userWalletService.selectByPrimaryUserId(user.getId());
+		if(user.getRobotSno()!=null && lastWallet.getAvailableAmount().doubleValue()<limitAmount){
+			logger.info("机器人余额低于下线,本次不抢红包,机器人钱包:{}",lastWallet);
+			return new ResponseResult();
+		}
 		if(lastWallet.getAvailableAmount().compareTo(cachePacket.getAmount())<0 && "0".equals(member.getMemberType())){
 			
 			ResponseResult resultResp = new ResponseResult();
@@ -181,7 +185,6 @@ public class PacketServiceImpl implements PacketService {
 			resultResp.setErrorMessage("余额不足");
 			
 			return resultResp;
-			
 		}
 		
 		ResponseResult resultResp = checLeftoverPacket(cachePacket.getStatus(),cachePacket,user.getId());
@@ -189,209 +192,87 @@ public class PacketServiceImpl implements PacketService {
 			return resultResp;
 		}
 		logger.info("开始锁表,红包id:{}",cachePacket.getId());
-		Packet lockPacket = lockPacketByPrimaryKey(cachePacket.getId());
-		computePacketRemain(lockPacket);
-		logger.info("红包编号:{},上锁后再检查实际是否还有剩余红包数:[{}]",lockPacket.getId(),lockPacket.remainSize);
-		resultResp = checLeftoverPacket(lockPacket.getStatus(),lockPacket,user.getId());
-		if(resultResp.getErrorCode()!=0){
-			return resultResp;
-		}
-		
-		logger.info("还有剩余红包数量[{}],开始处理",lockPacket.remainSize);
-		PacketDetail detail = new PacketDetail();
-		detail.setHeadUrl(user.getUserPhoto());
-		detail.setNickName(user.getNickName());
-		detail.setRemainMoney(new BigDecimal(lockPacket.remainMoney+""));
-		detail.setRemainSize((long)lockPacket.remainSize);
-
-//		String randomAmounts[] = lockPacket.getRandomAmountList();
-//		detail.setGotAmount(new BigDecimal(randomAmounts[lockPacket.getCollectedNum()]));
-		double resultNum = 0;
-		if(robot!=null){
-			resultNum = RedPackageUtil.getRandomMoney(lockPacket, robot.isHit());
-			if(resultNum==0){
-				logger.info("机器人抢红包中雷概率未中");
-				return  new ResponseResult();
+		Long packetId = packet.getId().longValue();
+		synchronized (packetId) {
+			Packet lockPacket = lockPacketByPrimaryKey(cachePacket.getId());
+			computePacketRemain(lockPacket);
+			logger.info("红包编号:{},上锁后再检查实际是否还有剩余红包数:[{}]",lockPacket.getId(),lockPacket.remainSize);
+			resultResp = checLeftoverPacket(lockPacket.getStatus(),lockPacket,user.getId());
+			if(resultResp.getErrorCode()!=0){
+				return resultResp;
 			}
-		}else{
-			resultNum = RedPackageUtil.getRandomMoney(lockPacket, true);
+			
+			logger.info("还有剩余红包数量[{}],开始处理",lockPacket.remainSize);
+			PacketDetail detail = new PacketDetail();
+			detail.setHeadUrl(user.getUserPhoto());
+			detail.setNickName(user.getNickName());
+			detail.setRemainMoney(new BigDecimal(lockPacket.remainMoney+""));
+			detail.setRemainSize((long)lockPacket.remainSize);
+	
+	//		String randomAmounts[] = lockPacket.getRandomAmountList();
+	//		detail.setGotAmount(new BigDecimal(randomAmounts[lockPacket.getCollectedNum()]));
+			double resultNum = 0;
+			if(robot!=null){
+				resultNum = RedPackageUtil.getRandomMoney(lockPacket, robot.isHit());
+				if(resultNum==0){
+					logger.info("机器人抢红包中雷概率未中");
+					return  new ResponseResult();
+				}
+			}else{
+				resultNum = RedPackageUtil.getRandomMoney(lockPacket, true);
+			}
+			
+			detail.setGotAmount(BigDecimalUtil.rounding(resultNum));
+			String num = detail.getGotAmount().toPlainString();
+			boolean isGotBomb = Integer.parseInt(num.substring(num.length()-1))==lockPacket.getHitNum();
+			
+			lockPacket.setCollectedNum(lockPacket.getCollectedNum() + 1);
+			lockPacket.setStatus(lockPacket.getCollectedNum() == lockPacket.getPacketNum()?PacketStatus.collected.toString():PacketStatus.uncollected.toString());
+			
+			detail.setdPacketId(lockPacket.getId());
+			detail.setGotUserId(user.getId());
+			detail.setFree("1".equals(member.getMemberType()));
+			detail.setGotBomb(isGotBomb);
+			logger.info("是否需要分佣检查:"+detail);
+			logger.info("用户检查:"+user);
+			logger.info("群成员检查:"+member);
+			if( lockPacket.getUserId() != user.getId() && detail.isFree()){
+				logger.info("开始添加分佣任务");
+				CommissionHandleTask task = new CommissionHandleTask();
+				task.setGroupMasterUId(user.getId());
+				task.setUserId(lockPacket.getUserId());
+				task.setSplitAmount(detail.getGotAmount());
+				task.setGameId(gameId);
+				commissionHandleTaskService.insert(task);
+				commisionHandleTaskQueue.offer(task); 
+				//handleFreePacketCommission(detail,gameId,lockPacket.getUserId());
+			}
+			lockPacket.addDetail(detail);
+			packetDetailMapper.insertSelective(detail);
+			logger.info("抢到的红包是[{}]尾数是[{}]信息:{},",num,Integer.parseInt(num.substring(num.length()-1)),detail);
+			UserWallet senderWallet = userWalletService.selectByPrimaryUserId(lockPacket.getUserId());
+			if(!detail.isFree()){
+				// 处理踩雷
+				handleHitBomb(detail.isGotBomb(), lockPacket.getAmount(), lastWallet,senderWallet);
+				// 抢包中奖处理 
+				handleLottery(gameId, lastWallet, detail.getGotAmount());
+			}
+			// 发包中奖检查和最佳检查处理
+			handleReward(gameId,lockPacket,senderWallet);
+			// 抢红包处理
+			grapPacketHandle(user, lastWallet, detail);
+			
+			packetMapper.updateByPrimaryKeySelective(lockPacket);
+			
+			packetContainer.put(lockPacket.getId(), lockPacket);
+			
+			resultResp.addBody("packet", lockPacket);
+			resultResp.addBody("wallet", lastWallet);
 		}
-		
-		detail.setGotAmount(BigDecimalUtil.rounding(resultNum));
-		String num = detail.getGotAmount().toPlainString();
-		boolean isGotBomb = Integer.parseInt(num.substring(num.length()-1))==lockPacket.getHitNum();
-		
-		lockPacket.setCollectedNum(lockPacket.getCollectedNum() + 1);
-		lockPacket.setStatus(lockPacket.getCollectedNum() == lockPacket.getPacketNum()?PacketStatus.collected.toString():PacketStatus.uncollected.toString());
-		
-		detail.setdPacketId(lockPacket.getId());
-		detail.setGotUserId(user.getId());
-		detail.setFree("1".equals(member.getMemberType()));
-		detail.setGotBomb(isGotBomb);
-		logger.info("是否需要分佣检查:"+detail);
-		logger.info("用户检查:"+user);
-		logger.info("群成员检查:"+member);
-		if( lockPacket.getUserId() != user.getId() && detail.isFree()){
-			logger.info("开始分佣处理");
-			handleFreePacketCommission(detail,gameId,lockPacket.getUserId());
-		}
-		lockPacket.addDetail(detail);
-		packetDetailMapper.insertSelective(detail);
-		logger.info("抢到的红包是[{}]尾数是[{}]信息:{},",num,Integer.parseInt(num.substring(num.length()-1)),detail);
-		UserWallet senderWallet = userWalletService.selectByPrimaryUserId(lockPacket.getUserId());
-		if(!detail.isFree()){
-			// 处理踩雷
-			handleHitBomb(detail.isGotBomb(), lockPacket.getAmount(), lastWallet,senderWallet);
-			// 抢包中奖处理 
-			handleLottery(gameId, lastWallet, detail.getGotAmount());
-		}
-		// 发包中奖检查和最佳检查处理
-		handleReward(gameId,lockPacket,senderWallet);
-		// 抢红包处理
-		grapPacketHandle(user, lastWallet, detail);
-		
-		packetMapper.updateByPrimaryKeySelective(lockPacket);
-		
-		packetContainer.put(lockPacket.getId(), lockPacket);
-		resultResp.addBody("packet", lockPacket);
-		resultResp.addBody("wallet", lastWallet);
-		
 		logger.info("抢红包完成");
 		return resultResp;
 	}
 
-	/**
-	 * 群主抢的免死包,给发包上级奖励佣金
-	 * @param detail
-	 * @param id
-	 */
-	private void handleFreePacketCommission(PacketDetail detail,Long gameId,Long senderUserId) {
-		UserInfo groupMasterUser = userService.selectByPrimaryKey(detail.getGotUserId());
-		UserInfo sendUser = userService.selectByPrimaryKey(senderUserId);
-		distributeCommission(detail.getGotAmount(),groupMasterUser, sendUser.getUpUserId(),senderUserId, 1,gameId);
-		
-		// 系统还有25%
-		String distributeProportion = env.getProperty("sys.commission.percent");
-		BigDecimal amount = detail.getGotAmount().multiply(new BigDecimal(distributeProportion));
-		amount = BigDecimalUtil.rounding(amount);
-		
-		UserWallet groupMasterWallet = userWalletService.selectByPrimaryUserId(groupMasterUser.getId());
-		groupMasterWallet.setAvailableAmount(groupMasterWallet.getAvailableAmount().subtract(amount));
-		Long sysUserId = Long.parseLong(env.getProperty("sys.user.id"));
-		
-		// 群主记录交易明细:佣金支付
-		BalanceDetail balanceDetail = new BalanceDetail();
-		balanceDetail.setAmount(amount.negate());
-		balanceDetail.setAvailableAmount(groupMasterWallet.getAvailableAmount());
-		balanceDetail.setuId(groupMasterWallet.getuId());
-		balanceDetail.setTransactionType(TransactionTypeDesc.payment.toString());
-		balanceDetail.setTransactionSubType(TransactionSubTypeDesc.payCommission.toString());
-		balanceDetail.setRemarks(TransactionSubTypeDesc.payCommission.getDes());
-		balanceDetail.setTransactionId(groupMasterWallet.getId());
-		logger.info("保存佣金交易信息"+balanceDetail);
-		balanceDetailService.insertSelective(balanceDetail);
-		
-		// 超级管理员获得25%的佣金
-		UserCommission userCommission = new UserCommission();
-		userCommission.setCommisionAmt(amount);
-		userCommission.setDownUserId(groupMasterUser.getId());
-		userCommission.setDownLevel("0");
-		userCommission.setOwnUser(sysUserId);
-		userCommission.setGainProportion(distributeProportion);
-		userCommission.setGainDate(DateUtils.getStringDateShort());
-		userCommission.setGainTime(DateUtils.getTimeShort());
-		logger.info("保存佣金信息"+userCommission);
-		commissionService.insertSelective(userCommission);
-		// 更新超级管理金额
-		UserWallet userWallet = new UserWallet();
-		userWallet.setuId(sysUserId);
-		userWallet.setAvailableAmount(amount);
-		userWalletService.updateWalletAmount(userWallet);
-		
-		UserInfo sysMasterUser = userService.selectByPrimaryKey(sysUserId);
-		distributeCommission(amount,sysMasterUser, groupMasterUser.getUpUserId(),groupMasterUser.getId(), 1,gameId);
-		
-//		distributeCommissionBySys(amount, groupMasterUser.getUpUserId(), 1,gameId);
-	}
-	
-//	private void distributeCommissionBySys(BigDecimal amount, Long upUserId, int upLevel,Long gameId) {
-//		if(upLevel>5){
-//			logger.info("最多5级分佣");
-//			return;
-//		}
-//		
-//		// 发包上级按比例获得佣金,添加佣金记录
-//		UserCommission userCommission = new UserCommission();
-//		userCommission.setCommisionAmt(distributeCommission);
-//		userCommission.setDownUserId(senderUserId);
-//		userCommission.setDownLevel(upLevel+"");
-//		userCommission.setOwnUser(user.getId());
-//		userCommission.setGainProportion(distributeProportion.toEngineeringString());
-//		userCommission.setGainDate(DateUtils.getStringDateShort());
-//		commissionService.insertSelective(userCommission);
-//		// 更新发包上级金额
-//		UserWallet userWallet = new UserWallet();
-//		userWallet.setuId(user.getId());
-//		userWallet.setAvailableAmount(distributeCommission);
-//		userWalletService.updateWalletAmount(userWallet);
-//	}
-
-	private void distributeCommission(BigDecimal amount,UserInfo splitUser, Long upUser,Long sendUserId,int upLevel,Long gameId){
-		if(upLevel>5){
-			logger.info("最多5级分佣");
-			return;
-		}
-		logger.info("分佣级别[{}],扣佣用户:{}",upLevel,splitUser);
-		UserInfo user = userService.selectByPrimaryKey(upUser);
-		UserWallet groupMasterWallet = userWalletService.selectByPrimaryUserId(splitUser.getId());
-		
-		String value = commonConstants.getGameRuleCommissionBy(gameId, RuleTypeDesc.rebate, upLevel+"");
-		BigDecimal distributeProportion=new BigDecimal(value);
-		BigDecimal distributeCommission = amount.multiply(distributeProportion);
-		distributeCommission = BigDecimalUtil.rounding(distributeCommission);
-		
-		logger.info("检查钱包是否为空:"+groupMasterWallet);
-		groupMasterWallet.setAvailableAmount(groupMasterWallet.getAvailableAmount().subtract(distributeCommission));
-		
-		// 群主/超管记录交易明细:佣金支付
-		BalanceDetail balanceDetail = new BalanceDetail();
-		balanceDetail.setAmount(distributeCommission.negate());
-		balanceDetail.setAvailableAmount(groupMasterWallet.getAvailableAmount());
-		balanceDetail.setuId(groupMasterWallet.getuId());
-		balanceDetail.setTransactionType(TransactionTypeDesc.payment.toString());
-		balanceDetail.setTransactionSubType(TransactionSubTypeDesc.payCommission.toString());
-		balanceDetail.setRemarks(TransactionSubTypeDesc.payCommission.getDes());
-		balanceDetail.setTransactionId(groupMasterWallet.getId());
-		logger.info("保存交易信息");
-		balanceDetailService.insertSelective(balanceDetail);
-		
-		// 群主减少钱包金额
-		UserWallet wallet = new UserWallet();
-		wallet.setuId(groupMasterWallet.getuId());
-		wallet.setAvailableAmount(distributeCommission.negate());
-		userWalletService.updateWalletAmount(wallet);
-		
-		// 发包上级按比例获得佣金,添加佣金记录
-		UserCommission userCommission = new UserCommission();
-		userCommission.setCommisionAmt(distributeCommission);
-		userCommission.setDownUserId(sendUserId);
-		userCommission.setDownLevel(upLevel+"");
-		userCommission.setOwnUser(user.getId());
-		userCommission.setGainProportion(distributeProportion.toEngineeringString());
-		userCommission.setGainDate(DateUtils.getStringDateShort());
-		userCommission.setGainTime(DateUtils.getTimeShort());
-		commissionService.insertSelective(userCommission);
-		// 更新发包上级金额
-		UserWallet userWallet = new UserWallet();
-		userWallet.setuId(user.getId());
-		userWallet.setAvailableAmount(distributeCommission);
-		userWalletService.updateWalletAmount(userWallet);
-		
-		logger.info("是否还有上级:{}",user.getUpUserId()!=null);
-		if(user.getUpUserId()!=null){
-			distributeCommission(amount,splitUser, user.getUpUserId(),sendUserId, ++upLevel,gameId);
-		}
-	}
 
 	private void grapPacketHandle(UserInfo user, UserWallet lastWallet, PacketDetail detail) {
 		lastWallet.setAvailableAmount(lastWallet.getAvailableAmount().add(detail.getGotAmount()));
@@ -410,7 +291,11 @@ public class PacketServiceImpl implements PacketService {
 		
 		UserWallet wallet = new UserWallet();
 		wallet.setuId(user.getId());
-		wallet.setAvailableAmount(detail.getGotAmount());
+		if(detail.isFree()){
+			wallet.setFreezeAmount(detail.getGotAmount());
+		}else{
+			wallet.setAvailableAmount(detail.getGotAmount());
+		}
 		userWalletService.updateWalletAmount(wallet);
 	}
 
@@ -624,9 +509,6 @@ public class PacketServiceImpl implements PacketService {
 		return packetMapper.selectPacketBySelective(packet);
 	}
 
-	
-	@Autowired
-	private WebSocketPushHandler webSocketPushHandler; 
 	@Override
 	@Transactional(readOnly = false, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public void expirePacketHandle(Long packetId) {
@@ -668,8 +550,8 @@ public class PacketServiceImpl implements PacketService {
 		
 		packetMapper.updateByPrimaryKeySelective(lockPacket);
 		
-		logger.info("添加更新余额的消息通知");
-		webSocketPushHandler.walletRefreshNotice(null, lockPacket.getUserId(), "系统通知");
+		logger.info("添加更新余额的消息通知"); 
+		socketMessageService.walletRefreshNotice(null, lockPacket.getUserId(), "系统通知");
 		
 		logger.info("过期红包已处理退回结束,退回红包信息:{}",lockPacket);
 	}

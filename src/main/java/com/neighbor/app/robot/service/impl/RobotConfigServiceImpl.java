@@ -3,6 +3,7 @@ package com.neighbor.app.robot.service.impl;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
@@ -86,9 +87,9 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 						UserInfo user = null;
 						try {
 							user = userService.selectByPrimaryKey(member.getUserId());
-//							int second = RandomUtil.getRandomBy(100 * 200)+500;
-//							logger.info("机器编号{}睡眠:{}",user.getRobotSno(),(second));
-//							Thread.sleep(second);// 睡second毫秒后抢
+							int second = RandomUtil.getRandomBy(100 * 200)+500;
+							logger.info("机器编号{},睡眠:{}",user.getRobotSno(),(second));
+							Thread.sleep(second);// 睡second毫秒后抢
 							
 							ResponseResult result = packetService.grabPacekt(data.getPacket(), user, data.getGameId());
 							logger.info("机器编号{}抢完红包的信息:{}",user.getRobotSno(),result);

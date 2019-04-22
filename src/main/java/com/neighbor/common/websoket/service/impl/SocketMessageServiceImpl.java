@@ -3,22 +3,26 @@ package com.neighbor.common.websoket.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-import com.neighbor.app.chatlist.service.ChatListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.websoket.constants.MessageDeleteStates;
 import com.neighbor.common.websoket.constants.MessageStatus;
 import com.neighbor.common.websoket.constants.WebSocketChatType;
+import com.neighbor.common.websoket.constants.WebSocketMsgType;
 import com.neighbor.common.websoket.dao.SocketMessageMapper;
 import com.neighbor.common.websoket.po.GroupMsgRalation;
 import com.neighbor.common.websoket.po.SocketMessage;
+import com.neighbor.common.websoket.po.WebSocketHeader;
 import com.neighbor.common.websoket.service.SocketMessageService;
 
 @Service
@@ -27,8 +31,8 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	@Autowired
 	private SocketMessageMapper socketMessageMapper;
 
-	@Autowired
-	private ChatListService chatListService;
+//	@Autowired
+//	private ChatListService chatListService;
 	
 	@Override
 	public int deleteByPrimaryKey(Long msgId) {
@@ -37,13 +41,12 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 
 	@Override
 	public int insertSelective(SocketMessage record) {
-		int r = socketMessageMapper.insertSelective(record);
+		return socketMessageMapper.insertSelective(record);
 		/*try {
 			chatListService.modifyLastMessage(record);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}*/
-		return r;
 	}
 
 	@Override
@@ -213,16 +216,56 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		socketMessageMapper.deleteByLessMsgId(msg.getMsgId());
 		
 	}
+	
+	private static String buildHeaderInfo(String uuid){
+		WebSocketHeader header = new WebSocketHeader();
+		header.setRequestId(uuid);
+		header.setSign("sign");
+		header.setToken("system");
+		return JSON.toJSONString(header);
+	}
+	
+	@Override
+	public void walletRefreshNotice(Long sendUserId,Long targetUserId,String sendNickName){
+		SocketMessage socketMessage = new SocketMessage();
+		socketMessage.setMsgType(WebSocketMsgType.WALLET_REFRESH+""); 
+		socketMessage.setChatType(WebSocketChatType.single+"");
+		socketMessage.setSendNickName(sendNickName);
+		
+		Long count = socketMessageMapper.selectWalletRefreshCountBySelective(targetUserId);
+		if(count==0){
+			insertNoticeInfo(socketMessage,sendUserId,targetUserId);
+		}
+	}
+	
+	@Override
+	public void groupRefreshNotice(Long sendUserId,Long targetUserId,String content){
+		SocketMessage socketMessage = new SocketMessage();
+		socketMessage.setMsgType(WebSocketMsgType.GROUP_REFRESH+"");
+		socketMessage.setChatType(WebSocketChatType.single+"");
+		socketMessage.setContent(content);
+		insertNoticeInfo(socketMessage,sendUserId,targetUserId);
+	}
 
+	private void insertNoticeInfo(SocketMessage socketMessage,Long sendUserId,Long targetUserId) {
+		String uuid = UUID.randomUUID().toString().replaceAll("-","");
+		socketMessage.setSendUserId(sendUserId);
+		socketMessage.setTargetUserId(targetUserId);
+		socketMessage.setContent("更新通知");
+		socketMessage.setMasterMsgType("2");
+		socketMessage.setHeader(buildHeaderInfo(uuid));
+		socketMessage.setRequestId(uuid);
+		socketMessage.setStatus(MessageStatus.pushed_response+"");
+		socketMessage.setDate(DateUtils.getStringDateShort());
+		socketMessage.setTime(DateUtils.getTimeShort());
+		socketMessage.setTargetUserDeleteFlag(MessageDeleteStates.normal.getDes());
+		socketMessage.setSendUserDeleteFlag(MessageDeleteStates.normal.getDes());
+		insertSelective(socketMessage);
+	}
+	
 	@Override
 	public void updateWalletRefreshMsg(Long targetUserId) {
-		new Thread(){
-			@Override
-			public void run() {
-				socketMessageMapper.updateWalletRefreshMsg(targetUserId);
-			};
-		}.start();
-		
+		socketMessageMapper.updateWalletRefreshMsg(targetUserId);
 	}
 	
 }

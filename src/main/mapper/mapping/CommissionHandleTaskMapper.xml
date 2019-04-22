@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neighbor.app.commission.dao.CommissionHandleTaskMapper">
+	<resultMap id="BaseResultMap" type="com.neighbor.app.commission.entity.CommissionHandleTask">
+		<id column="commission_id" jdbcType="INTEGER" property="commissionId" />
+		<result column="group_master_u_id" jdbcType="INTEGER" property="groupMasterUId" />
+		<result column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="game_id" jdbcType="INTEGER" property="gameId" />
+		<result column="split_amount" jdbcType="DECIMAL" property="splitAmount" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="created_time" jdbcType="VARCHAR" property="createdTime" />
+		<result column="updated_time" jdbcType="VARCHAR" property="updatedTime" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		commission_id, 
+		group_master_u_id, 
+		user_id, 
+		game_id, 
+		split_amount, 
+		status, 
+		created_time,
+		updated_time
+	</sql>
+	
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from commission_handle_task
+		where commission_id = #{commissionId}
+	</select>
+	
+	<select id="selectByPrimaryKeyForLock" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from commission_handle_task
+		where commission_id = #{commissionId}
+		for update
+	</select>
+	
+	<select id="selectTaskByStatus" parameterType="int" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from commission_handle_task
+		where status = #{status}
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="commissionId"  parameterType="com.neighbor.app.commission.entity.CommissionHandleTask">
+		insert into commission_handle_task 
+		(
+			group_master_u_id, 
+			user_id, 
+			game_id, 
+			split_amount, 
+			created_time
+		)
+		values 
+		(
+			#{groupMasterUId}, 
+			#{userId},
+			#{gameId},
+			#{splitAmount}, 
+			DATE_FORMAT(NOW(),'%Y-%m-%d %T')
+		)
+	</insert>
+	
+	<update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.commission.entity.CommissionHandleTask">
+		update commission_handle_task
+		set 
+			updated_time = DATE_FORMAT(NOW(),'%Y-%m-%d %T'),
+			status = #{status}
+		where commission_id = #{commissionId}
+		and status=#{oldStatus}
+	</update> 
+</mapper>

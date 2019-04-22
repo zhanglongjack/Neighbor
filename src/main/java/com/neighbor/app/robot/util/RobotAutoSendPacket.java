@@ -14,6 +14,7 @@ import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.neighbor.app.common.util.RandomUtil;
@@ -23,6 +24,7 @@ import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.packet.service.PacketService;
 import com.neighbor.app.robot.entity.GrapPacketData;
 import com.neighbor.app.robot.entity.RobotConfig;
+import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.websoket.util.GroupMsgPushHandler;
 
 @Component
@@ -36,14 +38,17 @@ public class RobotAutoSendPacket {
 	private PacketService packetService;
 	@Autowired
 	private BlockingQueue<GrapPacketData> taskQueue;
-
-	private static int limitAmount = 1000;
+    @Autowired
+    private Environment env;
+    
+	private static double limitAmount;
 //	private static int sleepChance = 300;
 	private static int threadPoolSize = 300;
 	private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(threadPoolSize);
 	private static Map<String,Long> runRobot = new HashMap<>();
 	@PostConstruct
 	public void init() {
+		limitAmount = Double.parseDouble(env.getProperty(EnvConstants.ROBOT_SEND_LIMIT_AMOUNT));
 		fixedThreadPool.execute(new Runnable() {
 			public void run() {
 				try {
@@ -70,6 +75,7 @@ public class RobotAutoSendPacket {
 		fixedThreadPool.execute(new Runnable() {
 			public void run() {
 				try {
+					logger.info("开始添加机器人发包任务");
 					GroupMember member = new GroupMember();
 					member.setRobot(new RobotConfig());
 					for (Long id : ids) {
@@ -80,6 +86,8 @@ public class RobotAutoSendPacket {
 							String key = getRunRobotKey(readyMember);
 							if(!runRobot.containsKey(key)){
 								addGrapRobot(readyMember);
+							}else{
+								logger.info("机器人已在运行发包中...");
 							}
 						}
 					}
@@ -95,6 +103,7 @@ public class RobotAutoSendPacket {
 			logger.info("机器人成员发包配置为0,表示不发包,机器人信息:{}", member.getRobot());
 			return;
 		}
+		
 		fixedThreadPool.execute(new Runnable() {
 			public void run() {
 				robotGrapPacket(member);
@@ -104,6 +113,7 @@ public class RobotAutoSendPacket {
 	}
 
 	public void robotGrapPacket(GroupMember paramMember) {
+		logger.info("开始启动机器人发包线程:{}",paramMember.getRobot());
 		GroupMember member = paramMember;
 		boolean isRunning = checkMemberSendPacket(member);
 		while (isRunning) {
