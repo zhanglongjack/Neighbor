@@ -216,7 +216,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 	 *
 	 * @return List<Long> : 成功推送的消息用户
 	 */
-	public List<Long> sendSystemMessagesToUsers(Long userId, ResponseResult result) {
+	public List<Long> sendSystemMessagesToUsers(ResponseResult result) {
 		logger.info("系统给所有用户发信息:" + result);
 		TextMessage message = new TextMessage(JSON.toJSONString(result));
 		List<Long> sendUserList = new ArrayList<Long>();
@@ -259,6 +259,22 @@ public class WebSocketPushHandler implements WebSocketHandler {
 		boolean isPushed = sendMessage(session, message);
 		logger.info("给指定用户:[{}]发信息是否成功:[{}]", userId, isPushed);
 		return isPushed;
+	}
+
+	public void forceUserOffline(ResponseResult handleResult) {
+		List<Long> sendUserList = sendSystemMessagesToUsers(handleResult);
+		
+		for(Long userId : sendUserList){
+			WebSocketSession session = userSessions.get(userId);
+			if(session!=null){
+				userSessions.remove(userId);
+				try {
+					session.close();
+				} catch (Exception e) {
+					logger.error("强制中断用户连接异常:"+userId,e);
+				}
+			}
+		}
 	}
 
 }

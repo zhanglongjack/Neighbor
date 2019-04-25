@@ -17,6 +17,7 @@ public enum WebSocketMsgType {
 	FRIEND_ADD(TextMessageHandler.class),
 	GROUP_ADD(TextMessageHandler.class), 
 	GROUP_QUIT(TextMessageHandler.class),
+	FORCE_OFFLINE_NOTICE(TextMessageHandler.class),
 	WALLET_REFRESH(TextMessageHandler.class),
 	GROUP_REFRESH(TextMessageHandler.class);
 	private Class<?> implClass;

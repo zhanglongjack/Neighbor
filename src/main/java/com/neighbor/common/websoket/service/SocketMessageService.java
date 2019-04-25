@@ -58,6 +58,8 @@ public interface SocketMessageService {
 
 	void groupRefreshNotice(Long sendUserId, Long targetUserId, String content);
 
+	SocketMessage forceOfflineNoticeBuild();
+
 	
 
 

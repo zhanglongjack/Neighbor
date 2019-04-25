@@ -226,6 +226,16 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	}
 	
 	@Override
+	public SocketMessage forceOfflineNoticeBuild(){
+		SocketMessage socketMessage = new SocketMessage();
+		socketMessage.setMsgType(WebSocketMsgType.FORCE_OFFLINE_NOTICE+""); 
+		socketMessage.setChatType(WebSocketChatType.single+"");
+		socketMessage.setSendNickName("system");
+		
+		return buildMessage(socketMessage, null, null);
+	}
+	
+	@Override
 	public void walletRefreshNotice(Long sendUserId,Long targetUserId,String sendNickName){
 		SocketMessage socketMessage = new SocketMessage();
 		socketMessage.setMsgType(WebSocketMsgType.WALLET_REFRESH+""); 
@@ -248,10 +258,15 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	}
 
 	private void insertNoticeInfo(SocketMessage socketMessage,Long sendUserId,Long targetUserId) {
+		buildMessage(socketMessage, sendUserId, targetUserId);
+		insertSelective(socketMessage);
+	}
+
+	public SocketMessage buildMessage(SocketMessage socketMessage, Long sendUserId, Long targetUserId) {
 		String uuid = UUID.randomUUID().toString().replaceAll("-","");
 		socketMessage.setSendUserId(sendUserId);
 		socketMessage.setTargetUserId(targetUserId);
-		socketMessage.setContent("更新通知");
+		socketMessage.setContent("系统通知:"+socketMessage.getMsgType());
 		socketMessage.setMasterMsgType("2");
 		socketMessage.setHeader(buildHeaderInfo(uuid));
 		socketMessage.setRequestId(uuid);
@@ -260,7 +275,8 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		socketMessage.setTime(DateUtils.getTimeShort());
 		socketMessage.setTargetUserDeleteFlag(MessageDeleteStates.normal.getDes());
 		socketMessage.setSendUserDeleteFlag(MessageDeleteStates.normal.getDes());
-		insertSelective(socketMessage);
+		
+		return socketMessage;
 	}
 	
 	@Override
