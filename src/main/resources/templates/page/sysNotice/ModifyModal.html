@@ -69,7 +69,9 @@ $(function(){
 	});
 	
 	$("#clearForceTime").click(function(){
-		 $(this).siblings("input").val('');
+		 $("#data-date-time-picker").val('');
+		 forceTime.val(null)
+		 forceTime.datetimepicker('update');
 	});
 })
 </script>

@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
 import com.neighbor.app.notice.entity.SysNotice;
 import com.neighbor.app.notice.service.SysNoticeService;
 import com.neighbor.common.util.ResponseResult;
@@ -54,6 +56,7 @@ public class NoticeHandleSchedule {
 								public void run() {
 									try {
 										SocketMessage msgInfo = socketMessageService.forceOfflineNoticeBuild();
+										msgInfo.setContent(JSON.toJSONString(notice));
 										ResponseResult handleResult = new ResponseResult(); // 消息已接收
 										handleResult.setRequestID(msgInfo.getWebSocketHeader().getRequestId());
 										handleResult.addBody("msgType", msgInfo.getMsgType());
@@ -130,7 +133,7 @@ public class NoticeHandleSchedule {
 				updateNotice.setStatus(status);
 				try {
 					if(isBegin&&notice.isShowNotice()
-							||!isBegin&&!notice.isCloseNotice()){
+							||!isBegin&&notice.isCloseNotice()){
 						sysNoticeService.updateByPrimaryKeySelective(updateNotice);
 					}
 				} catch (Exception e) {

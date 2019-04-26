@@ -109,6 +109,7 @@ public class SysNotice {
 	 * @return
 	 */
 	public boolean isForceOffline() {
+		if(this.forceOfflineTime==null||"".equals(this.forceOfflineTime)) return true;
 		return DateUtils.compareCurrentDateTime(this.forceOfflineTime);
 	}
  
@@ -121,11 +122,11 @@ public class SysNotice {
 	}
 
 	/**
-	 * true-公告未到结束时间 ,false-公告已过结束时间
+	 * false-公告未到结束时间 ,true-公告已过结束时间
 	 * @return
 	 */
 	public boolean isCloseNotice() {
-		return DateUtils.compareCurrentDateTime(this.overTime);
+		return !DateUtils.compareCurrentDateTime(this.overTime);
 	}
 	
 	public Integer getStatus() {

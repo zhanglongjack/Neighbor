@@ -67,7 +67,7 @@
 		<if test="overTime != null and overTime.length>0">
 			,over_time = #{overTime}
 		</if>
-		<if test="forceOfflineTime != null and forceOfflineTime.length>0">
+		<if test="forceOfflineTime != null">
 			,force_offline_time = #{forceOfflineTime}
 		</if>
 		<if test="status != null">
