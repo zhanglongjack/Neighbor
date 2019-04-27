@@ -187,7 +187,7 @@ public class LoginController {
 		record.setStatus(1);
 		List<SysNotice> noticeList = sysNoticeService.selectBySelective(record);
 		for(SysNotice notice : noticeList){
-			if(!notice.isForceOffline()){
+			if(!notice.isForceOffline()&&!user.isAdmin()){
 				result.addBody("notice", notice);
 				result.setErrorCode(2);
 				result.setErrorMessage(notice.getNoticeContent());
