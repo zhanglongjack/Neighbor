@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<meta http-equiv="Cache-Control" content="no-cache" />
+</head>
+<body>
+	<div th:fragment="container-fluid" class="container-fluid">
+<link rel="stylesheet" th:href="@{~/framework/table/bootstrap-table.min.css}">
+<script th:src="@{~/framework/table/bootstrap-table.min.js}"></script>
+<script th:src="@{~/framework/table/locale/bootstrap-table-zh-CN.min.js}"></script>
+<style type="text/css">
+table{
+    text-align:center;
+    table-layout:fixed;
+    word-break:break-all;
+}
+.test{
+	width:800px;
+}
+</style>
+
+
+		<script type="text/javascript">
+			var $masterTable = $('#master-table')
+			var $queryBtn = $('#queryBtn')
+			
+			$(function() {
+				$("#ModifyModal").on("hidden.bs.modal", function() {
+					$(this).removeData("bs.modal");
+				});
+				initTable()
+				$queryBtn.click(function() {
+					$masterTable.bootstrapTable('refresh')
+				});
+				
+				$('[datepicker]').datepicker({
+				    format: "yyyy-mm-dd",
+				    language: "zh-CN",
+				    maxViewMode: 2,
+				    autoclose: true,
+				    todayBtn: "linked",
+				    todayHighlight: true
+				});
+				
+				$("[eraserTime]").click(function(){
+					 $(this).siblings("input").val('');
+				});
+				
+			});
+			
+			function destroy(id){
+				ajax("/sysNotice/sysNoticeEdit.ser",{
+					noticeId:id,
+					status:3
+				},function(){
+					$masterTable.bootstrapTable('refresh')
+				});
+			}
+
+			function ajax(reqURL, paramsData,succesCallback, errorCallback) {
+				$('#loadingModal').modal('show');
+				$.ajax({
+					url : reqURL,
+					type : 'POST',
+					data : paramsData,
+					dataType : 'json',
+					success : function(response) {
+						console.log(JSON.stringify(response));
+						$('#loadingModal').modal('hide');
+						if (response.errorCode == 1) {
+							errorCallback && errorCallback()
+						}
+						
+						succesCallback&&succesCallback(response);
+					},
+					error : function(rep, errMsg, exception) {
+						if (rep.responseText == "LoginTimeout") {
+							location.href = "/login.html";
+						}
+						$('#loadingModal').modal('hide');
+						console.log(JSON.stringify(rep));
+						errorCallback && errorCallback(rep, errMsg, exception)
+						
+					}
+				});
+			}
+
+			function getIdSelections() {
+				return $.map($masterTable.bootstrapTable('getSelections'), function(row) {
+					return row.noticeId
+				})
+			}
+
+			function responseHandler(res) {
+				$.each(res.rows, function(i, row) {
+					row.state = row.robot && row.robot.noticeId != null
+				})
+				return res
+			}
+
+			function initTable() {
+				$masterTable.on('post-body.bs.table', function (e) {
+					$('[data-toggle="popover"]').popover();
+			    })
+			    
+				$masterTable.bootstrapTable('destroy').bootstrapTable({
+					url : "/sysNotice/loadPageAjax.ser",
+					queryParams : function(params) {//上传服务器的参数
+						var temp = {
+							'pageTools.pageSize' : params.limit, // 每页显示数量
+							'pageTools.index' : (params.offset / params.limit) + 1 //当前页码 
+							
+						};
+						var noticeId = $("input[name='noticeId']").val();
+						if(noticeId&&noticeId.length>0){
+							var reg = /^\d+$/;
+							if (!reg.test(noticeId)) {
+								$("input[name='noticeId']").focus();
+								toastr.error("请输入正确的公告编号")
+								return false;
+							}
+						}
+
+						$('#query-params').find('input[name],select[name]').each(function() {
+							temp[$(this).attr('name')] = $(this).val()
+						})
+
+						console.log("分页查询1:" + JSON.stringify(temp))
+						return temp;
+					}
+				})
+			}
+		  	function popoverFormatter(value) {
+		  		 return [
+		  	      '<div data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top"'
+		  	      +'data-content="'+value+'"><div class="textOverFlowHide">'+value+'</div></div>'
+		  	    ].join('')
+			}
+			function statusFormatter(value, row) {
+				console.log(value)
+				if(value==0){
+					return '<span class="label label-default" >未生效</span>'
+				}else if(value==1){
+					return '<span class="label label-success" >已生效</span>'
+				}else if(value==2){
+					return '<span class="label label-primary" >已结束</span>'
+				}else if(value==3){
+					return '<span class="label label-danger" >已作废</span>'
+				}
+			}
+			
+			function operationFormatter(value, row) {
+				var id = row.noticeId;
+
+				return ['<a class="btn btn-default btn-sm " data-toggle="modal" data-target="#ModifyModal"'+
+				'href="/sysNotice/primaryModalView.ser?modifyModel=sysNoticeEdit.ser&id='+id+'">'+
+				'<span class="glyphicon glyphicon-edit"></span>更新<i class="icon-star"></i></a>'
+				+
+				'<a class="btn btn-default btn-sm" onclick="destroy('+id+')">'+
+				'<span class="glyphicon glyphicon-edit"></span>作废<i class="icon-star"></i></a>'
+				]
+			}
+		</script>
+		
+		<h3 class="page-title">公告管理</h3>
+		<div class="row">
+			<div class="col-md-12">
+				<!-- TABLE HOVER -->
+				<div class="panel panel-info">
+					<div class="panel-body">
+						<div id="query-params">
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<input name="noticeId" class="form-control" type="text"
+										placeholder="公告编号">
+								</div>
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<input name="noticeTitle" class="form-control" type="text"
+										placeholder="公告标题">
+								</div>
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+								<span class="input-group" datepicker>
+									<input name="beginDate" class="form-control" type="text"
+										placeholder="公告开始日期" readOnly style="background-color:white">
+										<span class="input-group-addon add-on" style="background-color:white" eraserTime><i class="fa fa-eraser"></i></span>
+										<span class="input-group-addon" style="background-color:white">
+				                           <i class="fa fa-clock-o"></i>
+				                        </span>
+			                        </span>
+								</div>
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<span class="input-group" datepicker>
+									<input name="overDate" class="form-control" type="text"
+										placeholder="公告结束日期"  readOnly style="background-color:white">
+										<span class="input-group-addon add-on" style="background-color:white" eraserTime><i class="fa fa-eraser"></i></span>
+										<span class="input-group-addon" style="background-color:white">
+				                           <i class="fa fa-clock-o"></i>
+				                        </span>
+			                        </span>
+								</div>
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<select class="form-control" name="status">
+										<option value="">=====公告状态=====</option> 
+										<option value="0">未生效</option> 
+										<option value="1">已生效</option> 
+										<option value="2">已结束</option> 
+										<option value="3">已作废</option> 
+									</select>
+								</div>
+
+						</div>
+						<div id="master-toolbar">
+							<button id="queryBtn" type="submit" class="btn btn-primary col-lg-6 col-md-6 col-sm-6">查询</button>
+							<button id="addBtn" href="/sysNotice/primaryModalView.ser?modifyModel=sysNoticeAdd.ser&id=" 
+									data-toggle="modal" data-target="#ModifyModal" type="submit" 
+									class="btn btn-primary col-lg-6 col-md-6 col-sm-6">添加</button>
+						</div>
+					</div> 
+					<div class="panel-body table-responsive-sm">
+						<table class="table table-hover" 
+							id="master-table" 
+							data-toggle="table"
+							data-id-field="noticeId" 
+							data-buttons-class="primary"
+							data-toolbar="#master-toolbar"
+							data-toolbar-align="right"
+							data-search="false"
+							data-search-align="left" 
+							data-click-to-select="false"
+							data-method="post" 
+							data-silent-sort="false"
+							data-show-refresh="false" 
+							data-show-toggle="false"
+							data-show-fullscreen="false" 
+							data-show-columns="true"
+							data-buttons-align="right"
+							data-detail-view="false" 
+							data-show-export="false"
+							data-minimum-count-columns="2"
+							data-show-pagination-switch="false" 
+							data-pagination="true"
+							data-pagination-h-align="left"
+							data-pagination-detail-h-align="right"
+							data-pagination-pre-text="上一页" 
+							data-pagination-next-text="下一页"
+							data-page-number="1" 
+							data-page-size="10"
+							data-page-list="[10, 25, 50, 100, ALL]"
+							data-show-footer="false"
+							data-content-type="application/x-www-form-urlencoded"
+							data-side-pagination="server"
+							data-response-handler="responseHandler">
+
+							<thead>
+								<tr>
+									<th data-field="noticeId" data-align="center" data-width="10%" >公告编号</th>
+									<th data-field="noticeTitle" data-align="center" data-width="12%" data-formatter="popoverFormatter">公告标题</th>
+									<th data-field="noticeContent" data-align="center" data-formatter="popoverFormatter">公告内容</th>
+									<th data-field="beginTime" data-align="center">公告开始时间</th>
+									<th data-field="overTime" data-align="center">公告结束时间</th>
+									<th data-field="forceOfflineTime" data-align="center">强制下线时间</th>
+									<th data-field="status" data-formatter="statusFormatter" data-align="center" data-width="8%">公告状态</th>
+									<th data-formatter="operationFormatter" data-width="15%">操作</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+				<!-- END TABLE HOVER -->
+			</div>
+		</div>
+	</div>
+</body>
+</html>

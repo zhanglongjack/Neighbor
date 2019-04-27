@@ -4,6 +4,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neighbor.app.api.common.ErrorCodeDesc;
+import com.neighbor.app.notice.entity.SysNotice;
+import com.neighbor.app.notice.service.SysNoticeService;
 import com.neighbor.app.users.constants.UserContainer;
 import com.neighbor.app.users.entity.UserConfig;
 import com.neighbor.app.users.entity.UserInfo;
@@ -49,6 +52,8 @@ public class LoginController {
 	private UserWalletService userWalletService;
 	@Autowired
 	private SocketMessageService socketMessageService;
+	@Autowired
+	private SysNoticeService sysNoticeService;
 	
 	
 	
@@ -178,6 +183,18 @@ public class LoginController {
 	}
 
 	private void commonResultLogic(UserInfo user, ResponseResult result) throws Exception {
+		SysNotice record = new SysNotice();
+		record.setStatus(1);
+		List<SysNotice> noticeList = sysNoticeService.selectBySelective(record);
+		for(SysNotice notice : noticeList){
+			if(!notice.isForceOffline()){
+				result.addBody("notice", notice);
+				result.setErrorCode(2);
+				result.setErrorMessage(notice.getNoticeContent());
+				return;
+			}
+		}
+		
 		user.setUserPassword(null);
 		String token = UUID.randomUUID().toString();
 		userContainer.put(token, user);
@@ -185,8 +202,8 @@ public class LoginController {
 		result.addBody("user", user);
 		result.addBody("token", token);
 		UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
-
 		result.addBody("wallet", wallet);
+
 		UserConfig userConfig = userService.selectUserConfigByPrimaryKey(user.getId());
 		if (userConfig == null) {
 			Date currentTime = new Date();

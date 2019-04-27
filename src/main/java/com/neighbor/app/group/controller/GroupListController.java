@@ -9,8 +9,8 @@ import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.service.SocketMessageService;
 import com.neighbor.common.websoket.util.GroupMsgPushHandler;
-import com.neighbor.common.websoket.util.WebSocketPushHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class GroupListController {
 	private UserService userService;
 
 	@Autowired
-	private WebSocketPushHandler webSocketPushHandler;
+	private SocketMessageService socketMessageService;
 
 	@Autowired
 	private GameService gameService;
@@ -147,7 +147,7 @@ public class GroupListController {
 		Group temp = pageList.get(0);
 		temp.setEnterUserId(userInfo.getId());
 		temp.setGame(null);
-		webSocketPushHandler.groupRefreshNotice(user.getId(),userInfo.getId(), JSON.toJSONString(temp));
+		socketMessageService.groupRefreshNotice(user.getId(),userInfo.getId(), JSON.toJSONString(temp));
 		GroupMsgPushHandler.addGroupSessions(userInfo.getId(),group.getId());
 		return new ResponseResult();
 	}

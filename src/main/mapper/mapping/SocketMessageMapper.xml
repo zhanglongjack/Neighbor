@@ -140,6 +140,18 @@
         order by date,time
     </select>
     
+    <select id="selectWalletRefreshCountBySelective" parameterType="Long"
+            resultType="Long">
+        select
+        	count(1)
+        from chat_message
+		where status='pushed_response'
+		and chat_type='single'
+		and msg_type = 'WALLET_REFRESH'
+		and master_msg_type = 2
+		and target_user_id = #{targetUserId}
+    </select>
+    
     <select id="selectMsgByTargetGroupIdStatus" parameterType="Map"
             resultMap="BaseResultMap">
 		select 

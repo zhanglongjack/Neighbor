@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import com.neighbor.app.commission.entity.CommissionHandleTask;
 import com.neighbor.app.robot.entity.GrapPacketData;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
@@ -38,5 +39,10 @@ public class StartNeighbor {
 	@Bean
 	public BlockingQueue<GrapPacketData> getRobotQueue() {
 		return new LinkedBlockingQueue<GrapPacketData>(2);
+	}
+	
+	@Bean
+	public BlockingQueue<CommissionHandleTask> getCommisionHandleTaskQueue() {
+		return new LinkedBlockingQueue<CommissionHandleTask>(100);
 	}
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson.JSON;
 import com.neighbor.app.robot.entity.RobotConfig;
 import com.neighbor.app.robot.service.RobotConfigService;
 import com.neighbor.app.robot.util.RobotAutoSendPacket;
@@ -109,7 +110,7 @@ public class RobotController {
 	@RequestMapping(value="/robotStart.ser")
 	@ResponseBody
 	public ResponseResult robotStart(@RequestParam(value="ids[]")Long ids[]){
-		logger.info("robotStart request:{}",ids+"");
+		logger.info("robotStart request:{}",JSON.toJSONString(ids));
 		robotConfigService.batchUpdateRobotStatus(ids,1);
 		robotAutoSendPacket.addGrapRobotBy(ids);
 		return new ResponseResult();

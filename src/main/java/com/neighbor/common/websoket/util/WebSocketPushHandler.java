@@ -6,7 +6,6 @@ import com.neighbor.app.api.common.SpringUtil;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.ResponseResult;
-import com.neighbor.common.websoket.constants.MessageDeleteStates;
 import com.neighbor.common.websoket.constants.MessageStatus;
 import com.neighbor.common.websoket.constants.WebSocketChatType;
 import com.neighbor.common.websoket.constants.WebSocketMsgType;
@@ -22,7 +21,6 @@ import org.springframework.web.socket.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -218,7 +216,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 	 *
 	 * @return List<Long> : 成功推送的消息用户
 	 */
-	public List<Long> sendSystemMessagesToUsers(Long userId, ResponseResult result) {
+	public List<Long> sendSystemMessagesToUsers(ResponseResult result) {
 		logger.info("系统给所有用户发信息:" + result);
 		TextMessage message = new TextMessage(JSON.toJSONString(result));
 		List<Long> sendUserList = new ArrayList<Long>();
@@ -263,37 +261,20 @@ public class WebSocketPushHandler implements WebSocketHandler {
 		return isPushed;
 	}
 
-
-	public void walletRefreshNotice(Long sendUserId,Long targetUserId,String sendNickName){
-		String uuid = UUID.randomUUID().toString().replaceAll("-","");
-		String jsonStr = "{\"header\":{\"token\":\"system\",\"sign\":\"test\",\"requestId\":\""+uuid+"\"},\"sendUserId\":600017,\"masterMsgType\":\"2\",\"msgType\":\"WALLET_REFRESH\",\"chatType\":\"single\",\"content\":\"请求刷新用户钱包！\",\"targetUserId\":600018}";
-		SocketMessage socketMessage = JSON.parseObject(jsonStr,SocketMessage.class);
-		socketMessage.setRequestId(uuid);
-		socketMessage.setSendUserId(sendUserId);
-		socketMessage.setTargetUserId(targetUserId);
-		socketMessage.setStatus(MessageStatus.pushed_response+"");
-		socketMessage.setDate(DateUtils.getStringDateShort());
-		socketMessage.setTime(DateUtils.getTimeShort());
-		socketMessage.setTargetUserDeleteFlag(MessageDeleteStates.normal.getDes());
-		socketMessage.setSendUserDeleteFlag(MessageDeleteStates.normal.getDes());
-		socketMessage.setSendNickName(sendNickName);
-		socketMessageService.insertSelective(socketMessage);
+	public void forceUserOffline(ResponseResult handleResult) {
+		List<Long> sendUserList = sendSystemMessagesToUsers(handleResult);
+		
+		for(Long userId : sendUserList){
+			WebSocketSession session = userSessions.get(userId);
+			if(session!=null){
+				userSessions.remove(userId);
+				try {
+					session.close();
+				} catch (Exception e) {
+					logger.error("强制中断用户连接异常:"+userId,e);
+				}
+			}
+		}
 	}
 
-	public void groupRefreshNotice(Long sendUserId,Long targetUserId,String content){
-		String uuid = UUID.randomUUID().toString().replaceAll("-","");
-		String jsonStr = "{\"header\":{\"token\":\"system\",\"sign\":\"test\",\"requestId\":\""+uuid+"\"},\"sendUserId\":600017,\"masterMsgType\":\"2\",\"msgType\":\"GROUP_REFRESH\",\"chatType\":\"single\",\"content\":\"请求刷新用户钱包！\",\"targetUserId\":600018}";
-		SocketMessage socketMessage = JSON.parseObject(jsonStr,SocketMessage.class);
-		socketMessage.setRequestId(uuid);
-		socketMessage.setSendUserId(sendUserId);
-		socketMessage.setTargetUserId(targetUserId);
-		socketMessage.setStatus(MessageStatus.pushed_response+"");
-		socketMessage.setDate(DateUtils.getStringDateShort());
-		socketMessage.setTime(DateUtils.getTimeShort());
-		socketMessage.setTargetUserDeleteFlag(MessageDeleteStates.normal.getDes());
-		socketMessage.setSendUserDeleteFlag(MessageDeleteStates.normal.getDes());
-		socketMessage.setSendNickName("");
-		socketMessage.setContent(content);
-		socketMessageService.insertSelective(socketMessage);
-	}
 }

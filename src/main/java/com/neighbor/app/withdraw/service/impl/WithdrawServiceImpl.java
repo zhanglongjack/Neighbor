@@ -189,9 +189,9 @@ public class WithdrawServiceImpl implements WithdrawService {
         }else{
             body.put("limit",0);
         }
-        body.put("availableAmount",userWallet.getAvailableAmount());
         body.put("withdrawRate",env.getProperty(EnvConstants.WITHDRAW_RATE));
         responseResult.addBody("resp",body);
+        responseResult.addBody("wallet",userWallet);
         return responseResult;
     }
 

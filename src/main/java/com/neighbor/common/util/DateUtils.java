@@ -745,6 +745,19 @@ public class DateUtils {
 		return formatter.parse(date);
 	}
 
+	/**
+	 * 当前时间是否小于入参时间
+	 * @param time
+	 * @return true:是,false:否
+	 */
+	public static boolean compareCurrentDateTime(String time){
+		if(time!=null&&time.length()>0){
+			Date currentDate = getNow();
+			Date dateTime = strToDateLong(time);
+			return currentDate.getTime() < dateTime.getTime();
+		}
+		return false;
+	}
 	
 	
 }
