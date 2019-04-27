@@ -86,6 +86,7 @@
 								<thead>
 									<tr>
 										<th>群编号</th>
+										<th>游戏名称</th>
 										<th>群名称</th>
 										<th>群主</th>
 										<th>红包发布范围</th>
@@ -95,6 +96,7 @@
 								<tbody>
 									<tr th:each="obj : ${resultList}">
 										<td th:text="${obj.id}"></td>
+										<td th:text="${obj.game.gameName}"></td>
 										<td th:text="${obj.groupName}"></td>
 										<td th:text="${obj.groupOwnerUserId}"></td>
 										<td th:text="${obj.redPackAmountLimit}"></td>

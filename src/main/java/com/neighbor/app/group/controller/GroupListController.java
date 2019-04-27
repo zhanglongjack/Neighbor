@@ -1,6 +1,8 @@
 package com.neighbor.app.group.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.neighbor.app.game.entity.Game;
+import com.neighbor.app.game.service.GameService;
 import com.neighbor.app.group.entity.Group;
 import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.users.entity.UserInfo;
@@ -38,6 +40,9 @@ public class GroupListController {
 	@Autowired
 	private WebSocketPushHandler webSocketPushHandler;
 
+	@Autowired
+	private GameService gameService;
+
 	@RequestMapping(value = "/primaryModalView.ser")
 	public String primaryModalView(Long id, String modifyModel, Model model) throws Exception {
 		logger.debug("primaryModalView request:" + id + ",model:" + model);
@@ -52,8 +57,9 @@ public class GroupListController {
 			}
 			model.addAttribute("modifyInfo", group);
 		} 
-
+		List<Game> gameList = gameService.selectPageByObjectForList(new Game());
 		model.addAttribute("modifyModel", modifyModel);
+		model.addAttribute("gameList", gameList);
 		logger.debug("primaryModalView model : " + model);
 
 		return "page/groupList/ModifyModal";
@@ -140,6 +146,7 @@ public class GroupListController {
 		List<Group> pageList = groupService.selectPageByObjectForList(query);
 		Group temp = pageList.get(0);
 		temp.setEnterUserId(userInfo.getId());
+		temp.setGame(null);
 		webSocketPushHandler.groupRefreshNotice(user.getId(),userInfo.getId(), JSON.toJSONString(temp));
 		GroupMsgPushHandler.addGroupSessions(userInfo.getId(),group.getId());
 		return new ResponseResult();

@@ -21,6 +21,7 @@
     <result column="groupOwnerUserId" property="groupOwnerUserId" jdbcType="BIGINT" />
     <result column="show_msg_switch" property="showMsgSwitch" jdbcType="VARCHAR" />
     <result column="show_nick_name_switch" property="showNickNameSwitch" jdbcType="VARCHAR" />
+    <association property="game" resultMap="com.neighbor.app.game.dao.GameMapper.BaseResultMap" />
   </resultMap>
 
   <resultMap id="robotGroupRelationResultMap" type="com.neighbor.app.group.entity.Group" extends="BaseResultMap" >
@@ -52,6 +53,9 @@
       <if test="states != null and states.length()>0">and g.states=#{states}</if>
       <if test="gameId != null">and g.game_id=#{gameId}</if>
       <if test="redPackAmountLimit != null">and g.red_pack_amount_limit=#{redPackAmountLimit}</if>
+      <if test="gameType != null and gameType.length()>0 " >
+        and ge.game_type=#{gameType,jdbcType=VARCHAR}
+      </if>
     </where>
   </sql>
 
@@ -65,7 +69,7 @@
   <select id="selectPageByObjectForList" parameterType="com.neighbor.app.group.entity.Group"
           resultMap="FullResultMap">
     select
-    g.*
+    g.*,ge.*
     ,(select gm.user_id from group_member gm where g.id=gm.group_id and gm.member_type=1 limit 1) as groupOwnerUserId
     <if test="userId != null" >
        ,gm.show_msg_switch,gm.show_nick_name_switch
@@ -77,9 +81,7 @@
     <if test="userId != null" >
       INNER JOIN group_member gm on g.id=gm.group_id and gm.user_id=#{userId,jdbcType=BIGINT}
     </if>
-    <if test="gameType != null and gameType.length()>0 " >
-      INNER JOIN game ge on  g.game_id = ge.id and ge.game_type=#{gameType,jdbcType=VARCHAR}
-    </if>
+    INNER JOIN game ge on  g.game_id = ge.id
     <include refid="dynamicWhere" />
     order by g.create_time
     limit #{pageTools.rowIndex},#{pageTools.pageSize}

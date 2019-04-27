@@ -37,6 +37,11 @@ public class GroupServiceImpl implements GroupService {
         group.setUserId(user.getId());
         Long total = groupMapper.selectPageTotalCount(group);
         List<Group> pageList = groupMapper.selectPageByObjectForList(group);
+        if(pageList!=null&&pageList.size()>0){
+            for(Group group1 : pageList){
+                group1.setGame(null);
+            }
+        }
         PageTools pageTools = group.getPageTools();
         pageTools.setTotal(total);
         result.addBody("resultList", pageList);
