@@ -16,6 +16,7 @@ public interface GroupMemberMapper {
 
     int updateByPrimaryKeySelective(GroupMember record);
 
+    int cleanCustomerAll(GroupMember record);
 
     Long selectPageTotalCount(GroupMember record);
 

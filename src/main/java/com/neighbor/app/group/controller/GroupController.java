@@ -41,6 +41,15 @@ public class GroupController {
         return result;
     }
 
+    @RequestMapping(value = "/groupCustomer.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult groupCustomer(Group group) throws Exception{
+        logger.info("group >>>> " + group);
+        ResponseResult result  = groupService.groupCustomer(group);
+        return result;
+    }
+
+
     @RequestMapping(value = "/chatInfo.req",method= RequestMethod.POST)
     @ResponseBody
     public ResponseResult chatInfo(@ModelAttribute("user") UserInfo user, GroupMember groupMember, PageTools pageTools) throws Exception{

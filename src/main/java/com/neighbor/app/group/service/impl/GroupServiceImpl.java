@@ -13,8 +13,10 @@ import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -95,6 +97,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public ResponseResult chatSetting(GroupMember groupMember) throws Exception {
         ResponseResult result = new ResponseResult();
+        if("1".equals(groupMember.getIsCustomer())){
+            groupMemberMapper.cleanCustomerAll(groupMember);
+        }
         groupMemberMapper.updateByPrimaryKeySelective(groupMember);
         return result;
     }
@@ -370,7 +375,23 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
-	@Override
+    @Override
+    public ResponseResult groupCustomer(Group group) {
+        ResponseResult result = new ResponseResult();
+        GroupMember groupMember = new GroupMember();
+        groupMember.setGroupId(group.getGroupId());
+        groupMember.setIsCustomer("1");//查询群客服
+        List<GroupMember> groupMemberList = groupMemberMapper.selectBySelective(groupMember);
+        if(groupMemberList!=null&&groupMemberList.size()>0){
+            result.addBody("customerUserId",groupMemberList.get(0).getUserId());
+        }else{
+            result.setErrorCode(ErrorCodeDesc.failed.getValue());
+            result.setErrorMessage("未获取到群客服信息");
+        }
+        return result;
+    }
+
+    @Override
 	public List<GroupMember> selectRobotGroupMemberBy(GroupMember member) {
 		return groupMemberMapper.selectRobotGroupMemberBy(member); 
 	}

@@ -52,6 +52,16 @@ public class GroupMember {
     private Group group;
     private UserWallet wallet;
 
+    private String isCustomer; //1是，0不是;
+
+    public String getIsCustomer() {
+        return isCustomer;
+    }
+
+    public void setIsCustomer(String isCustomer) {
+        this.isCustomer = isCustomer;
+    }
+
     public UserInfo getUser() {
 		return user;
 	}

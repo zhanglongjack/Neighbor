@@ -64,7 +64,7 @@
           resultMap="FullResultMap">
     select t.*,u.nick_name as friendNickName,f.friend_desc as friendDesc,u.real_name as friendName,u.user_photo as friendHeadUrl
     from chat_list t inner join users_info u on t.friend_id = u.id
-    INNER JOIN friend f on t.user_id = f.user_id and t.friend_id = f.friend_user_id
+    LEFT JOIN friend f on t.user_id = f.user_id and t.friend_id = f.friend_user_id
     <include refid="dynamicWhere" />
     order by t.topping_flag desc,t.last_chat_date_time desc
     limit #{pageTools.rowIndex},#{pageTools.pageSize}

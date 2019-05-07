@@ -50,3 +50,5 @@ INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`re
 INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`remarke`) VALUES (14,'顺子','2',1,NULL,'ruleSubType','游戏子规则');
 INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`remarke`) VALUES (15,'同数','3',1,NULL,'ruleSubType','游戏子规则');
 
+alter table group_member add is_customer varchar(2) DEFAULT '0' COMMENT '是否是群客服（1是，0不是）';
+update group_member set is_customer = '1' where member_type = '1';

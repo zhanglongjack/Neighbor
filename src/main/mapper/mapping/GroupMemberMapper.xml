@@ -14,6 +14,7 @@
     <result column="states" property="states" jdbcType="VARCHAR" />
     <result column="automatic_grab_switch" property="automaticGrabSwitch" jdbcType="VARCHAR" />
     <result column="topping_flag" property="toppingFlag" jdbcType="VARCHAR" />
+    <result column="is_customer" property="isCustomer" jdbcType="VARCHAR" />
   </resultMap>
 
   <resultMap id="FullResultMap" type="com.neighbor.app.group.entity.GroupMember" extends="BaseResultMap" >
@@ -31,7 +32,7 @@
 
   <sql id="Base_Column_List" >
     id, create_time, update_time, group_id, user_id, member_type, show_msg_switch, show_nick_name_switch, 
-    unread_message_num, states, automatic_grab_switch, topping_flag
+    unread_message_num, states, automatic_grab_switch, topping_flag,is_customer
   </sql>
 
   <sql id="dynamicWhere">
@@ -48,6 +49,7 @@
       <if test="states != null and states.length()>0">and t.states=#{states}</if>
       <if test="automaticGrabSwitch != null and automaticGrabSwitch.length()>0">and t.automatic_grab_switch=#{automaticGrabSwitch}</if>
       <if test="toppingFlag != null and toppingFlag.length()>0">and t.topping_flag=#{toppingFlag}</if>
+      <if test="isCustomer != null and isCustomer.length()>0">and t.is_customer=#{isCustomer}</if>
     </where>
   </sql>
 
@@ -156,6 +158,9 @@
       <if test="toppingFlag != null" >
         topping_flag,
       </if>
+      <if test="isCustomer != null" >
+        is_customer,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -193,6 +198,9 @@
       </if>
       <if test="toppingFlag != null" >
         #{toppingFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="isCustomer != null" >
+        #{isCustomer,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -232,8 +240,15 @@
       <if test="toppingFlag != null" >
         topping_flag = #{toppingFlag,jdbcType=VARCHAR},
       </if>
+      <if test="isCustomer != null" >
+        is_customer = #{isCustomer,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="cleanCustomerAll" parameterType="com.neighbor.app.group.entity.GroupMember" >
+    update `group_member` set is_customer = '0' where group_id = #{groupId,jdbcType=BIGINT}
   </update>
 
 </mapper>

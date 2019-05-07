@@ -62,4 +62,5 @@ public interface GroupService {
 
 	Long selectPageTotalCountByRobotGroupRelation(Group queryObject);
 
+    ResponseResult groupCustomer(Group group);
 }
