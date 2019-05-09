@@ -333,6 +333,7 @@ public class GroupServiceImpl implements GroupService {
         GroupMember groupMember = new GroupMember();
         groupMember.setGroupId(group.getId());
         groupMember.setMemberType("1");//群主
+        groupMember.setIsCustomer("1");//客服
         groupMember.setUserId(group.getGroupOwnerUserId());
         groupMember.setCreateTime(date);
         groupMemberMapper.insertSelective(groupMember);

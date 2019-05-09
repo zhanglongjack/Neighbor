@@ -24,4 +24,6 @@ public interface FriendService {
 
    public ResponseResult listFriendApplyRecord(UserInfo user, FriendApply friendApply) throws Exception;
 
+   public void contactFriend(Long userId,Long friendUserId) throws Exception;
+
 }

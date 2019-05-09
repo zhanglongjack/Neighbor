@@ -187,6 +187,26 @@ public class FriendServiceImpl implements FriendService {
 
     }
 
+    public void contactFriend(Long userId,Long friendUserId) throws Exception{
+        Date currentTime = new Date();
+        Friend friendActive = new Friend();
+        friendActive.setCreateTime(currentTime);
+        friendActive.setUpdateTime(currentTime);
+        friendActive.setContactDate(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
+        friendActive.setContactTime(DateUtils.formatDateStr(currentTime, DateFormateType.SHORT_FORMAT));
+        friendActive.setStates(FriendStatesDesc.normal.getDes());
+        friendActive.setAddDirection(FriendApply.AddDirectionDesc.activeAdd.getValue());
+        friendActive.setAddType(FriendApply.AddTypeDesc.appAdd.getValue());
+        friendActive.setCode(String.valueOf(userId));
+        friendActive.setUserId(userId);
+        friendActive.setFriendUserId(friendUserId);
+        insertFriend(friendActive);
+        friendActive.setId(null);
+        friendActive.setUserId(friendUserId);
+        friendActive.setFriendUserId(userId);
+        insertFriend(friendActive);
+    }
+
     public void deleteFriendApplyByPrimaryKey(Long id) throws Exception {
         friendApplyMapper.deleteByPrimaryKey(id);
     }

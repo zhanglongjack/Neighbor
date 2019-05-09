@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
+import com.neighbor.app.friend.service.FriendService;
 import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,9 @@ public class LoginController {
 	private SocketMessageService socketMessageService;
 	@Autowired
 	private SysNoticeService sysNoticeService;
+
+	@Autowired
+	private FriendService friendService;
 	
 	
 	
@@ -165,6 +169,8 @@ public class LoginController {
 			record.setUpUserId(userUp.getId());
 
 			user = userService.builderUserInfo(record);
+			//互为好友
+			friendService.contactFriend(user.getId(),userUp.getId());
 
 		} else if (!isValid) {
 			logger.info("验证吗输入错误");
