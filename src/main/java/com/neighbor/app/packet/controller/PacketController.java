@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.neighbor.app.commission.entity.CommissionHandleTask;
 import com.neighbor.app.group.entity.Group;
 import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.packet.constants.PacketContainer;
@@ -40,6 +41,8 @@ public class PacketController {
 	private GroupService groupService;
 	@Autowired
 	private BlockingQueue<GrapPacketData> taskQueue;
+	@Autowired
+	private BlockingQueue<CommissionHandleTask> commisionHandleTaskQueue;
 	
 	@RequestMapping(value = "/sendPacket.req", method = RequestMethod.POST)
 	@ResponseBody
@@ -85,7 +88,14 @@ public class PacketController {
 	@ResponseBody
 	public ResponseResult grabPacekt(@ModelAttribute("user") UserInfo user, Packet packet,Long gameId) throws Exception {
 		logger.info("grabPacekt request :packet== {},user =={}" , packet,user);
-		return packetService.grabPacekt(packet,user,gameId);
+		ResponseResult result = packetService.grabPacekt(packet,user,gameId);
+		CommissionHandleTask task = (CommissionHandleTask) result.getBody().get("task");
+		if(task!=null){
+			logger.info("添加分佣任务:{}",task);
+			commisionHandleTaskQueue.offer(task);
+		}
+		
+		return result;
 	}
 	
 	@RequestMapping(value = "/queryNewestPacketInfo.req", method = RequestMethod.POST)

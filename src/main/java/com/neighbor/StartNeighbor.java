@@ -38,7 +38,7 @@ public class StartNeighbor {
 	
 	@Bean
 	public BlockingQueue<GrapPacketData> getRobotQueue() {
-		return new LinkedBlockingQueue<GrapPacketData>(2);
+		return new LinkedBlockingQueue<GrapPacketData>(1000);
 	}
 	
 	@Bean

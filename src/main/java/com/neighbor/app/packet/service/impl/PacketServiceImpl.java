@@ -3,7 +3,6 @@ package com.neighbor.app.packet.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,8 +64,6 @@ public class PacketServiceImpl implements PacketService {
 	private RobotConfigService robotConfigService; 
     @Autowired
     private Environment env;
-	@Autowired
-	private BlockingQueue<CommissionHandleTask> commisionHandleTaskQueue;
 	@Autowired
 	private CommissionHandleTaskService commissionHandleTaskService;
 	@Autowired
@@ -194,7 +191,7 @@ public class PacketServiceImpl implements PacketService {
 		logger.info("开始锁表,红包id:{}",cachePacket.getId());
 		Long packetId = packet.getId().longValue();
 		synchronized (packetId) {
-			Packet lockPacket = lockPacketByPrimaryKey(cachePacket.getId());
+			Packet lockPacket = lockPacketByPrimaryKey(packetId);
 			computePacketRemain(lockPacket);
 			logger.info("红包编号:{},上锁后再检查实际是否还有剩余红包数:[{}]",lockPacket.getId(),lockPacket.remainSize);
 			resultResp = checLeftoverPacket(lockPacket.getStatus(),lockPacket,user.getId());
@@ -211,15 +208,10 @@ public class PacketServiceImpl implements PacketService {
 	
 	//		String randomAmounts[] = lockPacket.getRandomAmountList();
 	//		detail.setGotAmount(new BigDecimal(randomAmounts[lockPacket.getCollectedNum()]));
-			double resultNum = 0;
-			if(robot!=null){
-				resultNum = RedPackageUtil.getRandomMoney(lockPacket, robot.isHit());
-				if(resultNum==0){
-					logger.info("机器人抢红包中雷概率未中");
-					return  new ResponseResult();
-				}
-			}else{
-				resultNum = RedPackageUtil.getRandomMoney(lockPacket, true);
+			double resultNum = RedPackageUtil.getRandomMoney(lockPacket, robot==null?true:robot.isHit());
+			if(resultNum==0){
+				logger.info("最后一个红包,机器人抢红包中雷概率未中,不抢");
+				return  new ResponseResult();
 			}
 			
 			detail.setGotAmount(BigDecimalUtil.rounding(resultNum));
@@ -236,17 +228,7 @@ public class PacketServiceImpl implements PacketService {
 			logger.info("是否需要分佣检查:"+detail);
 			logger.info("用户检查:"+user);
 			logger.info("群成员检查:"+member);
-			if( lockPacket.getUserId() != user.getId() && detail.isFree()){
-				logger.info("开始添加分佣任务");
-				CommissionHandleTask task = new CommissionHandleTask();
-				task.setGroupMasterUId(user.getId());
-				task.setUserId(lockPacket.getUserId());
-				task.setSplitAmount(detail.getGotAmount());
-				task.setGameId(gameId);
-				commissionHandleTaskService.insert(task);
-				commisionHandleTaskQueue.offer(task); 
-				//handleFreePacketCommission(detail,gameId,lockPacket.getUserId());
-			}
+
 			lockPacket.addDetail(detail);
 			packetDetailMapper.insertSelective(detail);
 			logger.info("抢到的红包是[{}]尾数是[{}]信息:{},",num,Integer.parseInt(num.substring(num.length()-1)),detail);
@@ -266,13 +248,32 @@ public class PacketServiceImpl implements PacketService {
 			
 			packetContainer.put(lockPacket.getId(), lockPacket);
 			
+			CommissionHandleTask task=addCommissionTask(gameId, lockPacket, detail);
+			
 			resultResp.addBody("packet", lockPacket);
 			resultResp.addBody("wallet", lastWallet);
+			resultResp.addBody("task", task);
+		
+			logger.info("抢红包完成");
+			return resultResp;
 		}
-		logger.info("抢红包完成");
-		return resultResp;
 	}
 
+	private CommissionHandleTask addCommissionTask(Long gameId, Packet lockPacket, PacketDetail detail) {
+		if( lockPacket.getUserId() != detail.getGotUserId() && detail.isFree()){
+			logger.info("开始添加分佣任务记录");
+			CommissionHandleTask task = new CommissionHandleTask();
+			task.setGroupMasterUId(detail.getGotUserId());
+			task.setUserId(lockPacket.getUserId());
+			task.setSplitAmount(detail.getGotAmount());
+			task.setGameId(gameId);
+			commissionHandleTaskService.insert(task);
+			//commisionHandleTaskQueue.offer(task); 
+			//handleFreePacketCommission(detail,gameId,lockPacket.getUserId());
+			return task;
+		}
+		return null;
+	}
 
 	private void grapPacketHandle(UserInfo user, UserWallet lastWallet, PacketDetail detail) {
 		lastWallet.setAvailableAmount(lastWallet.getAvailableAmount().add(detail.getGotAmount()));
@@ -445,6 +446,14 @@ public class PacketServiceImpl implements PacketService {
 		ResponseResult resultResp = new ResponseResult();
 		resultResp.addBody("packet", packet);
 		PacketStatus status = PacketStatus.valueOf(statusStr);
+		for(PacketDetail detail : packet.getDetailList()){
+			if((long)detail.getGotUserId() == (long)userId){
+				logger.info("红包被抢过了");
+				resultResp.setErrorCode(3);
+				resultResp.setErrorMessage("红包被抢过了");
+				return resultResp;
+			}
+		}
 		
 		if(status != PacketStatus.collected&&status != PacketStatus.uncollected){
 			logger.info("红包已过期");
@@ -457,15 +466,6 @@ public class PacketServiceImpl implements PacketService {
 			resultResp.setErrorCode(4);
 			resultResp.setErrorMessage("红包已抢完");
 			return resultResp;
-		}
-		
-		for(PacketDetail detail : packet.getDetailList()){
-			if((long)detail.getGotUserId() == (long)userId){
-				logger.info("红包被抢过了");
-				resultResp.setErrorCode(3);
-				resultResp.setErrorMessage("红包被抢过了");
-				return resultResp;
-			}
 		}
 		
 		return resultResp;
@@ -549,6 +549,7 @@ public class PacketServiceImpl implements PacketService {
 		userWalletService.updateWalletAmount(wallet);
 		
 		packetMapper.updateByPrimaryKeySelective(lockPacket);
+		packetContainer.put(lockPacket.getId(), lockPacket);
 		
 		logger.info("添加更新余额的消息通知"); 
 		socketMessageService.walletRefreshNotice(null, lockPacket.getUserId(), "系统通知");

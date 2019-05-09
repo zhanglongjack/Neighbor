@@ -34,9 +34,9 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 	private PacketService packetService;
 	@Autowired
 	private UserService userService;
-
-	private final static ExecutorService fixedThreadPool = Executors.newFixedThreadPool(100);
 	
+	private final static ExecutorService fixedThreadPool = Executors.newFixedThreadPool(100);
+
 	@Override
 	public int insertSelective(RobotConfig record) {
 		return robotConfigMapper.insertSelective(record);
@@ -63,7 +63,7 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 	}
 	
 	@Override
-	public void robotGrapPacket(GrapPacketData data){
+	public void robotGrapPacket(GrapPacketData data,int robotGrapSleepSeconds){
 		logger.info("队列开始抢红包:{}",data);
 		
 		GroupMember memberParam = new GroupMember();
@@ -87,15 +87,12 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 						UserInfo user = null;
 						try {
 							user = userService.selectByPrimaryKey(member.getUserId());
-							int second = RandomUtil.getRandomBy(100 * 200)+500;
-							logger.info("机器编号{},睡眠:{}",user.getRobotSno(),(second));
-							Thread.sleep(second);// 睡second毫秒后抢
+							int second = RandomUtil.getRandomBy(robotGrapSleepSeconds)+1;
+							logger.info("机器编号{},睡眠:{}秒",user.getRobotSno(),(second));
+							Thread.sleep(second*1000);// 睡second毫秒后抢
 							
 							ResponseResult result = packetService.grabPacekt(data.getPacket(), user, data.getGameId());
 							logger.info("机器编号{}抢完红包的信息:{}",user.getRobotSno(),result);
-							if (result.getErrorCode() == 0) {
-								
-							}
 						} catch (Exception e) {
 							e.printStackTrace();
 							logger.error("异常的机器人抢包用户:" + user);

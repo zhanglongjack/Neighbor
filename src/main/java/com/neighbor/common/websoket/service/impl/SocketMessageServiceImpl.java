@@ -231,7 +231,6 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		socketMessage.setMsgType(WebSocketMsgType.FORCE_OFFLINE_NOTICE+""); 
 		socketMessage.setChatType(WebSocketChatType.single+"");
 		socketMessage.setSendNickName("system");
-		
 		return buildMessage(socketMessage, null, null);
 	}
 	
@@ -266,8 +265,8 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		String uuid = UUID.randomUUID().toString().replaceAll("-","");
 		socketMessage.setSendUserId(sendUserId);
 		socketMessage.setTargetUserId(targetUserId);
-		socketMessage.setContent("系统通知:"+socketMessage.getMsgType());
 		socketMessage.setMasterMsgType("2");
+		socketMessage.setContent(socketMessage.getContent()==null?"系统通知:"+socketMessage.getMsgType():socketMessage.getContent());
 		socketMessage.setHeader(buildHeaderInfo(uuid));
 		socketMessage.setRequestId(uuid);
 		socketMessage.setStatus(MessageStatus.pushed_response+"");

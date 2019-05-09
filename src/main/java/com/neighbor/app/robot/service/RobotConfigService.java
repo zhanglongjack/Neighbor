@@ -17,7 +17,7 @@ public interface RobotConfigService {
 
     List<RobotConfig> selectPageByObjectForList(RobotConfig record);
 
-	void robotGrapPacket(GrapPacketData data);
+	void robotGrapPacket(GrapPacketData data, int robotGrapSleepSeconds);
 
 	void batchUpdateRobotStatus(Long[] ids, int status);
 

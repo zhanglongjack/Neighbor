@@ -20,6 +20,8 @@ public class GrapPacketConsumer implements ApplicationRunner,Runnable {
 	@Autowired
 	private RobotConfigService robotConfigService;
 	
+	private final static int ROBOT_GRAP_SLEEP_SECONDS = 4;// 机器人抢包休眠时间
+	private final static int ROBOT_GRAP_QUEUE_HANDLE_SIZE = 30;// 机器人抢包休眠时间
 	private static boolean isRunning = true;
 //	@SuppressWarnings("unchecked")
 //	public Consumer() {
@@ -34,9 +36,10 @@ public class GrapPacketConsumer implements ApplicationRunner,Runnable {
 				try {
 					logger.info("开始取队列数据");
 					GrapPacketData data = robotQueue.take();
-					logger.info("检查是否获得队列数据:{}",data);
+					logger.info("队列当前堆积数:{},检查是否获得队列数据:{}",robotQueue.size(),data);
 					if (null != data) {
-						robotConfigService.robotGrapPacket(data);
+						int seconds = robotQueue.size()>ROBOT_GRAP_QUEUE_HANDLE_SIZE?1:ROBOT_GRAP_SLEEP_SECONDS;
+						robotConfigService.robotGrapPacket(data,seconds);
 					}
 				} catch (Exception e) {
 					logger.error("机器队列消费异常",e);

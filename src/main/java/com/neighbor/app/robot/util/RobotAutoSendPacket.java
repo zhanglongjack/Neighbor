@@ -55,8 +55,6 @@ public class RobotAutoSendPacket {
 					List<GroupMember> memberList = groupService.selectRobotGroupMemberBy(null);
 
 					for (final GroupMember member : memberList) {
-						String key = getRunRobotKey(member);
-						runRobot.put(key, null);
 						addGrapRobot(member);
 					}
 				} catch (Exception e) {
@@ -84,10 +82,11 @@ public class RobotAutoSendPacket {
 						if(memberList.size()>0){
 							GroupMember readyMember=memberList.get(0);
 							String key = getRunRobotKey(readyMember);
+							logger.info("机器人运行编号:{}",key);
 							if(!runRobot.containsKey(key)){
 								addGrapRobot(readyMember);
 							}else{
-								logger.info("机器人已在运行发包中...");
+								logger.info("机器人运行编号{}已在运行发包中...",key);
 							}
 						}
 					}
@@ -101,6 +100,7 @@ public class RobotAutoSendPacket {
 	public void addGrapRobot(final GroupMember member) {
 		if (member.getRobot().getSendPacketChance().doubleValue() == 0) {
 			logger.info("机器人成员发包配置为0,表示不发包,机器人信息:{}", member.getRobot());
+			
 			return;
 		}
 		
@@ -113,7 +113,9 @@ public class RobotAutoSendPacket {
 	}
 
 	public void robotGrapPacket(GroupMember paramMember) {
-		logger.info("开始启动机器人发包线程:{}",paramMember.getRobot());
+		String key = getRunRobotKey(paramMember);
+		runRobot.put(key, null);
+		logger.info("开始启动机器人发包线程:{}",key);
 		GroupMember member = paramMember;
 		boolean isRunning = checkMemberSendPacket(member);
 		while (isRunning) {
@@ -121,9 +123,9 @@ public class RobotAutoSendPacket {
 				sendPacket(member);
 				int chance = (int) (100 - member.getRobot().getSendPacketChance()*100);
 				chance = RandomUtil.getRandomBy((int)(chance*10));
-				int seconds = (chance>10?chance:10) * 1000;
+				int seconds = (chance>10?chance:10) * 1000;//发包最少间隔10秒一次
 				try {
-					logger.info("机器人[{}]休眠[{}]毫秒后再发包",member.getUserId(),seconds);
+					logger.info("机器人{}休眠[{}]毫秒后再发包",member.getUserId(),seconds);
 					Thread.sleep(seconds);
 				} catch (Exception e) {
 				}
@@ -135,13 +137,12 @@ public class RobotAutoSendPacket {
 				}else{
 					isRunning = false;
 				}
-				logger.debug("机器人[{}]是否进行下一轮发送红包工作:{}",member.getUserId(),isRunning);
+				logger.info("机器人{}是否进行下一轮发送红包工作:{}",member.getUserId(),isRunning);
 			} catch (Exception e) { 
 				logger.error("机器人发红包异常,机器用户编号:"+member.getUserId(),e);
 			}
 		}
 		
-		String key = getRunRobotKey(member);
 		runRobot.remove(key);
 		logger.info("停止发红包的机器人:{}",key);
 
@@ -244,9 +245,9 @@ public class RobotAutoSendPacket {
 		data.setGroupId(packet.getGroupId());
 		data.setPacket(packet);
 		try {
-			logger.info("开始尝试加人机器人抢红包队列任务");
-			boolean isOk = taskQueue.offer(data);
-			logger.info("是否加入机器人抢红包队列任务中?data={},isOk={}",data, isOk);
+			logger.info("开始尝试加人机器人抢红包队列任务,队列当前剩余数量:{}",taskQueue.size());
+			taskQueue.put(data);
+			logger.info("是否加入机器人抢红包队列任务中?队列当前数量={},data={}",taskQueue.size(),data);
 		} catch (Exception e) {
 			logger.error("线程启动", e);
 		}

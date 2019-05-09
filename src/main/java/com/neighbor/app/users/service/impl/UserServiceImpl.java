@@ -48,16 +48,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public int insertSelective(UserInfo record) {
         String reCode = null;
-        boolean b = true;
+//        boolean b = true;
         for(int idx = 10;idx<=10;idx--){
             reCode = RandomUtil.getReCode();
             UserInfo userInfo = selectByReCode(reCode);
             if(userInfo == null){
-                b = false;
+//                b = false;
                 break;
             }
         }
-        record.setNickName(RandomUtil.getNickName());
+//        record.setNickName(RandomUtil.getNickName());
         record.setReCode(reCode);
         int count = userInfoMapper.insertSelective(record);
         userContainer.buildUserInfo();
@@ -126,6 +126,7 @@ public class UserServiceImpl implements UserService {
         logger.info("创建用户信息:" + record);
 
         insertSelective(record);
+        record.setNickName(record.getId()+"");
         record.setUserAccount(record.getUserAccount()==null?record.getId() + "":record.getUserAccount());
         updateByPrimaryKeySelective(record);
 
