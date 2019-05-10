@@ -52,3 +52,7 @@ INSERT INTO `dictionary` (`id`,`name`,`code`,`status`,`parent_id`,`biz_code`,`re
 
 alter table group_member add is_customer varchar(2) DEFAULT '0' COMMENT '是否是群客服（1是，0不是）';
 update group_member set is_customer = '1' where member_type = '1';
+
+alter table game add head_url varchar(500) DEFAULT null COMMENT '游戏头像图片地址';
+
+
