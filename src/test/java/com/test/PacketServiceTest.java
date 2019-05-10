@@ -38,7 +38,7 @@ import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
-import com.neighbor.common.websoket.service.SocketMessageService;
+import com.neighbor.common.websoket.dao.SocketMessageMapper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = StartNeighbor.class)
@@ -61,9 +61,22 @@ public class PacketServiceTest {
 	@Autowired
 	private UserWalletService userWalletService;
 	@Autowired
-	private SocketMessageService socketMessageService;
+	private SocketMessageMapper socketMessageMapper;
 
 	@Test
+	public void testSocketSelect(){
+		Long count = socketMessageMapper.selectWalletRefreshCountBySelective(600021l);
+		System.out.println(count);
+		
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public void testSocketMsgUpdate() throws Exception{
 		List<PacketDetail> a = packetDetailService.selectPacketDetailByPacketId(37L);
 		
@@ -85,6 +98,7 @@ public class PacketServiceTest {
 		packet.setHitNum(1);
 		packet.setUserId(600023L);
 		packet.setGroupId(100001L);
+		
 		UserWallet wallet = userWalletService.selectByPrimaryUserId(packet.getUserId());
 		packetService.sendPacket(packet, wallet);
 		

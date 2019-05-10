@@ -17,6 +17,7 @@ public class Testgit {
 			} catch (InterruptedException e) {
 			}
 		}
+		System.out.println(queue.size());
 		Thread t = new Thread() {
 			@Override
 			public void run() {
@@ -24,6 +25,7 @@ public class Testgit {
 					try {
 						Thread.sleep(1000);
 						System.out.println(queue.take());
+						System.out.println("队列剩余数量:"+queue.size());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

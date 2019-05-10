@@ -12,6 +12,7 @@ public class Game  extends PageEntity {
     private Date createTime;
     private String createTimeStr;
     private String url;
+    private String headUrl;
 
     private Date updateTime;
 
@@ -97,5 +98,28 @@ public class Game  extends PageEntity {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getHeadUrl() {
+        return headUrl;
+    }
+
+    public void setHeadUrl(String headUrl) {
+        this.headUrl = headUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "id=" + id +
+                ", createTime=" + createTime +
+                ", createTimeStr='" + createTimeStr + '\'' +
+                ", url='" + url + '\'' +
+                ", headUrl='" + headUrl + '\'' +
+                ", updateTime=" + updateTime +
+                ", gameName='" + gameName + '\'' +
+                ", gameType=" + gameType +
+                ", gameTypeStr='" + gameTypeStr + '\'' +
+                '}';
     }
 }
