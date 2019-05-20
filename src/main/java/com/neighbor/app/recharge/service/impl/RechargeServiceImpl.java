@@ -8,6 +8,7 @@ import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.balance.service.BalanceDetailService;
 import com.neighbor.app.common.util.OrderUtils;
 import com.neighbor.app.pay.common.PayUtils;
+import com.neighbor.app.pay.constants.MethodDesc;
 import com.neighbor.app.pay.entity.NotifyResp;
 import com.neighbor.app.pay.entity.PayResp;
 import com.neighbor.app.recharge.constants.ChannelTypeDesc;
@@ -65,11 +66,12 @@ public class RechargeServiceImpl implements RechargeService {
         UserWallet userWallet = userWalletService.selectByPrimaryUserId(user.getId());
         recharge.setId(null);
         recharge.setCreateTime(date);
-        recharge.setOrderNo(OrderUtils.getOrderNo(OrderUtils.RECHARGE));
+        recharge.setOrderNo(OrderUtils.getOrderNo(OrderUtils.RECHARGE,user.getId()));
         recharge.setuId(user.getId());
         recharge.setAvailableAmount(userWallet.getAvailableAmount());
         if(ChannelTypeDesc.offline.toString().equals(recharge.getChannelType())){
             recharge.setStates(RechargeStatusDesc.initial.toString());
+            recharge.setMethod(MethodDesc.offline.toString());
             rechargeMapper.insertSelective(recharge);
             //TencentSms.smsCache.remove(recharge.getPhone());
             return responseResult;

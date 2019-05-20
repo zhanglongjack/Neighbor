@@ -50,7 +50,7 @@ public class RechargeListController {
         logger.debug("withdrawList request userInfo: " +userInfo);
         if(recharge==null||recharge.getStates()==null){
             recharge = new Recharge();
-            recharge.setStates(RechargeStatusDesc.initial.toString());
+            //recharge.setStates(RechargeStatusDesc.initial.toString());
         }
         Long size = rechargeService.selectPageTotalCount(recharge);
         pageTools.setTotal(size);

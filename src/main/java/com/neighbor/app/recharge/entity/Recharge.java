@@ -6,6 +6,7 @@ import java.util.Date;
 import com.neighbor.app.balance.po.TransactionItemDesc;
 import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.common.entity.PageEntity;
+import com.neighbor.app.pay.constants.MethodDesc;
 import com.neighbor.app.recharge.constants.ChannelTypeDesc;
 import com.neighbor.app.recharge.constants.RechargeStatusDesc;
 import com.neighbor.common.util.DateFormateType;
@@ -42,12 +43,39 @@ public class Recharge  extends PageEntity{
     private String verfiyCode;
 
     private String method; //接口列表
+    private String methodDesc;
     private String body; //商品描述
     private String payState;//支付状态 支付状态 0未支付/待支付 1支付成功 2退款成功
+    private String payStateDesc;
     private String outTradeNo;//支付渠道订单号
     private String transactionId;//支付官方交易流水
     private String codeUrl;//支付二维码 支付一次无效
 
+    public String getMethodDesc() {
+        if(!StringUtils.isEmpty(method)){
+            return MethodDesc.getDesByValue(method);
+        }
+        return "线下转账";
+    }
+
+    public void setMethodDesc(String methodDesc) {
+        this.methodDesc = methodDesc;
+    }
+
+    public String getPayStateDesc() {
+        if("0".equals(payState)){
+            return "未支付";
+        }else if("1".equals(payState)){
+            return "支付成功";
+        }else if("2".equals(payState)){
+            return "退款成功";
+        }
+        return payStateDesc;
+    }
+
+    public void setPayStateDesc(String payStateDesc) {
+        this.payStateDesc = payStateDesc;
+    }
 
     public String getPayState() {
         return payState;
