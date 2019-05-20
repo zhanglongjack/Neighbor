@@ -56,3 +56,14 @@ update group_member set is_customer = '1' where member_type = '1';
 
 alter table game add head_url varchar(500) DEFAULT null COMMENT '游戏头像图片地址';
 
+alter table recharge add method varchar(50) DEFAULT null COMMENT '接口列表';
+
+alter table recharge add body varchar(500) DEFAULT null COMMENT '商品描述';
+
+alter table recharge add pay_state varchar(10) DEFAULT null COMMENT '支付状态0未支付，1已支付，2已退款';
+
+alter table recharge add out_trade_no varchar(500) DEFAULT null COMMENT '支付平台订单号';
+
+alter table recharge add transaction_id varchar(500) DEFAULT null COMMENT '支付渠道流水号';
+
+alter table recharge add code_url varchar(5000) DEFAULT null COMMENT '二维码地址';
