@@ -16,7 +16,7 @@ public interface PacketService{
 
     int updateByPrimaryKeySelective(Packet record);
 
-	public Packet sendPacket(Packet record, UserWallet wallet) throws Exception;
+    Packet sendPacket(Packet record, UserWallet wallet, UserInfo user) throws Exception;
 	
     Packet lockPacketByPrimaryKey(Long id);
 
@@ -31,6 +31,5 @@ public interface PacketService{
 	List<Packet> selectPacketBySelective(Packet packet);
 
 	void expirePacketHandle(Long packetId);
-
 
 }

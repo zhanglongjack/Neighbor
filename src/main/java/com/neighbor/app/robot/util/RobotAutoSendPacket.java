@@ -14,7 +14,6 @@ import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.neighbor.app.common.util.RandomUtil;
@@ -24,6 +23,7 @@ import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.packet.service.PacketService;
 import com.neighbor.app.robot.entity.GrapPacketData;
 import com.neighbor.app.robot.entity.RobotConfig;
+import com.neighbor.common.constants.CommonConstants;
 import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.websoket.util.GroupMsgPushHandler;
 
@@ -39,16 +39,16 @@ public class RobotAutoSendPacket {
 	@Autowired
 	private BlockingQueue<GrapPacketData> taskQueue;
     @Autowired
-    private Environment env;
+    private CommonConstants commonConstants;
     
-	private static double limitAmount;
+	//private static double limitAmount;
 //	private static int sleepChance = 300;
 	private static int threadPoolSize = 300;
 	private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(threadPoolSize);
 	private static Map<String,Long> runRobot = new HashMap<>();
 	@PostConstruct
 	public void init() {
-		limitAmount = Double.parseDouble(env.getProperty(EnvConstants.ROBOT_SEND_LIMIT_AMOUNT));
+		//limitAmount = Double.parseDouble(env.getProperty(EnvConstants.ROBOT_SEND_LIMIT_AMOUNT));
 		fixedThreadPool.execute(new Runnable() {
 			public void run() {
 				try {
@@ -155,6 +155,11 @@ public class RobotAutoSendPacket {
 			logger.info("本次不发送红包:{}",member);
 			return;
 		}
+		
+		String packetBaseNum = commonConstants.getDictionarysBy(EnvConstants.PACKET_CONF, EnvConstants.PACEKT_BASE_NUM);
+		String paidRate = commonConstants.getDictionarysBy(EnvConstants.PACKET_CONF, EnvConstants.PACKET_HIT_RATE);
+		
+		
 		logger.info("开始配置发红包信息");
 		String limit[] = member.getGroup().getRedPackAmountLimit().split("-");
 		int begin = Integer.parseInt(limit[0]);
@@ -163,14 +168,14 @@ public class RobotAutoSendPacket {
 		Packet packet = new Packet();
 		packet.setAmount(new BigDecimal(randomNum));
 		packet.setHitNum(RandomUtil.getRandomBy(10));
-		packet.setPacketNum(7);
+		packet.setPacketNum(Integer.parseInt(packetBaseNum));
 		packet.setUserId(member.getUserId());
 		packet.setGroupId(member.getGroupId());
 		packet.setHeadUrl(member.getUser().getUserPhoto());
 		packet.setNickName(member.getUser().getNickName());
-
+		packet.setPaidRate(new BigDecimal(paidRate));
 		try {
-			Packet resultPacket = packetService.sendPacket(packet, member.getWallet());
+			Packet resultPacket = packetService.sendPacket(packet, member.getWallet(),member.getUser());
 			groupMsgPushHandler.pushMessageToGroup(packet);
 			addGrapPacketTask(member.getGroupId(), member.getGroup().getGameId(), resultPacket);
 		} catch (Exception e) {
@@ -181,8 +186,10 @@ public class RobotAutoSendPacket {
 	}
 
 	private boolean checkMemberSendPacket(GroupMember member) {
+		String limitAmountStr = commonConstants.getDictionarysBy(EnvConstants.PACKET_CONF, EnvConstants.ROBOT_SEND_LIMIT_AMOUNT);
+		BigDecimal limitAmount = new BigDecimal(limitAmountStr);
 		return member.getRobot().getStatus()==1 && member.getRobot().getSendPacketChance()>0 &&
-				member.getWallet().getAvailableAmount().doubleValue() >= limitAmount;
+				member.getWallet().getAvailableAmount().doubleValue() >= limitAmount.doubleValue();
 	}
 
 	/**

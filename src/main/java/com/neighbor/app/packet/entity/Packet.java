@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neighbor.app.common.entity.PageEntity;
+import com.neighbor.app.common.util.RandomUtil;
 
 public class Packet extends PageEntity{
     private Long id;
@@ -32,6 +33,10 @@ public class Packet extends PageEntity{
     private String status;
     
     private Integer collectedNum;
+    
+	private Double hitChance; // 中雷概率
+	
+	private BigDecimal paidRate; // 赔付率
 
     private String remarke;
     private String nickName;
@@ -159,6 +164,26 @@ public class Packet extends PageEntity{
 		this.collectedNum = collectedNum;
 	}
 
+	public Double getHitChance() {
+		return hitChance;
+	}
+
+	public void setHitChance(Double hitChance) {
+		this.hitChance = hitChance;
+	}
+	
+	public boolean isHit() {
+		return hitChance!=null && RandomUtil.getRandomBy(100)+1 <= hitChance * 100;
+	}
+	
+	public BigDecimal getPaidRate() {
+		return paidRate;
+	}
+
+	public void setPaidRate(BigDecimal paidRate) {
+		this.paidRate = paidRate;
+	}
+
 	public String getRemarke() {
         return remarke;
     }
@@ -232,14 +257,10 @@ public class Packet extends PageEntity{
 	@Override
 	public String toString() {
 		return String.format(
-				"Packet [id=%s, userId=%s, headUrl=%s, receiveUserId=%s, groupId=%s, amount=%s, packetNum=%s, hitNum=%s, sendDate=%s, sendTime=%s, status=%s, collectedNum=%s, remarke=%s, nickName=%s, randomAmount=%s, randomAmountList=%s, detailList=%s, createYear=%s, groupIdIsNotNull=%s, sendDateLess=%s, sendTimeLess=%s]",
+				"Packet [id=%s, userId=%s, headUrl=%s, receiveUserId=%s, groupId=%s, amount=%s, packetNum=%s, hitNum=%s, sendDate=%s, sendTime=%s, status=%s, collectedNum=%s, hitChance=%s, remarke=%s, nickName=%s, remainSize=%s, remainMoney=%s, randomAmount=%s, randomAmountList=%s, detailList=%s, createYear=%s, groupIdIsNotNull=%s, sendDateLess=%s, sendTimeLess=%s]",
 				id, userId, headUrl, receiveUserId, groupId, amount, packetNum, hitNum, sendDate, sendTime, status,
-				collectedNum, remarke, nickName, randomAmount, Arrays.toString(randomAmountList), detailList,
-				createYear, groupIdIsNotNull, sendDateLess, sendTimeLess);
+				collectedNum, hitChance, remarke, nickName, remainSize, remainMoney, randomAmount,
+				Arrays.toString(randomAmountList), detailList, createYear, groupIdIsNotNull, sendDateLess,
+				sendTimeLess);
 	}
-
-
-
-
-    
 }

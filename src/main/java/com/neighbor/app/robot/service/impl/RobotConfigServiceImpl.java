@@ -87,10 +87,11 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 						UserInfo user = null;
 						try {
 							user = userService.selectByPrimaryKey(member.getUserId());
-							int second = RandomUtil.getRandomBy(robotGrapSleepSeconds)+1;
+							int second = RandomUtil.getRandomBy(robotGrapSleepSeconds);
 							logger.info("机器编号{},睡眠:{}秒",user.getRobotSno(),(second));
-							Thread.sleep(second*1000);// 睡second毫秒后抢
-							
+							if(second>0){
+								Thread.sleep(second*1000);// 睡second毫秒后抢
+							}
 							ResponseResult result = packetService.grabPacekt(data.getPacket(), user, data.getGameId());
 							logger.info("机器编号{}抢完红包的信息:{}",user.getRobotSno(),result);
 						} catch (Exception e) {

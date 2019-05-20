@@ -66,7 +66,6 @@ public class CommonConstants implements ApplicationListener<ContextRefreshedEven
 	}
 	
 	public Map<String, String> getDictionarysByKey(String bizCode){
-		
 		return dictionaryMap.get(bizCode);
 	}
 	
