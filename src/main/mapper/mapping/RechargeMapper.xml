@@ -13,9 +13,16 @@
     <result column="states" jdbcType="CHAR" property="states" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="screenshot" jdbcType="VARCHAR" property="screenshot" />
+    <result column="method" jdbcType="VARCHAR" property="method" />
+    <result column="body" jdbcType="VARCHAR" property="body" />
+    <result column="pay_state" jdbcType="VARCHAR" property="payState" />
+    <result column="out_trade_no" jdbcType="VARCHAR" property="outTradeNo" />
+    <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
+    <result column="code_url" jdbcType="VARCHAR" property="codeUrl" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_no, create_time, update_time, u_id, channel_type, amount,available_amount, states, remarks,screenshot
+    id, order_no, create_time, update_time, u_id, channel_type, amount,available_amount, states, remarks
+    ,screenshot,method,method,pay_state,out_trade_no,transaction_id,code_url
   </sql>
   
   <sql id="dynamicWhere">
@@ -26,7 +33,9 @@
 			<if test="states != null and states.length()>0">and states=#{states}</if>
 			<if test="orderNo != null and orderNo.length()>0">and order_no=#{orderNo}</if>
             <if test="screenshot != null and screenshot.length()>0">and screenshot=#{screenshot}</if>
-		</where>
+            <if test="payState != null and payState.length()>0">and pay_state=#{payState}</if>
+          <if test="outTradeNo != null and outTradeNo.length()>0">and out_trade_no=#{outTradeNo}</if>
+        </where>
 	</sql>
 	
   <select id="selectAll" resultMap="BaseResultMap">
@@ -61,6 +70,15 @@
     from recharge
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <select id="selectByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from recharge
+    where order_no = #{orderNo,jdbcType=VARCHAR}
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from recharge
     where id = #{id,jdbcType=BIGINT}
@@ -102,6 +120,26 @@
       <if test="screenshot != null">
         screenshot,
       </if>
+
+      <if test="method != null">
+        method,
+      </if>
+      <if test="body != null">
+        body,
+      </if>
+      <if test="payState != null">
+        pay_state,
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no,
+      </if>
+      <if test="transactionId != null">
+        transaction_id,
+      </if>
+      <if test="codeUrl != null">
+        code_url,
+      </if>
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -137,6 +175,25 @@
       <if test="screenshot != null">
         #{screenshot,jdbcType=VARCHAR},
       </if>
+
+      <if test="method != null">
+        #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null">
+        #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="payState != null">
+        #{payState,jdbcType=VARCHAR},
+      </if>
+      <if test="outTradeNo != null">
+        #{outTradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="codeUrl != null">
+        #{codeUrl,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.recharge.entity.Recharge">
@@ -171,6 +228,25 @@
       </if>
       <if test="screenshot != null">
         screenshot = #{screenshot,jdbcType=VARCHAR},
+      </if>
+
+      <if test="method != null">
+        method = #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null">
+        body = #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="payState != null">
+        pay_state = #{payState,jdbcType=VARCHAR},
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        transaction_id = #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="codeUrl != null">
+        code_url = #{codeUrl,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

@@ -16,7 +16,7 @@ public class RandomUtil {
 		return result;
 	}
 	public static String getNickName(){
-		return "好领居玩家_"+getRandomBy(1000000);
+		return "好领居玩家_"+getRandomBy(0);
 	}
 
 	public static synchronized String getReCode(){

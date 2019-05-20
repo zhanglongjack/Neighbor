@@ -23,6 +23,8 @@ import com.neighbor.app.robot.entity.GrapPacketData;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
+import com.neighbor.common.constants.CommonConstants;
+import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 
@@ -43,6 +45,8 @@ public class PacketController {
 	private BlockingQueue<GrapPacketData> taskQueue;
 	@Autowired
 	private BlockingQueue<CommissionHandleTask> commisionHandleTaskQueue;
+	@Autowired
+	private CommonConstants commonConstants;
 	
 	@RequestMapping(value = "/sendPacket.req", method = RequestMethod.POST)
 	@ResponseBody
@@ -51,7 +55,7 @@ public class PacketController {
 		packet.setNickName(user.getNickName());
 		logger.info("sendPacket request : " + packet);
 		UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
-		Packet resultPacket = packetService.sendPacket(packet,wallet);
+		Packet resultPacket = packetService.sendPacket(packet,wallet,user);
 		ResponseResult result = new ResponseResult();
 		result.addBody("wallet", wallet);
 		if(resultPacket!=null){
@@ -134,12 +138,17 @@ public class PacketController {
 		return result;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
+	@RequestMapping(value = "/packetBaseInitInfo.req",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseResult packetBaseInitInfo() {
+		logger.info("packetBaseInitInfo request "); 
+		String packetNumber = commonConstants.getDictionarysBy(EnvConstants.PACKET_CONF, EnvConstants.PACEKT_BASE_NUM);
+		String paidRate = commonConstants.getDictionarysBy(EnvConstants.PACKET_CONF, EnvConstants.PACKET_HIT_RATE);
+		ResponseResult result = new ResponseResult();
+		result.addBody("packetNumber", packetNumber);
+		result.addBody("paidRate", paidRate);
+		logger.info("packetBaseInitInfo response : " +result);
+		return result;
+	}
 
 }

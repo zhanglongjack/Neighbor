@@ -41,6 +41,62 @@ public class Recharge  extends PageEntity{
     private String phone;
     private String verfiyCode;
 
+    private String method; //接口列表
+    private String body; //商品描述
+    private String payState;//支付状态 支付状态 0未支付/待支付 1支付成功 2退款成功
+    private String outTradeNo;//支付渠道订单号
+    private String transactionId;//支付官方交易流水
+    private String codeUrl;//支付二维码 支付一次无效
+
+
+    public String getPayState() {
+        return payState;
+    }
+
+    public void setPayState(String payState) {
+        this.payState = payState;
+    }
+
+    public String getOutTradeNo() {
+        return outTradeNo;
+    }
+
+    public void setOutTradeNo(String outTradeNo) {
+        this.outTradeNo = outTradeNo;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public String getCodeUrl() {
+        return codeUrl;
+    }
+
+    public void setCodeUrl(String codeUrl) {
+        this.codeUrl = codeUrl;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
     public String getPhone() {
         return phone;
     }

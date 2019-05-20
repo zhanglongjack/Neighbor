@@ -17,6 +17,8 @@
 		<result column="collected_num" jdbcType="VARCHAR" property="collectedNum" />
 		<result column="remarke" jdbcType="VARCHAR" property="remarke" />
 		<result column="random_amount" jdbcType="VARCHAR" property="randomAmount" /> 
+		<result column="hit_chance" jdbcType="DECIMAL" property="hitChance" /> 
+		<result column="paid_rate" jdbcType="DECIMAL" property="paidRate" /> 
 	</resultMap>
 	
 	<resultMap id="BaseResultMap" type="com.neighbor.app.packet.entity.Packet" extends="selectiveResultMap">
@@ -31,7 +33,7 @@
 	<sql id="Base_Column_List">
 		id, s_user_id, receive_user_id, group_id, amount, packet_num, hit_num,
 		send_date,
-		send_time, status,collected_num,remarke,random_amount,send_head_url
+		send_time, status,collected_num,remarke,random_amount,send_head_url,hit_chance,paid_rate
 	</sql>
 	
 	<sql id="dynamicWhere">

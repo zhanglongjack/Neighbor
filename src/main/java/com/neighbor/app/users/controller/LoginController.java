@@ -146,8 +146,8 @@ public class LoginController {
 		if (StringUtil.isEmpty(onlyLogin) || !onlyLogin.equals("1")) {
 			 userUp = userService.selectByReCode(reCode);
 			if (userUp == null) {
-				logger.info("上级人员不存在......");
-				throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "上级人员不存在......");
+				logger.info("推荐人不存在");
+				throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "推荐人员不存在");
 			}
 		}
 
@@ -158,8 +158,8 @@ public class LoginController {
 		if (user == null && isValid) {
 
 			if (StringUtil.isNotEmpty(onlyLogin) && onlyLogin.equals("1")) {
-				logger.info("APP只允许登录......");
-				throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "APP只允许登录......");
+				logger.info("用户未注册,请注册后再登录");
+				throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "用户未注册,请注册后再登录");
 			}
 
 			UserInfo record = new UserInfo();
@@ -177,8 +177,8 @@ public class LoginController {
 			throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "验证码错误");
 		} else if (user.getReCode().equals(reCode)) {
 			if (StringUtil.isEmpty(onlyLogin) || !onlyLogin.equals("1")) {
-				logger.info("上级人员不能是本人......");
-				throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "上级人员不能是本人......");
+				logger.info("推荐人不能为本人");
+				throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(), "推荐人不能为本人");
 			}
 		}
 

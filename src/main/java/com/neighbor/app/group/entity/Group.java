@@ -11,7 +11,6 @@ public class Group extends PageEntity{
     private Long id;
     private Long groupId;
 
-
     private Date createTime;
 
     private Date updateTime;
@@ -34,6 +33,7 @@ public class Group extends PageEntity{
 
     private Long gameId;
     private String redPackAmountLimit;
+    private String isPacketDynamic; // 红包个数
 
     private Long userId;
     private String gameType;//游戏类型（1:红包游戏,2:猜猜乐,3:休闲游戏,4:福利群）
@@ -120,7 +120,15 @@ public class Group extends PageEntity{
         this.redPackAmountLimit = redPackAmountLimit;
     }
 
-    private PageTools pageTools;
+	public String getIsPacketDynamic() {
+		return isPacketDynamic;
+	}
+
+	public void setIsPacketDynamic(String isPacketDynamic) {
+		this.isPacketDynamic = isPacketDynamic;
+	}
+
+	private PageTools pageTools;
 
     public PageTools getPageTools() {
         return pageTools;

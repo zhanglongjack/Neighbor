@@ -13,6 +13,8 @@ public interface RechargeMapper {
 
     Recharge selectByPrimaryKey(Long id);
 
+    Recharge selectByOrderNo(String orderNo);
+
     int updateByPrimaryKeySelective(Recharge record);
     
 	Long selectPageTotalCount(Recharge record);

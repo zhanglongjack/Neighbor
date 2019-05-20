@@ -1,6 +1,5 @@
 package com.neighbor.common.util;
 
-import com.neighbor.app.bankcard.controller.BankCardController;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -73,7 +72,7 @@ public class HttpClientUtils {
 
 
     public static void main(String[] args) {
-        HttpClientUtils.doGet("https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?cardNo=6225887858108521&cardBinCheck=true");
+        HttpClientUtils.doGet("https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?cardNo=&cardBinCheck=true");
     }
 }
 

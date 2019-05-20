@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.neighbor.StartNeighbor;
+import com.neighbor.app.common.util.RandomUtil;
 import com.neighbor.app.group.entity.GroupMember;
 import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.packet.dao.PacketDetailMapper;
@@ -75,7 +76,16 @@ public class PacketServiceTest {
 			e.printStackTrace();
 		}
 	}
-	
+    
+    public static void main(String[] args) {
+    	double bb = (((int) (1.04*10))*10+1) / 100.0;
+    	double aa = (8.04*100)/100;
+    	
+    	BigDecimal tt = new BigDecimal("20.83").multiply(new BigDecimal(100)).remainder(new BigDecimal(10));
+    	System.out.println(bb);
+    	System.out.println(aa);
+    	System.out.println(tt.toEngineeringString());
+	}
 	
 	public void testSocketMsgUpdate() throws Exception{
 		List<PacketDetail> a = packetDetailService.selectPacketDetailByPacketId(37L);
@@ -98,9 +108,9 @@ public class PacketServiceTest {
 		packet.setHitNum(1);
 		packet.setUserId(600023L);
 		packet.setGroupId(100001L);
-		
+		UserInfo user = userService.selectByPrimaryKey(packet.getUserId());
 		UserWallet wallet = userWalletService.selectByPrimaryUserId(packet.getUserId());
-		packetService.sendPacket(packet, wallet);
+		packetService.sendPacket(packet, wallet,user);
 		
 		Thread.sleep(100000);
 	}
@@ -115,9 +125,9 @@ public class PacketServiceTest {
 		packet.setHitNum(1);
 		packet.setUserId(600023L);
 		packet.setGroupId(100000L);
+		UserInfo user = userService.selectByPrimaryKey(packet.getUserId());
 		UserWallet wallet = userWalletService.selectByPrimaryUserId(packet.getUserId());
-		final Packet packet1 = packetService.sendPacket(packet, wallet);
-		UserInfo user = new UserInfo();
+		final Packet packet1 = packetService.sendPacket(packet, wallet,user);
 		PageTools pageTool =new PageTools();
 		pageTool.setPageSize(200);
 		GroupMember groupMember = new GroupMember();
