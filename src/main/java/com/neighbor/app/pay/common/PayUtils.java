@@ -49,8 +49,9 @@ public class PayUtils {
         String nonce_str = UUID.randomUUID().toString();
         data.put("nonce_str",nonce_str);
         payScan.setNonce_str(nonce_str);
-        String body = StringUtil.isNotEmpty(recharge.getBody())?recharge.getBody():"积分充值："+recharge.getAmount();
-        body = URLEncoder.encode(body,"utf-8");
+        String body = "";
+        //String body = StringUtil.isNotEmpty(recharge.getBody())?recharge.getBody():"积分充值："+recharge.getAmount();
+       // body = URLEncoder.encode(body,"utf-8");
         payScan.setBody(body);
         data.put("body",body);
         String orderNo = recharge.getOrderNo();

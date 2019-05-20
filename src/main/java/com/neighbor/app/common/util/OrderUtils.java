@@ -13,9 +13,9 @@ import java.util.*;
  */
 public class OrderUtils {
     private static Log logger = LogFactory.getLog(OrderUtils.class);
-    public static String TRANSFER="transfer";
-    public static String RECHARGE="recharge";
-    public static String WITHDRAW="withdraw";
+    public static String TRANSFER="1";
+    public static String RECHARGE="2";
+    public static String WITHDRAW="3";
     /**
      * 专门为高并发获取唯一ID使用
      *
@@ -30,6 +30,23 @@ public class OrderUtils {
                     append(fixStringToLengthNew
                             (String.valueOf(Thread.currentThread().getId()), 4, "0") +
                             getRandomChar(3));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return orderNo.toString();
+
+    }
+
+    /**
+     * 专门为高并发获取唯一ID使用
+     *
+     * @return
+     * @throws Exception
+     */
+    public static String getOrderNo(String logic,Long uid) throws Exception {
+        StringBuffer orderNo = new StringBuffer();
+        try {
+            orderNo.append(logic).append(uid).append(DateUtils.getUserDate(DateFormateType.MOST_TIGHT_LONG_S_FORMAT));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

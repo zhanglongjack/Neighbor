@@ -38,9 +38,24 @@
 											   th:attr="value=${queryObject==null}?'':${queryObject.orderNo}">
 									</div>
 									<div class="form-group col-sm-2">
+										<label>交易单号</label><br>
+										<input type="text" class="form-control"  placeholder="交易单号" name="outTradeNo"
+											   th:attr="value=${queryObject==null}?'':${queryObject.outTradeNo}">
+									</div>
+									<div class="form-group col-sm-2">
 										<label>用户编号</label><br>
 										<input type="text" class="form-control"  placeholder="用户编号" name="uId"
 											th:attr="value=${queryObject==null}?'':${queryObject.uId}">
+									</div>
+									<div class="form-group col-sm-2">
+										<label>支付方式</label><br>
+										<select class="form-control" name="channelType">
+											<option value="" >===请选择===</option>
+											<option th:selected="${queryObject.channelType=='alipay'}" value="alipay">支付宝</option>
+											<option th:selected="${queryObject.channelType=='wxpay'}" value="wxpay">微信支付</option>
+											<option th:selected="${queryObject.channelType=='offline'}" value="offline">线下转账</option>
+										</select>
+
 									</div>
 									<div class="form-group col-sm-2">
 										<label>状态</label><br>
@@ -69,9 +84,12 @@
 								<thead>
 									<tr>
 										<th>单号</th>
+										<th>交易单号</th>
 										<th>用户编号</th>
 										<th>充值金额</th>
+										<th>充值方式</th>
 										<th>处理状态</th>
+										<th>支付状态</th>
 										<th>交易时间</th>
 										<th>说明</th>
 										<th>转账截屏</th>
@@ -81,9 +99,12 @@
 								<tbody>
 									<tr th:each="obj : ${resultList}">
 										<td th:text="${obj.orderNo}"></td>
+										<td th:text="${obj.outTradeNo}"></td>
 										<td th:text="${obj.uId}"></td>
 										<td th:text="${obj.amount}"></td>
+										<td th:text="${obj.methodDesc}"></td>
 										<td th:text="${obj.statesDesc}"></td>
+										<td th:text="${obj.payStateDesc}"></td>
 										<td th:text="${obj.createTimeStr}"></td>
 										<td th:text="${obj.remarks}"></td>
 										<td><a th:if="${obj.screenshot!=null}" data-toggle="modal" data-target="#ModifyModal"
