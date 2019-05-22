@@ -50,4 +50,11 @@ public class PayResp {
     public void setSign(String sign) {
         this.sign = sign;
     }
+
+	@Override
+	public String toString() {
+		return String.format("PayResp [code=%s, msg=%s, data=%s, sign=%s]", code, msg, data, sign);
+	}
+    
+    
 }

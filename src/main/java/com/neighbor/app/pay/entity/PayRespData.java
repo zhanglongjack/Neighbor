@@ -73,4 +73,13 @@ public class PayRespData {
     public void setCreate_time(Long create_time) {
         this.create_time = create_time;
     }
+
+	@Override
+	public String toString() {
+		return String.format(
+				"PayRespData [result_code=%s, result_msg=%s, method=%s, out_trade_no=%s, u_out_trade_no=%s, code_url=%s, total=%s, create_time=%s]",
+				result_code, result_msg, method, out_trade_no, u_out_trade_no, code_url, total, create_time);
+	}
+    
+    
 }

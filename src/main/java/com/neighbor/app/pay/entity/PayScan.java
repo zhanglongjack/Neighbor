@@ -46,4 +46,12 @@ public class PayScan {
     public void setOut_trade_no(String out_trade_no) {
         this.out_trade_no = out_trade_no;
     }
+
+	@Override
+	public String toString() {
+		return String.format("PayScan [store_id=%s, total=%s, nonce_str=%s, body=%s, out_trade_no=%s]", store_id, total,
+				nonce_str, body, out_trade_no);
+	}
+    
+    
 }

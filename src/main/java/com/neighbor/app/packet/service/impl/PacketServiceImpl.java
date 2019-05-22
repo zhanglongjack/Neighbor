@@ -99,8 +99,8 @@ public class PacketServiceImpl implements PacketService {
 		
 		RobotConfig robot = robotConfigService.selectByPrimaryKey(Integer.parseInt(user.getRobotSno()));
 		if(robot!=null){
-			BigDecimal hitChance = getPacketConf(EnvConstants.PACKET_HIT_RATE);
-			record.setHitChance(hitChance.doubleValue());
+			BigDecimal hitRate= getPacketConf(EnvConstants.PACKET_HIT_RATE);
+			record.setPaidRate(hitRate);
 		}
 		
 		UserWallet userWallet = new UserWallet();

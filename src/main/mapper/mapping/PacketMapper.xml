@@ -177,6 +177,12 @@
 			<if test="headUrl != null">
 				send_head_url,
 			</if>
+			<if test="hitChance != null">
+				hit_chance,
+			</if>
+			<if test="paidRate != null">
+				paid_rate,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null">
@@ -220,6 +226,12 @@
 			</if> 
 			<if test="headUrl != null">
 				#{headUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="hitChance != null">
+				#{hitChance},
+			</if>
+			<if test="paidRate != null">
+				#{paidRate},
 			</if>
 		</trim>
 	</insert>
