@@ -1,6 +1,7 @@
 package com.neighbor.app.packet.service.impl;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.neighbor.app.balance.entity.BalanceDetail;
 import com.neighbor.app.balance.po.TransactionSubTypeDesc;
@@ -42,6 +44,7 @@ import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.RedPackageUtil;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.websoket.service.SocketMessageService;
+import com.neighbor.schedule.entity.TaskData;
 
 @Service
 public class PacketServiceImpl implements PacketService {
@@ -97,8 +100,8 @@ public class PacketServiceImpl implements PacketService {
 		record.setStatus(PacketStatus.uncollected.toString());
 		record.setCollectedNum(0); 
 		
-		RobotConfig robot = robotConfigService.selectByPrimaryKey(Integer.parseInt(user.getRobotSno()));
-		if(robot!=null){
+		if(user.getRobotSno()!=null){
+//			RobotConfig robot = robotConfigService.selectByPrimaryKey(Integer.parseInt(user.getRobotSno()));
 			BigDecimal hitRate= getPacketConf(EnvConstants.PACKET_HIT_RATE);
 			record.setPaidRate(hitRate);
 		}
@@ -244,11 +247,12 @@ public class PacketServiceImpl implements PacketService {
 			packetDetailMapper.insertSelective(detail);
 			logger.info("抢到的红包是[{}]尾数是[{}]信息:{},",num,Integer.parseInt(num.substring(num.length()-1)),detail);
 			UserWallet senderWallet = userWalletService.selectByPrimaryUserId(lockPacket.getUserId());
+			GameRule gameRule = null;
 			if(!detail.isFree()){
 				// 处理踩雷
 				handleHitBomb(detail.isGotBomb(), lockPacket, lastWallet,senderWallet);
 				// 抢包中奖处理 
-				handleLottery(gameId, lastWallet, detail.getGotAmount());
+				gameRule=handleLottery(gameId, lastWallet, detail.getGotAmount());
 			}
 			// 发包中奖检查和最佳标识检查处理(也可以优化给前端处理,减少压力)
 			handleReward(gameId,lockPacket,senderWallet);
@@ -264,6 +268,7 @@ public class PacketServiceImpl implements PacketService {
 			resultResp.addBody("packet", lockPacket);
 			resultResp.addBody("wallet", lastWallet);
 			resultResp.addBody("task", task);
+			resultResp.addBody("luckGot", gameRule);
 		
 			logger.info("抢红包完成");
 			return resultResp;
@@ -316,13 +321,15 @@ public class PacketServiceImpl implements PacketService {
 	 * @param lockPacket
 	 * @param lastWallet
 	 * @param detail
+	 * @return 
 	 */
-	private void handleLottery(long gameId, UserWallet graperWallet, BigDecimal grapAmount) {
+	private GameRule handleLottery(long gameId, UserWallet graperWallet, BigDecimal grapAmount) {
 		GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.award, grapAmount.doubleValue()); 
 		logger.info("中奖检查,抢包金额:{},游戏编号:{},游戏规则:{}",grapAmount.toPlainString(),gameId,gameRule);
 		if(gameRule==null){
-			return;
+			return null;
 		}
+		
 		BigDecimal lotteryAmount = new BigDecimal(gameRule.getRuleValue());// 中奖金额 
 		logger.info("抢包中奖处理");
 		graperWallet.setAvailableAmount(graperWallet.getAvailableAmount().subtract(lotteryAmount));
@@ -343,6 +350,7 @@ public class PacketServiceImpl implements PacketService {
 		wallet.setAvailableAmount(lotteryAmount);// 需要增加的金额
 		userWalletService.updateWalletAmount(wallet);
 		
+		return gameRule;
 	}
 
 	/**
@@ -350,58 +358,103 @@ public class PacketServiceImpl implements PacketService {
 	 * @param gameId 
 	 * @param lockPacket
 	 * @param senderWallet
+	 * @return 中雷数量
 	 */
 	private void handleReward(Long gameId, Packet lockPacket, UserWallet senderWallet) {
 		if(PacketStatus.collected == PacketStatus.valueOf(lockPacket.getStatus())){
-			// 多雷奖励处理 
 			List<PacketDetail>  detailList = lockPacket.getDetailList();
 			logger.info("最佳检查开始:"+detailList.size());
 			int maxIndex = 0;// 最佳下标
-			int hitBombNum = 0;
+//			int hitBombNum = 0;
 			for(int i=0;i<detailList.size();i++){
 				PacketDetail detail = detailList.get(i);
 				logger.info("红包[{}]大于红包[{}]?",detail.getGotAmount().doubleValue(),detailList.get(maxIndex).getGotAmount().doubleValue());
 				if(detail.getGotAmount().doubleValue()>detailList.get(maxIndex).getGotAmount().doubleValue()){
 					maxIndex = i;
 				}
-				hitBombNum += detail.isGotBomb()?1:0;
+//				hitBombNum += detail.isGotBomb()?1:0;
 			}
-			logger.info("中雷数[{}],最佳位置[{}]",hitBombNum,maxIndex);
+			logger.info("最佳位置[{}]",maxIndex);
 			logger.info("最佳明细List:",JSONArray.toJSON(detailList));
-			if(maxIndex>=0){
-				detailList.get(maxIndex).setMaximum(true);
-				packetDetailMapper.updateByPrimaryKeySelective(detailList.get(maxIndex));
-			}
+			detailList.get(maxIndex).setMaximum(true);
+			packetDetailMapper.updateByPrimaryKeySelective(detailList.get(maxIndex));
 			logger.info("最佳明细:",detailList.get(maxIndex));
-			if(hitBombNum<=0){
-				return ;
-			}
-			GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.award, hitBombNum); // 中奖金额 
-			if(gameRule==null){
-				return;
-			}
-			BigDecimal amount = new BigDecimal(gameRule.getRuleValue()); // 多雷中奖奖励
-			
-			logger.info("发包方多雷中奖收款");
-			senderWallet.setAvailableAmount(senderWallet.getAvailableAmount().add(amount));
-			// 发包雷中交易明细
-			BalanceDetail senderBalanceDetail = new BalanceDetail();
-			senderBalanceDetail.setAmount(amount);
-			senderBalanceDetail.setAvailableAmount(senderWallet.getAvailableAmount());
-			senderBalanceDetail.setuId(senderWallet.getuId());
-			senderBalanceDetail.setTransactionType(TransactionTypeDesc.receipt.toString());
-			senderBalanceDetail.setTransactionSubType(TransactionSubTypeDesc.lucked.toString());
-			senderBalanceDetail.setRemarks(TransactionSubTypeDesc.lucked.getDes());
-			senderBalanceDetail.setTransactionId(senderWallet.getId());
-			
-			logger.info("保存发包方多雷中奖收款交易信息");
-			balanceDetailService.insertSelective(senderBalanceDetail);
-			UserWallet wallet1 = new UserWallet();
-			wallet1.setuId(senderWallet.getuId());
-			wallet1.setAvailableAmount(amount);// 需要增加的金额
-			userWalletService.updateWalletAmount(wallet1);
-			
+//			if(hitBombNum==0){
+//				return null;
+//			}
+//			GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.award, hitBombNum); // 中奖金额 
+//			if(gameRule==null){
+//				return null;
+//			}
+//			BigDecimal amount = new BigDecimal(gameRule.getRuleValue()); // 多雷中奖奖励
+//			
+//			logger.info("发包方多雷中奖收款");
+//			senderWallet.setAvailableAmount(senderWallet.getAvailableAmount().add(amount));
+//			// 发包雷中交易明细
+//			BalanceDetail senderBalanceDetail = new BalanceDetail();
+//			senderBalanceDetail.setAmount(amount);
+//			senderBalanceDetail.setAvailableAmount(senderWallet.getAvailableAmount());
+//			senderBalanceDetail.setuId(senderWallet.getuId());
+//			senderBalanceDetail.setTransactionType(TransactionTypeDesc.receipt.toString());
+//			senderBalanceDetail.setTransactionSubType(TransactionSubTypeDesc.lucked.toString());
+//			senderBalanceDetail.setRemarks(TransactionSubTypeDesc.lucked.getDes());
+//			senderBalanceDetail.setTransactionId(senderWallet.getId());
+//			
+//			logger.info("保存发包方多雷中奖收款交易信息");
+//			balanceDetailService.insertSelective(senderBalanceDetail);
+//			UserWallet wallet1 = new UserWallet();
+//			wallet1.setuId(senderWallet.getuId());
+//			wallet1.setAvailableAmount(amount);// 需要增加的金额
+//			userWalletService.updateWalletAmount(wallet1);
+//			
+//			return gameRule;
 		}
+	}
+	
+	/**
+	 * 多雷奖励处理 
+	 * @param gameId
+	 * @param packet
+	 * @param detailList
+	 * @return
+	 */
+	public GameRule multipleBombLotteryHandle(Long gameId,Packet packet ,List<PacketDetail>  detailList){
+		logger.info("多雷奖励处理");
+		int hitBombNum = 0;
+		for(int i=0;i<detailList.size();i++){
+			PacketDetail detail = detailList.get(i);
+			hitBombNum += detail.isGotBomb()?1:0;
+		}
+		
+		if(hitBombNum==0){
+			return null;
+		}
+		GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.award, hitBombNum); // 中奖金额 
+		if(gameRule==null){
+			return null;
+		}
+		BigDecimal amount = new BigDecimal(gameRule.getRuleValue()); // 多雷中奖奖励
+		UserWallet senderWallet = userWalletService.selectByPrimaryKey(packet.getUserId());
+		logger.info("发包方多雷中奖收款");
+		senderWallet.setAvailableAmount(senderWallet.getAvailableAmount().add(amount));
+		// 发包雷中交易明细
+		BalanceDetail senderBalanceDetail = new BalanceDetail();
+		senderBalanceDetail.setAmount(amount);
+		senderBalanceDetail.setAvailableAmount(senderWallet.getAvailableAmount());
+		senderBalanceDetail.setuId(senderWallet.getuId());
+		senderBalanceDetail.setTransactionType(TransactionTypeDesc.receipt.toString());
+		senderBalanceDetail.setTransactionSubType(TransactionSubTypeDesc.lucked.toString());
+		senderBalanceDetail.setRemarks(TransactionSubTypeDesc.lucked.getDes());
+		senderBalanceDetail.setTransactionId(senderWallet.getId());
+		
+		logger.info("保存发包方多雷中奖收款交易信息");
+		balanceDetailService.insertSelective(senderBalanceDetail);
+		UserWallet wallet1 = new UserWallet();
+		wallet1.setuId(senderWallet.getuId());
+		wallet1.setAvailableAmount(amount);// 需要增加的金额
+		userWalletService.updateWalletAmount(wallet1);
+		
+		return gameRule;
 	}
 	
 	/**

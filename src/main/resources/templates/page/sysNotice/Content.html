@@ -32,7 +32,8 @@ table{
 				});
 				initTable()
 				$queryBtn.click(function() {
-					$masterTable.bootstrapTable('refresh')
+					//$masterTable.bootstrapTable('refresh')
+					initTable();
 				});
 				
 				$('[datepicker]').datepicker({

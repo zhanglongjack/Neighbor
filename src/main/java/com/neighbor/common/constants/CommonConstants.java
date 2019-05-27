@@ -78,6 +78,10 @@ public class CommonConstants implements ApplicationListener<ContextRefreshedEven
 		Assert.isTrue(code!=null&&ruleType!=null, "规则类型和规则代码不允许为空");
 		return dictionaryMap.get(gameId+"-"+ruleType.getValue()).get(code);
 	}
-	
 
+	public void updateDictionaryBy(String bizCode, String code,String value) {
+		String msg = String.format("业务代码[%s],字典代码[%s],更新值[%s]均不允许为空", bizCode,code,value);
+		Assert.isTrue(bizCode!=null&&code!=null&&value!=null, msg);
+		dictionaryMap.get(bizCode).put(code, value);
+	}
 }

@@ -20,9 +20,10 @@
 			<if test="id != null">id=#{id}</if>
 			<if test="name != null and name.length()>0">and name=#{name}</if>
 			<if test="code != null and code.length()>0">and code=#{code}</if>
-			<if test="status != null">and status>=#{status}</if>
-			<if test="bizCode != null and bizCode.length()>0">and biz_code <![CDATA[<=]]>#{bizCode} </if>
-			<if test="parentId != null">and parent_id <![CDATA[<=]]>#{parentId} </if>
+			<if test="status != null">and status = #{status}</if>
+			<if test="bizCode != null and bizCode.length()>0">and biz_code = #{bizCode} </if>
+			<if test="parentId != null">and parent_id = #{parentId} </if>
+			<if test="remarke != null and remarke.length()>0">and remarke like concat('%',#{remarke},'%')</if>
 		</where>
 	</sql>
 
