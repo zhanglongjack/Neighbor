@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+	<title>test</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+</head>
+
+<body>
+	<div th:fragment="dialog-content">
+<script type="text/javascript">
+	$(function(){
+		initTimePicker();
+	})
+</script>
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="ModifyModalTitle">
+							填写粉丝信息
+						</h4>
+					</div>
+					<div class="modal-body">
+						<form id="modifyDataFrom" class="form-horizontal" role="form">
+							<input id="modifyId" name="custId" type="hidden" th:attr="value=${custInfo==null}?'':${custInfo.custId}">
+							<input name="userId" type="hidden" th:attr="value=${session.user.uId}">
+							<input id="modifyModel" name="modifyModel" type="hidden" th:attr="value=${modifyModel==null}?'':${modifyModel}">
+							<div class="form-group">
+								<label  class="col-sm-2 control-label">微信号</label>
+								<div class="col-sm-10">
+									<input readonly type="text" class="form-control" name="wechatNo" 
+										   placeholder="请输入微信号" th:attr="value=${custInfo==null}?'':${custInfo.custWechatNo}">
+								</div>
+							</div>
+							<div class="form-group">
+								<label  class="col-sm-2 control-label">充值类型</label>
+								<div class="col-sm-10">
+									<select class="form-control" name="consumeType">
+										<option value="1" >===余额充值===</option> 
+										<option value="5" >===赠送余额===</option> 
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label  class="col-sm-2 control-label">会员余额</label>
+								<div class="col-sm-10">
+									<input readonly type="text" class="form-control" 
+										   placeholder="会员余额" th:attr="value=${custInfo==null}?'0.00':${custInfo.amt}">
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label  class="col-sm-2 control-label">充值金额</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" name="amount" 
+										   placeholder="充值金额" >
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+						</button>
+						<button type="button" class="btn btn-primary" id="ModifyModalSubmit">
+							提交
+						</button>
+					</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$("#ModifyModal").on("hidden.bs.modal", function() {  
+		    $(this).removeData("bs.modal");  
+		}); 
+		
+	    $('#modifyDataFrom').bootstrapValidator({
+	        message: '输入无效,请重新输入',
+	        feedbackIcons: {
+	            valid: 'glyphicon glyphicon-ok',
+	            invalid: 'glyphicon glyphicon-remove',
+	            validating: 'glyphicon glyphicon-refresh'
+	        },
+	        fields: {
+	            custWechatNo: {
+	                message: '微信号不合法',
+	                validators: {
+	                    notEmpty: {
+	                        message: '微信号不能为空'
+	                    }
+	                }
+	            },
+	            amt: {
+	                message: '充值金额输入无效',
+	                validators: {
+	                    notEmpty: {
+	                        message: '充值金额不能为空'
+	                    },
+	                    greaterThan: {
+	                        value: 1,
+	                		message: '充值金额必须大于0'
+	                    },
+	                    numeric: {message: '充值金额只能输入数字'}
+	                }
+	            },
+	        }
+	    });
+	});
+</script>
+</html>

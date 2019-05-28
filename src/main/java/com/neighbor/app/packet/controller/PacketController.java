@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.neighbor.app.commission.entity.CommissionHandleTask;
+import com.neighbor.app.game.entity.GameRule;
 import com.neighbor.app.group.entity.Group;
 import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.packet.constants.PacketContainer;
@@ -27,6 +28,7 @@ import com.neighbor.common.constants.CommonConstants;
 import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.websoket.service.SocketMessageService;
 
 @Controller
 @RequestMapping(value = "/packet")
@@ -47,6 +49,9 @@ public class PacketController {
 	private BlockingQueue<CommissionHandleTask> commisionHandleTaskQueue;
 	@Autowired
 	private CommonConstants commonConstants;
+	@Autowired
+	private SocketMessageService socketMessageService; 
+	
 	
 	@RequestMapping(value = "/sendPacket.req", method = RequestMethod.POST)
 	@ResponseBody
@@ -98,7 +103,11 @@ public class PacketController {
 			logger.info("添加分佣任务:{}",task);
 			commisionHandleTaskQueue.offer(task);
 		}
-		
+		GameRule luckGot = (GameRule) result.getBody().get("luckGot");
+		if(luckGot!=null){
+			logger.info("添加红包中奖的消息通知"); 
+			socketMessageService.groupPacketLotteryNotcie(packet, luckGot,user);
+		}
 		return result;
 	}
 	

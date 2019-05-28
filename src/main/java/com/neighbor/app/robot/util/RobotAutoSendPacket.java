@@ -14,6 +14,8 @@ import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import com.neighbor.app.common.util.RandomUtil;
@@ -28,7 +30,7 @@ import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.websoket.util.GroupMsgPushHandler;
 
 @Component
-public class RobotAutoSendPacket {
+public class RobotAutoSendPacket implements ApplicationListener<ContextRefreshedEvent>{
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private GroupMsgPushHandler groupMsgPushHandler;
@@ -46,7 +48,12 @@ public class RobotAutoSendPacket {
 	private static int threadPoolSize = 300;
 	private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(threadPoolSize);
 	private static Map<String,Long> runRobot = new HashMap<>();
-	@PostConstruct
+	
+	
+	@Override
+	public void onApplicationEvent(ContextRefreshedEvent event) {
+		init();
+	}
 	public void init() {
 		//limitAmount = Double.parseDouble(env.getProperty(EnvConstants.ROBOT_SEND_LIMIT_AMOUNT));
 		fixedThreadPool.execute(new Runnable() {
@@ -80,14 +87,7 @@ public class RobotAutoSendPacket {
 						member.getRobot().setRobotId(id);
 						List<GroupMember> memberList = groupService.selectRobotGroupMemberBy(member);
 						if(memberList.size()>0){
-							GroupMember readyMember=memberList.get(0);
-							String key = getRunRobotKey(readyMember);
-							logger.info("机器人运行编号:{}",key);
-							if(!runRobot.containsKey(key)){
-								addGrapRobot(readyMember);
-							}else{
-								logger.info("机器人运行编号{}已在运行发包中...",key);
-							}
+							addGrapRobot(memberList.get(0));
 						}
 					}
 				} catch (Exception e) {
@@ -98,9 +98,15 @@ public class RobotAutoSendPacket {
 	}
 	
 	public void addGrapRobot(final GroupMember member) {
+		String key = getRunRobotKey(member);
+		logger.info("机器人运行编号:{}",key);
+		if(runRobot.containsKey(key)){
+			logger.info("机器人运行编号{}已在运行发包中...",key);
+			return;
+		}
+		
 		if (member.getRobot().getSendPacketChance().doubleValue() == 0) {
 			logger.info("机器人成员发包配置为0,表示不发包,机器人信息:{}", member.getRobot());
-			
 			return;
 		}
 		
@@ -150,32 +156,32 @@ public class RobotAutoSendPacket {
 
 	private void sendPacket(GroupMember member) {
 		boolean isSend = member.getRobot().isSend();
-		logger.info("机器人成员开始检查是否发红包:{},成员信息:{}", isSend, member);
+		logger.info("机器人成员开始检查是否发红包:{},成员信息:{},机器人信息:{}", isSend, member,member.getRobot());
 		if(!isSend){
 			logger.info("本次不发送红包:{}",member);
 			return;
 		}
 		
 		String packetBaseNum = commonConstants.getDictionarysBy(EnvConstants.PACKET_CONF, EnvConstants.PACEKT_BASE_NUM);
-		String paidRate = commonConstants.getDictionarysBy(EnvConstants.PACKET_CONF, EnvConstants.PACKET_HIT_RATE);
-		
 		
 		logger.info("开始配置发红包信息");
 		String limit[] = member.getGroup().getRedPackAmountLimit().split("-");
 		int begin = Integer.parseInt(limit[0]);
 		int end = Integer.parseInt(limit[1]);
-		int randomNum = RandomUtil.getRandomBy(end - begin + 1) + begin;
+		int randomNum = RandomUtil.getRandomBy(end - begin) + begin;
 		Packet packet = new Packet();
-		packet.setAmount(new BigDecimal(randomNum));
+		packet.setAmount(new BigDecimal(randomNum/100));
 		packet.setHitNum(RandomUtil.getRandomBy(10));
 		packet.setPacketNum(Integer.parseInt(packetBaseNum));
 		packet.setUserId(member.getUserId());
 		packet.setGroupId(member.getGroupId());
 		packet.setHeadUrl(member.getUser().getUserPhoto());
 		packet.setNickName(member.getUser().getNickName());
-		packet.setPaidRate(new BigDecimal(paidRate));
+		packet.setHitChance(member.getRobot().getHitChance());
 		try {
+			
 			Packet resultPacket = packetService.sendPacket(packet, member.getWallet(),member.getUser());
+			logger.info("红包编号:{},红包中雷概率:{}",packet.getId(),packet.getHitChance());
 			groupMsgPushHandler.pushMessageToGroup(packet);
 			addGrapPacketTask(member.getGroupId(), member.getGroup().getGameId(), resultPacket);
 		} catch (Exception e) {

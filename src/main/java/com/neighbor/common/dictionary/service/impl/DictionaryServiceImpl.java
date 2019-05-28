@@ -4,7 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.neighbor.common.constants.CommonConstants;
 import com.neighbor.common.dictionary.dao.DictionaryMapper;
 import com.neighbor.common.dictionary.entity.Dictionary;
 import com.neighbor.common.dictionary.service.DictionaryService;
@@ -14,6 +17,8 @@ public class DictionaryServiceImpl implements DictionaryService {
 
 	@Autowired
 	private DictionaryMapper dictionaryMapper;
+	@Autowired
+	private CommonConstants commonConstants;
 	
 	@Override
 	public int deleteByPrimaryKey(Long id) {
@@ -48,6 +53,13 @@ public class DictionaryServiceImpl implements DictionaryService {
 	@Override
 	public List<Dictionary> selectPageByObjectForList(Dictionary record) {
 		return dictionaryMapper.selectPageByObjectForList(record);
+	}
+
+	@Override
+	@Transactional(readOnly = false, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+	public void updateByPrimaryKeySelectiveIncludeCache(Dictionary dictionary) {
+		updateByPrimaryKeySelective(dictionary);
+		commonConstants.updateDictionaryBy(dictionary.getBizCode(),dictionary.getCode(),dictionary.getName());
 	}
 	
 

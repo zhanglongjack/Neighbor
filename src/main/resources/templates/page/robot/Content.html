@@ -23,7 +23,8 @@
 
 				initTable()
 				$queryBtn.click(function() {
-					$masterTable.bootstrapTable('refresh')
+					//$masterTable.bootstrapTable('refresh')
+					initTable();
 				});
 				$startBtn.click(function() {
 					var ids = getIdSelections();

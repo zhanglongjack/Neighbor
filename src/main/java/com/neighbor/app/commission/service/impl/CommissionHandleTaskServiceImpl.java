@@ -26,6 +26,7 @@ import com.neighbor.app.users.service.UserService;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.constants.CommonConstants;
+import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.util.BigDecimalUtil;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.websoket.service.SocketMessageService;
@@ -81,7 +82,7 @@ public class CommissionHandleTaskServiceImpl implements CommissionHandleTaskServ
 		distributeCommission(sendUser.getUpUserId(), 1,handleData);
 		
 		// 系统还有25%
-		String distributeProportion = env.getProperty("sys.commission.percent");
+		String distributeProportion = commonConstants.getDictionarysBy(EnvConstants.PACKET_CONF, EnvConstants.SYS_COMMISSION_PERCENT);
 		BigDecimal amount = handleData.getSplitAmount().multiply(new BigDecimal(distributeProportion));
 		amount = BigDecimalUtil.rounding(amount);
 		

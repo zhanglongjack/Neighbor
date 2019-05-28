@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<meta http-equiv="Cache-Control" content="no-cache" />
+</head>
+<body>
+	<div th:fragment="container-fluid" class="container-fluid">
+<link rel="stylesheet" th:href="@{~/framework/table/bootstrap-table.min.css}">
+<script th:src="@{~/framework/table/bootstrap-table.min.js}"></script>
+<script th:src="@{~/framework/table/locale/bootstrap-table-zh-CN.min.js}"></script>
+		<script type="text/javascript">
+			var $masterTable = $('#master-table')
+			var $queryBtn = $('#queryBtn')
+			$(function() {
+				$("#ModifyModal").on("hidden.bs.modal", function() {
+					$(this).removeData("bs.modal");
+				});
+
+				initTable()
+				$queryBtn.click(function() {
+					//$masterTable.bootstrapTable('refresh')
+					initTable();
+				});
+				
+			});
+			
+			function responseHandler(res) {
+				return res
+			}
+			
+			function ajax(reqURL, paramsData,succesCallback, errorCallback) {
+				$('#loadingModal').modal('show');
+				$.ajax({
+					url : reqURL,
+					type : 'POST',
+					data : paramsData,
+					dataType : 'json',
+					success : function(response) {
+						console.log(JSON.stringify(response));
+						$('#loadingModal').modal('hide');
+						if (response.errorCode == 1) {
+							errorCallback && errorCallback()
+						}
+						
+						succesCallback&&succesCallback(response);
+					},
+					error : function(rep, errMsg, exception) {
+						if (rep.responseText == "LoginTimeout") {
+							location.href = "/login.html";
+						}
+						$('#loadingModal').modal('hide');
+						console.log(JSON.stringify(rep));
+						errorCallback && errorCallback(rep, errMsg, exception)
+						
+					}
+				});
+			}
+
+			function initTable() {
+				$masterTable.bootstrapTable('destroy').bootstrapTable({
+					url : "/dictionary/loadPageAjax.ser",
+					queryParams : function(params) {//上传服务器的参数
+						var temp = {
+							'pageTools.pageSize' : params.limit, // 每页显示数量
+							'pageTools.index' : (params.offset / params.limit) + 1 //当前页码 
+							
+						};
+
+						$('#query-params').find('input[name],select[name]').each(function() {
+							temp[$(this).attr('name')] = $(this).val()
+						})
+
+						console.log("分页查询:" + JSON.stringify(temp))
+						return temp;
+					}
+				})
+			}
+
+
+			function statusFormatter(value, row) {
+				if(value==0){
+					return '<span class="label label-warning" >停用</span>'
+				}
+				return '<span class="label label-success" >启用</span>'
+			}
+			function operationFormatter(value, row) {
+				var id = row.id;
+				return ['<a class="btn btn-default btn-sm " data-toggle="modal" data-target="#ModifyModal"'+
+				'href="/dictionary/primaryModalView.ser?modifyModel=dictionaryEdit.ser&id='+id+'">'+
+				'<span class="glyphicon glyphicon-edit"></span>更新<i class="icon-star"></i></a>'
+				]
+			}
+		</script>
+		
+		<h3 class="page-title">系统配置信息</h3>
+		<div class="row">
+			<div class="col-md-12">
+				<!-- TABLE HOVER -->
+				<div class="panel panel-info">
+					<div class="panel-body">
+						<div id="query-params">
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<input name="id" class="form-control" type="text"
+										placeholder="编号">
+								</div>
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<input name="bizCode" class="form-control" type="text"
+										placeholder="业务代码">
+								</div>
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<input name="code" class="form-control" type="text"
+										placeholder="配置代码">
+								</div>
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<input name="remarke" class="form-control" type="text"
+										placeholder="配置描述">
+								</div>
+								<div class="form-group col-lg-3 col-md-4 col-sm-4">
+									<select class="form-control" name="status">
+										<option value="">=====状   态=====</option> 
+										<option value="0">停用</option> 
+										<option value="1">启用</option> 
+									</select>
+								</div>
+
+						</div>
+						<div id="master-toolbar">
+							<button id="queryBtn" type="submit" class="btn btn-primary col-lg-12 col-md-12 col-sm-12">查询</button>
+						</div>
+					</div> 
+					<div class="panel-body table-responsive-sm">
+						<table class="table table-hover" 
+							id="master-table" 
+							data-toggle="table"
+							data-id-field="robotId" 
+							data-buttons-class="primary"
+							data-toolbar="#master-toolbar"
+							data-toolbar-align="right"
+							data-search="false"
+							data-search-align="left" 
+							data-click-to-select="false"
+							data-method="post" 
+							data-silent-sort="false"
+							data-show-refresh="false" 
+							data-show-toggle="false"
+							data-show-fullscreen="false" 
+							data-show-columns="true"
+							data-buttons-align="right"
+							data-detail-view="false" 
+							data-show-export="false"
+							data-minimum-count-columns="2"
+							data-show-pagination-switch="false" 
+							data-pagination="true"
+							data-pagination-h-align="left"
+							data-pagination-detail-h-align="right"
+							data-pagination-pre-text="上一页" 
+							data-pagination-next-text="下一页"
+							data-page-number="1" 
+							data-page-size="10"
+							data-page-list="[10, 25, 50, 100, ALL]"
+							data-show-footer="false"
+							data-content-type="application/x-www-form-urlencoded"
+							data-side-pagination="server"
+							data-response-handler="responseHandler">
+
+							<thead>
+								<tr>
+									<th data-field="id">编号</th>
+									<th data-field="bizCode">业务代码</th>
+									<th data-field="code">配置代码</th>
+									<th data-field="name">配置值</th>
+									<th data-field="parentId">父节点编号</th>
+									<th data-field="status" data-formatter="statusFormatter">配置状态</th>
+									<th data-field="remarke">配置描述</th>
+									<th data-formatter="operationFormatter">操作</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+				<!-- END TABLE HOVER -->
+			</div>
+		</div>
+	</div>
+</body>
+</html>

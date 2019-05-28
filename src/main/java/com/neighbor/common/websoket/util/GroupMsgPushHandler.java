@@ -1,6 +1,5 @@
 package com.neighbor.common.websoket.util;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import com.neighbor.app.packet.entity.LuckyMessage;
-import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -233,32 +230,6 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 		successHandleMsg(msgInfo, WebSocketMsgType.PACKET, WebSocketChatType.multiple, handler, handleResult);
 		
 	}
-
-	public ResponseResult buildLuckyNotice(LuckyMessage luckyMessage){
-		ResponseResult handleResult = new ResponseResult();
-		WebSocketHeader header = new WebSocketHeader();
-		header.setRequestId(UUID.randomUUID().toString());
-		header.setToken("token_system");
-		header.setSign("sign_system");
-		SocketMessage msgInfo = new SocketMessage();
-		msgInfo.setRequestId(header.getRequestId());
-		msgInfo.setContent(JSON.toJSONString(luckyMessage));
-		msgInfo.setHeader(JSON.toJSONString(header));
-		msgInfo.setStatus(MessageStatus.received + "");
-		msgInfo.setChatType(WebSocketChatType.multiple+"");
-		msgInfo.setMsgType(WebSocketMsgType.GROUP_LUCKY_NOTICE+"");
-		msgInfo.setMasterMsgType("2");
-		msgInfo.setTargetGroupId(luckyMessage.getGroupId());
-		msgInfo.setSendUserId(luckyMessage.getUserId());
-		msgInfo.setSendNickName("");
-		msgInfo.setDate(DateUtils.getStringDateShort());
-		msgInfo.setTime(DateUtils.getTimeShort());
-		handleResult.setRequestID(msgInfo.getWebSocketHeader().getRequestId());
-		handleResult.addBody("msgType", WebSocketMsgType.GROUP_LUCKY_NOTICE);
-		handleResult.addBody("chatType", WebSocketChatType.multiple);
-		handleResult.addBody("msgInfo", msgInfo);
-		return handleResult;
-	}
 	
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
@@ -473,25 +444,6 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 		}
 		return false;
 	}
-
-	/**
-	 * 发送消息给所有在线的用户
-	 *
-	 * @return true:成功,false:失败
-	 */
-	public void sendMessageToAllUser(Long groupId, ResponseResult result) {
-		logger.info("用户[{}]给指定群[{}]发信息:", groupId);
-		TextMessage message = new TextMessage(JSON.toJSONString(result));
-		if(groupSessions.containsKey(groupId)){
-			Map<Long, WebSocketSession> userSession = groupSessions.get(groupId);
-			for(Long userId : userSession.keySet()){
-				WebSocketSession session = userSession.get(userId);
-				boolean isPushed = sendMessage(session, message);
-				logger.info("给指定群[{}]指定用户:[{}]发信息是否成功:[{}]", groupId, userId, isPushed);
-			}
-		}
-	}
-
 
 	/**
 	 * 发送消息给指定的用户

@@ -137,12 +137,12 @@ public class RedPackageUtil {
 					packet.setAmount(new BigDecimal("100.00"));
 					packet.setHitNum(3);
 					packet.setPacketNum(9);
-					packet.setHitChance(0.01d);
+					packet.setHitChance(0.5d);
 					RobotConfig robot = new RobotConfig();
 					robot.setHitChance(0.1);
 					for(int i=0;i<20;i++){
 						boolean isHit = robot.isHit();
-						Double num = RedPackageUtil.getRandomMoney(packet,robot.isHit());
+						Double num = RedPackageUtil.getRandomMoney(packet,true);
 						if(num>0){
 							isHitList.add(isHit+"");							
 							numList.add( BigDecimalUtil.rounding(num).toPlainString());

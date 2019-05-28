@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
+import com.neighbor.app.game.entity.GameRule;
+import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.PageTools;
@@ -240,7 +242,7 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		socketMessage.setMsgType(WebSocketMsgType.WALLET_REFRESH+""); 
 		socketMessage.setChatType(WebSocketChatType.single+"");
 		socketMessage.setSendNickName(sendNickName);
-		
+		socketMessage.setMasterMsgType("2");
 		Long count = socketMessageMapper.selectWalletRefreshCountBySelective(targetUserId);
 		if(count==0){
 			insertNoticeInfo(socketMessage,sendUserId,targetUserId);
@@ -253,7 +255,50 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		socketMessage.setMsgType(WebSocketMsgType.GROUP_REFRESH+"");
 		socketMessage.setChatType(WebSocketChatType.single+"");
 		socketMessage.setContent(content);
+		socketMessage.setMasterMsgType("2");
 		insertNoticeInfo(socketMessage,sendUserId,targetUserId);
+	}
+	
+	@Override
+	public void groupPacketLotteryNotcie(Packet packet, GameRule luckGot, UserInfo luckyUser){
+		
+		String content = buildLotteryMsg(packet, luckGot, luckyUser);
+		
+		String uuid = UUID.randomUUID().toString().replaceAll("-","");
+		
+		SocketMessage socketMessage = new SocketMessage();
+		socketMessage.setMsgType(WebSocketMsgType.GROUP_PACKET_LOTTERY_NOTICE+"");
+		socketMessage.setChatType(WebSocketChatType.multiple+"");
+		socketMessage.setTargetGroupId(packet.getGroupId());
+		socketMessage.setMasterMsgType("1");
+		socketMessage.setContent(content);
+		socketMessage.setHeader(buildHeaderInfo(uuid));
+		socketMessage.setRequestId(uuid);
+		socketMessage.setStatus(MessageStatus.pushed_response+"");
+		socketMessage.setDate(DateUtils.getStringDateShort());
+		socketMessage.setTime(DateUtils.getTimeShort());
+		socketMessage.setTargetUserDeleteFlag(MessageDeleteStates.normal.getDes());
+		socketMessage.setSendUserDeleteFlag(MessageDeleteStates.normal.getDes());
+		
+		insertSelective(socketMessage);
+	}
+
+	private String buildLotteryMsg(Packet packet, GameRule luckGot, UserInfo luckyUser) {
+		String userNickName = luckyUser.getNickName();
+		userNickName = userNickName.length()<=5?userNickName:userNickName.substring(0, 5)+"***";
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("恭喜 ("+userNickName+") ");
+		sb.append(packet.getAmount().toPlainString());
+		sb.append("-");
+		if(luckGot.getRuleType().equals("2")){
+			sb.append(packet.getHitNum()+"/中奖,");
+			sb.append("奖励 ("+luckGot.getMatchingParam()+") +"+luckGot.getRuleValue());
+		}else{
+			sb.append("多雷中奖,奖励 (中"+luckGot.getRuleCode()+"雷) +"+luckGot.getRuleValue());
+		}
+		
+		return sb.toString();
 	}
 
 	private void insertNoticeInfo(SocketMessage socketMessage,Long sendUserId,Long targetUserId) {
@@ -261,7 +306,7 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		insertSelective(socketMessage);
 	}
 
-	public SocketMessage buildMessage(SocketMessage socketMessage, Long sendUserId, Long targetUserId) {
+	private SocketMessage buildMessage(SocketMessage socketMessage, Long sendUserId, Long targetUserId) {
 		String uuid = UUID.randomUUID().toString().replaceAll("-","");
 		socketMessage.setSendUserId(sendUserId);
 		socketMessage.setTargetUserId(targetUserId);

@@ -78,6 +78,7 @@ public class RechargeServiceImpl implements RechargeService {
         }else{
             PayResp payResp = payUtils.preOrder(recharge);
             //下单成功
+            logger.info("下单请求应答结果:"+payResp);
             if(payResp.getCode().intValue()==100&&"0000".equals(payResp.getData().getResult_code())){
                 recharge.setStates(RechargeStatusDesc.processing.toString());
                 recharge.setPayState("0");//未支付

@@ -1,5 +1,8 @@
 package com.neighbor.common.dictionary.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.neighbor.common.util.PageTools;
+
 public class Dictionary {
     private Integer id;
 
@@ -14,7 +17,18 @@ public class Dictionary {
     private String bizCode;
 
     private String remarke;
+    
+	@JsonIgnore
+	private PageTools pageTools;
 
+	public PageTools getPageTools() {
+		return pageTools;
+	}
+
+	public void setPageTools(PageTools pageTools) {
+		this.pageTools = pageTools;
+	}
+	
     public Integer getId() {
         return id;
     }

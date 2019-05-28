@@ -19,5 +19,7 @@ public interface DictionaryService {
 
 	List<Dictionary> selectPageByObjectForList(Dictionary record);
 
+	void updateByPrimaryKeySelectiveIncludeCache(Dictionary dictionary);
+
 
 }

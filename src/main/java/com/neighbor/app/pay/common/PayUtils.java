@@ -1,6 +1,9 @@
 package com.neighbor.app.pay.common;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.neighbor.app.common.util.OrderUtils;
+import com.neighbor.app.pay.constants.MethodDesc;
 import com.neighbor.app.pay.entity.PayResp;
 import com.neighbor.app.pay.entity.PayScan;
 import com.neighbor.app.pay.entity.PayScanReq;
@@ -29,9 +32,21 @@ public class PayUtils {
     private String appkey;
 
     private void init(){
-        apiUrl = env.getProperty("recharge.api.url");
-        appid = env.getProperty("recharge.app.id");
-        appkey = env.getProperty("recharge.app.key");
+    	if(apiUrl==null){
+            apiUrl = env.getProperty("recharge.api.url");
+            appid = env.getProperty("recharge.app.id");
+            appkey = env.getProperty("recharge.app.key");
+    	}
+    }
+    
+    public void init(boolean isDev){
+    	if(isDev){
+            apiUrl = "http://pay.1000pays.com/Gateway/api";
+            appid = "0612085761";
+            appkey = "U8K1H2JKLX9M5UMVX1BOBL"; 
+    	}else{
+    		init();
+    	}
     }
 
     public PayResp preOrder(Recharge recharge) throws Exception{
@@ -49,16 +64,17 @@ public class PayUtils {
         String nonce_str = UUID.randomUUID().toString();
         data.put("nonce_str",nonce_str);
         payScan.setNonce_str(nonce_str);
-        String body = "";
-        //String body = StringUtil.isNotEmpty(recharge.getBody())?recharge.getBody():"积分充值："+recharge.getAmount();
-       // body = URLEncoder.encode(body,"utf-8");
+        String body = StringUtil.isNotEmpty(recharge.getBody())?recharge.getBody():"积分充值："+recharge.getAmount();
+        body = URLEncoder.encode(body,"utf-8");
         payScan.setBody(body);
         data.put("body",body);
         String orderNo = recharge.getOrderNo();
         data.put("out_trade_no",orderNo);
         payScan.setOut_trade_no(orderNo);
+        
         String signStr = putPairsSequenceAndTogether(data)+"&key="+appkey;
         logger.info("signStr  >> "+signStr);
+        System.out.println(signStr);
         payScanReq.setData(payScan);
         payScanReq.setSign(EncodeData.encode(signStr).toUpperCase());
         String reqStr = JSON.toJSONString(payScanReq);
@@ -85,5 +101,17 @@ public class PayUtils {
         ret = ret.substring(0, ret.length() - 1);
         return ret;
     }
+    
+    public static void main(String[] args) throws Exception {
+    	Recharge charge = new Recharge();
+    	charge.setAmount(new BigDecimal("0.01"));
+    	charge.setOrderNo("test1-"+System.currentTimeMillis());
+    	charge.setMethod(MethodDesc.wx_native+"");
+    	PayUtils pay = new PayUtils();
+    	pay.init(true);
+    	
+    	PayResp payResp = pay.preOrder(charge);
+    	System.out.println(payResp);
+	}
 
 }

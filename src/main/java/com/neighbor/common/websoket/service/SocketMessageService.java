@@ -1,5 +1,7 @@
 package com.neighbor.common.websoket.service;
 
+import com.neighbor.app.game.entity.GameRule;
+import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
@@ -54,11 +56,13 @@ public interface SocketMessageService {
 
 	void updateWalletRefreshMsg(Long targetUserId);
 
-	void walletRefreshNotice(Long sendUserId, Long groupMasterUId, String nickName);
+	void walletRefreshNotice(Long sendUserId, Long targetUserId, String nickName);
 
 	void groupRefreshNotice(Long sendUserId, Long targetUserId, String content);
 
 	SocketMessage forceOfflineNoticeBuild();
+
+	void groupPacketLotteryNotcie(Packet packet, GameRule luckGot, UserInfo luckyUser);
 
 	
 
