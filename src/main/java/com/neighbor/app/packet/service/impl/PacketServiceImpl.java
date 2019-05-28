@@ -3,7 +3,16 @@ package com.neighbor.app.packet.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import com.alibaba.fastjson.JSON;
+import com.neighbor.app.packet.entity.LuckyMessage;
+import com.neighbor.common.websoket.constants.MessageStatus;
+import com.neighbor.common.websoket.constants.WebSocketChatType;
+import com.neighbor.common.websoket.constants.WebSocketMsgType;
+import com.neighbor.common.websoket.po.SocketMessage;
+import com.neighbor.common.websoket.po.WebSocketHeader;
+import com.neighbor.common.websoket.util.GroupMsgPushHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +76,10 @@ public class PacketServiceImpl implements PacketService {
 	@Autowired
 	private CommissionHandleTaskService commissionHandleTaskService;
 	@Autowired
-	private SocketMessageService socketMessageService; 
+	private SocketMessageService socketMessageService;
+	@Autowired
+	private GroupMsgPushHandler groupMsgPushHandler;
+
 	
 	@Override
 	public int insertSelective(Packet record) {
@@ -248,7 +260,7 @@ public class PacketServiceImpl implements PacketService {
 				// 处理踩雷
 				handleHitBomb(detail.isGotBomb(), lockPacket, lastWallet,senderWallet);
 				// 抢包中奖处理 
-				handleLottery(gameId, lastWallet, detail.getGotAmount());
+				handleLottery(packet.getGroupId(),gameId, lastWallet, detail.getGotAmount());
 			}
 			// 发包中奖检查和最佳标识检查处理(也可以优化给前端处理,减少压力)
 			handleReward(gameId,lockPacket,senderWallet);
@@ -317,7 +329,7 @@ public class PacketServiceImpl implements PacketService {
 	 * @param lastWallet
 	 * @param detail
 	 */
-	private void handleLottery(long gameId, UserWallet graperWallet, BigDecimal grapAmount) {
+	private void handleLottery(long groupId,long gameId, UserWallet graperWallet, BigDecimal grapAmount) {
 		GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.award, grapAmount.doubleValue()); 
 		logger.info("中奖检查,抢包金额:{},游戏编号:{},游戏规则:{}",grapAmount.toPlainString(),gameId,gameRule);
 		if(gameRule==null){
@@ -342,8 +354,16 @@ public class PacketServiceImpl implements PacketService {
 		wallet.setuId(graperWallet.getuId());
 		wallet.setAvailableAmount(lotteryAmount);// 需要增加的金额
 		userWalletService.updateWalletAmount(wallet);
+
+		//中奖了 需要发群消息给通知用户
+		LuckyMessage luckyMessage = new LuckyMessage();
+		luckyMessage.setGroupId(groupId);
+		luckyMessage.setUserId(graperWallet.getuId());
+		luckyMessage.setLotteryAmount(lotteryAmount);
+		groupMsgPushHandler.sendMessageToAllUser(groupId,groupMsgPushHandler.buildLuckyNotice(luckyMessage));
 		
 	}
+
 
 	/**
 	 * 发包中奖检查和最佳检查标识处理
