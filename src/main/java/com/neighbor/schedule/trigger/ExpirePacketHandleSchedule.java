@@ -28,7 +28,7 @@ public class ExpirePacketHandleSchedule {
 	 */
 	@Scheduled(cron = "0 0/1 * * * *")
 	public void userMsgPush() {
-		 logger.info("开始执行红包过去检查任务");
+		 logger.info("开始执行红包过期检查任务");
 		try {
 			String today = DateUtils.getStringDateShort();
 			Packet packetParam = new Packet();

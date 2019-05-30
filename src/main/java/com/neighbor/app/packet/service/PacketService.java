@@ -2,6 +2,7 @@ package com.neighbor.app.packet.service;
 
 import java.util.List;
 
+import com.neighbor.app.game.entity.GameRule;
 import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.packet.entity.PacketDetail;
 import com.neighbor.app.users.entity.UserInfo;
@@ -31,5 +32,7 @@ public interface PacketService{
 	List<Packet> selectPacketBySelective(Packet packet);
 
 	void expirePacketHandle(Long packetId);
+
+	void sendPacketMessage(GameRule gameRule, Packet cachePacket, UserInfo user);
 
 }

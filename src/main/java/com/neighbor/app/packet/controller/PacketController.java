@@ -1,17 +1,5 @@
 package com.neighbor.app.packet.controller;
 
-import java.util.concurrent.BlockingQueue;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
-
 import com.neighbor.app.commission.entity.CommissionHandleTask;
 import com.neighbor.app.game.entity.GameRule;
 import com.neighbor.app.group.entity.Group;
@@ -28,7 +16,13 @@ import com.neighbor.common.constants.CommonConstants;
 import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
-import com.neighbor.common.websoket.service.SocketMessageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.BlockingQueue;
 
 @Controller
 @RequestMapping(value = "/packet")
@@ -49,8 +43,6 @@ public class PacketController {
 	private BlockingQueue<CommissionHandleTask> commisionHandleTaskQueue;
 	@Autowired
 	private CommonConstants commonConstants;
-	@Autowired
-	private SocketMessageService socketMessageService; 
 	
 	
 	@RequestMapping(value = "/sendPacket.req", method = RequestMethod.POST)
@@ -104,10 +96,10 @@ public class PacketController {
 			commisionHandleTaskQueue.offer(task);
 		}
 		GameRule luckGot = (GameRule) result.getBody().get("luckGot");
-		if(luckGot!=null){
-			logger.info("添加红包中奖的消息通知"); 
-			socketMessageService.groupPacketLotteryNotcie(packet, luckGot,user);
-		}
+		GameRule thunderGot = (GameRule) result.getBody().get("thunderGot");
+		Packet cachePacket = (Packet) result.getBody().get("packet");
+		packetService.sendPacketMessage(luckGot,cachePacket,user);
+		packetService.sendPacketMessage(thunderGot,cachePacket,user);
 		return result;
 	}
 	

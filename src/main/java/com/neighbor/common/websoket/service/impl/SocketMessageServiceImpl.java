@@ -283,18 +283,19 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		insertSelective(socketMessage);
 	}
 
-	private String buildLotteryMsg(Packet packet, GameRule luckGot, UserInfo luckyUser) {
+	public String buildLotteryMsg(Packet packet, GameRule luckGot, UserInfo luckyUser) {
 		String userNickName = luckyUser.getNickName();
 		userNickName = userNickName.length()<=5?userNickName:userNickName.substring(0, 5)+"***";
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("恭喜 ("+userNickName+") ");
-		sb.append(packet.getAmount().toPlainString());
+		sb.append(packet.getAmount().intValue());
 		sb.append("-");
-		if(luckGot.getRuleType().equals("2")){
+		if(luckGot.getRuleType().equals(2)){
 			sb.append(packet.getHitNum()+"/中奖,");
 			sb.append("奖励 ("+luckGot.getMatchingParam()+") +"+luckGot.getRuleValue());
 		}else{
+			sb.append(packet.getHitNum());
 			sb.append("多雷中奖,奖励 (中"+luckGot.getRuleCode()+"雷) +"+luckGot.getRuleValue());
 		}
 		

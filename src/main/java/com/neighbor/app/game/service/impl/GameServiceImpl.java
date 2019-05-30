@@ -113,7 +113,7 @@ public class GameServiceImpl implements GameService {
 
         }else if(RuleTypeDesc.thunder.getValue()==gameRule.getRuleType()){
             //中雷
-            gameRule.setRuleCode(gameRule.getMatchingParam());
+            gameRule.setRuleCode(Double.valueOf(gameRule.getMatchingParam()).intValue()+"");
             gameRule.setMatchingParam(null);
             List<GameRule> gameRules = gameRuleMapper.selectPageByObjectForList(gameRule);
             if(gameRules!=null&&gameRules.size()>0){

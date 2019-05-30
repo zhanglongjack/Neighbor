@@ -64,8 +64,9 @@ public interface SocketMessageService {
 
 	void groupPacketLotteryNotcie(Packet packet, GameRule luckGot, UserInfo luckyUser);
 
-	
+	String buildLotteryMsg(Packet packet, GameRule luckGot, UserInfo luckyUser);
 
 
-	
+
+
 }
