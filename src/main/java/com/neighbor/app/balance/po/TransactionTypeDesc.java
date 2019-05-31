@@ -1,7 +1,7 @@
 package com.neighbor.app.balance.po;
 
 public enum TransactionTypeDesc {
-    payment("付款"),receipt("收款"),expenditure("支出");
+    payment("付款"),receipt("收款"),expenditure("支出"),income("收入");
     private String des;
 
     private TransactionTypeDesc(String des) {

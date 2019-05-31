@@ -1,5 +1,6 @@
 package com.neighbor.app.robot.controller;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,15 @@ public class RobotController {
 
 		return "page/robot/ModifyModal";
 	}
+
+	@RequestMapping(value = "/primaryWalletModalView.ser")
+	public String primaryWalletModalView(Integer id, String modifyModel, Model model) throws Exception {
+		logger.debug("primaryWalletModalView request:" + id + ",model:" + model);
+		model.addAttribute("id", id);
+		model.addAttribute("modifyModel", modifyModel);
+		return "page/robot/ModifyWalletModal";
+	}
+
 
 	@RequestMapping(value = "/pageView.ser")
 	@ResponseBody
@@ -106,6 +116,14 @@ public class RobotController {
 		
 		return new ResponseResult();
 	}
+	@RequestMapping(value="/modifyWallet.ser")
+	@ResponseBody
+	public ResponseResult modifyWallet(Long userId, String action, BigDecimal amount){
+		logger.info("modifyWallet request:{},action:{},amount:{}",userId,action,amount);
+		userService.updateRobotWallet(userId,action,amount);
+		return new ResponseResult();
+	}
+
 	
 	@RequestMapping(value="/robotStart.ser")
 	@ResponseBody

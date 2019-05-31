@@ -1,6 +1,9 @@
 package com.neighbor.app.wallet.service;
 
+import com.neighbor.app.balance.po.TransactionSubTypeDesc;
 import com.neighbor.app.wallet.entity.UserWallet;
+
+import java.math.BigDecimal;
 
 public interface UserWalletService {
     int deleteByPrimaryKey(Long id);
@@ -16,4 +19,7 @@ public interface UserWalletService {
     
     int updateWalletAmount(UserWallet record);
 
+     void sysUserChangeWallet(String transactionType, BigDecimal amount, TransactionSubTypeDesc transactionSubType);
+
+    void updateRobotWallet(Long userId, String action, BigDecimal amount);
 }

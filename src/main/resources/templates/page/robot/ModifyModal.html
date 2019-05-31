@@ -166,28 +166,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-sm-5">
-								<div class="form-group">
-									<label>机器人钱包</label>
-									<input type="text" class="form-control" placeholder="机器人钱包" name="wallet.availableAmount"
-										required
-										th:attr="value=${modifyInfo==null?'':modifyInfo.wallet==null?'':#numbers.formatDecimal(modifyInfo.wallet.availableAmount,3,2)}">
-								</div>
-							</div>
-							<div class="col-sm-1"></div>
-							<div class="col-sm-5">
-								<div class="form-group">
-									<label>机器人性别</label>
-									<select class="form-control" name="user.sex" required>
-										<option value="">===机器人性别===</option>
-										<option th:each="map:${@commonConstants.getDictionarysByKey('sex')}"
-											th:selected="${modifyInfo!=null&&modifyInfo.user!=null&&modifyInfo.user.sex == map.key}"
-											th:value="${map.key}" th:text="${map.value}"></option>
-									</select>
-								</div>
-							</div>
-						</div>
+
 						<div class="row">
 							<div class="col-sm-5">
 								<div class="form-group">
@@ -221,6 +200,28 @@
 										<option value="">===启用状态===</option>
 										<option th:selected="${modifyInfo!=null&&modifyInfo.status == 0}" value="0">未启用</option>
 										<option th:selected="${modifyInfo!=null&&modifyInfo.status == 1}" value="1">已启用</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<!--	<div class="col-sm-5">
+                                    <div class="form-group">
+                                        <label>机器人钱包</label>
+                                        <input type="text" class="form-control" placeholder="机器人钱包" name="wallet.availableAmount"
+                                            required
+                                            th:attr="value=${modifyInfo==null?'':modifyInfo.wallet==null?'':#numbers.formatDecimal(modifyInfo.wallet.availableAmount,3,2)}">
+                                    </div>
+                                </div>-->
+
+							<div class="col-sm-5">
+								<div class="form-group">
+									<label>机器人性别</label>
+									<select class="form-control" name="user.sex" required>
+										<option value="">===机器人性别===</option>
+										<option th:each="map:${@commonConstants.getDictionarysByKey('sex')}"
+												th:selected="${modifyInfo!=null&&modifyInfo.user!=null&&modifyInfo.user.sex == map.key}"
+												th:value="${map.key}" th:text="${map.value}"></option>
 									</select>
 								</div>
 							</div>

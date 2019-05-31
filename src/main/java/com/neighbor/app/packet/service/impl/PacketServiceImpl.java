@@ -38,6 +38,7 @@ import com.neighbor.common.websoket.util.GroupMsgPushHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,6 +79,8 @@ public class PacketServiceImpl implements PacketService {
 
 	@Autowired
 	private GroupMsgPushHandler groupMsgPushHandler;
+
+
 
 	@Override
 	public int insertSelective(Packet record) {
@@ -358,8 +361,14 @@ public class PacketServiceImpl implements PacketService {
 		wallet.setAvailableAmount(lotteryAmount);// 需要增加的金额
 		userWalletService.updateWalletAmount(wallet);
 		gameRule.setMatchingParam(grapAmount.toPlainString());
+		userWalletService.sysUserChangeWallet(TransactionTypeDesc.expenditure.toString(),lotteryAmount, TransactionSubTypeDesc.luckedOut);
+
+
 		return gameRule;
 	}
+
+
+
 
 	/**
 	 * 发包中奖检查和最佳检查标识处理
@@ -420,8 +429,7 @@ public class PacketServiceImpl implements PacketService {
 		wallet1.setuId(senderWallet.getuId());
 		wallet1.setAvailableAmount(amount);// 需要增加的金额
 		userWalletService.updateWalletAmount(wallet1);
-
-		//TODO 付方需要扣超管的钱 待补充
+		userWalletService.sysUserChangeWallet(TransactionTypeDesc.expenditure.toString(),amount, TransactionSubTypeDesc.thunderAward);
 
 		return gameRule;
 	}

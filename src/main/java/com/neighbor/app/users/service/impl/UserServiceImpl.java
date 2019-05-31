@@ -1,5 +1,6 @@
 package com.neighbor.app.users.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -181,7 +182,12 @@ public class UserServiceImpl implements UserService {
 		userWalletService.updateByPrimaryKeySelective(wallet);
 	}
 
-	@Override
+    @Override
+    public void updateRobotWallet(Long userId, String action, BigDecimal amount) {
+        userWalletService.updateRobotWallet(userId,action,amount);
+    }
+
+    @Override
 	public UserInfo selectByRobotId(Long robotId) {
 		return userInfoMapper.selectByRobotId(robotId);
 	}

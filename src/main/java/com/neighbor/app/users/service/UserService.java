@@ -1,5 +1,6 @@
 package com.neighbor.app.users.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.neighbor.app.robot.entity.RobotConfig;
@@ -49,4 +50,5 @@ public interface UserService {
 
     UserInfo selectByReCode(String reCode);
 
+    void updateRobotWallet(Long userId, String action, BigDecimal amount);
 }
