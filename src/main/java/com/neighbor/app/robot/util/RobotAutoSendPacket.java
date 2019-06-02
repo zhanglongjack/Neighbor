@@ -170,7 +170,7 @@ public class RobotAutoSendPacket implements ApplicationListener<ContextRefreshed
 		int end = Integer.parseInt(limit[1]);
 		int randomNum = RandomUtil.getRandomBy(end - begin) + begin;
 		Packet packet = new Packet();
-		packet.setAmount(new BigDecimal(randomNum/100));
+		packet.setAmount(new BigDecimal(randomNum));
 		packet.setHitNum(RandomUtil.getRandomBy(10));
 		packet.setPacketNum(Integer.parseInt(packetBaseNum));
 		packet.setUserId(member.getUserId());
