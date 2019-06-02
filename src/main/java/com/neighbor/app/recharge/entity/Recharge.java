@@ -50,6 +50,7 @@ public class Recharge  extends PageEntity{
     private String outTradeNo;//支付渠道订单号
     private String transactionId;//支付官方交易流水
     private String codeUrl;//支付二维码 支付一次无效
+    private String h5Url;//支付宝H5二维码 支付一次无效
 
     public String getMethodDesc() {
         if(!StringUtils.isEmpty(method)){
@@ -304,6 +305,13 @@ public class Recharge  extends PageEntity{
         this.remarks = remarks;
     }
 
+    public String getH5Url() {
+        return h5Url;
+    }
+
+    public void setH5Url(String h5Url) {
+        this.h5Url = h5Url;
+    }
 
     @Override
     public String toString() {

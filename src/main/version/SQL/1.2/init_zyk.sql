@@ -18,7 +18,7 @@ CREATE TABLE `game_rule`  (
   `rule_type` bigint(20) NOT NULL COMMENT '游戏规则类型（1:返佣比例,2:中奖数字奖励,3:多雷奖励）',
   `rule_code` varchar(500) NOT NULL COMMENT '游戏规则代码',
   `rule_value` varchar(500) NOT NULL COMMENT '游戏规则值',
-  `rule_sub_type` bigint(20) NOT NULL  COMMENT '游戏规则类型（1:单个值,2:顺子,3:同数）',
+  `rule_sub_type` bigint(20) NOT NULL  COMMENT '游戏规则类型（1:单个值,2:顺子,3:同数，4：豹子）',
   `scheme_code` varchar(5000) NOT NULL  COMMENT '真实值',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='游戏规则表';

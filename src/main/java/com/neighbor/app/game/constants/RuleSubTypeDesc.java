@@ -2,7 +2,7 @@ package com.neighbor.app.game.constants;
 
 public enum RuleSubTypeDesc {
     //子类型
-    single(1, "单个值"), continuity(2,"顺子"), same(3,"同数");
+    single(1, "单个值"), continuity(2,"顺子"), same(3,"同数"), leopard(4,"豹子");
     private int value;
     private String des;
     private RuleSubTypeDesc(int value, String des) {
@@ -21,6 +21,8 @@ public enum RuleSubTypeDesc {
             return RuleSubTypeDesc.continuity.getDes();
         }else if(i==3){
             return RuleSubTypeDesc.same.getDes();
+        }else if(i==4){
+            return RuleSubTypeDesc.leopard.getDes();
         }
         return null;
     }

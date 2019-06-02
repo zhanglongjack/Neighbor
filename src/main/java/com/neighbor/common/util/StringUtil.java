@@ -1,5 +1,6 @@
 package com.neighbor.common.util;
 
+import javafx.scene.chart.Chart;
 import org.springframework.util.StringUtils;
 
 import java.util.regex.Matcher;
@@ -28,7 +29,7 @@ public class StringUtil {
     }
 
 
-    //生成顺子数 subType 1=顺子,2=同数
+    //生成顺子数 subType 1=顺子,2=同数,
     public static String generateGameRuleNum(String s1,String s2,int subType){
         if(!checkGameRuleNum(s1,s2,subType))return null;
         StringBuffer sb = new StringBuffer();
@@ -146,14 +147,36 @@ public class StringUtil {
         return true;
     }
 
+    public static int checkLeopard(String matchingParam){
+        if(!StringUtil.isEmpty(matchingParam)){
+            char[] charArray = matchingParam.replace(".","").toCharArray();
+            int size = 1;
+            int len = charArray.length;
+            char end = charArray[len-1];
+            for(int i = len-2;i>=0;i--){
+                char temp = charArray[i];
+                if(temp!=end){
+                    break;
+                }
+                size++;
+            }
+            return size;
+        }
+        return 0;
+    }
+
+
 
     public static void main(String[] args) {
-        System.out.println(generateGameRuleNum("1.23","7.89",1));
+        System.out.println(checkLeopard("12.23"));
+
+
+       /* System.out.println(generateGameRuleNum("1.23","7.89",1));
         System.out.println(generateGameRuleNum("9.87","3.21",1));
         System.out.println(generateGameRuleNum("77.7","11.1",2));
         System.out.println(generateGameRuleNum("1.11","9.99",2));
         System.out.println(checkGameRuleNum("1.23","7..",1));
-        System.out.println(checkGameRuleNum("77.7","11.1",2));
+        System.out.println(checkGameRuleNum("77.7","11.1",2));*/
     }
 
 

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.neighbor.app.chatlist.entity.ChatList;
+import com.neighbor.app.game.constants.RuleSubTypeDesc;
 import com.neighbor.app.game.dao.GameMapper;
 import com.neighbor.app.game.entity.Game;
 import com.neighbor.app.users.entity.UserInfo;
@@ -109,6 +110,17 @@ public class GameServiceImpl implements GameService {
             List<GameRule> gameRules = gameRuleMapper.selectPageByObjectForList(gameRule);
             if(gameRules!=null&&gameRules.size()>0){
                 return gameRules.get(0);
+            }
+            //检查豹子
+            int num = StringUtil.checkLeopard(gameRule.getMatchingParam());
+            if(num>0){
+                gameRule.setRuleSubType(RuleSubTypeDesc.leopard.getValue()+"");
+                gameRule.setMatchingParam(null);
+                gameRule.setRuleCode(num+"");
+                gameRules = gameRuleMapper.selectPageByObjectForList(gameRule);
+                if(gameRules!=null&&gameRules.size()>0){
+                    return gameRules.get(0);
+                }
             }
 
         }else if(RuleTypeDesc.thunder.getValue()==gameRule.getRuleType()){

@@ -83,8 +83,25 @@ public class RechargeServiceImpl implements RechargeService {
                 recharge.setStates(RechargeStatusDesc.processing.toString());
                 recharge.setPayState("0");//未支付
                 recharge.setOutTradeNo(payResp.getData().getOut_trade_no());
-                recharge.setCodeUrl(payResp.getData().getCode_url());
+                String codeUrl = payResp.getData().getCode_url();
+                recharge.setCodeUrl(codeUrl);
                 rechargeMapper.insertSelective(recharge);
+
+                if(MethodDesc.ali_native.toString().equals(recharge.getMethod())){
+                    recharge.setMethod(MethodDesc.ali_h5.toString());
+                    payResp = payUtils.preOrder(recharge);
+                    if(payResp.getCode().intValue()==100&&"0000".equals(payResp.getData().getResult_code())) {
+                        recharge.setId(null);
+                        recharge.setStates(RechargeStatusDesc.processing.toString());
+                        recharge.setPayState("0");//未支付
+                        recharge.setOutTradeNo(payResp.getData().getOut_trade_no());
+                        recharge.setCodeUrl(payResp.getData().getCode_url());
+                        rechargeMapper.insertSelective(recharge);
+                        recharge.setCodeUrl(codeUrl);
+                        recharge.setH5Url(payResp.getData().getCode_url());
+                    }
+                }
+
                 responseResult.addBody("recharge", recharge);
                 return responseResult;
             }else{
