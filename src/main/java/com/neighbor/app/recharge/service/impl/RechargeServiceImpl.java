@@ -76,6 +76,9 @@ public class RechargeServiceImpl implements RechargeService {
             //TencentSms.smsCache.remove(recharge.getPhone());
             return responseResult;
         }else{
+            if(ChannelTypeDesc.wxpay.toString().equals(recharge.getChannelType())){
+                recharge.setMethod(MethodDesc.wx_jsapi.toString());//微信默认公众号支付方式
+            }
             PayResp payResp = payUtils.preOrder(recharge);
             //下单成功
             logger.info("下单请求应答结果:"+payResp);
