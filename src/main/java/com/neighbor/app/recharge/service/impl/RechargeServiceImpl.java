@@ -89,6 +89,7 @@ public class RechargeServiceImpl implements RechargeService {
 
                 if(MethodDesc.ali_native.toString().equals(recharge.getMethod())){
                     recharge.setMethod(MethodDesc.ali_h5.toString());
+                    recharge.setOrderNo(OrderUtils.getOrderNo(OrderUtils.RECHARGE,user.getId()));
                     payResp = payUtils.preOrder(recharge);
                     if(payResp.getCode().intValue()==100&&"0000".equals(payResp.getData().getResult_code())) {
                         recharge.setId(null);
