@@ -21,6 +21,8 @@ import com.neighbor.app.recharge.service.RechargeService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
+import com.neighbor.common.constants.CommonConstants;
+import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.exception.ParamsCheckException;
 import com.neighbor.common.sms.TencentSms;
 import com.neighbor.common.util.ResponseResult;
@@ -52,6 +54,9 @@ public class RechargeServiceImpl implements RechargeService {
     @Autowired
     private PayUtils payUtils;
 
+    @Autowired
+    private CommonConstants commonConstants;
+
     @Override
     @Transactional(readOnly = false,rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     public ResponseResult recharge(UserInfo user, Recharge recharge) throws Exception {
@@ -76,6 +81,11 @@ public class RechargeServiceImpl implements RechargeService {
             //TencentSms.smsCache.remove(recharge.getPhone());
             return responseResult;
         }else{
+
+            String conf = commonConstants.getDictionarysBy(EnvConstants.RECHARGE_CONF,EnvConstants.RECHARGE_TEST_AMOUNT_SWITCH);
+            if("1".equals(conf)){
+                recharge.setAmount(new BigDecimal("0.01"));
+            }
             if(ChannelTypeDesc.wxpay.toString().equals(recharge.getChannelType())){
                 recharge.setMethod(MethodDesc.wx_jsapi.toString());//微信默认公众号支付方式
             }

@@ -48,6 +48,14 @@ public class EnvConstants {
 	 * 机器人抢包队列线程池初始长度
 	 */
     public final static String ROBOT_GRAP_QUEUE_HANDLE_SIZE = "robot_grap_queue_handle_size";
- 
 
+
+    /**
+     * 充值配置
+     */
+    public static final String RECHARGE_CONF ="recharge_conf";
+    /**
+     * 测试金额开关
+     */
+    public static final String RECHARGE_TEST_AMOUNT_SWITCH ="recharge_test_amount_switch";
 }
