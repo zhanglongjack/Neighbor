@@ -56,12 +56,9 @@ update group_member set is_customer = '1' where member_type = '1';
 
 alter table game add head_url varchar(500) DEFAULT null COMMENT '游戏头像图片地址';
 
-<<<<<<< HEAD
 ALTER TABLE `packet` ADD COLUMN `hit_chance` DECIMAL(4,2) NULL DEFAULT 0 COMMENT '中雷概率';
 ALTER TABLE `packet` ADD COLUMN `paid_rate` DECIMAL(4,2) NULL DEFAULT 0 COMMENT '赔付率';
- 
-=======
->>>>>>> branch 'master' of https://github.com/zhanglongjack/Neighbor.git
+
 alter table recharge add method varchar(50) DEFAULT null COMMENT '接口列表';
 
 alter table recharge add body varchar(500) DEFAULT null COMMENT '商品描述';
