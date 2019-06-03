@@ -23,8 +23,6 @@ import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.constants.CommonConstants;
 import com.neighbor.common.constants.EnvConstants;
-import com.neighbor.common.exception.ParamsCheckException;
-import com.neighbor.common.sms.TencentSms;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.util.StringUtil;
 import org.slf4j.Logger;
@@ -36,6 +34,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.util.Date;
 import java.util.List;
 
@@ -100,20 +99,13 @@ public class RechargeServiceImpl implements RechargeService {
                 recharge.setCodeUrl(codeUrl);
                 rechargeMapper.insertSelective(recharge);
 
-                if(MethodDesc.ali_native.toString().equals(recharge.getMethod())){
-                    recharge.setMethod(MethodDesc.ali_h5.toString());
-                    recharge.setOrderNo(OrderUtils.getOrderNo(OrderUtils.RECHARGE,user.getId()));
-                    payResp = payUtils.preOrder(recharge);
-                    if(payResp.getCode().intValue()==100&&"0000".equals(payResp.getData().getResult_code())) {
-                        recharge.setId(null);
-                        recharge.setStates(RechargeStatusDesc.processing.toString());
-                        recharge.setPayState("0");//未支付
-                        recharge.setOutTradeNo(payResp.getData().getOut_trade_no());
-                        recharge.setCodeUrl(payResp.getData().getCode_url());
-                        rechargeMapper.insertSelective(recharge);
-                        recharge.setCodeUrl(codeUrl);
-                        recharge.setH5Url(payResp.getData().getCode_url());
-                    }
+                if(ChannelTypeDesc.alipay.toString().equals(recharge.getChannelType())){
+                    String alipayqr = "alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=";
+                    String h5Param = codeUrl.substring(codeUrl.indexOf("url=")+4);
+                    alipayqr+=h5Param;
+                    String qrcode = URLDecoder.decode(h5Param,"UTF-8");
+                    recharge.setCodeUrl(qrcode);
+                    recharge.setH5Url(alipayqr);
                 }
 
                 responseResult.addBody("recharge", recharge);
