@@ -29,7 +29,7 @@ public class StringUtil {
     }
 
 
-    //生成顺子数 subType 1=顺子,2=同数,
+    //生成顺子数 subType 2=顺子,3=同数,
     public static String generateGameRuleNum(String s1,String s2,int subType){
         if(!checkGameRuleNum(s1,s2,subType))return null;
         StringBuffer sb = new StringBuffer();
@@ -45,7 +45,7 @@ public class StringUtil {
             for(int i=beginNum+1;i<endNum;i++){
                 StringBuffer temp = new StringBuffer();
                 for(int z=0;z<len;z++){
-                    if(subType==1){
+                    if(subType==2){
                         temp.append(continuityArray[i+z]);
                     }else{
                         temp.append(continuityArray[i]);
@@ -62,7 +62,7 @@ public class StringUtil {
             for(int i=beginNum-1;i>endNum;i--){
                 StringBuffer temp = new StringBuffer();
                 for(int z=0;z<len;z++){
-                    if(subType==1){
+                    if(subType==2){
                         temp.append(continuityArray[i-z]);
                     }else{
                         temp.append(continuityArray[i]);
@@ -115,7 +115,7 @@ public class StringUtil {
     }
 
 
-    //判断顺子数 不能相等的 subType 1=顺子,2=同数
+    //判断顺子数 不能相等的 subType 2=顺子,3=同数
     public static boolean checkGameRuleNum(String s1,String s2,int subType){
         if(StringUtils.isEmpty(s1)||StringUtils.isEmpty(s2)){
             return false;
@@ -134,7 +134,7 @@ public class StringUtil {
         if(!isNumeric2(begin)||!isNumeric2(end)){
             return false;
         }
-        if(subType==1){
+        if(subType==2){
             if(!checkContinuity(begin)||!checkContinuity(end)){
                 return false;
             }
