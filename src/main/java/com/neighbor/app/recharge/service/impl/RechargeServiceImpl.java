@@ -101,12 +101,11 @@ public class RechargeServiceImpl implements RechargeService {
 
                 if(ChannelTypeDesc.alipay.toString().equals(recharge.getChannelType())){
                     //String alipayqr = "alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=";
-                    String alipayqr = codeUrl;
                     String h5Param = codeUrl.substring(codeUrl.indexOf("url=")+4);
-                    alipayqr+=h5Param;
+                    //alipayqr+=h5Param;
                     String qrcode = URLDecoder.decode(h5Param,"UTF-8");
                     recharge.setCodeUrl(qrcode);
-                    recharge.setH5Url(alipayqr);
+                    recharge.setH5Url(codeUrl);
                 }
 
                 responseResult.addBody("recharge", recharge);
