@@ -70,3 +70,9 @@ alter table recharge add out_trade_no varchar(500) DEFAULT null COMMENT '支付�
 alter table recharge add transaction_id varchar(500) DEFAULT null COMMENT '支付渠道流水号';
 
 alter table recharge add code_url varchar(5000) DEFAULT null COMMENT '二维码地址';
+
+ALTER TABLE `chat_message` 
+CHANGE COLUMN `msg_type` `msg_type` VARCHAR(30) NOT NULL COMMENT '消息类型' ;
+
+ALTER TABLE `chat_message_backup` 
+CHANGE COLUMN `msg_type` `msg_type` VARCHAR(30) NOT NULL COMMENT '消息类型' ;

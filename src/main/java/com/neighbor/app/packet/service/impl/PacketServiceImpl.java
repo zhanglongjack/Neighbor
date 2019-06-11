@@ -1,6 +1,7 @@
 package com.neighbor.app.packet.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.balance.entity.BalanceDetail;
 import com.neighbor.app.balance.po.TransactionSubTypeDesc;
 import com.neighbor.app.balance.po.TransactionTypeDesc;
@@ -179,12 +180,14 @@ public class PacketServiceImpl implements PacketService {
 	@Transactional(readOnly = false, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public ResponseResult grabPacekt(Packet packet,UserInfo user,Long gameId) {
 		logger.info("开始抢红包:"+packet);
+		ResponseResult resultResp = new ResponseResult();
 		RobotConfig robot = null;
 		if(user.getRobotSno()!=null){
 			robot = robotConfigService.selectByPrimaryKey(Integer.parseInt(user.getRobotSno()));
 			if(!robot.isGrap()){
 				logger.info("机器人抢红包概率未中,结束");
-				return new ResponseResult();
+				resultResp.setErrorCode(ErrorCodeDesc.failed.getValue());
+				return resultResp;
 			}
 			logger.info("机器人抢红包开始");
 		}
@@ -198,11 +201,11 @@ public class PacketServiceImpl implements PacketService {
 		UserWallet lastWallet = userWalletService.selectByPrimaryUserId(user.getId());
 		if(user.getRobotSno()!=null && lastWallet.getAvailableAmount().doubleValue()<limitAmount.doubleValue()){
 			logger.info("机器人余额低于下线,本次不抢红包,机器人钱包:{}",lastWallet);
-			return new ResponseResult();
+			resultResp.setErrorCode(ErrorCodeDesc.failed.getValue());
+			return resultResp;
 		}
 		if(lastWallet.getAvailableAmount().compareTo(cachePacket.getAmount())<0 && "0".equals(member.getMemberType())){
 
-			ResponseResult resultResp = new ResponseResult();
 			resultResp.addBody("packet", cachePacket);
 			resultResp.setErrorCode(1);
 			resultResp.setErrorMessage("余额不足");
@@ -210,7 +213,7 @@ public class PacketServiceImpl implements PacketService {
 			return resultResp;
 		}
 
-		ResponseResult resultResp = checLeftoverPacket(cachePacket.getStatus(),cachePacket,user.getId());
+		resultResp = checLeftoverPacket(cachePacket.getStatus(),cachePacket,user.getId());
 		if(resultResp.getErrorCode()!=0){
 			return resultResp;
 		}
@@ -230,7 +233,8 @@ public class PacketServiceImpl implements PacketService {
 			double resultNum = RedPackageUtil.getRandomMoney(lockPacket, robot==null?true:robot.isHit());
 			if(resultNum==0){
 				logger.info("最后一个红包,机器人抢红包中雷概率未中,不抢");
-				return  new ResponseResult();
+				resultResp.setErrorCode(ErrorCodeDesc.failed.getValue());
+				return resultResp;
 			}
 
 			PacketDetail detail = new PacketDetail();
@@ -697,6 +701,11 @@ public class PacketServiceImpl implements PacketService {
 		socketMessageService.walletRefreshNotice(null, lockPacket.getUserId(), "系统通知");
 
 		logger.info("过期红包已处理退回结束,退回红包信息:{}",lockPacket);
+	}
+
+	@Override
+	public void grapPacketNotice(Packet packet, UserInfo grapUser) {
+		socketMessageService.grapPacketNotice(packet,grapUser);
 	}
 
 

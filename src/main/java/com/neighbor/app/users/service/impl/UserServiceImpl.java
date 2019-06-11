@@ -176,10 +176,10 @@ public class UserServiceImpl implements UserService {
 	public void updateRobotInfo(UserInfo user, RobotConfig robot, UserWallet wallet) {
 		updateByPrimaryKeySelective(user);
 		robotConfigService.updateByPrimaryKeySelective(robot);
-
-		UserWallet walletResult = userWalletService.selectByPrimaryUserId(user.getId());
-		wallet.setId(walletResult.getId());
-		userWalletService.updateByPrimaryKeySelective(wallet);
+		
+//		UserWallet walletResult = userWalletService.selectByPrimaryUserId(user.getId());
+//		wallet.setId(walletResult.getId());
+//		userWalletService.updateByPrimaryKeySelective(wallet);
 	}
 
     @Override

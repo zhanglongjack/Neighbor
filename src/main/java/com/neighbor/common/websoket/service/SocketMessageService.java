@@ -66,6 +66,8 @@ public interface SocketMessageService {
 
 	String buildLotteryMsg(Packet packet, GameRule luckGot, UserInfo luckyUser);
 
+	void grapPacketNotice(Packet packet, UserInfo grapUser);
+
 
 
 
