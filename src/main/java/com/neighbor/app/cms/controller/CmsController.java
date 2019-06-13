@@ -7,6 +7,7 @@ import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.constants.EnvConstants;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
+import com.neighbor.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +92,7 @@ public class CmsController {
     }
 
     @RequestMapping(value = "/modifyModalView.ser")
-    public String modifyModalView(Long id, Model model) throws Exception {
+    public String modifyModalView(Long id, String modifyModel,Model model) throws Exception {
         logger.debug("modifyModalView request:" + id + ",model:" + model);
         if (id != null) {
             Cms cms = new Cms();
@@ -99,7 +100,7 @@ public class CmsController {
             cms = cmsService.viewCms(cms);
             model.addAttribute("modifyInfo", cms);
         }
-
+        model.addAttribute("modifyModel", modifyModel);
         logger.debug("primaryModalView model : " + model);
 
         return "page/cms/ModifyModal";
@@ -109,6 +110,9 @@ public class CmsController {
     @ResponseBody
     public ResponseResult cmsModify(UserInfo userInfo, Cms cms) throws Exception {
         logger.info("cmsModify request:{}", cms);
+        if(StringUtil.isEmpty(cms.getJumpUrl())){
+            cms.setJumpUrl("");
+        }
         int num = cmsService.updateCms(cms);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("success", true);

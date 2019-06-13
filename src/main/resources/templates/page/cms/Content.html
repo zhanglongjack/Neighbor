@@ -70,7 +70,7 @@
 											</button>
 										</div>
 										<div class="btn-group" style="margin:0px 5px;">
-											<a class="btn btn-default" th:attr="href='/cms/addModalView.ser'"
+											<a class="btn btn-default" th:attr="href='/cms/modifyModalView.ser?modifyModel=cmsAdd.ser&id='"
 												data-toggle="modal" data-target="#ModifyModal"> 
 												 <span class="fa fa-plus-square"></span>&nbsp;添加
 											</a>
@@ -99,7 +99,7 @@
 										<td>
 											<div class="btn-group">
 												<a class="btn btn-default btn-sm " data-toggle="modal" data-target="#ModifyModal"
-													th:attr="href='/cms/modifyModalView.ser?id='+${obj.id}" >
+													th:attr="href='/cms/modifyModalView.ser?modifyModel=cmsModify.ser&id='+${obj.id}" >
 													 <span class="glyphicon glyphicon-edit"></span>&nbsp;更新
 													 <i class="icon-star"></i>
 												</a>

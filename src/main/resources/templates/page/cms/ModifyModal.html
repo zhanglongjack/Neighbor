@@ -1,74 +1,101 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
 	<title>test</title>
-
-	<style type="text/css">
-
-	</style>
-	<script src="/neighbor/js/jquery.form.js" type="text/javascript" charset="utf-8"></script>
-
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-
+	<script src="/neighbor/js/jquery.form.js" type="text/javascript" charset="utf-8"></script>
 </head>
 
 <body>
 <div th:fragment="dialog-content">
-	<script th:inline="javascript">
-        /*<![CDATA[*/
-        //var modifyInfo = /*[[${modifyInfo}]]*/;
-        /*]]>*/
-
-        $(function(){
-            initTimePicker();
-        })
-
-
-	</script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+	//var modifyInfo = /*[[${modifyInfo}]]*/;
+/*]]>*/
+</script>
 
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 			&times;
 		</button>
-		<h4 class="modal-title" id="ModifyModalTitle">
+		<h4 class="modal-title" id="">
 			编辑广告信息
 		</h4>
 	</div>
 	<div class="modal-body">
 		<form id="modifyDataFrom" class="form-horizontal" role="form">
-			<input id="modifyId" name="id" type="hidden" th:attr="value=${modifyInfo==null}?'':${modifyInfo.id}">
-			<input id="url" name="id" type="hidden" th:attr="value=${modifyInfo==null}?'':${modifyInfo.url}">
-			<input id="modifyModel" name="modifyModel" type="hidden" value="cmsModify.ser">
+			<input id="modifyId"  type="hidden" th:attr="value=${modifyInfo==null}?'':${modifyInfo.id}">
+			<input id="id" name="id" type="hidden" th:attr="value=${modifyInfo==null}?'':${modifyInfo.id}">
+			<input id="url"   type="hidden" th:attr="value=${modifyInfo==null}?'':${modifyInfo.url}">
+			<input id="jumpUrl"   type="hidden" th:attr="value=${modifyInfo==null}?'':${modifyInfo.jumpUrl}">
+			<input id="modifyModel" name="modifyModel" type="hidden" th:attr="value=${modifyModel==null}?'':${modifyModel}">
+
 			<div class="form-group">
 				<label class="col-sm-2 control-label">位置</label>
 				<div class="col-sm-10">
-					<select class="form-control" name="position" id="positionSelect">
-						<option value="" >===请选择===</option>
-						<option th:selected="${modifyInfo.position=='1'}" value="1">主页面</option>
-						<option th:selected="${modifyInfo.position=='2'}" value="2">商城页面</option>
+					<select class="form-control" name="position" required>
+						<option value="">===请选择===</option>
+						<option th:selected="${modifyInfo!=null&&modifyInfo.position=='1'}" value="1">主页面</option>
+						<option th:selected="${modifyInfo!=null&&modifyInfo.position=='2'}" value="2">商城页面</option>
 					</select>
-
 				</div>
 			</div>
-
 			<div class="form-group">
-				<label class="col-sm-2 control-label">图片</label>
+				<label class="col-sm-2 control-label">轮播图片</label>
 				<div class="col-sm-10 form-inline" >
 					<input type="hidden" value="上传图片成功" name="successUploadFile">
-					<input type="text" class="form-control" placeholder="选择图片" name="picFile"  id="pic_val_1" readonly style="width:50% !important;"/>
+					<input type="text" class="form-control" placeholder="选择图片" name="picFile2" id="pic_val_1" readonly style="width:50% !important;"/>
 					&nbsp;&nbsp;&nbsp;
 					<input type="button" id="btn_upload_1" class="btn" value="上传图片"/>
 					&nbsp;&nbsp;&nbsp;
 					<span id="span1">
+
 					</span>
 				</div>
 			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">详情图片</label>
+				<div class="col-sm-10 form-inline" >
+					<input type="hidden" value="上传图片成功" name="successUploadFile2">
+					<input type="text" class="form-control" placeholder="选择图片" name="picFile" id="pic_val_2" readonly style="width:50% !important;"/>
+					&nbsp;&nbsp;&nbsp;
+					<input type="button" id="btn_upload_2" class="btn" value="上传图片"/>
+					&nbsp;&nbsp;&nbsp;
+					<span id="span2">
 
-
+					</span>
+				</div>
+			</div>
+			<!-- 
+			<div class="form-group">
+				<label class="col-sm-2 control-label">等级</label> 
+				<div class="col-sm-10"> 
+					<select class="form-control" name="uLevel">
+						<option value="" >===客服等级===</option>
+						<option th:each="map:${session.staffLevelMap}" th:selected="${modifyInfo!=null&&modifyInfo.uLevel == map.key}" 
+								th:value="${map.key}" th:text="${map.value}"></option>
+					</select>
+				</div>
+			</div>
+			 
+			<div class="form-group">
+				<label class="col-sm-2 control-label">入职日期</label> 
+				<div class="col-sm-10">
+			  		<span class="input-group input-append date" datepicker-flag="datepicker">
+                        <input readonly type="text" class="form-control" name="entryDate"
+                            placeholder="yyyymmdd" data-date-format="yyyymmdd" 
+                            th:attr="value=${modifyInfo==null}?${#dates.format(#dates.createNow(), 'yyyyMMdd')}:${modifyInfo.entryDate}">
+                        <span class="input-group-addon add-on" style="background-color:white">
+                           <i class="glyphicon glyphicon-calendar"></i>
+                        </span>
+                    </span>
+				</div>
+			</div>
+			-->
 		</form>
 		<form id="uploadImgForm1" enctype="multipart/form-data" method="post">
 			<input type="hidden" id="position" name="position">
@@ -79,6 +106,14 @@
 				   accept="jpg,gif,png,jpeg"/>
 		</form>
 
+		<form id="uploadImgForm2" enctype="multipart/form-data" method="post">
+			<input type="hidden" id="position2" name="position">
+			<input type="hidden" id="suffix2" name="suffix">
+			<input type="file"
+				   onchange="checkFile2(this);" style="display:none;"
+				   id="pic_file2" name="file"
+				   accept="jpg,gif,png,jpeg"/>
+		</form>
 	</div>
 	<div class="modal-footer">
 		<button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -90,30 +125,22 @@
 </div>
 </body>
 <script type="text/javascript">
-    $(document).ready(function() {
-
-        $("#ModifyModal").on("hidden.bs.modal", function() {
-            $(this).removeData("bs.modal");
-        });
-
-        $('#modifyDataFrom').bootstrapValidator({
-            message: '输入无效,请重新输入',
-            group:'.form-group',
-            trigger: 'keyup focus',
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-                position: {
-                    message: '请选择位置!',
-                    validators: {
-                        notEmpty: {
-                            message: '请选择位置！'
-                        }
-                    }
-                },
+	$(document).ready(function() {
+		
+		$("#ModifyModal").on("hidden.bs.modal", function() {  
+		    $(this).removeData("bs.modal");  
+		}); 
+		
+	    $('#modifyDataFrom').bootstrapValidator({
+	        message: '输入无效,请重新输入',
+	        group:'.form-group',
+	        trigger: 'keyup focus',
+	        feedbackIcons: {
+	            valid: 'glyphicon glyphicon-ok',
+	            invalid: 'glyphicon glyphicon-remove',
+	            validating: 'glyphicon glyphicon-refresh'
+	        },
+	        fields: {
                 successUploadFile: {
                     message: '图片信息异常!',
                     validators: {
@@ -122,7 +149,7 @@
                         }
                     }
                 },
-                picFile: {
+                picFile2: {
                     message: '请上传图片！',
                     validators: {
                         notEmpty: {
@@ -134,8 +161,8 @@
                         }
                     }
                 }
-            }
-        });
+	        }
+	    });
 
         //选择图片
         $("input#pic_val_1").click(function () {
@@ -148,9 +175,31 @@
             commonUpload();
         });
 
-        initImg($("#url").val());
 
-    });
+
+        //选择图片
+        $("input#pic_val_2").click(function () {
+            $("input#pic_file2").click();
+        });
+
+
+        //上传图片
+        $("input#btn_upload_2").click(function () {
+            commonUpload2();
+        });
+
+
+        var imgUrl = $("#url").val();
+        if(imgUrl!=undefined&&imgUrl.length>0){
+            initImg(imgUrl);
+		}
+
+        var jumpUrl = $("#jumpUrl").val();
+        if(jumpUrl!=undefined&&jumpUrl.length>0){
+            initImg2(jumpUrl);
+        }
+
+	});
 
     function commonUpload() {
         var picUrl=$("#pic_val_1").val();
@@ -168,22 +217,6 @@
         saveImg();
     }
 
-    function initImg(imgUrl) {
-
-        var str = '<span>';
-        str += '<img class="screenshot" style="width: 30px;height: 40px;" src="/file' + imgUrl + '"  />';
-        str += '&nbsp;&nbsp;<span style="cursor: pointer" onclick="deleteImg(this)">删除</span>&nbsp;&nbsp;';
-        str += '<input name="url" type="hidden" value="' + imgUrl + '">';
-        str += '</span>';
-        $("#span1").append(str);
-
-        $("#btn_upload_1").hide();
-
-        $("#pic_val_1").val("上传图片成功");
-        $("#pic_val_1").hide();
-
-    }
-
     function saveImg() {
 
         var formValue="uploadImgForm1";
@@ -193,7 +226,64 @@
             type: "POST",
             dataType: "json",
             success: function (result) {
-                initImg(result.body.url);
+
+                var str = '<span>';
+                str += '<img class="screenshot" style="width: 80px;height: 40px;" src="/file' + result.body.url + '"  />';
+                str += '&nbsp;&nbsp;<span style="cursor: pointer" onclick="deleteImg(this)">删除</span>&nbsp;&nbsp;';
+                str += '<input name="url" type="hidden" value="' + result.body.url + '">';
+                str += '</span>';
+                $("#span1").append(str);
+
+                $("#btn_upload_1").hide();
+
+                $("#pic_val_1").val("上传图片成功");
+                $("#pic_val_1").hide();
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("保存时出现异常！");
+            }
+        };
+        $("#"+formValue).ajaxSubmit(options);
+    }
+
+    function commonUpload2() {
+        var picUrl=$("#pic_val_2").val();
+
+        if (picUrl.length == 0) {
+            alert('请选择图片！');
+            return;
+        }
+
+        var picSuffix = picUrl.substring(picUrl.lastIndexOf('.')).toLowerCase();
+
+        $("#position2").val($("#positionSelect").val());
+        $("#suffix2").val(picSuffix);
+
+        saveHeadImg();
+    }
+
+    function saveHeadImg() {
+
+        var formValue="uploadImgForm2";
+
+        var options = {
+            url: "/uploader/saveCmsImg.ser",
+            type: "POST",
+            dataType: "json",
+            success: function (result) {
+                var str = '<span>';
+                str += '<img class="screenshot" style="width: 30px;height: 40px;" src="/file' + result.body.url + '"  />';
+                str += '&nbsp;&nbsp;<span style="cursor: pointer" onclick="deleteImg2(this)">删除</span>&nbsp;&nbsp;';
+                str += '<input name="jumpUrl" type="hidden" value="' + result.body.url + '">';
+                str += '</span>';
+                $("#span2").append(str);
+
+                $("#btn_upload_2").hide();
+
+                $("#pic_val_2").val("上传图片成功");
+                $("#pic_val_2").hide();
+
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 alert("保存时出现异常！");
@@ -209,14 +299,15 @@
         $(parentSpan).remove();
 
         $.ajax({
-            url: "/cms/deleteImg.ser",
+            url: "/gameList/deleteImg.ser",
             type: 'POST',
-            data: {imgUrl:$(input).val(),id:$("#modifyId").val()},
+            data: {imgUrl:$(input).val()},
             dataType: 'json',
             async:true,
             success: function(response) {
                 $("#pic_val_1").val("");
                 $("#pic_val_1").show();
+                $("#pic_file1").val("");
                 $("#btn_upload_1").show();
 
             },
@@ -226,6 +317,33 @@
         });
 
     }
+
+    function deleteImg2(obj) {
+        var parentSpan=$(obj).parent();
+        var input=$(parentSpan).children("input");
+        // alert("input:"+$(input).val()+"---")
+        $(parentSpan).remove();
+
+        $.ajax({
+            url: "/gameList/deleteImg.ser",
+            type: 'POST',
+            data: {imgUrl:$(input).val()},
+            dataType: 'json',
+            async:true,
+            success: function(response) {
+                $("#pic_val_2").val("");
+                $("#pic_val_2").show();
+                $("#pic_file2").val("");
+                $("#btn_upload_2").show();
+
+            },
+            error:function(rep,errMsg,exception){
+
+            }
+        });
+
+    }
+
 
     function checkFile(obj) {
         var picUrl = $(obj).val();
@@ -248,5 +366,57 @@
         }
     }
 
+    function checkFile2(obj) {
+        var picUrl = $(obj).val();
+
+        $("#pic_val_2").val(picUrl);
+
+        var extns = [".jpg", ".gif", ".png", ".jpeg"];
+        var picExt = picUrl.substring(picUrl.lastIndexOf('.')).toLowerCase();
+        var isPic = false;
+        for (var i = 0; i < extns.length; ++i) {
+            if (extns[i] == picExt) {
+                isPic = true;
+                break;
+            }
+        }
+        if (!isPic && $("#pic_val_2").val().length > 0) {
+            $("#pic_val_2").val("");
+            alert("请选择图片格式的文件");
+            return;
+        }
+    }
+
+    function initImg(imgUrl) {
+
+        var str = '<span>';
+        str += '<img class="screenshot" style="width: 80px;height: 40px;" src="/file' + imgUrl + '"  />';
+        str += '&nbsp;&nbsp;<span style="cursor: pointer" onclick="deleteImg(this)">删除</span>&nbsp;&nbsp;';
+        str += '<input name="url" type="hidden" value="' + imgUrl + '">';
+        str += '</span>';
+        $("#span1").append(str);
+
+        $("#btn_upload_1").hide();
+
+        $("#pic_val_1").val("上传图片成功");
+        $("#pic_val_1").hide();
+
+    }
+
+    function initImg2(imgUrl) {
+
+        var str = '<span>';
+        str += '<img class="screenshot" style="width: 30px;height: 40px;" src="/file' + imgUrl + '"  />';
+        str += '&nbsp;&nbsp;<span style="cursor: pointer" onclick="deleteImg2(this)">删除</span>&nbsp;&nbsp;';
+        str += '<input name="jumpUrl" type="hidden" value="' + imgUrl + '">';
+        str += '</span>';
+        $("#span2").append(str);
+
+        $("#btn_upload_2").hide();
+
+        $("#pic_val_2").val("上传游戏头像图片成功");
+        $("#pic_val_2").hide();
+
+    }
 </script>
 </html>
