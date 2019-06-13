@@ -23,6 +23,7 @@ import com.neighbor.app.robot.service.RobotConfigService;
 import com.neighbor.app.robot.util.RobotAutoSendPacket;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.users.service.UserService;
+import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 
@@ -133,6 +134,7 @@ public class RobotController {
 		robotAutoSendPacket.addGrapRobotBy(ids);
 		return new ResponseResult();
 	}
+	
 	@RequestMapping(value="/robotStop.ser")
 	@ResponseBody
 	public ResponseResult robotStop(@RequestParam(value="ids[]")Long ids[]){
@@ -145,7 +147,7 @@ public class RobotController {
 	@ResponseBody
 	public ResponseResult userInfoAdd(RobotConfig robot) throws Exception{
 		logger.info("userInfoAdd request:{}",robot);
-		userService.buildRobotInfo(robot.getUser(),robot,robot.getWallet());
+		userService.buildRobotInfo(robot.getUser(),robot, new UserWallet());
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("success", true);
 //		map.put("addNumber", num);

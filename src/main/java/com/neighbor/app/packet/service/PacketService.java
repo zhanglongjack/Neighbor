@@ -35,4 +35,6 @@ public interface PacketService{
 
 	void sendPacketMessage(GameRule gameRule, Packet cachePacket, UserInfo user);
 
+	void grapPacketNotice(Packet packet, UserInfo grapUser);
+
 }

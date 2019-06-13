@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.neighbor.app.common.util.RandomUtil;
+import com.neighbor.app.game.entity.GameRule;
 import com.neighbor.app.group.entity.GroupMember;
 import com.neighbor.app.group.service.GroupService;
+import com.neighbor.app.packet.entity.Packet;
 import com.neighbor.app.packet.service.PacketService;
 import com.neighbor.app.robot.dao.RobotConfigMapper;
 import com.neighbor.app.robot.entity.GrapPacketData;
@@ -93,6 +95,15 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 								Thread.sleep(second*1000);// 睡second毫秒后抢
 							}
 							ResponseResult result = packetService.grabPacekt(data.getPacket(), user, data.getGameId());
+							GameRule luckGot = (GameRule) result.getBody().get("luckGot");
+							GameRule thunderGot = (GameRule) result.getBody().get("thunderGot");
+							Packet cachePacket = (Packet) result.getBody().get("packet");
+							if(result.getErrorCode()==0){
+								packetService.grapPacketNotice(data.getPacket(),user);
+							}
+							packetService.sendPacketMessage(luckGot,cachePacket,user);
+							packetService.sendPacketMessage(thunderGot,cachePacket,user);
+							
 							logger.info("机器编号{}抢完红包的信息:{}",user.getRobotSno(),result);
 						} catch (Exception e) {
 							e.printStackTrace();

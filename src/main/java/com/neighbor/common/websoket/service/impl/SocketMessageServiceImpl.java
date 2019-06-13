@@ -26,13 +26,17 @@ import com.neighbor.common.websoket.po.GroupMsgRalation;
 import com.neighbor.common.websoket.po.SocketMessage;
 import com.neighbor.common.websoket.po.WebSocketHeader;
 import com.neighbor.common.websoket.service.SocketMessageService;
+import com.neighbor.common.websoket.util.GroupMsgPushHandler;
 
 @Service
 public class SocketMessageServiceImpl implements SocketMessageService {
 
 	@Autowired
 	private SocketMessageMapper socketMessageMapper;
+	@Autowired
+	private GroupMsgPushHandler groupMsgPushHandler;
 
+	
 //	@Autowired
 //	private ChatListService chatListService;
 	
@@ -327,6 +331,19 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 	@Override
 	public void updateWalletRefreshMsg(Long targetUserId) {
 		socketMessageMapper.updateWalletRefreshMsg(targetUserId);
+	}
+
+	@Override
+	public void grapPacketNotice(Packet packet, UserInfo grapUser) {
+		SocketMessage socketMessage = new SocketMessage();
+		socketMessage.setTargetGroupId(packet.getGroupId());
+		socketMessage.setMsgType(WebSocketMsgType.GRAP_PACKET_NOTICE+"");
+		socketMessage.setChatType(WebSocketChatType.single+"");
+		socketMessage.setContent(grapUser.getNickName()+"领取了你的");
+		socketMessage.setMasterMsgType("2");
+		insertNoticeInfo(socketMessage, grapUser.getUserID(), packet.getUserId());
+		
+		groupMsgPushHandler.sendMessageToUser(packet.getUserId(), packet.getGroupId(), socketMessage);
 	}
 	
 }

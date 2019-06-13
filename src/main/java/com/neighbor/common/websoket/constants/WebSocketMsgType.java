@@ -17,6 +17,7 @@ public enum WebSocketMsgType {
 	FRIEND_ADD(TextMessageHandler.class),
 	GROUP_ADD(TextMessageHandler.class), 
 	GROUP_QUIT(TextMessageHandler.class),
+	GRAP_PACKET_NOTICE(TextMessageHandler.class),
 	GROUP_PACKET_LOTTERY_NOTICE(TextMessageHandler.class),
 	FORCE_OFFLINE_NOTICE(TextMessageHandler.class),
 	WALLET_REFRESH(TextMessageHandler.class),

@@ -343,7 +343,9 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 		if (session.isOpen()) {
 			session.close();
 		}
-		userGroupExit(user.getId());
+		if(user!=null){
+			userGroupExit(user.getId());
+		}
 	}
 
 	// 用户退出后的处理，不如退出之后，要将用户信息从websocket的session中remove掉，这样用户就处于离线状态了，也不会占用系统资源
@@ -490,6 +492,28 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 		}
 	}
 
+	
+	/**
+	 * 发送消息给指定的用户
+	 *
+	 * @return true:成功,false:失败
+	 */
+	public boolean sendMessageToUser(Long userId, Long groupId, SocketMessage msgInfo) {
+		WebSocketMsgType msgType = WebSocketMsgType.valueOf(msgInfo.getMsgType());
+		WebSocketChatType chatType = WebSocketChatType.valueOf(msgInfo.getChatType());
+		WebSocketMessageHandler handler = (WebSocketMessageHandler) SpringUtil.getBean(msgType.getImplClass());
+		ResponseResult handleResult = new ResponseResult(); 
+		handleResult.setRequestID(msgInfo.getWebSocketHeader().getRequestId());
+		handleResult.addBody("msgType", msgType);
+		handleResult.addBody("chatType", chatType);
+		handleResult.addBody("msgInfo", msgInfo);
+		
+		boolean isSend = sendMessageToUser(userId, groupId, handleResult);
+		if (isSend) {
+			handler.successCallBack(msgInfo, chatType, msgType);
+		}
+		return isSend;
+	}
 
 	/**
 	 * 发送消息给指定的用户

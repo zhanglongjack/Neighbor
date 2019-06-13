@@ -231,8 +231,9 @@ public class LoginController {
 	@ResponseBody
 	public ResponseResult sendSMS(@Length(message = "手机长度最少11位", min = 11) @NotNull(message = "手机号不能为空") String phone) {
 		//String code = TencentSms.createVerifyCode();
+		String code = "123456";
 		logger.info("发送验证码:" + phone);
-		TencentSms.smsSend(null, phone);
+		TencentSms.smsSend(code, phone);
 		return new ResponseResult();
 	}
 
