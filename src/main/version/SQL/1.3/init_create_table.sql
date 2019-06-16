@@ -76,3 +76,6 @@ CHANGE COLUMN `msg_type` `msg_type` VARCHAR(30) NOT NULL COMMENT '消息类型' 
 
 ALTER TABLE `chat_message_backup` 
 CHANGE COLUMN `msg_type` `msg_type` VARCHAR(30) NOT NULL COMMENT '消息类型' ;
+
+ALTER TABLE `product` 
+ADD COLUMN `price` DECIMAL(20,2) NOT NULL DEFAULT 0.00 COMMENT '价格' ;

@@ -1,6 +1,5 @@
 package com.neighbor.common.util;
 
-import javafx.scene.chart.Chart;
 import org.springframework.util.StringUtils;
 
 import java.util.regex.Matcher;
@@ -165,7 +164,14 @@ public class StringUtil {
         return 0;
     }
 
-
+    /**
+     * 生产6位的短信验证码
+     * @return
+     */
+	public static String createVerifyCode(){
+		String v = Math.random()*Math.random()+"";
+		return  v.substring(2,8);
+	}
 
     public static void main(String[] args) {
         System.out.println(checkLeopard("12.23"));
