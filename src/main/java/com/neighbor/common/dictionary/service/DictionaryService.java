@@ -3,6 +3,7 @@ package com.neighbor.common.dictionary.service;
 import java.util.List;
 
 import com.neighbor.common.dictionary.entity.Dictionary;
+import com.neighbor.common.util.ResponseResult;
 
 public interface DictionaryService {
     int deleteByPrimaryKey(Long id);
@@ -22,4 +23,5 @@ public interface DictionaryService {
 	void updateByPrimaryKeySelectiveIncludeCache(Dictionary dictionary);
 
 
+    ResponseResult gameTypeList();
 }

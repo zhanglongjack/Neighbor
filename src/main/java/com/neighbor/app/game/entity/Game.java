@@ -23,17 +23,6 @@ public class Game  extends PageEntity {
     private String gameTypeStr;
 
     public String getGameTypeStr() {
-        if(gameType!=null){
-            if(gameType==1){
-                return "红包游戏";
-            }else if(gameType==2){
-                return "猜猜乐";
-            }else if(gameType==3){
-                return "休闲游戏";
-            }else if(gameType==4){
-                return "福利群";
-            }
-        }
         return gameTypeStr;
     }
 

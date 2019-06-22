@@ -8,6 +8,7 @@ import com.neighbor.app.game.constants.RuleSubTypeDesc;
 import com.neighbor.app.game.dao.GameMapper;
 import com.neighbor.app.game.entity.Game;
 import com.neighbor.app.users.entity.UserInfo;
+import com.neighbor.common.constants.CommonConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,10 @@ public class GameServiceImpl implements GameService {
     @Autowired
     private GameMapper gameMapper;
 
+    @Autowired
+    private CommonConstants commonConstants;
+
+
     @Override
     public Long selectPageTotalCount(Game game) {
         return gameMapper.selectPageTotalCount(game);
@@ -38,7 +43,13 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<Game> selectPageByObjectForList(Game game) {
-        return gameMapper.selectPageByObjectForList(game);
+        List<Game>  pageList = gameMapper.selectPageByObjectForList(game);
+        if(pageList!=null&&pageList.size()>0){
+            for(Game temp : pageList){
+                temp.setGameTypeStr(commonConstants.getDictionarysBy("gameType",temp.getGameType()+""));
+            }
+        }
+        return pageList;
     }
 
     @Override
@@ -168,6 +179,11 @@ public class GameServiceImpl implements GameService {
         Long total = gameMapper.selectPageTotalCount(game);
         List<Game> pageList = gameMapper.selectPageByObjectForList(game);
         PageTools pageTools = game.getPageTools();
+        if(pageList!=null&&pageList.size()>0){
+            for(Game temp : pageList){
+                temp.setGameTypeStr(commonConstants.getDictionarysBy("gameType",temp.getGameType()+""));
+            }
+        }
         pageTools.setTotal(total);
         result.addBody("resultList", pageList);
         result.addBody("pageTools", pageTools);

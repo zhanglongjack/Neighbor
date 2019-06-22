@@ -1,7 +1,8 @@
 package com.neighbor.common.dictionary.service.impl;
 
-import java.util.List;
+import java.util.*;
 
+import com.neighbor.common.util.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -61,6 +62,22 @@ public class DictionaryServiceImpl implements DictionaryService {
 		updateByPrimaryKeySelective(dictionary);
 		commonConstants.updateDictionaryBy(dictionary.getBizCode(),dictionary.getCode(),dictionary.getName());
 	}
-	
+
+
+	@Override
+	public ResponseResult gameTypeList() {
+		Map<String,String> map = commonConstants.getDictionarysByKey("gameType");
+		Dictionary[] arr = new Dictionary[map.size()];
+		for(String key : map.keySet()){
+			int i = Integer.valueOf(key);
+			Dictionary dictionary = new Dictionary();
+			dictionary.setCode(key);
+			dictionary.setName(map.get(key));
+			arr[i-1]=dictionary;
+		}
+		ResponseResult result = new ResponseResult();
+		result.addBody("resultList",arr);
+		return result;
+	}
 
 }

@@ -1,6 +1,5 @@
 package com.neighbor.app.game.controller;
 
-import com.neighbor.app.chatlist.entity.ChatList;
 import com.neighbor.app.game.entity.Game;
 import com.neighbor.app.game.entity.GameRule;
 import com.neighbor.app.game.service.GameService;
