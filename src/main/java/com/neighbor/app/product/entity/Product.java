@@ -21,8 +21,11 @@ public class Product extends PageEntity {
 
     private String name;
 
-    //商品价格，使用的是积分
+    //商品兑换积分
     private BigDecimal score;
+    
+    //商品市场价格
+    private BigDecimal price;
 
     private String productDesc;
 
@@ -90,7 +93,15 @@ public class Product extends PageEntity {
         this.score = score;
     }
 
-    public String getProductDesc() {
+    public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public String getProductDesc() {
         return productDesc;
     }
 

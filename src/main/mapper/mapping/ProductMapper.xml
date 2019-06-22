@@ -9,10 +9,11 @@
     <result column="contact_time" property="contactTime" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="score" property="score" jdbcType="DECIMAL" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
     <result column="product_desc" property="productDesc" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, create_time, update_time, contact_date, contact_time, name, score, product_desc
+    id, create_time, update_time, contact_date, contact_time, name, score,price, product_desc
   </sql>
 
   <sql id="dynamicWhere">
@@ -41,14 +42,7 @@
     delete from product
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.neighbor.app.product.entity.Product" >
-    insert into product (id, create_time, update_time, 
-      contact_date, contact_time, name, 
-      score, product_desc)
-    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{contactDate,jdbcType=VARCHAR}, #{contactTime,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{score,jdbcType=DECIMAL}, #{productDesc,jdbcType=VARCHAR})
-  </insert>
+ 
   <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.neighbor.app.product.entity.Product" >
     insert into product
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -72,6 +66,9 @@
       </if>
       <if test="score != null" >
         score,
+      </if>
+      <if test="price != null" >
+        price,
       </if>
       <if test="productDesc != null" >
         product_desc,
@@ -99,6 +96,9 @@
       <if test="score != null" >
         #{score,jdbcType=DECIMAL},
       </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
       <if test="productDesc != null" >
         #{productDesc,jdbcType=VARCHAR},
       </if>
@@ -125,24 +125,16 @@
       <if test="score != null" >
         score = #{score,jdbcType=DECIMAL},
       </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=DECIMAL},
+      </if>
       <if test="productDesc != null" >
         product_desc = #{productDesc,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.neighbor.app.product.entity.Product" >
-    update product
-    set create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      contact_date = #{contactDate,jdbcType=VARCHAR},
-      contact_time = #{contactTime,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      score = #{score,jdbcType=DECIMAL},
-      product_desc = #{productDesc,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-
+ 
   <select id="selectPageTotalCount" parameterType="com.neighbor.app.product.entity.Product"
           resultType="Long">
     select

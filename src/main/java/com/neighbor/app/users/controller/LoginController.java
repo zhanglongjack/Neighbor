@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
-import com.neighbor.app.friend.service.FriendService;
 import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neighbor.app.api.common.ErrorCodeDesc;
+import com.neighbor.app.friend.service.FriendService;
 import com.neighbor.app.notice.entity.SysNotice;
 import com.neighbor.app.notice.service.SysNoticeService;
 import com.neighbor.app.users.constants.UserContainer;
@@ -35,6 +35,7 @@ import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.exception.ParamsCheckException;
 import com.neighbor.common.security.EncodeData;
+import com.neighbor.common.sms.SMSSender;
 import com.neighbor.common.sms.TencentSms;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.util.StringUtil;
@@ -59,8 +60,8 @@ public class LoginController {
 	@Autowired
 	private FriendService friendService;
 	
-	
-	
+	@Autowired
+	private SMSSender sender;
 	
 	@RequestMapping(value = "/data.js", method = RequestMethod.GET)
 	@ResponseBody
@@ -132,7 +133,7 @@ public class LoginController {
 		}
 
 		commonResultLogic(user, result);
-		TencentSms.removeSMSCode(phone);
+		sender.removeSMSCode(phone);
 
 		logger.info("登录成功:{},result :{}", user, result);
 		return result;
@@ -183,7 +184,7 @@ public class LoginController {
 		}
 
 		commonResultLogic(user, result);
-		TencentSms.removeSMSCode(phone);
+		sender.removeSMSCode(phone);
 		logger.info("登录成功:{},result :{}", user, result);
 		return result;
 	}
@@ -230,10 +231,11 @@ public class LoginController {
 	@RequestMapping(value = "/sendSMS.req", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseResult sendSMS(@Length(message = "手机长度最少11位", min = 11) @NotNull(message = "手机号不能为空") String phone) {
-		//String code = TencentSms.createVerifyCode();
-		String code = "123456";
+		//String code = sender.createVerifyCode();
+//		String code = StringUtil.createVerifyCode();
+		String code = null;
 		logger.info("发送验证码:" + phone);
-		TencentSms.smsSend(code, phone);
+		sender.smsSend(code, phone);
 		return new ResponseResult();
 	}
 

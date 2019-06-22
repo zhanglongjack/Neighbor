@@ -8,8 +8,6 @@ import java.util.List;
 public interface ProductMapper {
     int deleteByPrimaryKey(Long id);
 
-    int insert(Product record);
-
     int insertSelective(Product record);
 
     Product selectByPrimaryKey(Long id);
@@ -17,8 +15,6 @@ public interface ProductMapper {
     List<Product> selectByParams(Product record);
 
     int updateByPrimaryKeySelective(Product record);
-
-    int updateByPrimaryKey(Product record);
 
     Long selectPageTotalCount(Product record);
 }

@@ -3,19 +3,21 @@ package com.neighbor.common.sms;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import javax.validation.constraints.NotNull;
 
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
+import com.neighbor.common.util.StringUtil;
 
-public class TencentSms {
+@Component
+public class TencentSms implements SMSSender {
 	private static final Logger logger = LoggerFactory.getLogger(TencentSms.class);
 	
 	// 短信应用SDK AppID
@@ -28,16 +30,11 @@ public class TencentSms {
 	public static final int templateId = 265289; // NOTE: 这里的模板ID`7839`只是一个示例，真实的模板ID需要在短信控制台中申请
 	//templateId7839对应的内容是"您的验证码是: {1}"
 	// 签名
-	public static final String smsSign = "绿色的心情"; // NOTE: 这里的签名"腾讯云"只是一个示例，真实的签名需要在短信控制台中申请，另外签名参数使用的是`签名内容`，而不是`签名ID`
+	public static final String smsSign = "快乐好领居网"; // NOTE: 这里的签名"腾讯云"只是一个示例，真实的签名需要在短信控制台中申请，另外签名参数使用的是`签名内容`，而不是`签名ID`
 	/**
 	 * 缓存短信验证码,后期优化可以自动删除过期验证码
 	 */
 	public static final Map<String,String> smsCache = new HashMap<String,String>();
-	public static String createVerifyCode(){
-		String v = Math.random()*Math.random()+"";
-		return  v.substring(2,8);
-	}
-	
 	private static SmsSingleSender  ssender=null;
 	static{
 		checkSender();
@@ -53,7 +50,7 @@ public class TencentSms {
 		}
 	}
 	
-	public static void smsSend(String code ,String phone){
+	public void smsSend(String code ,String phone){
 		if(code==null){
 			smsCache.put(phone, "123456");
 			return;
@@ -77,7 +74,7 @@ public class TencentSms {
 	
 	public static void main(String[] args) {
 		for(int i=0;i<100;i++){
-			System.out.println(createVerifyCode());
+			System.out.println(StringUtil.createVerifyCode());
 		}
 //		TencentSms.smsSend("123456", "15999585921");
 //		System.err.println("第一条发送完成");
@@ -85,7 +82,13 @@ public class TencentSms {
 //		System.err.println("第二条发送完成");
 	}
 
-	public static void removeSMSCode(@NotNull(message = "手机号不能为空") String phone) {
+	public void removeSMSCode(@NotNull(message = "手机号不能为空") String phone) {
 		smsCache.remove(phone);
+	}
+
+	@Override
+	public void sendSMS(String phone,String templateId,String contentParams[]) {
+		// TODO Auto-generated method stub
+		
 	}
 }
