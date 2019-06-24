@@ -252,7 +252,7 @@ public class PacketServiceImpl implements PacketService {
 			detail.setdPacketId(lockPacket.getId());
 			detail.setGotUserId(user.getId());
 			detail.setFree("1".equals(member.getMemberType()));
-			detail.setGotBomb(isGotBomb);
+			detail.setGotBomb(detail.isFree()?false:isGotBomb);
 			logger.info("是否需要分佣检查:"+detail);
 			logger.info("用户检查:"+user);
 			logger.info("群成员检查:"+member);

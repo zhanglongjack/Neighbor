@@ -99,7 +99,7 @@ public class PacketController {
 		GameRule thunderGot = (GameRule) result.getBody().get("thunderGot");
 		Packet cachePacket = (Packet) result.getBody().get("packet");
 		if(result.getErrorCode()==0){
-			packetService.grapPacketNotice(packet,user);
+			packetService.grapPacketNotice(cachePacket,user);
 		}
 		packetService.sendPacketMessage(luckGot,cachePacket,user);
 		packetService.sendPacketMessage(thunderGot,cachePacket,user);
