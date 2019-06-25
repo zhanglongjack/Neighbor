@@ -98,12 +98,11 @@ public class GameServiceImpl implements GameService {
     }
     
     @Override
-    public GameRule ruleMatching(long gameId,RuleTypeDesc ruleType,double value) {
+    public GameRule ruleMatching(long gameId,RuleTypeDesc ruleType,String value) {
     	GameRule gameRule = new GameRule();
     	gameRule.setGameId(gameId);
     	gameRule.setRuleType(ruleType.getValue());
-    	gameRule.setMatchingParam(value+"");
-    	
+    	gameRule.setMatchingParam(value);
     	return ruleMatching(gameRule);
     }
 

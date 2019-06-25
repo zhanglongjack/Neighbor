@@ -339,7 +339,7 @@ public class PacketServiceImpl implements PacketService {
 	 * @return
 	 */
 	private GameRule handleLottery(long gameId, UserWallet graperWallet, BigDecimal grapAmount) {
-		GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.award, grapAmount.doubleValue());
+		GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.award, grapAmount.toPlainString());
 		logger.info("中奖检查,抢包金额:{},游戏编号:{},游戏规则:{}",grapAmount.toPlainString(),gameId,gameRule);
 		if(gameRule==null){
 			return null;
@@ -409,7 +409,7 @@ public class PacketServiceImpl implements PacketService {
 	}
 
 	private GameRule hitBombAfter(Long gameId, UserWallet senderWallet, int hitBombNum) {
-		GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.thunder, hitBombNum); // 中奖金额
+		GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.thunder, hitBombNum+""); // 中奖金额
 		if(gameRule==null){
 			return null;
 		}
@@ -456,7 +456,7 @@ public class PacketServiceImpl implements PacketService {
 		if(hitBombNum==0){
 			return null;
 		}
-		GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.award, hitBombNum); // 中奖金额
+		GameRule gameRule = gameService.ruleMatching(gameId, RuleTypeDesc.award, hitBombNum+""); // 中奖金额
 		if(gameRule==null){
 			return null;
 		}
@@ -707,8 +707,6 @@ public class PacketServiceImpl implements PacketService {
 	public void grapPacketNotice(Packet packet, UserInfo grapUser) {
 		socketMessageService.grapPacketNotice(packet,grapUser);
 	}
-
-
 
 
 
