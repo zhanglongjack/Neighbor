@@ -180,6 +180,7 @@ public class TransferServiceImpl implements TransferService {
 		transferIn.setTransferWay(TransferWayDesc.in.toString());
 		transferIn.setOrderNo(OrderUtils.getOrderNo(OrderUtils.TRANSFER));
 		transferIn.setTransferUserId(transfer.getuId());
+		transferIn.setStates(TransferStatusDesc.success.toString());
 		transferMapper.insertSelective(transferIn);
 
 		//转入交易明细
@@ -190,18 +191,14 @@ public class TransferServiceImpl implements TransferService {
 		balanceDetailIn.setTransactionType(TransactionTypeDesc.receipt.toString());
 		balanceDetailIn.setTransactionSubType(TransactionSubTypeDesc.transferIn.toString());
 		balanceDetailIn.setRemarks(TransactionItemDesc.transfer.getDes()+StringUtil.split_
-				+TransactionSubTypeDesc.transferIn.getDes()+transfer.getuId());
+				+transfer.getuId()+TransactionSubTypeDesc.transferIn.getDes());
 		balanceDetailIn.setTransactionId(transferIn.getId());
 		balanceDetailService.insertSelective(balanceDetailIn);
 
 		//修改转账状态
-		Transfer updateTransfer = new Transfer();
-		updateTransfer.setStates(TransferStatusDesc.success.toString());
-		updateTransfer.setUpdateTime(date);
-		updateTransfer.setId(transfer.getId());
 		transfer.setStates(TransferStatusDesc.success.toString());
 		transfer.setUpdateTime(date);
-		transferMapper.updateByPrimaryKeySelective(updateTransfer);
+		transferMapper.updateByPrimaryKeySelective(transfer);
 		responseResult.addBody("transfer",transfer);
 		responseResult.addBody("userWallet",transferUser);
 		return responseResult;

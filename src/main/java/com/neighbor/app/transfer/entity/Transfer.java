@@ -177,7 +177,7 @@ public class Transfer extends PageEntity {
     public String getRemarks() {
         if(TransferWayDesc.in.toString().equals(transferWay)){
             return TransactionItemDesc.transfer.getDes()+StringUtil.split_
-                    +TransactionSubTypeDesc.transferIn.getDes()+transferUserId;
+                    +transferUserId+TransactionSubTypeDesc.transferIn.getDes();
         }else{
             return TransactionItemDesc.transfer.getDes()+StringUtil.split_
                     +TransactionSubTypeDesc.transferOut.getDes()+transferUserId;
