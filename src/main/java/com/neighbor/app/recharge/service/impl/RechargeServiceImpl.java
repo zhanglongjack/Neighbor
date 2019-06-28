@@ -111,8 +111,21 @@ public class RechargeServiceImpl implements RechargeService {
                 responseResult.addBody("recharge", recharge);
                 return responseResult;
             }else{
+                String errorStr = "";
+                String errorCode= "";
+                if(payResp.getCode().intValue()!=100&&payResp.getData()!=null&&!"0000".equals(payResp.getData().getResult_code())){
+                    errorCode = payResp.getCode().intValue()+","+payResp.getData().getResult_code();
+                    errorStr =  payResp.getMsg()+","+payResp.getData().getResult_msg();
+                }else if(payResp.getCode().intValue()!=100){
+                    errorStr = payResp.getMsg();
+                    errorCode = payResp.getCode().intValue()+"";
+                }
+                recharge.setStates(RechargeStatusDesc.failed.toString());
+                recharge.setPayState("0");//未支付
+                recharge.setRemarks("支付平台返回：错误码"+errorCode+";"+errorStr);
+                rechargeMapper.insertSelective(recharge);
                 responseResult.setErrorCode(ErrorCodeDesc.failed.getValue());
-                responseResult.setErrorMessage("提交订单异常~");
+                responseResult.setErrorMessage("订单提交失败，"+recharge.getRemarks());
                 return responseResult;
             }
         }
