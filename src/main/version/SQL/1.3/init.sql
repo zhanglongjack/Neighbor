@@ -27,3 +27,7 @@ VALUES ('30', 'robot_grap_queue_handle_size', '1', 'packet_conf', '机器人抢�
 
 INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) 
 VALUES ('豹子', '4', 1, 'ruleSubType', '游戏子规则');
+
+
+INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) 
+VALUES ('0.03', 'payment_rate', 1, 'payment', '支付接口抽成比例');

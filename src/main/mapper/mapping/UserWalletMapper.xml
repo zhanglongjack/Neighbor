@@ -36,6 +36,16 @@
 		from user_wallet
 		where u_id = #{uid,jdbcType=BIGINT} for update
 	</select>
+	
+	<select id="querySumLeftAmount" resultType="java.math.BigDecimal" >
+		select 
+			sum(available_amount)+sum(freeze_amount) left_amount 
+		from user_wallet w 
+		inner join users_info u on u.id = w.u_id
+		where w.u_id > 1
+		and u.robot_sno is null
+	</select>
+	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from user_wallet
 		where id = #{id,jdbcType=BIGINT}

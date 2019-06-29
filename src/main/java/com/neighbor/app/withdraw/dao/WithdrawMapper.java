@@ -1,5 +1,6 @@
 package com.neighbor.app.withdraw.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -22,5 +23,8 @@ public interface WithdrawMapper {
 
   	List<Withdraw> selectAll();
 
+  	BigDecimal querySumWithdrawByComplete();
+  	
+  	BigDecimal querySumWithdrawByIncomplete();
  
 }

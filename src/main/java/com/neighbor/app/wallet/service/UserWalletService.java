@@ -22,4 +22,6 @@ public interface UserWalletService {
      void sysUserChangeWallet(String transactionType, BigDecimal amount, TransactionSubTypeDesc transactionSubType);
 
     void updateRobotWallet(Long userId, String action, BigDecimal amount);
+    
+	BigDecimal querySumLeftAmount();
 }

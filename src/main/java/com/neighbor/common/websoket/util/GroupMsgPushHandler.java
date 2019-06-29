@@ -523,7 +523,12 @@ public class GroupMsgPushHandler implements WebSocketHandler {
 	public boolean sendMessageToUser(Long userId, Long groupId, ResponseResult result) {
 		logger.info("给指定群[{}]指定用户发[{}]信息:", groupId, userId);
 		TextMessage message = new TextMessage(JSON.toJSONString(result));
-		WebSocketSession session = groupSessions.get(groupId).get(userId);
+		Map<Long, WebSocketSession> groupSessionMap = groupSessions.get(groupId);
+		if(groupSessionMap==null){
+			logger.info("给指定群[{}]指定用户:[{}]发信息失败,用户不在线", groupId, userId);
+			return false;
+		}
+		WebSocketSession session = groupSessionMap.get(userId);
 		boolean isPushed = sendMessage(session, message);
 		logger.info("给指定群[{}]指定用户:[{}]发信息是否成功:[{}]", groupId, userId, isPushed);
 		return isPushed;

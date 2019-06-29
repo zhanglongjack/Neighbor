@@ -271,4 +271,14 @@ public class WithdrawServiceImpl implements WithdrawService {
         return false;
     }
 
+	@Override
+	public BigDecimal querySumWithdrawByComplete() {
+		return withdrawMapper.querySumWithdrawByComplete();
+	}
+
+	@Override
+	public BigDecimal querySumWithdrawByIncomplete() {
+		return withdrawMapper.querySumWithdrawByIncomplete();
+	}
+
 }

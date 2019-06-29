@@ -168,7 +168,7 @@ public class RobotAutoSendPacket implements ApplicationListener<ContextRefreshed
 		String limit[] = member.getGroup().getRedPackAmountLimit().split("-");
 		int begin = Integer.parseInt(limit[0]);
 		int end = Integer.parseInt(limit[1]);
-		int randomNum = RandomUtil.getRandomBy(end - begin) + begin;
+		int randomNum = RandomUtil.getRandomBy((int)(end - begin)/10)*10 + begin;
 		Packet packet = new Packet();
 		packet.setAmount(new BigDecimal(randomNum));
 		packet.setHitNum(RandomUtil.getRandomBy(10));

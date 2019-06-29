@@ -61,14 +61,28 @@
 		<include refid="dynamicWhere" />
 	</select>
   
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+	  select 
+	  <include refid="Base_Column_List" />
+	  from withdraw
+	  where id = #{id,jdbcType=BIGINT}
+	</select>
+  
+	<select id="querySumWithdrawByComplete" resultType="java.math.BigDecimal">
+		SELECT 
+			sum(actual_amount) actualAmount 
+		FROM withdraw w 
+		where w.states = 'success' 
+	</select>
+	
+	<select id="querySumWithdrawByIncomplete" resultType="java.math.BigDecimal">
+		SELECT 
+			sum(amount) amount 
+		FROM withdraw w 
+		where w.states in('initial','processing') 
+	</select>
   
   
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from withdraw
-    where id = #{id,jdbcType=BIGINT}
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from withdraw
     where id = #{id,jdbcType=BIGINT}

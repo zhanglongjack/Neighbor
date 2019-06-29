@@ -1,10 +1,10 @@
 package com.neighbor.app.recharge.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.neighbor.app.pay.entity.NotifyResp;
 import com.neighbor.app.recharge.entity.Recharge;
-import com.neighbor.app.recharge.po.RechargeRecordResp;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.ResponseResult;
 
@@ -23,4 +23,6 @@ public interface RechargeService {
     ResponseResult modifyRecharge(UserInfo user, Recharge recharge);
 
     Long payNotify(NotifyResp notifyResp);
+    
+	BigDecimal querySumRechargeAmount();
 }

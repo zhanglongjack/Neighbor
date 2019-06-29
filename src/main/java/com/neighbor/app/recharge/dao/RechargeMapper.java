@@ -1,5 +1,6 @@
 package com.neighbor.app.recharge.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -22,4 +23,7 @@ public interface RechargeMapper {
 	List<Recharge> selectPageByObjectForList(Recharge record);
 
 	List<Recharge> selectAll();
+	
+	BigDecimal querySumRechargeAmount();
+	
 }

@@ -77,6 +77,14 @@
     from recharge
     where order_no = #{orderNo,jdbcType=VARCHAR}
   </select>
+  
+  <select id="querySumRechargeAmount" resultType="java.math.BigDecimal">
+	select 
+		sum(amount) amount 
+	from recharge r
+	where r.channel_type in ('wxpay','alipay')
+	and r.states = 'success'
+  </select>
 
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

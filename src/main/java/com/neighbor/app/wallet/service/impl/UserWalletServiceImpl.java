@@ -107,4 +107,9 @@ public class UserWalletServiceImpl implements UserWalletService {
 		}
 		commonChangeWallet(transactionType,amount,transactionSubType,userId);
 	}
+
+	@Override
+	public BigDecimal querySumLeftAmount() {
+		return userWalletMapper.querySumLeftAmount();
+	}
 }

@@ -107,7 +107,7 @@ public class RobotConfigServiceImpl implements RobotConfigService {
 							logger.info("机器编号{}抢完红包的信息:{}",user.getRobotSno(),result);
 						} catch (Exception e) {
 							e.printStackTrace();
-							logger.error("异常的机器人抢包用户:" + user);
+							logger.error("异常的机器人抢包用户:" + user,e);
 						}
 					}
 				});

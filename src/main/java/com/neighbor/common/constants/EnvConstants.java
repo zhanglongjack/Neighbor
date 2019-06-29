@@ -58,4 +58,20 @@ public class EnvConstants {
      * 测试金额开关
      */
     public static final String RECHARGE_TEST_AMOUNT_SWITCH ="recharge_test_amount_switch";
+    
+    
+    /**
+     * 支付配置
+     */
+    public static final String PAYMENT ="payment";
+    /**
+     * 支付接口抽成比例
+     */
+    public static final String PAYMENT_RATE ="payment_rate";
+    
+    
+    
+    
+    
+    
 }

@@ -4,6 +4,7 @@ import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.withdraw.entity.Withdraw;
 import com.neighbor.common.util.ResponseResult;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface WithdrawService {
@@ -20,4 +21,8 @@ public interface WithdrawService {
     Long selectPageTotalCount(Withdraw withdraw);
 
     List<Withdraw> selectPageByObjectForList(Withdraw withdraw);
+    
+  	BigDecimal querySumWithdrawByComplete();
+  	
+  	BigDecimal querySumWithdrawByIncomplete();
 }

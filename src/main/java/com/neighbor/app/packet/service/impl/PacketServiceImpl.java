@@ -1,5 +1,16 @@
 package com.neighbor.app.packet.service.impl;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSONArray;
 import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.balance.entity.BalanceDetail;
@@ -9,6 +20,7 @@ import com.neighbor.app.balance.service.BalanceDetailService;
 import com.neighbor.app.commission.entity.CommissionHandleTask;
 import com.neighbor.app.commission.service.CommissionHandleTaskService;
 import com.neighbor.app.game.constants.RuleTypeDesc;
+import com.neighbor.app.game.entity.Game;
 import com.neighbor.app.game.entity.GameRule;
 import com.neighbor.app.game.service.GameService;
 import com.neighbor.app.group.entity.Group;
@@ -36,17 +48,6 @@ import com.neighbor.common.util.RedPackageUtil;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.websoket.service.SocketMessageService;
 import com.neighbor.common.websoket.util.GroupMsgPushHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 
 
 @Service
@@ -191,7 +192,10 @@ public class PacketServiceImpl implements PacketService {
 			}
 			logger.info("机器人抢红包开始");
 		}
-
+		
+		Game game= gameService.selectByPrimaryKey(gameId);
+		boolean isFuLi = game.getGameType() == 2;
+		
 		GroupMember member = groupService.selectGroupMemberBy(user.getId(), packet.getGroupId());
 		Packet cachePacket = packetContainer.get(packet.getId());
 		cachePacket = cachePacket!=null?cachePacket:packetMapper.selectByPrimaryKey(packet.getId());
@@ -252,7 +256,7 @@ public class PacketServiceImpl implements PacketService {
 			detail.setdPacketId(lockPacket.getId());
 			detail.setGotUserId(user.getId());
 			detail.setFree("1".equals(member.getMemberType()));
-			detail.setGotBomb(detail.isFree()?false:isGotBomb);
+			detail.setGotBomb(detail.isFree()||isFuLi?false:isGotBomb);
 			logger.info("是否需要分佣检查:"+detail);
 			logger.info("用户检查:"+user);
 			logger.info("群成员检查:"+member);
@@ -262,7 +266,7 @@ public class PacketServiceImpl implements PacketService {
 			logger.info("抢到的红包是[{}]尾数是[{}]信息:{},",num,Integer.parseInt(num.substring(num.length()-1)),detail);
 			UserWallet senderWallet = userWalletService.selectByPrimaryUserId(lockPacket.getUserId());
 			GameRule gameRule = null;
-			if(!detail.isFree()){
+			if(!detail.isFree()&&!isFuLi){
 				// 处理踩雷
 				handleHitBomb(detail.isGotBomb(), lockPacket, lastWallet,senderWallet);
 				// 抢包中奖处理
@@ -277,7 +281,7 @@ public class PacketServiceImpl implements PacketService {
 
 			packetContainer.put(lockPacket.getId(), lockPacket);
 
-			CommissionHandleTask task=addCommissionTask(gameId, lockPacket, detail);
+			CommissionHandleTask task=isFuLi?null:addCommissionTask(gameId, lockPacket, detail);
 
 			resultResp.addBody("packet", lockPacket);
 			resultResp.addBody("wallet", lastWallet);
