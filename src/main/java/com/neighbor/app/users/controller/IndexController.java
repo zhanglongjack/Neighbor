@@ -43,11 +43,17 @@ public class IndexController {
 	public ModelAndView indexServer(){
 		logger.info("index request ser"); 
 		String rateStr = commonConstants.getDictionarysBy(EnvConstants.PAYMENT, EnvConstants.PAYMENT_RATE);
+		BigDecimal zero = new BigDecimal(0);
 		
 		BigDecimal sumRechargeAmount = rechargeService.querySumRechargeAmount();
+		sumRechargeAmount = sumRechargeAmount==null?zero:sumRechargeAmount;
 		BigDecimal withdrawAmountComplete = withdrawService.querySumWithdrawByComplete();
+		withdrawAmountComplete = withdrawAmountComplete==null?zero:withdrawAmountComplete;
 		BigDecimal withdrawAmountIncomplete = withdrawService.querySumWithdrawByIncomplete();
+		withdrawAmountIncomplete = withdrawAmountIncomplete==null?zero:withdrawAmountIncomplete;
 		BigDecimal sumLeftAmount = userWalletService.querySumLeftAmount();
+		sumLeftAmount = sumLeftAmount==null?zero:sumLeftAmount;
+		
 		
 //		净充值金额=所有玩家充值的总金额-所有玩家取现金额
 //		总支出费用=(所有玩家充值的总金额*0.03) +(所有玩家取现金额*0.001)-(所有玩家取现金额*0.001)
