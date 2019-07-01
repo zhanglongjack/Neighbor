@@ -41,7 +41,7 @@
 		<include refid="Base_Column_List" />
 		from balance_detail
 		<include refid="dynamicWhere" />
-		order by create_time desc
+		order by id desc
 		limit #{pageTools.rowIndex},#{pageTools.pageSize}
 	</select>
 	

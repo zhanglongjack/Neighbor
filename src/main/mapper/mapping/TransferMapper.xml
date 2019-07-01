@@ -56,7 +56,7 @@
 		<include refid="Base_Column_List" />
 		from transfer  t
 		<include refid="dynamicWhere" />
-		order by  t.create_time desc
+		order by  t.Id
 		limit #{pageTools.rowIndex},#{pageTools.pageSize}
 	</select>
 

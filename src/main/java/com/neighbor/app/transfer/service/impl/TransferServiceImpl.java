@@ -18,6 +18,7 @@ import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
 import com.neighbor.app.wallet.service.UserWalletService;
 import com.neighbor.common.util.*;
+import com.neighbor.common.websoket.service.SocketMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -44,7 +45,8 @@ public class TransferServiceImpl implements TransferService {
     @Autowired
     private BalanceDetailService balanceDetailService;
 
-
+	@Autowired
+	private SocketMessageService socketMessageService;
 
 
 
@@ -126,7 +128,7 @@ public class TransferServiceImpl implements TransferService {
 		transferMapper.insertSelective(transfer);
 		//转出交易明细
 		BalanceDetail balanceDetailOut = new BalanceDetail();
-		balanceDetailOut.setAmount(amount);
+		balanceDetailOut.setAmount(amount.negate());
 		balanceDetailOut.setAvailableAmount(transfer.getAvailableAmount());
 		balanceDetailOut.setuId(transfer.getuId());
 		balanceDetailOut.setTransactionType(TransactionTypeDesc.payment.toString());
@@ -255,6 +257,8 @@ public class TransferServiceImpl implements TransferService {
 		updateTransfer.setUpdateTime(date);
 		updateTransfer.setId(transfer.getId());
 		transferMapper.updateByPrimaryKeySelective(updateTransfer);
+
+		socketMessageService.walletRefreshNotice(null, transfer.getuId(), "系统通知");
 
 		return responseResult;
 	}
