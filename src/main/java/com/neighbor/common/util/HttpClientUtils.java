@@ -1,17 +1,24 @@
 package com.neighbor.common.util;
 
+import com.alibaba.fastjson.JSON;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -68,6 +75,50 @@ public class HttpClientUtils {
             logger.info("remote get exception ---- " + e.getMessage());
         }
         return result;
+    }
+
+    /**
+     * http post请求传参的方法 返回实体
+     */
+    public static String httpPostWithPAaram(String url, Map<String, String> params) throws Exception {
+        String result = null;
+        // 创建默认的httpClient实例.
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+
+        RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(10000).setConnectTimeout(10000).build();//设置请求和传输超时时间
+        // 创建httppost
+        HttpPost httppost = new HttpPost(url);
+        httppost.setConfig(requestConfig);
+        try {
+            logger.info("http reqStr ： "+ JSON.toJSONString(params));
+            List<BasicNameValuePair> formparams = buildNameValuePair(params);
+            if (null != formparams) {
+                UrlEncodedFormEntity uefEntity = new UrlEncodedFormEntity(
+                        formparams, "UTF-8");
+                httppost.setEntity(uefEntity);
+            }
+            response = httpclient.execute(httppost);
+            result = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
+            logger.info("http result ： "+result);
+            return result;
+        } catch (Exception e) {
+            logger.error("remote post exception");
+        }
+        return result;
+    }
+
+    /**
+     * MAP类型数组转换成BasicNameValuePair类型
+     */
+    public static List<BasicNameValuePair> buildNameValuePair(Map<String, String> params) {
+        List<BasicNameValuePair> nvps = new ArrayList<BasicNameValuePair>();
+        if (params != null) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+            }
+        }
+        return nvps;
     }
 
 
