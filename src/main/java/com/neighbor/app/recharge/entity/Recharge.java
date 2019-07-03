@@ -298,7 +298,7 @@ public class Recharge  extends PageEntity{
         if(channelType!=null){
             return ChannelTypeDesc.getDesByValue(channelType)+TransactionItemDesc.recharge.getDes();
         }
-        return TransactionItemDesc.transfer.getDes();
+        return TransactionItemDesc.recharge.getDes();
     }
 
     public void setRemarks(String remarks) {

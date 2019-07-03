@@ -6,6 +6,15 @@ public class HkPayReq {
     private String payType;
     private String data;
     private String sign;
+    private String payUrl;
+
+    public String getPayUrl() {
+        return payUrl;
+    }
+
+    public void setPayUrl(String payUrl) {
+        this.payUrl = payUrl;
+    }
 
     public String getOrg_number() {
         return org_number;

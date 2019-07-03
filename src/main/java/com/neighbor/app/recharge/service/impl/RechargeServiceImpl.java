@@ -1,6 +1,6 @@
 package com.neighbor.app.recharge.service.impl;
 
-import com.neighbor.app.api.common.ErrorCodeDesc;
+import com.alibaba.fastjson.JSON;
 import com.neighbor.app.balance.entity.BalanceDetail;
 import com.neighbor.app.balance.po.TransactionItemDesc;
 import com.neighbor.app.balance.po.TransactionSubTypeDesc;
@@ -10,7 +10,8 @@ import com.neighbor.app.common.util.OrderUtils;
 import com.neighbor.app.pay.common.PayUtils;
 import com.neighbor.app.pay.constants.MethodDesc;
 import com.neighbor.app.pay.entity.NotifyResp;
-import com.neighbor.app.pay.entity.PayResp;
+import com.neighbor.app.pay.entity.hk.HkPayReq;
+import com.neighbor.app.pay.entity.hk.HkPayResp;
 import com.neighbor.app.recharge.constants.ChannelTypeDesc;
 import com.neighbor.app.recharge.constants.RechargeStatusDesc;
 import com.neighbor.app.recharge.controller.RechargeController;
@@ -34,7 +35,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.net.URLDecoder;
 import java.util.Date;
 import java.util.List;
 
@@ -83,78 +83,21 @@ public class RechargeServiceImpl implements RechargeService {
 
             String conf = commonConstants.getDictionarysBy(EnvConstants.RECHARGE_CONF,EnvConstants.RECHARGE_TEST_AMOUNT_SWITCH);
             if("1".equals(conf)){
-                recharge.setAmount(new BigDecimal("0.01"));
+                recharge.setAmount(new BigDecimal("0.10"));
             }
-            if(ChannelTypeDesc.wxpay.toString().equals(recharge.getChannelType())){
-                recharge.setMethod(MethodDesc.wx_jsapi.toString());//微信默认公众号支付方式
-            }
-            PayResp payResp = payUtils.preOrder(recharge);
-            //下单成功
-            logger.info("下单请求应答结果:"+payResp);
-            if(payResp.getCode().intValue()==100&&"0000".equals(payResp.getData().getResult_code())){
-                recharge.setStates(RechargeStatusDesc.processing.toString());
-                recharge.setPayState("0");//未支付
-                recharge.setOutTradeNo(payResp.getData().getOut_trade_no());
-                String codeUrl = payResp.getData().getCode_url();
-                recharge.setCodeUrl(codeUrl);
-                rechargeMapper.insertSelective(recharge);
 
-                if(ChannelTypeDesc.alipay.toString().equals(recharge.getChannelType())){
-                    //String alipayqr = "alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=";
-                    String h5Param = codeUrl.substring(codeUrl.indexOf("url=")+4);
-                    //alipayqr+=h5Param;
-                    String qrcode = URLDecoder.decode(h5Param,"UTF-8");
-                    recharge.setCodeUrl(qrcode);
-                    recharge.setH5Url(codeUrl);
-                }
+            payUtils.preOrderHk(recharge);
+            recharge.setStates(RechargeStatusDesc.processing.toString());
+            recharge.setPayState("0");//未支付
+            rechargeMapper.insertSelective(recharge);
+            responseResult.addBody("recharge", recharge);
+            return responseResult;
 
-                responseResult.addBody("recharge", recharge);
-                return responseResult;
-            }else{
-                String errorStr = "";
-                String errorCode= "";
-                if(payResp.getCode().intValue()!=100&&payResp.getData()!=null&&!"0000".equals(payResp.getData().getResult_code())){
-                    errorCode = payResp.getCode().intValue()+","+payResp.getData().getResult_code();
-                    errorStr =  payResp.getMsg()+","+payResp.getData().getResult_msg();
-                }else if(payResp.getCode().intValue()!=100){
-                    errorStr = payResp.getMsg();
-                    errorCode = payResp.getCode().intValue()+"";
-                }
-                recharge.setStates(RechargeStatusDesc.failed.toString());
-                recharge.setPayState("0");//未支付
-                recharge.setRemarks("支付平台返回：错误码"+errorCode+";"+errorStr);
-                rechargeMapper.insertSelective(recharge);
-                responseResult.setErrorCode(ErrorCodeDesc.failed.getValue());
-                responseResult.setErrorMessage("订单提交失败，"+recharge.getRemarks());
-                return responseResult;
-            }
         }
 
 
     }
 
-//    @Override
-//    public RechargeRecordResp rechargeRecord(UserInfo user,Recharge recharge) throws Exception {
-//        RechargeRecordResp rechargeRecordResp = new RechargeRecordResp();
-//        recharge.setuId(user.getId());
-//        Long total = rechargeMapper.selectPageTotalCount(recharge);
-//        List<Recharge> recharges = rechargeMapper.selectPageByObjectForList(recharge);
-//        List<RechargeRecord> pageList = new ArrayList<RechargeRecord>();
-//        if(recharges!=null&&recharges.size()>0){
-//            for(Recharge rec : recharges){
-//                RechargeRecord rechargeRecord = new RechargeRecord();
-//                BeanUtils.copyProperties(rec,rechargeRecord);
-//                pageList.add(rechargeRecord);
-//            }
-//        }
-//
-//        rechargeRecordResp.setTotalNum(total);
-//        rechargeRecordResp.setPageList(pageList);
-//        rechargeRecordResp.setPageIndex(recharge.getPageTools().getIndex().longValue());
-//        rechargeRecordResp.setPageSize(recharge.getPageTools().getPageSize().longValue());
-//        return rechargeRecordResp;
-//
-//    }
 
     @Override
     public ResponseResult rechargeInfo(Recharge recharge) throws Exception {
@@ -268,4 +211,90 @@ public class RechargeServiceImpl implements RechargeService {
 	public BigDecimal querySumRechargeAmount() {
 		return rechargeMapper.querySumRechargeAmount();
 	}
+
+    @Override
+    public Recharge selectByOrderNo(String orderNo) {
+        return rechargeMapper.selectByOrderNo(orderNo);
+    }
+
+
+    @Override
+    public Long payNotify(String notifyResp) {
+        Date date = new Date();
+        payUtils.init(false);
+        HkPayReq hkPayReq = JSON.parseObject(notifyResp,HkPayReq.class);
+        if(payUtils.validParam(hkPayReq)){
+            HkPayResp hkPayResp = payUtils.decryptResp(hkPayReq);
+            Recharge recharge = rechargeMapper.selectByOrderNo(hkPayResp.getOut_trade_no());
+            if(hkPayResp.getOrderStatus().intValue()==1){
+
+                if(recharge!=null&&!RechargeStatusDesc.success.toString().equals(recharge.getStates())){
+                    int total =recharge.getAmount().multiply(new BigDecimal("100")).intValue();
+                    //String conf = commonConstants.getDictionarysBy(EnvConstants.RECHARGE_CONF,EnvConstants.RECHARGE_TEST_AMOUNT_SWITCH);
+                    boolean b = (Double.valueOf(hkPayResp.getAmount()).intValue()==total);
+                   /* if("1".equals(conf)){
+                        //测试时校验amount
+                        b = (hkPayResp.getAmount().intValue()==total);
+                    }else{
+                        //正式校验 realAmount
+                        b = (hkPayResp.getRealAmount().intValue()==total);
+                    }*/
+                    if(b){
+                        UserWallet updateWallet = new UserWallet();
+                        updateWallet.setAvailableAmount(recharge.getAmount());
+                        updateWallet.setuId(recharge.getuId());
+                        userWalletService.updateWalletAmount(updateWallet);
+
+                        UserWallet userWallet = userWalletService.selectByPrimaryUserId(recharge.getuId());
+
+                        //充值交易明细
+                        BalanceDetail balanceDetail = new BalanceDetail();
+                        balanceDetail.setAmount(recharge.getAmount());
+                        balanceDetail.setAvailableAmount(userWallet.getAvailableAmount());
+                        balanceDetail.setuId(recharge.getuId());
+                        balanceDetail.setTransactionType(TransactionTypeDesc.receipt.toString());
+                        balanceDetail.setTransactionSubType(TransactionSubTypeDesc.recharge.toString());
+                        if(recharge.getRemarks()!=null){
+                            balanceDetail.setRemarks(TransactionItemDesc.recharge.getDes()+ StringUtil.split_
+                                    +recharge.getRemarks());
+                        }else{
+                            balanceDetail.setRemarks(TransactionItemDesc.recharge.getDes());
+                        }
+                        balanceDetail.setTransactionId(recharge.getId());
+                        balanceDetailService.insertSelective(balanceDetail);
+                        Recharge updateRecharge = new Recharge();
+                        updateRecharge.setId(recharge.getId());
+                        updateRecharge.setStates(RechargeStatusDesc.success.toString());
+                        updateRecharge.setUpdateTime(date);
+                        updateRecharge.setPayState("1");//支付成功
+                        updateRecharge.setOutTradeNo(hkPayResp.getOrder_sn());
+                        updateRecharge.setChannelType(recharge.getChannelType());
+                        updateRecharge.setAvailableAmount(userWallet.getAvailableAmount());
+                        rechargeMapper.updateByPrimaryKeySelective(updateRecharge);
+                        //通知前端更新用户金额
+                        return recharge.getuId();
+                    }else{
+                        logger.error("金额不对~");
+                        Recharge updateRecharge = new Recharge();
+                        updateRecharge.setId(recharge.getId());
+                        updateRecharge.setUpdateTime(date);
+                        updateRecharge.setOutTradeNo(hkPayResp.getOrder_sn());
+                        updateRecharge.setRemarks("支付平台回调金额不对等~");
+                        rechargeMapper.updateByPrimaryKeySelective(updateRecharge);
+                    }
+                }
+            }else{
+                logger.error("订单状态失败~");
+                Recharge updateRecharge = new Recharge();
+                updateRecharge.setId(recharge.getId());
+                updateRecharge.setUpdateTime(date);
+                updateRecharge.setStates(RechargeStatusDesc.getDesByInt(hkPayResp.getOrderStatus().intValue()));
+                updateRecharge.setOutTradeNo(hkPayResp.getOrder_sn());
+                rechargeMapper.updateByPrimaryKeySelective(updateRecharge);
+            }
+        }else{
+            logger.error("验证签名失败~");
+        }
+        return null;
+    }
 }

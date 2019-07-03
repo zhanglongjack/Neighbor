@@ -2,24 +2,26 @@ package com.neighbor.app.pay.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.neighbor.app.pay.entity.NotifyResp;
+import com.neighbor.app.pay.entity.hk.HkPayReq;
 import com.neighbor.app.recharge.entity.Recharge;
 import com.neighbor.app.recharge.service.RechargeService;
+import com.neighbor.common.util.StringUtil;
 import com.neighbor.common.websoket.service.SocketMessageService;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +41,31 @@ public class PayController {
     @Autowired
     private SocketMessageService socketMessageService;
 
+    @RequestMapping(value = "/payment", method = RequestMethod.GET)
+    public String payment(Model model) throws Exception {
+        String view = "payment";
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String orderNo = request.getParameter("orderNo");
+        if(StringUtil.isEmpty(orderNo)){
+            model.addAttribute("error","订单号不能为空~");
+            return view;
+        }
+        Recharge recharge = rechargeService.selectByOrderNo(orderNo);
+        if(recharge==null){
+            model.addAttribute("error","订单不存在~");
+            return view;
+        }
+        String codeUrl =  recharge.getCodeUrl();
+        if(codeUrl==null||codeUrl.indexOf("{")==-1||codeUrl.indexOf("}")==-1){
+            model.addAttribute("error","该订单不支持此方式支付~");
+            return view;
+        }
+        model.addAttribute("req",JSON.parseObject(codeUrl, HkPayReq.class));
+        return view;
+    }
+
+
+
     @RequestMapping(value = "/notify")
     @ResponseBody
     public String payNotify() throws Exception {
@@ -57,21 +84,12 @@ public class PayController {
         logger.info("--------------------------------------------------------");
         //打印body
         String reqBody = null;
-        if("post".equalsIgnoreCase(request.getMethod())){
-            InputStream inputStream = request.getInputStream();
-            reqBody = IOUtils.toString(inputStream, "utf-8");
-            logger.info("reqBody : "+reqBody );
-            String appid = env.getProperty("recharge.app.id");
-            NotifyResp notifyResp = JSON.parseObject(reqBody,NotifyResp.class);
-            //支付成功 退款暂时不做
-            if(notifyResp.getAppid().equals(appid)&&"1".equals(notifyResp.getStatus())){
-                Long uId = rechargeService.payNotify(notifyResp);
+        if("post".equalsIgnoreCase(request.getMethod())&& !StringUtils.isEmpty(requestParams)){
+                Long uId = rechargeService.payNotify(requestParams);
                 if(uId!=null&&uId>0){
                     //通知更新用户钱包
                     socketMessageService.walletRefreshNotice(null, uId, "系统通知");
                 }
-            }
-
         }
         logger.info("------支付结果---异步通知----------结束----------");
         logger.info("\n\n\n");

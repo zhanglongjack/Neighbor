@@ -25,4 +25,8 @@ public interface RechargeService {
     Long payNotify(NotifyResp notifyResp);
     
 	BigDecimal querySumRechargeAmount();
+
+    Recharge selectByOrderNo(String orderNo);
+
+    Long payNotify(String notifyResp);
 }

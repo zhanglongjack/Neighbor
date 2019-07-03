@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>充值</title>
+</head>
+<body>
+<span id="error"  data-th-text="${error==null?'':error}"></span>
+<form id="formPay" name="formPay"  th:attr="action=${req==null}?'':${req.payUrl}" method="POST">
+    <input type="hidden" name="org_number" th:attr="value=${req==null}?'':${req.org_number}" />
+    <input type="hidden" name="merchant_number" th:attr="value=${req==null}?'':${req.merchant_number}" />
+    <input type="hidden" name="payType" th:attr="value=${req==null}?'':${req.payType}" />
+    <input type="hidden" name="data" th:attr="value=${req==null}?'':${req.data}" />
+    <input type="hidden" name="sign" th:attr="value=${req==null}?'':${req.sign}"  />
+    <input type="submit" value="ok" style="display:none;" />
+</form>
+<script>
+    var errorText = document.getElementById("error").innerText;
+    if(errorText==''){
+        console.log("发起支付");
+        document.forms['formPay'].submit();
+    }else{
+        console.log("发送错误")
+    }
+
+</script>
+</body>
+</html>

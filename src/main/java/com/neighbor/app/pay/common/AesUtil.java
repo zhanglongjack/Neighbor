@@ -37,18 +37,30 @@ public class AesUtil {
 
 
     public static String encryptData(String content, String password){
+        if(password!=null&&password.length()>16){
+            password = password.substring(0,16);
+        }
         byte[] encryptResult = encrypt(content, password);
         return new String(HexStringUtils.encodeHex(encryptResult));
     }
 
+    public static String decryptData(String content, String password){
+        if(password!=null&&password.length()>16){
+            password = password.substring(0,16);
+        }
+        byte[] decode = HexStringUtils.decodeHex(content.toCharArray());
+        return decrypt(decode, password);
+    }
+
     public static void main(String[] args)  {
 
-        String password = "81ff0c7ca96f4727";
+        String password = "81ff0c7ca96f4727123456";
 
-        byte[] decode = HexStringUtils.decodeHex("98B2FC4EC70A314327C157C68B3BF1BD384F5DC149468AF225643F9518D3F613FAF50FCCCEC86A96B313BFE4024CF77D2122F232E06DD35813BC1B424FFC6CB76F7C31B8D7CBD218FFAD0CBA4730DAE724C3AD2EADB26ACB366C4D01D26A05B79863BF60348BD193F3B6E43EEB184AFB6813962D3C0CEA4AD2D7B30E8FF8CF161D8AB7086414C3695748A52B393E03B94443E9434AFE8E0D04B83450B17F45DB9C27146692D09B0F39C1ACE1027541BF1048C66CC28A754E9C5F1E7AF00722B9".toCharArray());
         // 解密
-        String decryptResult = decrypt(decode, password);
+        String decryptResult = decryptData("CDE2064F0AAC0BFB2214D1B241046FB3497D8B737A42238A18A90F14D734E6957A68807ED472663B5D8C9C2736F1362B73A281B7B758DA17218544F728FBE94CAC87771D7C6FC4394FEBDCEA64DE3BFD98289100C0E2EE1BC07DC6FFAF147A5838EC351310B848EC71C53B2B6E2969EFEE03573C92610499D6727419B9BCBFFB06C0B7CC68681B474FB6234CF5A6E4E7", password);
         System.out.println("解密后：" + decryptResult); //不转码会乱码
+
+        System.out.println("解密后：" + password); //不转码会乱码
 
     }
 }
