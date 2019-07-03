@@ -37,6 +37,9 @@ public class HttpClientUtils {
         // 创建httppost
         HttpPost httppost = new HttpPost(host);
         httppost.setConfig(requestConfig);
+        httppost.setHeader("Accept","application/json");
+        httppost.setHeader("Content-Type","application/json");
+        httppost.setHeader("Accept-Charset","UTF-8");
         try {
             StringEntity s = new StringEntity(reqStr);
             s.setContentEncoding("UTF-8");

@@ -1,225 +1,54 @@
 package com.neighbor.app.pay.common;
 
-
-
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
-
+import java.nio.charset.StandardCharsets;
 
 public class AesUtil {
-	
-	private static final String KEY_ALGORITHM = "AES";
-    private static final String CHAR_SET = "UTF-8";
-    /**
-     * AES的密钥长度
-     */
-    private static final Integer SECRET_KEY_LENGTH = 128;
-    /**
-     * 加解密算法/工作模式/填充方式
-     */
-    private static final String DEFAULT_CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";
-    
-	/**
-	 * 加密
-	 * 
-	 * @param content
-	 *            需要加密的内容
-	 * @param password
-	 *            加密密码
-	 * @return
-	 */
-	public static byte[] encrypt(String content, String password) {
-		try {
-			KeyGenerator kgen = KeyGenerator.getInstance("AES");
-			kgen.init(128, new SecureRandom(password.getBytes()));
-			SecretKey secretKey = kgen.generateKey();
-			byte[] enCodeFormat = secretKey.getEncoded();
-			SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
-			Cipher cipher = Cipher.getInstance("AES");// 创建密码器
-			byte[] byteContent = content.getBytes("utf-8");
-			cipher.init(Cipher.ENCRYPT_MODE, key);// 初始化
-			byte[] result = cipher.doFinal(byteContent);
-			return result; // 加密
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	/**
-	 * 解密
-	 * 
-	 * @param content
-	 *            待解密内容
-	 * @param password
-	 *            解密密钥
-	 * @return
-	 */
-	public static byte[] decrypt(byte[] content, String password) {
-		try {
-			KeyGenerator kgen = KeyGenerator.getInstance("AES");
-			kgen.init(128, new SecureRandom(password.getBytes()));
-			SecretKey secretKey = kgen.generateKey();
-			byte[] enCodeFormat = secretKey.getEncoded();
-			SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
-			Cipher cipher = Cipher.getInstance("AES");// 创建密码器
-			cipher.init(Cipher.DECRYPT_MODE, key);// 初始化
-			byte[] result = cipher.doFinal(content);
-			return result; // 加密
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	/**
-	 * 将二进制转换成16进制
-	 * 
-	 * @param buf
-	 * @return
-	 */
-	public static String parseByte2HexStr(byte buf[]) {
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < buf.length; i++) {
-			String hex = Integer.toHexString(buf[i] & 0xFF);
-			if (hex.length() == 1) {
-				hex = '0' + hex;
-			}
-			sb.append(hex.toUpperCase());
-		}
-		return sb.toString();
-	}
-
-	/**
-	 * 将16进制转换为二进制
-	 * 
-	 * @param hexStr
-	 * @return
-	 */
-	public static byte[] parseHexStr2Byte(String hexStr) {
-		if (hexStr.length() < 1)
-			return null;
-		byte[] result = new byte[hexStr.length() / 2];
-		for (int i = 0; i < hexStr.length() / 2; i++) {
-			int high = Integer.parseInt(hexStr.substring(i * 2, i * 2 + 1), 16);
-			int low = Integer.parseInt(hexStr.substring(i * 2 + 1, i * 2 + 2),
-					16);
-			result[i] = (byte) (high * 16 + low);
-		}
-		return result;
-	}
-
-	/**
-	 * 加密
-	 *
-	 * @param content
-	 *            需要加密的内容
-	 * @param password
-	 *            加密密码
-	 * @return
-	 */
-	public static byte[] encrypt2(String content, String password) {
-		try {
-			SecretKeySpec key = new SecretKeySpec(password.getBytes("utf-8"), "AES");
-			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-			byte[] byteContent = content.getBytes("utf-8");
-			cipher.init(Cipher.ENCRYPT_MODE, key);// 初始化
-			byte[] result = cipher.doFinal(byteContent);
-			return result; // 加密
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	/**
-	 * 解密
-	 * 
-	 * @param content
-	 *            待解密内容
-	 * @param password
-	 *            解密密钥
-	 * @return
-	 */
-	public static byte[] decrypt2(byte[] content, String password) {
-		try {
-			SecretKeySpec key = new SecretKeySpec(password.getBytes("utf-8"), "AES");
-			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");// 创建密码器
-			cipher.init(Cipher.DECRYPT_MODE, key);// 初始化
-			byte[] result = cipher.doFinal(content);
-			return result; // 加密
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static String encryptData(String content, String password){
-		byte[] encryptResult = encrypt(content, password);
-		return BytesHexStrTranslate.bytesToHexFun2(encryptResult).toLowerCase();
-	}
 
 
-	public static void main(String[] args) throws Exception{
- 	String content = "test";
-		String password = "12345678";
-		// 加密
-		System.out.println("加密前：" + content);
-		byte[] encryptResult = encrypt(content, password);
-		System.out.println(BytesHexStrTranslate.bytesToHexFun2(encryptResult));
+
+    public static  byte[] encrypt(String input, String key){
+        byte[] crypted = null;
+        try{
+            SecretKeySpec skey = new SecretKeySpec(key.getBytes(), "AES");
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, skey);
+            crypted = cipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
+        }catch(Exception e){
+           e.printStackTrace();
+        }
+        return crypted;
+    }
+
+    public static String decrypt(byte[] input, String key){
+        byte[] output = null;
+        try{
+            SecretKeySpec skey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, skey);
+            output = cipher.doFinal(input);
+        }catch(Exception e){
+           e.printStackTrace();
+        }
+        return new String(output,StandardCharsets.UTF_8);
+    }
 
 
-		// 解密
-		byte[] decryptResult = decrypt(encryptResult , password);
-		System.out.println("解密后：" + new String(decryptResult));
-	}
+
+    public static String encryptData(String content, String password){
+        byte[] encryptResult = encrypt(content, password);
+        return new String(HexStringUtils.encodeHex(encryptResult));
+    }
+
+    public static void main(String[] args)  {
+
+        String password = "81ff0c7ca96f4727";
+
+        byte[] decode = HexStringUtils.decodeHex("98B2FC4EC70A314327C157C68B3BF1BD384F5DC149468AF225643F9518D3F613FAF50FCCCEC86A96B313BFE4024CF77D2122F232E06DD35813BC1B424FFC6CB76F7C31B8D7CBD218FFAD0CBA4730DAE724C3AD2EADB26ACB366C4D01D26A05B79863BF60348BD193F3B6E43EEB184AFB6813962D3C0CEA4AD2D7B30E8FF8CF161D8AB7086414C3695748A52B393E03B94443E9434AFE8E0D04B83450B17F45DB9C27146692D09B0F39C1ACE1027541BF1048C66CC28A754E9C5F1E7AF00722B9".toCharArray());
+        // 解密
+        String decryptResult = decrypt(decode, password);
+        System.out.println("解密后：" + decryptResult); //不转码会乱码
+
+    }
 }

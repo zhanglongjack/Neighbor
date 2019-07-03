@@ -120,14 +120,16 @@ public class PayUtils {
         pay.init(true);
         //构造data参数 加密
         HkPayData data = new HkPayData();
-        data.setAmount(1);
+        data.setAmount(10003);
         data.setGame_id("6000000");
         data.setOut_trade_no(OrderUtils.getOrderNo(OrderUtils.RECHARGE,6000000L));
-        data.setGoodsName("goodsName");
+        data.setGoodsName("积分充值100");
         data.setNotifyUrl("http://t.auth.gtlytech.com/pay/notify");
         String dataJsonStr = JSON.toJSONString(data);
         System.out.println("data json ==> "+dataJsonStr);
-        String encryptData = AesUtil.encryptData(dataJsonStr, pay.appkey);
+        String newKey = pay.appkey.substring(0,16);
+        System.out.println("newKey == "+newKey+"| len = "+newKey.length());
+        String encryptData = AesUtil.encryptData(dataJsonStr, newKey);
         System.out.println("data encrypt ==> "+encryptData);
         //进行签名
         HkPayReq hkPayReq = new HkPayReq();
