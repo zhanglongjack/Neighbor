@@ -1,6 +1,7 @@
 package com.neighbor.app.recharge.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.balance.entity.BalanceDetail;
 import com.neighbor.app.balance.po.TransactionItemDesc;
 import com.neighbor.app.balance.po.TransactionSubTypeDesc;
@@ -36,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -72,7 +74,6 @@ public class RechargeServiceImpl implements RechargeService {
         recharge.setCreateTime(date);
         recharge.setOrderNo(OrderUtils.getOrderNo(OrderUtils.RECHARGE,user.getId()));
         recharge.setuId(user.getId());
-        recharge.setAvailableAmount(userWallet.getAvailableAmount());
         if(ChannelTypeDesc.offline.toString().equals(recharge.getChannelType())){
             recharge.setStates(RechargeStatusDesc.initial.toString());
             recharge.setMethod(MethodDesc.offline.toString());
@@ -81,12 +82,25 @@ public class RechargeServiceImpl implements RechargeService {
             return responseResult;
         }else{
 
-            String conf = commonConstants.getDictionarysBy(EnvConstants.RECHARGE_CONF,EnvConstants.RECHARGE_TEST_AMOUNT_SWITCH);
+            /*String conf = commonConstants.getDictionarysBy(EnvConstants.RECHARGE_CONF,EnvConstants.RECHARGE_TEST_AMOUNT_SWITCH);
             if("1".equals(conf)){
                 recharge.setAmount(new BigDecimal("0.10"));
+            }*/
+            String off = commonConstants.getDictionarysBy(EnvConstants.RECHARGE_CHANNEL_OFF,recharge.getChannelType());
+            if(off==null||"0".equals(off)){
+                //通道暂时关闭
+                responseResult.setErrorCode(ErrorCodeDesc.failed.getValue());
+                responseResult.setErrorMessage(recharge.getChannelTypeDesc()+"通道暂时关闭，请更换其他通道再试");
+                return responseResult;
             }
-
-            payUtils.preOrderHk(recharge);
+            String channelNo = commonConstants.getDictionarysBy(EnvConstants.RECHARGE_CHANNEL_NO,recharge.getChannelType());
+            if(StringUtil.isEmpty(channelNo)){
+                responseResult.setErrorCode(ErrorCodeDesc.failed.getValue());
+                responseResult.setErrorMessage(recharge.getChannelTypeDesc()+"通道参数错误，请客服处理~");
+                return responseResult;
+            }
+            recharge.setChannelNo(channelNo);
+            payUtils.preOrderXF(recharge);
             recharge.setStates(RechargeStatusDesc.processing.toString());
             recharge.setPayState("0");//未支付
             rechargeMapper.insertSelective(recharge);
@@ -290,6 +304,70 @@ public class RechargeServiceImpl implements RechargeService {
                 updateRecharge.setUpdateTime(date);
                 updateRecharge.setStates(RechargeStatusDesc.getDesByInt(hkPayResp.getOrderStatus().intValue()));
                 updateRecharge.setOutTradeNo(hkPayResp.getOrder_sn());
+                rechargeMapper.updateByPrimaryKeySelective(updateRecharge);
+            }
+        }else{
+            logger.error("验证签名失败~");
+        }
+        return null;
+    }
+
+
+
+    @Override
+    public Long payNotify(HashMap<String, String> notifyResp) {
+        Date date = new Date();
+        payUtils.init(false);
+
+        if(payUtils.validParam(notifyResp)){
+            String orderid = notifyResp.get("orderid");
+            String returncode = notifyResp.get("returncode");
+            Recharge recharge = rechargeMapper.selectByOrderNo(orderid);
+            if("00".equals(returncode)){
+                if(recharge!=null&&!RechargeStatusDesc.success.toString().equals(recharge.getStates())){
+
+                        UserWallet updateWallet = new UserWallet();
+                        updateWallet.setAvailableAmount(recharge.getAmount());
+                        updateWallet.setuId(recharge.getuId());
+                        userWalletService.updateWalletAmount(updateWallet);
+
+                        UserWallet userWallet = userWalletService.selectByPrimaryUserId(recharge.getuId());
+
+                        //充值交易明细
+                        BalanceDetail balanceDetail = new BalanceDetail();
+                        balanceDetail.setAmount(recharge.getAmount());
+                        balanceDetail.setAvailableAmount(userWallet.getAvailableAmount());
+                        balanceDetail.setuId(recharge.getuId());
+                        balanceDetail.setTransactionType(TransactionTypeDesc.receipt.toString());
+                        balanceDetail.setTransactionSubType(TransactionSubTypeDesc.recharge.toString());
+                        if(recharge.getRemarks()!=null){
+                            balanceDetail.setRemarks(TransactionItemDesc.recharge.getDes()+ StringUtil.split_
+                                    +recharge.getRemarks());
+                        }else{
+                            balanceDetail.setRemarks(TransactionItemDesc.recharge.getDes());
+                        }
+                        balanceDetail.setTransactionId(recharge.getId());
+                        balanceDetailService.insertSelective(balanceDetail);
+                        Recharge updateRecharge = new Recharge();
+                        updateRecharge.setId(recharge.getId());
+                        updateRecharge.setStates(RechargeStatusDesc.success.toString());
+                        updateRecharge.setUpdateTime(date);
+                        updateRecharge.setPayState("1");//支付成功
+                        updateRecharge.setTransactionId(notifyResp.get("transaction_id"));
+                        updateRecharge.setChannelType(recharge.getChannelType());
+                        updateRecharge.setAvailableAmount(new BigDecimal(notifyResp.get("amount")));
+                        rechargeMapper.updateByPrimaryKeySelective(updateRecharge);
+                        //通知前端更新用户金额
+                        return recharge.getuId();
+
+                }
+            }else{
+                logger.error("订单状态失败~");
+                Recharge updateRecharge = new Recharge();
+                updateRecharge.setId(recharge.getId());
+                updateRecharge.setUpdateTime(date);
+                updateRecharge.setTransactionId(notifyResp.get("transaction_id"));
+                updateRecharge.setRemarks("支付平台返回失败");
                 rechargeMapper.updateByPrimaryKeySelective(updateRecharge);
             }
         }else{

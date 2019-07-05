@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>正在跳转付款页</title>
+</head>
+<body>
+<span id="error"  data-th-text="${error==null?'':error}"></span>
+<form id="formPay" name="formPay"  th:attr="action=${req==null}?'':${req.payUrl}" method="POST">
+    <input type="hidden" name="pay_memberid" th:attr="value=${req==null}?'':${req.pay_memberid}" />
+    <input type="hidden" name="pay_orderid" th:attr="value=${req==null}?'':${req.pay_orderid}" />
+    <input type="hidden" name="pay_applydate" th:attr="value=${req==null}?'':${req.pay_applydate}" />
+    <input type="hidden" name="pay_bankcode" th:attr="value=${req==null}?'':${req.pay_bankcode}" />
+    <input type="hidden" name="pay_notifyurl" th:attr="value=${req==null}?'':${req.pay_notifyurl}"  />
+    <input type="hidden" name="pay_callbackurl" th:attr="value=${req==null}?'':${req.pay_callbackurl}"  />
+    <input type="hidden" name="pay_amount" th:attr="value=${req==null}?'':${req.pay_amount}"  />
+    <input type="hidden" name="pay_md5sign" th:attr="value=${req==null}?'':${req.pay_md5sign}"  />
+    <input type="hidden" name="pay_productname" th:attr="value=${req==null}?'':${req.pay_productname}"  />
+    <input type="submit" value="ok" style="display:none;" />
+</form>
+<script>
+    var errorText = document.getElementById("error").innerText;
+    if(errorText==''){
+        console.log("发起支付");
+        document.forms['formPay'].submit();
+    }else{
+        console.log("发送错误")
+    }
+
+</script>
+</body>
+</html>

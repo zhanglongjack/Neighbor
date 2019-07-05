@@ -31,3 +31,14 @@ VALUES ('豹子', '4', 1, 'ruleSubType', '游戏子规则');
 
 INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) 
 VALUES ('0.03', 'payment_rate', 1, 'payment', '支付接口抽成比例');
+
+
+
+INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('1', 'alipay', '1', 'recharge_channel_off', '支付宝充值开关（1打开，其他0关闭）');
+INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('1', 'wxpay', '1', 'recharge_channel_off', '微信支付开关（1打开，其他0关闭）');
+
+INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('904', 'alipay', '1', 'recharge_channel_no', '支付宝充值渠道编号）');
+INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('902', 'wxpay', '1', 'recharge_channel_no', '微信支付充值渠道编号');
+
+INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('200,300,500,600,800,1000,2000,3000,5000', 'alipay', '1', 'recharge_channel_limit', '支付宝限额');
+INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('100,200,300,500,600,800,1000,2000,3000', 'wxpay', '1', 'recharge_channel_limit', '微信限额');

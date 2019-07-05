@@ -80,4 +80,25 @@ public class DictionaryServiceImpl implements DictionaryService {
 		return result;
 	}
 
+	@Override
+	public ResponseResult dictionaryList(String bizCode,boolean cache) {
+		ResponseResult result = new ResponseResult();
+		if(!cache){
+			Map<String,String> map = commonConstants.getDictionarysByKey(bizCode);
+			List<Dictionary> list = new ArrayList<Dictionary>();
+			for(String key : map.keySet()){
+				Dictionary dictionary = new Dictionary();
+				dictionary.setCode(key);
+				dictionary.setName(map.get(key));
+				list.add(dictionary);
+			}
+			result.addBody("resultList",list);
+		}else{
+			Dictionary dictionary = new Dictionary();
+			dictionary.setBizCode(bizCode);
+			List<Dictionary> list = selectBySelective(dictionary);
+			result.addBody("resultList",list);
+		}
+		return result;
+	}
 }

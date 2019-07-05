@@ -43,7 +43,7 @@ public class PayController {
 
     @RequestMapping(value = "/payment", method = RequestMethod.GET)
     public String payment(Model model) throws Exception {
-        String view = "payment";
+        String view = "paymentXF";
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String orderNo = request.getParameter("orderNo");
         if(StringUtil.isEmpty(orderNo)){
@@ -60,11 +60,29 @@ public class PayController {
             model.addAttribute("error","该订单不支持此方式支付~");
             return view;
         }
-        model.addAttribute("req",JSON.parseObject(codeUrl, HkPayReq.class));
+        model.addAttribute("req",JSON.parseObject(codeUrl, HashMap.class));
         return view;
     }
 
+    @RequestMapping(value = "/callback", method = RequestMethod.GET)
+    @ResponseBody
+    public String callback(Model model) throws Exception {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String reqUrl = request.getRequestURL().toString();
+        logger.info("\n\n\n");
+        logger.info("------支付结果---同步通知----------开始----------");
+        logger.info("reqUrl : "+reqUrl);
+        //打印header
+        logger.info("--------------------------------------------------------");
+        logger.info("requestHeaders : "+ JSONObject.toJSONString(getRequestHeader(request)));
+        logger.info("--------------------------------------------------------");
+        //打印param
+        String requestParams = JSONObject.toJSONString(getRequestParams(request));
+        logger.info("requestParams : "+requestParams);
+        logger.info("---------------------------同步通知-----------------------------");
 
+        return "请您回到好邻居APP查看支付结果~";
+    }
 
     @RequestMapping(value = "/notify")
     @ResponseBody
@@ -79,13 +97,14 @@ public class PayController {
         logger.info("requestHeaders : "+ JSONObject.toJSONString(getRequestHeader(request)));
         logger.info("--------------------------------------------------------");
         //打印param
-        String requestParams = JSONObject.toJSONString(getRequestParams(request));
+        HashMap param = getRequestParams(request);
+        String requestParams = JSONObject.toJSONString(param);
         logger.info("requestParams : "+requestParams);
         logger.info("--------------------------------------------------------");
         //打印body
         String reqBody = null;
-        if("post".equalsIgnoreCase(request.getMethod())&& !StringUtils.isEmpty(requestParams)){
-                Long uId = rechargeService.payNotify(requestParams);
+        if("post".equalsIgnoreCase(request.getMethod())){
+                Long uId = rechargeService.payNotify(param);
                 if(uId!=null&&uId>0){
                     //通知更新用户钱包
                     socketMessageService.walletRefreshNotice(null, uId, "系统通知");
@@ -93,11 +112,11 @@ public class PayController {
         }
         logger.info("------支付结果---异步通知----------结束----------");
         logger.info("\n\n\n");
-        return "SUCCESS";
+        return "OK";
     }
 
-    public  Map<String, String> getRequestParams(HttpServletRequest req) {
-        Map<String, String> requestParams = new HashMap<String, String>();
+    public  HashMap<String, String> getRequestParams(HttpServletRequest req) {
+        HashMap<String, String> requestParams = new HashMap<String, String>();
         Map<String, String[]> paramters = req.getParameterMap();
         if (paramters != null && !paramters.isEmpty()) {
             for (String paramterName : paramters.keySet()) {

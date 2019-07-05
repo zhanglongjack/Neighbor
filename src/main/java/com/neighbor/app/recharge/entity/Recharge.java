@@ -51,6 +51,15 @@ public class Recharge  extends PageEntity{
     private String transactionId;//支付官方交易流水
     private String codeUrl;//支付二维码 支付一次无效
     private String h5Url;//支付宝H5二维码 支付一次无效
+    private String channelNo;
+
+    public String getChannelNo() {
+        return channelNo;
+    }
+
+    public void setChannelNo(String channelNo) {
+        this.channelNo = channelNo;
+    }
 
     public String getMethodDesc() {
         if(!StringUtils.isEmpty(method)){

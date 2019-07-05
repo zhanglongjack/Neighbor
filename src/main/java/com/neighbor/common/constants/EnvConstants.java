@@ -68,7 +68,23 @@ public class EnvConstants {
      * 支付接口抽成比例
      */
     public static final String PAYMENT_RATE ="payment_rate";
-    
+
+    /**
+     * 充值渠道编号配置
+     */
+    public static final String RECHARGE_CHANNEL_NO ="recharge_channel_no";
+
+    /**
+     * 充值渠道开关
+     */
+    public static final String RECHARGE_CHANNEL_OFF ="recharge_channel_off";
+
+
+    /**
+     * 充值渠道金额限制范围
+     */
+    public static final String RECHARGE_CHANNEL_LIMIT ="recharge_channel_limit";
+
     
     
     

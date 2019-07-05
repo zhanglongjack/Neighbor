@@ -24,4 +24,6 @@ public interface DictionaryService {
 
 
     ResponseResult gameTypeList();
+
+    ResponseResult dictionaryList(String bizCode,boolean cache);
 }

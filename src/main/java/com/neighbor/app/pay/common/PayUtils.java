@@ -10,6 +10,8 @@ import com.neighbor.app.pay.entity.hk.HkPayReq;
 import com.neighbor.app.pay.entity.hk.HkPayResp;
 import com.neighbor.app.recharge.entity.Recharge;
 import com.neighbor.common.security.EncodeData;
+import com.neighbor.common.util.DateFormateType;
+import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.HttpClientUtils;
 import com.neighbor.common.util.StringUtil;
 import org.slf4j.Logger;
@@ -33,6 +35,7 @@ public class PayUtils {
     private String orgNumber;
     private String channelType = "Alipay";//通道TYPE
     private String notifyUrl;
+    private String callBackUrl;
 
 
     private void init(){
@@ -42,16 +45,18 @@ public class PayUtils {
             appkey = env.getProperty("recharge.app.key");
             orgNumber = env.getProperty("recharge.app.orgNumber");
             notifyUrl = env.getProperty("recharge.app.notifyUrl");
+            callBackUrl = env.getProperty("recharge.app.callBackUrl");
     	}
     }
-    
+
     public void init(boolean isDev){
     	if(isDev){
-            apiUrl = "http://www.hongkongpay.info/api/request/query/";
+            apiUrl = "http://e7s3.top/Pay_Index.html";
             appid = "20190701365546";
             appkey = "81ff0c7ca96f472729dd1e18abe7bdec";
             orgNumber = "330100228746";
-            notifyUrl = "http://t.auth.gtlytech.com:15555/pay/notify";
+            notifyUrl = "http://localhost:15555/pay/notify";
+            callBackUrl = "http://localhost:15555/pay/callback";
     	}else{
     		init();
     	}
@@ -120,6 +125,27 @@ public class PayUtils {
 
     }
 
+    public void preOrderXF(Recharge recharge) throws Exception{
+        init();
+        //构造data参数 加密
+        HashMap<String,String> hashMap = new HashMap<>();
+        hashMap.put("pay_memberid",appid);
+        hashMap.put("pay_orderid",recharge.getOrderNo());
+        hashMap.put("pay_applydate", DateUtils.formatDateStr(new Date(), DateFormateType.LANG_FORMAT));
+        hashMap.put("pay_bankcode",recharge.getChannelNo());
+        hashMap.put("pay_notifyurl",notifyUrl);
+        hashMap.put("pay_callbackurl",callBackUrl);
+        hashMap.put("pay_amount",recharge.getAmount().toPlainString());
+        String signStr =  EncodeData.encode(putPairsSequenceAndTogether(hashMap)+"&key="+appkey).toUpperCase();
+        hashMap.put("pay_md5sign",signStr);
+        hashMap.put("pay_productname",recharge.getBody());
+        hashMap.put("payUrl",apiUrl);
+        String reqStr = JSON.toJSONString(hashMap);
+        logger.info("hk pay req str ==> "+reqStr);
+        recharge.setCodeUrl(reqStr);
+
+    }
+
     /**
      * 生成签名，根据字段名ascii码，从小大到大
      * @param info
@@ -152,6 +178,21 @@ public class PayUtils {
         return signStr.equals(hkPayReq.getSign());
     }
 
+    public boolean validParam(HashMap<String, String> notifyResp){
+        String sign = notifyResp.remove("sign");
+        String attach = notifyResp.remove("attach");
+        String signTemp = putPairsSequenceAndTogether(notifyResp);
+        System.out.println(signTemp);
+        String signStr = EncodeData.encode(putPairsSequenceAndTogether(notifyResp)+"&key="+appkey).toUpperCase();
+        if(sign==null){
+            return false;
+        }
+       if(sign.equals(signStr)){
+           return appid.equals(notifyResp.get("memberid"));
+       };
+       return false;
+    }
+
     public boolean validParam(HkPayReq hkPayReq){
         if(!orgNumber.equals(hkPayReq.getOrg_number())) return false;
         if(!appid.equals(hkPayReq.getMerchant_number())) return false;
@@ -162,14 +203,23 @@ public class PayUtils {
         return JSON.parseObject(AesUtil.decryptData(hkPayReq.getData(),appkey),HkPayResp.class);
     }
 
-    
+
     public static void main(String[] args) throws Exception {
-        String reqStr = "{\"payType\":\"Alipay\",\"data\":\"CDE2064F0AAC0BFB2214D1B241046FB3497D8B737A42238A18A90F14D734E6957A68807ED472663B5D8C9C2736F1362B73A281B7B758DA17218544F728FBE94CAC87771D7C6FC4394FEBDCEA64DE3BFD98289100C0E2EE1BC07DC6FFAF147A5838EC351310B848EC71C53B2B6E2969EFEE03573C92610499D6727419B9BCBFFB06C0B7CC68681B474FB6234CF5A6E4E7\",\"org_number\":\"330100228746\",\"sign\":\"596c4307571eb260349e7789666b4fc0\",\"merchant_number\":\"20190701365546\"}";
-        System.out.println("hk pay req str ==> "+reqStr);
-        HashMap<String,String> param = JSON.parseObject(reqStr,HashMap.class);
-        String respStr = HttpClientUtils.httpPostWithPAaram("http://localhost:15555/pay/notify",param);
-        //String respStr = HttpClientUtils.doJsonPost(reqStr,pay.apiUrl);
+        HashMap<String,String> hashMap = new HashMap<>();
+        hashMap.put("memberid","11082");
+        hashMap.put("orderid","2600017201907050848073535");
+        hashMap.put("amount", "480");
+        hashMap.put("transaction_id","123456789");
+        hashMap.put("datetime",DateUtils.formatDateStr(new Date(), DateFormateType.LANG_FORMAT));
+        hashMap.put("returncode","00");
+        String key = "5city0vuq1165b4ji1g3c3733nxdzi7c";
+        String signStr =  EncodeData.encode(putPairsSequenceAndTogether(hashMap)+"&key="+key).toUpperCase();
+        hashMap.put("sign",signStr);
+        hashMap.put("attach","");
+        String respStr = HttpClientUtils.httpPostWithPAaram("http://localhost:15555/pay/notify",hashMap);
+
         System.out.println("hk pay resp str <== "+respStr);
+
 	}
 
 	public static void testOrder() throws Exception{
@@ -201,4 +251,22 @@ public class PayUtils {
         System.out.println("hk pay resp str <== "+respStr);
     }
 
+    public static void preOrderXF() throws Exception{
+        HashMap<String,String> hashMap = new HashMap<>();
+        hashMap.put("pay_memberid","11082");
+        hashMap.put("pay_orderid",OrderUtils.getOrderNo(OrderUtils.RECHARGE,6000000L));
+        hashMap.put("pay_applydate", DateUtils.formatDateStr(new Date(), DateFormateType.LANG_FORMAT));
+        hashMap.put("pay_bankcode","902");
+        hashMap.put("pay_notifyurl","http://t.auth.gtlytech.com:15555/pay/notify");
+        hashMap.put("pay_callbackurl","http://t.auth.gtlytech.com:15555/pay/notify");
+        hashMap.put("pay_amount","51");
+        String key = "5city0vuq1165b4ji1g3c3733nxdzi7c";
+        String signStr =  EncodeData.encode(putPairsSequenceAndTogether(hashMap)+"&key="+key).toUpperCase();
+        hashMap.put("pay_md5sign",signStr);
+        hashMap.put("pay_productname","goods");
+        String reqStr = JSON.toJSONString(hashMap);
+        System.out.println("xf pay req str ==> "+reqStr);
+        String respStr = HttpClientUtils.httpPostWithPAaram("http://e7s3.top/Pay_Index.html",hashMap);
+        System.out.println("xf pay resp str <== "+respStr);
+    }
 }

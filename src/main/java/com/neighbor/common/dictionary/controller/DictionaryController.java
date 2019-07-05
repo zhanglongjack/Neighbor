@@ -95,4 +95,12 @@ public class DictionaryController {
 	}
 
 
+	@RequestMapping(value = "/dictionaryList.req",method= RequestMethod.POST)
+	@ResponseBody
+	public ResponseResult dictionaryList(String bizCode,boolean cache) throws Exception{
+		logger.info("DictionaryController request dictionaryList bizCode ==  "+bizCode+"|cache ="+cache);
+		ResponseResult result  = dictionaryService.dictionaryList(bizCode,cache);
+		return result;
+	}
+
 }

@@ -1,6 +1,7 @@
 package com.neighbor.app.recharge.service;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 import com.neighbor.app.pay.entity.NotifyResp;
@@ -29,4 +30,5 @@ public interface RechargeService {
     Recharge selectByOrderNo(String orderNo);
 
     Long payNotify(String notifyResp);
+    Long payNotify(HashMap<String,String> notifyResp);
 }
