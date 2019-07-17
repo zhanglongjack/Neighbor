@@ -85,7 +85,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         Date date = new Date();
         withdraw.setId(null);
         withdraw.setuId(userInfo.getId());
-        withdraw.setOrderNo(OrderUtils.getOrderNo(OrderUtils.WITHDRAW));
+        withdraw.setOrderNo(OrderUtils.getOrderNo(OrderUtils.WITHDRAW,userInfo.getId()));
         withdraw.setCreateTime(date);
         withdraw.setAvailableAmount(userWallet.getAvailableAmount());
         withdraw.setStates(WithdrawStatusDesc.initial.toString());

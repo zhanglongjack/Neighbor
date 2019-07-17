@@ -48,3 +48,7 @@ alter table withdraw add bank_name varchar(50) DEFAULT null COMMENT '银行名�
 alter table withdraw add card_type_name varchar(50) DEFAULT null COMMENT '银行卡类型名称';
 
 update withdraw w,(select w.id,b.bank_name,b.card_type_name from withdraw w INNER JOIN bank_card b on w.bank_card_no = b.bank_card_no) a set w.bank_name = a.bank_name,w.card_type_name=a.card_type_name where w.id=a.id
+
+
+
+

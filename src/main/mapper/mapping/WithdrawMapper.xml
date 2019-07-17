@@ -16,10 +16,12 @@
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
     <result column="cost" jdbcType="DECIMAL" property="cost" />
+      <result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+      <result column="card_type_name" property="cardTypeName" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_no, create_time, update_time, u_id, amount,available_amount, bank_card_no, branch_info, real_name,
-    states, remarks,actual_amount,cost
+    states, remarks,actual_amount,cost,bank_name,card_type_name
   </sql>
   
   <sql id="dynamicWhere">
@@ -32,7 +34,8 @@
 		    <if test="states != null and states.length()>0">and states=#{states}</if>
 			<if test="orderNo != null and orderNo.length()>0">and order_no=#{orderNo}</if>
             <if test="shortDate != null and shortDate.length()>0">and date_format(create_time ,'%Y-%m-%d') = #{shortDate}</if>
-
+            <if test="bankName != null and bankName.length()>0">and bank_name=#{bankName}</if>
+            <if test="cardTypeName != null and cardTypeName.length()>0">and card_type_name=#{cardTypeName}</if>
 		</where>
 	</sql>
 	
@@ -133,6 +136,12 @@
       <if test="availableAmount != null">
         cost,
       </if>
+        <if test="bankName != null" >
+            bank_name,
+        </if>
+        <if test="cardTypeName != null" >
+            card_type_name,
+        </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -177,6 +186,12 @@
       <if test="cost != null">
         #{cost,jdbcType=DECIMAL},
       </if>
+        <if test="bankName != null" >
+            #{bankName,jdbcType=VARCHAR},
+        </if>
+        <if test="cardTypeName != null" >
+            #{cardTypeName,jdbcType=VARCHAR},
+        </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.neighbor.app.withdraw.entity.Withdraw">
@@ -221,6 +236,12 @@
       <if test="cost != null">
         cost = #{cost,jdbcType=DECIMAL},
       </if>
+        <if test="bankName != null" >
+            bank_name = #{bankName,jdbcType=VARCHAR},
+        </if>
+        <if test="cardTypeName != null" >
+            card_type_name = #{cardTypeName,jdbcType=VARCHAR},
+        </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>

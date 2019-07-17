@@ -122,7 +122,7 @@ public class TransferServiceImpl implements TransferService {
 		transfer.setAvailableAmount(userWallet.getAvailableAmount());
 		transfer.setCreateTime(date);
 		transfer.setBeginTime(DateUtils.formatDateStr(date, DateFormateType.LANG_FORMAT));
-		transfer.setOrderNo(OrderUtils.getOrderNo(OrderUtils.TRANSFER));
+		transfer.setOrderNo(OrderUtils.getOrderNo(OrderUtils.TRANSFER,userInfo.getId()));
 		transfer.setTransferWay(TransferWayDesc.out.toString());
 		transfer.setStates(TransferStatusDesc.processing.toString());
 		transferMapper.insertSelective(transfer);
@@ -180,7 +180,7 @@ public class TransferServiceImpl implements TransferService {
 		transferIn.setuId(transferUser.getuId());
 		transferIn.setAvailableAmount(transferUser.getAvailableAmount());
 		transferIn.setTransferWay(TransferWayDesc.in.toString());
-		transferIn.setOrderNo(OrderUtils.getOrderNo(OrderUtils.TRANSFER));
+		transferIn.setOrderNo(OrderUtils.getOrderNo(OrderUtils.TRANSFER,transferUser.getuId()));
 		transferIn.setTransferUserId(transfer.getuId());
 		transferIn.setStates(TransferStatusDesc.success.toString());
 		transferMapper.insertSelective(transferIn);

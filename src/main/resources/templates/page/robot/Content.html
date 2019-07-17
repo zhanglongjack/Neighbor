@@ -29,7 +29,7 @@
 				$startBtn.click(function() {
 					var ids = getIdSelections();
 					if(ids&&ids.length>0){
-						ajax("/robot/robotStart.ser",{ids:ids},function(){
+						ajax("/robot/robotStart.ser",{ids:ids,random:Math.random()},function(){
 							$masterTable.bootstrapTable('refresh')
 						});
 					}else{
@@ -39,7 +39,7 @@
 				$stopBtn.click(function() {
 					var ids = getIdSelections();
 					if(ids&&ids.length>0){
-						ajax("/robot/robotStop.ser",{ids:ids},function(){
+						ajax("/robot/robotStop.ser",{ids:ids,random:Math.random()},function(){
 							$masterTable.bootstrapTable('refresh')
 						}); 
 					}else{

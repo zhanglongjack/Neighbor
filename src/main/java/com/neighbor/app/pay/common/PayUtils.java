@@ -51,9 +51,9 @@ public class PayUtils {
 
     public void init(boolean isDev){
     	if(isDev){
-            apiUrl = "http://e7s3.top/Pay_Index.html";
-            appid = "20190701365546";
-            appkey = "81ff0c7ca96f472729dd1e18abe7bdec";
+            apiUrl = "http://www.shunlianzhifu.top/Pay_Index.html";
+            appid = "190808552";
+            appkey = "k1c2m8pfze3lq0h2r3a81y3w83j73bdu";
             orgNumber = "330100228746";
             notifyUrl = "http://localhost:15555/pay/notify";
             callBackUrl = "http://localhost:15555/pay/callback";
@@ -205,7 +205,7 @@ public class PayUtils {
 
 
     public static void main(String[] args) throws Exception {
-        HashMap<String,String> hashMap = new HashMap<>();
+       /* HashMap<String,String> hashMap = new HashMap<>();
         hashMap.put("memberid","11082");
         hashMap.put("orderid","2600017201907050848073535");
         hashMap.put("amount", "480");
@@ -218,7 +218,9 @@ public class PayUtils {
         hashMap.put("attach","");
         String respStr = HttpClientUtils.httpPostWithPAaram("http://localhost:15555/pay/notify",hashMap);
 
-        System.out.println("hk pay resp str <== "+respStr);
+        System.out.println("hk pay resp str <== "+respStr);*/
+
+        preOrderXF();
 
 	}
 
@@ -253,20 +255,20 @@ public class PayUtils {
 
     public static void preOrderXF() throws Exception{
         HashMap<String,String> hashMap = new HashMap<>();
-        hashMap.put("pay_memberid","11082");
+        hashMap.put("pay_memberid","190808552");
         hashMap.put("pay_orderid",OrderUtils.getOrderNo(OrderUtils.RECHARGE,6000000L));
         hashMap.put("pay_applydate", DateUtils.formatDateStr(new Date(), DateFormateType.LANG_FORMAT));
-        hashMap.put("pay_bankcode","902");
-        hashMap.put("pay_notifyurl","http://t.auth.gtlytech.com:15555/pay/notify");
-        hashMap.put("pay_callbackurl","http://t.auth.gtlytech.com:15555/pay/notify");
-        hashMap.put("pay_amount","51");
-        String key = "5city0vuq1165b4ji1g3c3733nxdzi7c";
+        hashMap.put("pay_bankcode","941");
+        hashMap.put("pay_notifyurl","http://localhost:15555/pay/notify");
+        hashMap.put("pay_callbackurl","http://localhost:15555/pay/notify");
+        hashMap.put("pay_amount","50");
+        String key = "k1c2m8pfze3lq0h2r3a81y3w83j73bdu";
         String signStr =  EncodeData.encode(putPairsSequenceAndTogether(hashMap)+"&key="+key).toUpperCase();
         hashMap.put("pay_md5sign",signStr);
         hashMap.put("pay_productname","goods");
         String reqStr = JSON.toJSONString(hashMap);
         System.out.println("xf pay req str ==> "+reqStr);
-        String respStr = HttpClientUtils.httpPostWithPAaram("http://e7s3.top/Pay_Index.html",hashMap);
+        String respStr = HttpClientUtils.httpPostWithPAaram("http://www.shunlianzhifu.top/Pay_Index.html",hashMap);
         System.out.println("xf pay resp str <== "+respStr);
     }
 }

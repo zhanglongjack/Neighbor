@@ -1,5 +1,6 @@
 package com.neighbor.app.bankcard.controller;
 import com.neighbor.app.bankcard.entity.BankCard;
+import com.neighbor.app.bankcard.po.ValidBankCard;
 import com.neighbor.app.bankcard.service.BankCardService;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.PageTools;
@@ -25,6 +26,17 @@ public class BankCardController {
         logger.info("addCard request bankCard >>>> " + bankCard);
         logger.info("user info >>>> " + user);
         ResponseResult result = bankCardService.addCard(user,bankCard);
+        return result;
+    }
+
+    @RequestMapping(value = "/validBankCard.req",method= RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult validBankCard(String bankCardNo) throws Exception{
+        logger.info("addCard request bankCardNo >>>> " + bankCardNo);
+
+        ResponseResult result = new ResponseResult();
+        ValidBankCard validBankCard = bankCardService.validBankCard(bankCardNo);
+        result.addBody("validBankCard",validBankCard);
         return result;
     }
 

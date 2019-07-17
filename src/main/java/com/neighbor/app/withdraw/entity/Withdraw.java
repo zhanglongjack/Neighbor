@@ -50,6 +50,26 @@ public class Withdraw extends PageEntity {
     private String verfiyCode;
     private String shortDate;
 
+    private String bankName;
+
+    private String cardTypeName;
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
+    public String getCardTypeName() {
+        return cardTypeName;
+    }
+
+    public void setCardTypeName(String cardTypeName) {
+        this.cardTypeName = cardTypeName;
+    }
+
     public String getShortDate() {
         return shortDate;
     }
