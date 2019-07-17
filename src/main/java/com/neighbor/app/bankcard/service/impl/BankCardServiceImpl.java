@@ -45,18 +45,12 @@ public class BankCardServiceImpl implements BankCardService {
         if(data>0){
             throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"该银行卡已添加过，请勿重复添加!");
         }
-        String respStr = HttpClientUtils.doGet(String.format(env.getProperty(EnvConstants.ALI_BANK_CARD_URL),bankCard.getBankCardNo())) ;
-        ValidBankCard validBankCard = JSON.parseObject(respStr,ValidBankCard.class);
-        if(validBankCard==null||validBankCard.getValidated()==null||!validBankCard.getValidated().booleanValue()){
-            throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"暂不支持该银行卡!");
-        }
-        if(!CardTypeDesc.DC.toString().equals(validBankCard.getCardType())){
-            throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"只允许绑定储蓄卡!");
-        }
+        String bankCardNo = bankCard.getBankCardNo();
+        ValidBankCard validBankCard = validBankCard(bankCardNo);
         bankCard.setCardType(validBankCard.getCardType());
         bankCard.setCardTypeName(CardTypeDesc.getDesByValue(bankCard.getCardType()));
         bankCard.setBankCode(validBankCard.getBank());
-        bankCard.setBankName(bankNameJson.getBankName(bankCard.getBankCode()));
+        bankCard.setBankName(validBankCard.getBankName());
         bankCard.setuId(user.getId());
         int len = bankCard.getBankCardNo().length();
         bankCard.setBankCardEndNo(bankCard.getBankCardNo().substring(len-4));
@@ -70,6 +64,19 @@ public class BankCardServiceImpl implements BankCardService {
             result.addBody("resultList", pageList);
         }
         return result;
+    }
+
+    public ValidBankCard validBankCard(String bankCardNo) throws Exception {
+        String respStr = HttpClientUtils.doGet(String.format(env.getProperty(EnvConstants.ALI_BANK_CARD_URL),bankCardNo)) ;
+        ValidBankCard validBankCard = JSON.parseObject(respStr,ValidBankCard.class);
+        if(validBankCard==null||validBankCard.getValidated()==null||!validBankCard.getValidated().booleanValue()){
+            throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"暂不支持该银行卡!");
+        }
+        if(!CardTypeDesc.DC.toString().equals(validBankCard.getCardType())){
+            throw new ParamsCheckException(ErrorCodeDesc.failed.getValue(),"只允许绑定储蓄卡!");
+        }
+        validBankCard.setBankName(bankNameJson.getBankName(validBankCard.getBank()));
+        return validBankCard;
     }
 
     @Override

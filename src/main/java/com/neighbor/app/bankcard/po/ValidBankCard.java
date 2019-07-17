@@ -6,6 +6,16 @@ public class ValidBankCard {
     private String key;
     private Boolean validated;
 
+    private String bankName;
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
     public String getCardType() {
         return cardType;
     }

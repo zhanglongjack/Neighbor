@@ -42,3 +42,9 @@ INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `
 
 INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('200,300,500,600,800,1000,2000,3000,5000', 'alipay', '1', 'recharge_channel_limit', '支付宝限额');
 INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('100,200,300,500,600,800,1000,2000,3000', 'wxpay', '1', 'recharge_channel_limit', '微信限额');
+
+alter table withdraw add bank_name varchar(50) DEFAULT null COMMENT '银行名称';
+
+alter table withdraw add card_type_name varchar(50) DEFAULT null COMMENT '银行卡类型名称';
+
+update withdraw w,(select w.id,b.bank_name,b.card_type_name from withdraw w INNER JOIN bank_card b on w.bank_card_no = b.bank_card_no) a set w.bank_name = a.bank_name,w.card_type_name=a.card_type_name where w.id=a.id
