@@ -34,14 +34,14 @@ VALUES ('0.03', 'payment_rate', 1, 'payment', '支付接口抽成比例');
 
 
 
-INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('1', 'alipay', '1', 'recharge_channel_off', '支付宝充值开关（1打开，其他0关闭）');
-INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('1', 'wxpay', '1', 'recharge_channel_off', '微信支付开关（1打开，其他0关闭）');
+INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('1', 'alipay', '1', 'recharge_channel_off', '支付宝充值开关（1打开，其他0关闭）');
+INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('1', 'wxpay', '1', 'recharge_channel_off', '微信支付开关（1打开，其他0关闭）');
 
-INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('904', 'alipay', '1', 'recharge_channel_no', '支付宝充值渠道编号）');
-INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('902', 'wxpay', '1', 'recharge_channel_no', '微信支付充值渠道编号');
+INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('904', 'alipay', '1', 'recharge_channel_no', '支付宝充值渠道编号）');
+INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('902', 'wxpay', '1', 'recharge_channel_no', '微信支付充值渠道编号');
 
-INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('200,300,500,600,800,1000,2000,3000,5000', 'alipay', '1', 'recharge_channel_limit', '支付宝限额');
-INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('100,200,300,500,600,800,1000,2000,3000', 'wxpay', '1', 'recharge_channel_limit', '微信限额');
+INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('200,300,500,600,800,1000,2000,3000,5000', 'alipay', '1', 'recharge_channel_limit', '支付宝限额');
+INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('100,200,300,500,600,800,1000,2000,3000', 'wxpay', '1', 'recharge_channel_limit', '微信限额');
 
 alter table withdraw add bank_name varchar(50) DEFAULT null COMMENT '银行名称';
 
@@ -50,4 +50,4 @@ alter table withdraw add card_type_name varchar(50) DEFAULT null COMMENT '银行
 update withdraw w,(select w.id,b.bank_name,b.card_type_name from withdraw w INNER JOIN bank_card b on w.bank_card_no = b.bank_card_no) a set w.bank_name = a.bank_name,w.card_type_name=a.card_type_name where w.id=a.id
 
 
-INSERT INTO `neighbor_dev`.`dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('pay_gyf', '1', '1', 'recharge_pay_channel', '支付渠道（国易付:pay_gyf）');
+INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('pay_gyf', '1', '1', 'recharge_pay_channel', '支付渠道（国易付:pay_gyf）');

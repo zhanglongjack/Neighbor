@@ -1,7 +1,9 @@
 package com.neighbor.app.packet.controller;
 
 import com.neighbor.app.commission.entity.CommissionHandleTask;
+import com.neighbor.app.game.entity.Game;
 import com.neighbor.app.game.entity.GameRule;
+import com.neighbor.app.game.service.GameService;
 import com.neighbor.app.group.entity.Group;
 import com.neighbor.app.group.service.GroupService;
 import com.neighbor.app.packet.constants.PacketContainer;
@@ -43,7 +45,8 @@ public class PacketController {
 	private BlockingQueue<CommissionHandleTask> commisionHandleTaskQueue;
 	@Autowired
 	private CommonConstants commonConstants;
-	
+	@Autowired
+	private GameService gameService;
 	
 	@RequestMapping(value = "/sendPacket.req", method = RequestMethod.POST)
 	@ResponseBody
@@ -145,13 +148,16 @@ public class PacketController {
 	
 	@RequestMapping(value = "/packetBaseInitInfo.req",method=RequestMethod.POST)
 	@ResponseBody
-	public ResponseResult packetBaseInitInfo() {
+	public ResponseResult packetBaseInitInfo(Long gameId) {
 		logger.info("packetBaseInitInfo request "); 
+		Game game= gameService.selectByPrimaryKey(gameId);
+		boolean isFuLi = game.getGameType() == 2;
 		String packetNumber = commonConstants.getDictionarysBy(EnvConstants.PACKET_CONF, EnvConstants.PACEKT_BASE_NUM);
 		String paidRate = commonConstants.getDictionarysBy(EnvConstants.PACKET_CONF, EnvConstants.PACKET_HIT_RATE);
 		ResponseResult result = new ResponseResult();
 		result.addBody("packetNumber", packetNumber);
 		result.addBody("paidRate", paidRate);
+		result.addBody("isFuLi", isFuLi);
 		logger.info("packetBaseInitInfo response : " +result);
 		return result;
 	}
