@@ -2,11 +2,14 @@ package com.neighbor.app.pay.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.neighbor.app.pay.common.PayFactory;
+import com.neighbor.app.pay.entity.PayNotifyResp;
 import com.neighbor.app.pay.entity.hk.HkPayReq;
 import com.neighbor.app.recharge.entity.Recharge;
 import com.neighbor.app.recharge.service.RechargeService;
 import com.neighbor.common.util.StringUtil;
 import com.neighbor.common.websoket.service.SocketMessageService;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,9 +45,12 @@ public class PayController {
     @Autowired
     private SocketMessageService socketMessageService;
 
+    @Autowired
+    private PayFactory payFactory;
+
     @RequestMapping(value = "/payment", method = RequestMethod.GET)
     public String payment(Model model) throws Exception {
-        String view = "paymentXF";
+        String view = payFactory.getService().viewName();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String orderNo = request.getParameter("orderNo");
         if(StringUtil.isEmpty(orderNo)){
@@ -94,7 +101,8 @@ public class PayController {
         logger.info("reqUrl : "+reqUrl);
         //打印header
         logger.info("--------------------------------------------------------");
-        logger.info("requestHeaders : "+ JSONObject.toJSONString(getRequestHeader(request)));
+        HashMap<String,String> headerMap = getRequestHeader(request);
+        logger.info("requestHeaders : "+ JSONObject.toJSONString(headerMap));
         logger.info("--------------------------------------------------------");
         //打印param
         HashMap param = getRequestParams(request);
@@ -103,16 +111,22 @@ public class PayController {
         logger.info("--------------------------------------------------------");
         //打印body
         String reqBody = null;
+        PayNotifyResp payNotifyResp = new PayNotifyResp();
         if("post".equalsIgnoreCase(request.getMethod())){
-                Long uId = rechargeService.payNotify(param);
-                if(uId!=null&&uId>0){
+            InputStream inputStream = request.getInputStream();
+            reqBody = IOUtils.toString(inputStream, "utf-8");
+            logger.info("reqBody : "+reqBody );
+            logger.info("--------------------------------------------------------");
+                //Long uId = rechargeService.payNotify(param);
+                payNotifyResp = payFactory.getService().payNotify(headerMap,param,reqBody);
+                if(payNotifyResp.getuId()!=null&&payNotifyResp.getuId()>0){
                     //通知更新用户钱包
-                    socketMessageService.walletRefreshNotice(null, uId, "系统通知");
+                    socketMessageService.walletRefreshNotice(null, payNotifyResp.getuId(), "系统通知");
                 }
         }
         logger.info("------支付结果---异步通知----------结束----------");
         logger.info("\n\n\n");
-        return "OK";
+        return payNotifyResp.getAck();
     }
 
     public  HashMap<String, String> getRequestParams(HttpServletRequest req) {
@@ -127,8 +141,8 @@ public class PayController {
         return requestParams;
     }
 
-    public Map<String, String> getRequestHeader(HttpServletRequest req) {
-        Map<String, String> requestHeaders = new HashMap<String, String>();
+    public HashMap<String, String> getRequestHeader(HttpServletRequest req) {
+        HashMap<String, String> requestHeaders = new HashMap<String, String>();
         Enumeration enumeration = req.getHeaderNames();
         while (enumeration.hasMoreElements()){
             Object key = enumeration.nextElement();

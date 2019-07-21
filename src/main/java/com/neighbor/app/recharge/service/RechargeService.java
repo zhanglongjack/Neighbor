@@ -31,4 +31,6 @@ public interface RechargeService {
 
     Long payNotify(String notifyResp);
     Long payNotify(HashMap<String,String> notifyResp);
+
+    int updateByPrimaryKeySelective(Recharge record);
 }

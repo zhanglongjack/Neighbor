@@ -85,9 +85,12 @@ public class EnvConstants {
      */
     public static final String RECHARGE_CHANNEL_LIMIT ="recharge_channel_limit";
 
-    
-    
-    
-    
-    
+
+
+    /**
+     * 对接充值渠道
+     */
+    public static final String RECHARGE_PAY_CHANNEL ="recharge_pay_channel";
+
+    public static final String RECHARGE_PAY_CHANNEL_CODE ="1";
 }

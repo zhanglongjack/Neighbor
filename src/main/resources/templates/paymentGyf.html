@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>正在跳转付款页</title>
+</head>
+<body>
+<span id="error"  data-th-text="${error==null?'':error}"></span>
+<form id="formPay" name="formPay"  th:attr="action=${req==null}?'':${req.payUrl}" method="POST">
+    <input type="hidden" name="uNumber" th:attr="value=${req==null}?'':${req.uNumber}" />
+    <input type="hidden" name="merId" th:attr="value=${req==null}?'':${req.merId}" />
+    <input type="hidden" name="orderId" th:attr="value=${req==null}?'':${req.orderId}" />
+    <input type="hidden" name="orderAmt" th:attr="value=${req==null}?'':${req.orderAmt}" />
+    <input type="hidden" name="wlistIp" th:attr="value=${req==null}?'':${req.wlistIp}"  />
+    <input type="hidden" name="notifyUrl" th:attr="value=${req==null}?'':${req.notifyUrl}"  />
+    <input type="hidden" name="returnUrl" th:attr="value=${req==null}?'':${req.returnUrl}"  />
+    <input type="hidden" name="payChannel" th:attr="value=${req==null}?'':${req.payChannel}"  />
+    <input type="hidden" name="remark" th:attr="value=${req==null}?'':${req.remark}"  />
+    <input type="hidden" name="sign" th:attr="value=${req==null}?'':${req.sign}"  />
+    <input type="submit" value="ok" style="display:none;" />
+</form>
+<script>
+    var errorText = document.getElementById("error").innerText;
+    if(errorText==''){
+        console.log("发起支付");
+        document.forms['formPay'].submit();
+    }else{
+        console.log("发送错误")
+    }
+
+</script>
+</body>
+</html>

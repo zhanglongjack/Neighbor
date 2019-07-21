@@ -220,8 +220,15 @@ public class PayUtils {
 
         System.out.println("hk pay resp str <== "+respStr);*/
 
-        preOrderXF();
 
+        HashMap<String,String> hashMap = new HashMap<String,String>();
+        hashMap.put("uNumber","xT0t5q9i");
+        hashMap.put("merId","421109B6BC00000");
+        hashMap.put("merOrderId","260001720190721082411699");
+        String signStr =  EncodeData.encode(PayUtils.putPairsSequenceAndTogether(hashMap)+"&key=Dykbw2jeKV9QZbLXEYxeffEs").toUpperCase();
+        hashMap.put("sign",signStr);
+        String respStr = HttpClientUtils.httpPostWithPAaram("http://interface.9111pay.com:8443/trade/pay.trade.query.action",hashMap);
+        System.out.println(respStr);
 	}
 
 	public static void testOrder() throws Exception{

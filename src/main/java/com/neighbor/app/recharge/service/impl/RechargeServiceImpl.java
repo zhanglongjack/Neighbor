@@ -8,6 +8,7 @@ import com.neighbor.app.balance.po.TransactionSubTypeDesc;
 import com.neighbor.app.balance.po.TransactionTypeDesc;
 import com.neighbor.app.balance.service.BalanceDetailService;
 import com.neighbor.app.common.util.OrderUtils;
+import com.neighbor.app.pay.common.PayFactory;
 import com.neighbor.app.pay.common.PayUtils;
 import com.neighbor.app.pay.constants.MethodDesc;
 import com.neighbor.app.pay.entity.NotifyResp;
@@ -56,7 +57,15 @@ public class RechargeServiceImpl implements RechargeService {
     private PayUtils payUtils;
 
     @Autowired
+    private PayFactory payFactory;
+
+    @Autowired
     private CommonConstants commonConstants;
+
+    @Override
+    public int updateByPrimaryKeySelective(Recharge record) {
+        return rechargeMapper.updateByPrimaryKeySelective(record);
+    }
 
     @Override
     @Transactional(readOnly = false,rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
@@ -100,7 +109,7 @@ public class RechargeServiceImpl implements RechargeService {
                 return responseResult;
             }
             recharge.setChannelNo(channelNo);
-            payUtils.preOrderXF(recharge);
+            payFactory.getService().preOrder(recharge);
             recharge.setStates(RechargeStatusDesc.processing.toString());
             recharge.setPayState("0");//未支付
             rechargeMapper.insertSelective(recharge);
