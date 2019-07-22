@@ -63,7 +63,7 @@ public class NoticeHandleSchedule {
 										handleResult.addBody("chatType", msgInfo.getChatType());
 										handleResult.addBody("msgInfo", msgInfo);
 										logger.info("强制下线消息推送开始,公告:{}", notice);
-										webSocketPushHandler.forceUserOffline(handleResult);
+										webSocketPushHandler.forceAllUserOffline(handleResult);
 									} catch (Exception e) {
 										logger.error("个人消息定时推送异常,公告:" + notice, e);
 									}

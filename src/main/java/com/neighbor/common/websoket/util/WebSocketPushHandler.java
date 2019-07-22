@@ -3,6 +3,7 @@ package com.neighbor.common.websoket.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.neighbor.app.api.common.SpringUtil;
+import com.neighbor.app.users.constants.UserContainer;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.ResponseResult;
@@ -32,6 +33,9 @@ public class WebSocketPushHandler implements WebSocketHandler {
 	@Autowired
 	private SocketMessageService socketMessageService;
 
+	@Autowired
+	private UserContainer userContainer;
+	
 	public Map<Long, WebSocketSession> getUsersessions() {
 		return userSessions;
 	}
@@ -261,7 +265,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
 		return isPushed;
 	}
 
-	public void forceUserOffline(ResponseResult handleResult) {
+	public void forceAllUserOffline(ResponseResult handleResult) {
 		List<Long> sendUserList = sendSystemMessagesToUsers(handleResult);
 		
 		for(Long userId : sendUserList){
@@ -273,6 +277,20 @@ public class WebSocketPushHandler implements WebSocketHandler {
 				} catch (Exception e) {
 					logger.error("强制中断用户连接异常:"+userId,e);
 				}
+			}
+		}
+	}
+
+	public void forceUserOffline(Long userId,ResponseResult handleResult) {
+		sendMessageToUser(userId,handleResult);
+		
+		WebSocketSession session = userSessions.get(userId);
+		if(session!=null){
+			userSessions.remove(userId);
+			try {
+				session.close();
+			} catch (Exception e) {
+				logger.error("强制中断用户连接异常:"+userId,e);
 			}
 		}
 	}

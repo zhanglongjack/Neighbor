@@ -68,6 +68,8 @@ public interface SocketMessageService {
 
 	void grapPacketNotice(Packet packet, UserInfo grapUser);
 
+	void otherPhoneLoginForceOfflineNotice(Long userId);
+
 
 
 

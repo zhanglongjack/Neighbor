@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.neighbor.app.api.common.ErrorCodeDesc;
 import com.neighbor.app.friend.service.FriendService;
 import com.neighbor.app.notice.entity.SysNotice;
@@ -39,6 +40,7 @@ import com.neighbor.common.sms.SMSSender;
 import com.neighbor.common.sms.TencentSms;
 import com.neighbor.common.util.ResponseResult;
 import com.neighbor.common.util.StringUtil;
+import com.neighbor.common.websoket.po.SocketMessage;
 import com.neighbor.common.websoket.service.SocketMessageService;
 
 @Controller
@@ -204,8 +206,9 @@ public class LoginController {
 		
 		user.setUserPassword(null);
 		String token = UUID.randomUUID().toString();
+		removeExistsUserFromUserContainer(user.getId());
 		userContainer.put(token, user);
-
+		
 		result.addBody("user", user);
 		result.addBody("token", token);
 		UserWallet wallet = userWalletService.selectByPrimaryUserId(user.getId());
@@ -225,7 +228,19 @@ public class LoginController {
 			
 		socketMessageService.updateWalletRefreshMsg(user.getId());
 		
+		socketMessageService.otherPhoneLoginForceOfflineNotice(user.getId());
+
 		result.addBody("userConfig", userConfig);
+	}
+	
+	private void removeExistsUserFromUserContainer(Long userId){
+		for(String token : userContainer.userMap.keySet()){
+			UserInfo user = userContainer.get(token);
+			if(user.getId() == userId){
+				userContainer.userMap.remove(token);
+				break;
+			}
+		}
 	}
 
 	@RequestMapping(value = "/sendSMS.req", method = RequestMethod.POST)

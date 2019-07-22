@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -12,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.neighbor.app.game.entity.GameRule;
+import com.neighbor.app.notice.entity.SysNotice;
 import com.neighbor.app.packet.entity.Packet;
+import com.neighbor.app.users.controller.LoginController;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.common.util.DateUtils;
 import com.neighbor.common.util.PageTools;
@@ -27,14 +31,17 @@ import com.neighbor.common.websoket.po.SocketMessage;
 import com.neighbor.common.websoket.po.WebSocketHeader;
 import com.neighbor.common.websoket.service.SocketMessageService;
 import com.neighbor.common.websoket.util.GroupMsgPushHandler;
+import com.neighbor.common.websoket.util.WebSocketPushHandler;
 
 @Service
 public class SocketMessageServiceImpl implements SocketMessageService {
-
+	private static final Logger logger = LoggerFactory.getLogger(SocketMessageServiceImpl.class);
 	@Autowired
 	private SocketMessageMapper socketMessageMapper;
 	@Autowired
 	private GroupMsgPushHandler groupMsgPushHandler;
+	@Autowired
+	private WebSocketPushHandler webSocketPushHandler;
 
 	
 //	@Autowired
@@ -344,6 +351,29 @@ public class SocketMessageServiceImpl implements SocketMessageService {
 		insertNoticeInfo(socketMessage, grapUser.getUserID(), packet.getUserId());
 		
 		groupMsgPushHandler.sendMessageToUser(packet.getUserId(), packet.getGroupId(), socketMessage);
+	}
+
+	@Override
+	public void otherPhoneLoginForceOfflineNotice(Long userId) {
+		Map<String,Object> notice = new HashMap<String,Object>();
+		notice.put("noticeTitle", "下线通知");
+		notice.put("noticeContent", "你的帐号再另外一台手机登录了");
+		notice.put("forceOffline", false);
+		
+		try {
+			SocketMessage msgInfo = forceOfflineNoticeBuild();
+			
+			msgInfo.setContent(JSON.toJSONString(notice));
+			ResponseResult handleResult = new ResponseResult(); // 消息已接收
+			handleResult.setRequestID(msgInfo.getWebSocketHeader().getRequestId());
+			handleResult.addBody("msgType", msgInfo.getMsgType());
+			handleResult.addBody("chatType", msgInfo.getChatType());
+			handleResult.addBody("msgInfo", msgInfo);
+			logger.info("强制下线消息推送开始,另一台手机登录:{}", notice);
+			webSocketPushHandler.forceUserOffline(userId,handleResult);
+		} catch (Exception e) {
+			logger.error("个人消息推送异常,另一台手机登录:" + notice, e);
+		}
 	}
 	
 }
