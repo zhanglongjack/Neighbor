@@ -63,10 +63,6 @@ public class RechargeListController {
     public ModelAndView loadPage(UserInfo userInfo, PageTools pageTools,
                                  Recharge recharge) throws Exception {
         logger.debug("loadPage User request:" + userInfo + " page info ===" + pageTools+" recharge ==="+recharge);
-        if(recharge==null||recharge.getStates()==null){
-            recharge = new Recharge();
-            recharge.setStates(RechargeStatusDesc.initial.toString());
-        }
 
         userInfo.setPageTools(pageTools);
         ModelAndView mv = new ModelAndView("page/recharge/Content :: container-fluid");

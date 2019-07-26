@@ -1,10 +1,11 @@
 package com.neighbor.app.pay.constants;
 
+import com.neighbor.app.pay.service.AlipayService;
 import com.neighbor.app.pay.service.GyfPayService;
 
 public enum PayChannelDesc {
-    //国易付
-    pay_gyf(GyfPayService.class);
+    //国易付,支付宝APP支付
+    pay_gyf(GyfPayService.class),pay_alipay_app(AlipayService.class);
 
     private Class des;
 

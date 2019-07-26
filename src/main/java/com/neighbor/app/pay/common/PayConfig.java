@@ -20,6 +20,10 @@ public class PayConfig {
     private String notifyUrl;
     private String callBackUrl;
     private String wlistIp;
+    private String aes;
+    private String alipayPubKey;
+    private String pubKey;
+
 
 
     private void init(){
@@ -31,6 +35,9 @@ public class PayConfig {
             notifyUrl = env.getProperty("recharge.app.notifyUrl");
             callBackUrl = env.getProperty("recharge.app.callBackUrl");
             wlistIp = env.getProperty("recharge.app.wlistIp");
+            aes = env.getProperty("recharge.app.aes");
+            alipayPubKey = env.getProperty("recharge.app.alipay.pubKey");
+            pubKey = env.getProperty("recharge.app.pubKey");
         }
     }
 
@@ -43,6 +50,9 @@ public class PayConfig {
             notifyUrl = "http://localhost:15555/pay/notify";
             callBackUrl = "http://localhost:15555/pay/callback";
             wlistIp = "127.0.0.1";
+            aes = "xxxx";
+            alipayPubKey ="xx";
+            pubKey = "";
         }else{
             init();
         }
@@ -79,5 +89,17 @@ public class PayConfig {
 
     public String getWlistIp() {
         return wlistIp;
+    }
+
+    public String getAes() {
+        return aes;
+    }
+
+    public String getAlipayPubKey() {
+        return alipayPubKey;
+    }
+
+    public String getPubKey() {
+        return pubKey;
     }
 }

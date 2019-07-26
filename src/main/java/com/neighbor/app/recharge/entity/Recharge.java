@@ -53,6 +53,16 @@ public class Recharge  extends PageEntity{
     private String h5Url;//支付宝H5二维码 支付一次无效
     private String channelNo;
 
+    private String payAction = "page";//支付动作(默认：page 页面跳转，app,app支付)
+
+    public String getPayAction() {
+        return payAction;
+    }
+
+    public void setPayAction(String payAction) {
+        this.payAction = payAction;
+    }
+
     public String getChannelNo() {
         return channelNo;
     }

@@ -221,14 +221,41 @@ public class PayUtils {
         System.out.println("hk pay resp str <== "+respStr);*/
 
 
-        HashMap<String,String> hashMap = new HashMap<String,String>();
-        hashMap.put("uNumber","xT0t5q9i");
-        hashMap.put("merId","421109B6BC00000");
-        hashMap.put("merOrderId","260001720190721082411699");
-        String signStr =  EncodeData.encode(PayUtils.putPairsSequenceAndTogether(hashMap)+"&key=Dykbw2jeKV9QZbLXEYxeffEs").toUpperCase();
-        hashMap.put("sign",signStr);
-        String respStr = HttpClientUtils.httpPostWithPAaram("http://interface.9111pay.com:8443/trade/pay.trade.query.action",hashMap);
-        System.out.println(respStr);
+       String jsonStr = "{\n" +
+               "  \"gmt_create\": \"2019-07-25 22:35:43\",\n" +
+               "  \"charset\": \"UTF-8\",\n" +
+               "  \"seller_email\": \"18345041520\",\n" +
+               "  \"subject\": \"积分充值：0.01元\",\n" +
+               "  \"sign\": \"kgFvgAVD3S0nt3jlOKpIBpSsFrsLixR3Y6GFy1hrxtqJ5gue6BTrRw5+cgdRCZGsmUHl515j61kTqDO/glbbj0B9z0Fi/Jab+065kHW8xnYA1przKsltVgUQWE4gkYo3ZXkeLAH287+zrkj5Z4ynjFvx+xbykeCBmVtb4ZZq0w17voio9PPubZKZQJYqFWaL/HJAzrs89BviORlvEC3yMn9k7VQQoskwHDm+WlgPhyBojcqLJUQEmJy22O+N7OErV340T8ks83X8FaxsOpJNXphFXLFyT89I7BBod1EuJR6wgNsRSevLac+A0ieUZxULgybjL84bZcWsAZ8Fv/Jqhw==\",\n" +
+               "  \"buyer_id\": \"2088802788364260\",\n" +
+               "  \"invoice_amount\": \"0.01\",\n" +
+               "  \"notify_id\": \"2019072500222223545064260569680853\",\n" +
+               "  \"fund_bill_list\": \"[{\\\"amount\\\":\\\"0.01\\\",\\\"fundChannel\\\":\\\"ALIPAYACCOUNT\\\"}]\",\n" +
+               "  \"notify_type\": \"trade_status_sync\",\n" +
+               "  \"trade_status\": \"TRADE_SUCCESS\",\n" +
+               "  \"receipt_amount\": \"0.01\",\n" +
+               "  \"app_id\": \"2019072565964702\",\n" +
+               "  \"buyer_pay_amount\": \"0.01\",\n" +
+               "  \"sign_type\": \"RSA2\",\n" +
+               "  \"seller_id\": \"2088532778903774\",\n" +
+               "  \"gmt_payment\": \"2019-07-25 22:35:44\",\n" +
+               "  \"notify_time\": \"2019-07-25 22:49:07\",\n" +
+               "  \"version\": \"1.0\",\n" +
+               "  \"out_trade_no\": \"260001720190725103531937\",\n" +
+               "  \"total_amount\": \"0.01\",\n" +
+               "  \"trade_no\": \"2019072522001464260523755886\",\n" +
+               "  \"auth_app_id\": \"2019072565964702\",\n" +
+               "  \"buyer_logon_id\": \"177****8792\",\n" +
+               "  \"point_amount\": \"0.00\"\n" +
+               "}";
+       HashMap<String,String> map = JSON.parseObject(jsonStr,HashMap.class);
+        System.out.println(putPairsSequenceAndTogether(map));
+
+        /*String reqStr = "{\"wlistIp\":\"127.0.0.1\",\"orderId\":\"260001720190722044822816\",\"uNumber\":\"xT0t5q9i\",\"sign\":\"03CE0810A58CDF46621BE4688B0AD98A\",\"notifyUrl\":\"http://t.auth.gtlytech.com:15555/pay/notify\",\"merId\":\"421109B6BC00000\",\"payChannel\":\"sm_wechat\",\"remark\":\"600017\",\"payUrl\":\"http://interface.9111pay.com:8443/trade/pay.trade.pay.action\",\"orderAmt\":\"10000\",\"returnUrl\":\"http://t.auth.gtlytech.com:15555/pay/callback\"}";
+        String host = "http://interface.9111pay.com:8443/trade/pay.trade.pay.action";
+        String respStr = HttpClientUtils.httpPostWithPAaram(host,JSON.parseObject(reqStr,HashMap.class));
+
+        System.out.println(respStr);*/
 	}
 
 	public static void testOrder() throws Exception{
