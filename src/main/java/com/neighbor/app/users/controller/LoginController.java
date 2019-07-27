@@ -236,7 +236,7 @@ public class LoginController {
 	private void removeExistsUserFromUserContainer(Long userId){
 		for(String token : userContainer.userMap.keySet()){
 			UserInfo user = userContainer.get(token);
-			if(user.getId() == userId){
+			if(user.getId().equals(userId)){
 				userContainer.userMap.remove(token);
 				break;
 			}
