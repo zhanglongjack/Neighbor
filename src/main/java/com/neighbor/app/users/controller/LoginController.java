@@ -247,8 +247,8 @@ public class LoginController {
 	@ResponseBody
 	public ResponseResult sendSMS(@Length(message = "手机长度最少11位", min = 11) @NotNull(message = "手机号不能为空") String phone) {
 		//String code = sender.createVerifyCode();
-//		String code = StringUtil.createVerifyCode();
-		String code = null;
+		String code = StringUtil.createVerifyCode();
+		//String code = null;
 		logger.info("发送验证码:" + phone);
 		sender.smsSend(code, phone);
 		return new ResponseResult();

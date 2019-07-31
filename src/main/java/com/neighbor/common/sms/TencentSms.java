@@ -30,7 +30,7 @@ public class TencentSms implements SMSSender {
 	public static final int templateId = 265289; // NOTE: 这里的模板ID`7839`只是一个示例，真实的模板ID需要在短信控制台中申请
 	//templateId7839对应的内容是"您的验证码是: {1}"
 	// 签名
-	public static final String smsSign = "快乐好领居网"; // NOTE: 这里的签名"腾讯云"只是一个示例，真实的签名需要在短信控制台中申请，另外签名参数使用的是`签名内容`，而不是`签名ID`
+	public static final String smsSign = ""; // NOTE: 这里的签名"腾讯云"只是一个示例，真实的签名需要在短信控制台中申请，另外签名参数使用的是`签名内容`，而不是`签名ID`
 	/**
 	 * 缓存短信验证码,后期优化可以自动删除过期验证码
 	 */
