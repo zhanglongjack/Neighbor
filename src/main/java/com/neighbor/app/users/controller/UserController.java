@@ -22,6 +22,8 @@ import com.neighbor.common.util.PageTools;
 import com.neighbor.common.util.ResponseResult;
 import org.thymeleaf.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping(value = "/user")
 @SessionAttributes("user")
@@ -49,6 +51,21 @@ public class UserController {
 		userService.updateByPrimaryKeySelective(userInfo);
 		return new ResponseResult();
 	}
+
+	@RequestMapping(value="/changePhone.req",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseResult changePhone(String phone,String verfiyCode,@ModelAttribute("user") UserInfo user,HttpServletRequest request){
+		logger.info("changePhone request:phone = {} verfiyCode ={}",phone,verfiyCode);
+		logger.info("changePhone user = {} ",user);
+		ResponseResult result = userService.changePhone(phone,verfiyCode,user);
+		if(ErrorCodeDesc.success.getValue()==result.getErrorCode()){
+			user.setMobilePhone(phone);
+			request.getSession().setAttribute("user",user);
+			//更新手机号码
+		}
+		return result;
+	}
+
 	
 	@RequestMapping(value="/checkPwd.req",method=RequestMethod.POST)
 	@ResponseBody

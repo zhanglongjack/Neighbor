@@ -7,6 +7,7 @@ import com.neighbor.app.robot.entity.RobotConfig;
 import com.neighbor.app.users.entity.UserConfig;
 import com.neighbor.app.users.entity.UserInfo;
 import com.neighbor.app.wallet.entity.UserWallet;
+import com.neighbor.common.util.ResponseResult;
 
 public interface UserService {
 
@@ -51,4 +52,6 @@ public interface UserService {
     UserInfo selectByReCode(String reCode);
 
     void updateRobotWallet(Long userId, String action, BigDecimal amount);
+
+    ResponseResult changePhone(String phone, String verfiyCode, UserInfo user);
 }

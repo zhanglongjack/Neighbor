@@ -90,6 +90,9 @@ public class WebConfig implements WebMvcConfigurer {
         String filePath = env.getProperty(EnvConstants.UPLOADER_FILEPATH);
         if(!filePath.endsWith("/")) filePath+= "/";
         registry.addResourceHandler("/file/**").addResourceLocations("file:"+filePath);
+        String downloadFile = env.getProperty(EnvConstants.DOWNLOAD_FILE_PATH);
+        if(!downloadFile.endsWith("/")) downloadFile+= "/";
+        registry.addResourceHandler("/download/app/**").addResourceLocations("file:"+downloadFile);
 	}
 
 }  

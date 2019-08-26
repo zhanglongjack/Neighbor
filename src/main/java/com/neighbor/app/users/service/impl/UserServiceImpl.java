@@ -3,6 +3,10 @@ package com.neighbor.app.users.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.neighbor.app.api.common.ErrorCodeDesc;
+import com.neighbor.common.exception.ParamsCheckException;
+import com.neighbor.common.sms.TencentSms;
+import com.neighbor.common.util.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +62,7 @@ public class UserServiceImpl implements UserService {
                 break;
             }
         }
-//        record.setNickName(RandomUtil.getNickName());
+        record.setNickName(RandomUtil.getReCode());
         record.setReCode(reCode);
         int count = userInfoMapper.insertSelective(record);
         userContainer.buildUserInfo();
@@ -127,9 +131,6 @@ public class UserServiceImpl implements UserService {
         logger.info("创建用户信息:" + record);
 
         insertSelective(record);
-        record.setNickName(record.getId()+"");
-        record.setUserAccount(record.getUserAccount()==null?record.getId() + "":record.getUserAccount());
-        updateByPrimaryKeySelective(record);
 
         logger.info("创建用户设置信息:" + record);
         UserConfig config = new UserConfig();
@@ -195,5 +196,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfo selectByReCode(String reCode) {
         return userInfoMapper.selectByReCode(reCode);
+    }
+
+    @Override
+    public ResponseResult changePhone(String phone, String verfiyCode, UserInfo user){
+
+        ResponseResult result = new ResponseResult();
+        result.setErrorCode(ErrorCodeDesc.failed.getValue());
+
+        if(user.getMobilePhone().equals(phone)){
+            result.setErrorMessage("新手机号码与旧手机相同！无需修改");
+            return result;
+        }
+
+        //判断验证码
+        boolean isValid = verfiyCode.equals(TencentSms.smsCache.get(phone));
+        if (!isValid) {
+            result.setErrorMessage("验证码错误!");
+            return result;
+        }
+
+        //查询相同的手机号码
+         UserInfo userInfo = selectByUserPhone(phone);
+        if(userInfo!=null){
+            result.setErrorMessage("手机号码："+phone+"已被占用,请更换其他手机号!");
+            return result;
+        }
+
+        UserInfo update = new UserInfo();
+        update.setUserID(user.getUserID());
+        update.setMobilePhone(phone);
+        updateByPrimaryKeySelective(update);
+        result.setErrorCode(ErrorCodeDesc.success.getValue());
+
+        TencentSms.smsCache.remove(phone);
+
+        return result;
     }
 }

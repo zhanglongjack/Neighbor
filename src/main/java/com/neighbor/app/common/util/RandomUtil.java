@@ -31,10 +31,7 @@ public class RandomUtil {
 
 
 	public static void main(String[] args) throws Exception{
-		logger.info(getNickName());
-		logger.info(getNickName());
-		logger.info(getNickName());
-		logger.info(getNickName());
-		logger.info(getNickName());
+		System.out.println(getReCode());
+		System.out.println(getReCode());
 	}
 }

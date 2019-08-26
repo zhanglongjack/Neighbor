@@ -5,6 +5,7 @@ public class EnvConstants {
     public static final String ALI_BANK_CARD_URL = "ali_bank_card_url";
     public static final String WITHDRAW_RATE ="withdraw_rate";
     public static final String WITHDRAW_LIMIT_NUM ="withdraw_limit_num";
+    public static final String DOWNLOAD_FILE_PATH ="download.file.path";
 
     
     /**
