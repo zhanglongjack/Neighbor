@@ -118,6 +118,19 @@ public class CommissionHandleTaskServiceImpl implements CommissionHandleTaskServ
 		userWallet.setuId(sysUserId);
 		userWallet.setAvailableAmount(amount);
 		userWalletService.updateWalletAmount(userWallet);
+
+		UserWallet sysWallet = userWalletService.selectByPrimaryUserId(sysUserId);
+		BalanceDetail balanceUpperDetail = new BalanceDetail();
+		balanceUpperDetail.setAmount(amount);
+		balanceUpperDetail.setAvailableAmount(sysWallet.getAvailableAmount());
+		balanceUpperDetail.setuId(sysUserId);
+		balanceUpperDetail.setTransactionType(TransactionTypeDesc.income.toString());
+		balanceUpperDetail.setTransactionSubType(TransactionSubTypeDesc.commissionIn.toString());
+		balanceUpperDetail.setRemarks(TransactionSubTypeDesc.commissionIn.getDes());
+		balanceUpperDetail.setTransactionId(userCommission.getId());
+		logger.info("超管收入明细："+balanceUpperDetail);
+		balanceDetailService.insertSelective(balanceUpperDetail);
+
 		
 		UserInfo sysMasterUser = userService.selectByPrimaryKey(sysUserId);
 		CommissionHandleTask taskData = new CommissionHandleTask();
@@ -177,6 +190,18 @@ public class CommissionHandleTaskServiceImpl implements CommissionHandleTaskServ
 		userCommission.setGainTime(DateUtils.getTimeShort());
 		commissionService.insertSelective(userCommission);
 		// 更新发包上级金额
+		UserWallet userUpperWallet = userWalletService.selectByPrimaryUserId(user.getId());
+		BalanceDetail balanceUpperDetail = new BalanceDetail();
+		balanceUpperDetail.setAmount(distributeCommission);
+		balanceUpperDetail.setAvailableAmount(userUpperWallet.getAvailableAmount());
+		balanceUpperDetail.setuId(user.getId());
+		balanceUpperDetail.setTransactionType(TransactionTypeDesc.income.toString());
+		balanceUpperDetail.setTransactionSubType(TransactionSubTypeDesc.commissionIn.toString());
+		balanceUpperDetail.setRemarks(TransactionSubTypeDesc.commissionIn.getDes());
+		balanceUpperDetail.setTransactionId(userCommission.getId());
+		logger.info("上级金额收入明细："+balanceUpperDetail);
+		balanceDetailService.insertSelective(balanceUpperDetail);
+
 		UserWallet userWallet = new UserWallet();
 		userWallet.setuId(user.getId());
 		userWallet.setAvailableAmount(distributeCommission);

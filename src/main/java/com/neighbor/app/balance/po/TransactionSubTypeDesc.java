@@ -9,7 +9,7 @@ public enum TransactionSubTypeDesc {
     //支出
     ,withdraw("提现"),withdrawCost("提现手续费"),thunderAward("奖励发包"),luckedOut("奖励抢包"),robotOut("机器人取现")
     //收入
-    ,robotIn("机器人充值");
+    ,robotIn("机器人充值"),commissionIn("佣金收入");
     private String des;
 
     private TransactionSubTypeDesc( String des) {
