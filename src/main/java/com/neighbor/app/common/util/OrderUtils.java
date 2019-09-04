@@ -39,14 +39,16 @@ public class OrderUtils {
 
     /**
      * 专门为高并发获取唯一ID使用
-     *
+     * 定长20位
      * @return
      * @throws Exception
      */
-    public static String getOrderNo(String logic,Long uid) throws Exception {
+    public synchronized static String getOrderNo(String logic,Long uid) throws Exception {
         StringBuffer orderNo = new StringBuffer();
         try {
-            orderNo.append(logic).append(uid).append(DateUtils.getUserDate(DateFormateType.MOST_TIGHT_LONG_S_FORMAT));
+            Thread.sleep(1);
+            String str = uid+"";
+            orderNo.append(DateUtils.getUserDate(DateFormateType.MOST_TIGHT_LONG_S_FORMAT)).append(logic).append(str.substring(str.length()-2));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

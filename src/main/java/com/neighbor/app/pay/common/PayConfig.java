@@ -1,16 +1,12 @@
 package com.neighbor.app.pay.common;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 @Component
 public class PayConfig {
-    private final static Logger logger = LoggerFactory.getLogger(PayConfig.class);
-    @Autowired
-    private Environment env;
 
     private String apiUrl;
     private String appid;//merchantNumber = 20190701365546
@@ -26,36 +22,47 @@ public class PayConfig {
 
 
 
-    private void init(){
-        if(apiUrl==null){
-            apiUrl = env.getProperty("recharge.api.url");
-            appid = env.getProperty("recharge.app.id");
-            appkey = env.getProperty("recharge.app.key");
-            orgNumber = env.getProperty("recharge.app.orgNumber");
-            notifyUrl = env.getProperty("recharge.app.notifyUrl");
-            callBackUrl = env.getProperty("recharge.app.callBackUrl");
-            wlistIp = env.getProperty("recharge.app.wlistIp");
-            aes = env.getProperty("recharge.app.aes");
-            alipayPubKey = env.getProperty("recharge.app.alipay.pubKey");
-            pubKey = env.getProperty("recharge.app.pubKey");
-        }
+    private void init(String channelType){
+            ResourceBundle bundlePay = ResourceBundle.getBundle("pay", new Locale(channelType, ""));
+            apiUrl = bundlePay.getString("recharge.api.url");
+            appid = bundlePay.getString("recharge.app.id");
+            appkey = bundlePay.getString("recharge.app.key");
+            orgNumber = bundlePay.getString("recharge.app.orgNumber");
+            notifyUrl = bundlePay.getString("recharge.app.notifyUrl");
+            callBackUrl = bundlePay.getString("recharge.app.callBackUrl");
+            wlistIp = bundlePay.getString("recharge.app.wlistIp");
+            aes = bundlePay.getString("recharge.app.aes");
+            alipayPubKey = bundlePay.getString("recharge.app.alipay.pubKey");
+            pubKey = bundlePay.getString("recharge.app.pubKey");
     }
 
     public void init(boolean isDev){
         if(isDev){
-            apiUrl = "http://www.shunlianzhifu.top/Pay_Index.html";
-            appid = "190808552";
-            appkey = "k1c2m8pfze3lq0h2r3a81y3w83j73bdu";
-            orgNumber = "330100228746";
-            notifyUrl = "http://localhost:15555/pay/notify";
-            callBackUrl = "http://localhost:15555/pay/callback";
-            wlistIp = "127.0.0.1";
-            aes = "xxxx";
-            alipayPubKey ="xx";
-            pubKey = "";
+            setDev();
         }else{
-            init();
+            init("");
         }
+    }
+
+    public void init(boolean isDev,String channelType){
+        if(isDev){
+            setDev();
+        }else{
+            init(channelType);
+        }
+    }
+
+    private void setDev() {
+        apiUrl = "http://www.shunlianzhifu.top/Pay_Index.html";
+        appid = "190808552";
+        appkey = "k1c2m8pfze3lq0h2r3a81y3w83j73bdu";
+        orgNumber = "330100228746";
+        notifyUrl = "http://localhost:15555/pay/notify";
+        callBackUrl = "http://localhost:15555/pay/callback";
+        wlistIp = "127.0.0.1";
+        aes = "xxxx";
+        alipayPubKey ="xx";
+        pubKey = "";
     }
 
 

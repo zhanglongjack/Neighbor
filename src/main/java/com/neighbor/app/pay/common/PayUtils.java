@@ -205,23 +205,23 @@ public class PayUtils {
 
 
     public static void main(String[] args) throws Exception {
-       /* HashMap<String,String> hashMap = new HashMap<>();
-        hashMap.put("memberid","11082");
-        hashMap.put("orderid","2600017201907050848073535");
-        hashMap.put("amount", "480");
+       HashMap<String,String> hashMap = new HashMap<>();
+        hashMap.put("memberid","190824287");
+        hashMap.put("orderid","20190831041524832217");
+        hashMap.put("amount", "99");
         hashMap.put("transaction_id","123456789");
         hashMap.put("datetime",DateUtils.formatDateStr(new Date(), DateFormateType.LANG_FORMAT));
         hashMap.put("returncode","00");
-        String key = "5city0vuq1165b4ji1g3c3733nxdzi7c";
+        String key = "vfbd5ldmxxzk92g3ktjjqpop057cmah1";
         String signStr =  EncodeData.encode(putPairsSequenceAndTogether(hashMap)+"&key="+key).toUpperCase();
         hashMap.put("sign",signStr);
-        hashMap.put("attach","");
-        String respStr = HttpClientUtils.httpPostWithPAaram("http://localhost:15555/pay/notify",hashMap);
+        hashMap.put("attach","11beb49989ad4525971ab320ab9bc4ea");
+        String respStr = HttpClientUtils.httpPostWithPAaram("http://localhost:9527/pay/notify",hashMap);
 
-        System.out.println("hk pay resp str <== "+respStr);*/
+        System.out.println("hk pay resp str <== "+respStr);
 
 
-       String jsonStr = "{\n" +
+     /*  String jsonStr = "{\n" +
                "  \"gmt_create\": \"2019-07-25 22:35:43\",\n" +
                "  \"charset\": \"UTF-8\",\n" +
                "  \"seller_email\": \"18345041520\",\n" +
@@ -249,7 +249,7 @@ public class PayUtils {
                "  \"point_amount\": \"0.00\"\n" +
                "}";
        HashMap<String,String> map = JSON.parseObject(jsonStr,HashMap.class);
-        System.out.println(putPairsSequenceAndTogether(map));
+        System.out.println(putPairsSequenceAndTogether(map));*/
 
         /*String reqStr = "{\"wlistIp\":\"127.0.0.1\",\"orderId\":\"260001720190722044822816\",\"uNumber\":\"xT0t5q9i\",\"sign\":\"03CE0810A58CDF46621BE4688B0AD98A\",\"notifyUrl\":\"http://t.auth.gtlytech.com:15555/pay/notify\",\"merId\":\"421109B6BC00000\",\"payChannel\":\"sm_wechat\",\"remark\":\"600017\",\"payUrl\":\"http://interface.9111pay.com:8443/trade/pay.trade.pay.action\",\"orderAmt\":\"10000\",\"returnUrl\":\"http://t.auth.gtlytech.com:15555/pay/callback\"}";
         String host = "http://interface.9111pay.com:8443/trade/pay.trade.pay.action";
