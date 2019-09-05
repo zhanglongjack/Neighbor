@@ -44,7 +44,7 @@
                 }
 
 			</script>
-			<h3 class="page-title">客服信息</h3>
+			<h3 class="page-title">广告信息</h3>
 			<div class="row">
 				<div class="col-md-12">
 					<!-- TABLE HOVER -->
@@ -58,6 +58,8 @@
 											<option value="" >===请选择===</option>
 											<option value="1">主页面</option>
 											<option value="2">商城页面</option>
+											<option value="3">支付宝转账二维码</option>
+											<option value="4">微信转账二维码</option>
 										</select>
 
 									</div> 
@@ -92,7 +94,7 @@
 								<tbody>
 									<tr th:each="obj : ${resultList}">
 										<!--<td th:text="${obj.cmsType}"></td>-->
-										<td th:text="${obj.position=='1'}?'主页面':'商城页面'"></td>
+										<td th:text="${obj.position=='1'}?'主页面':(${obj.position=='2'}?'商城页面':(${obj.position=='3'}?'支付宝转账二维码':'微信转账二维码'))"></td>
 										<td >
 											<img class="screenshot" style="width: 120px;height: 50px;" th:attr="src='/file'+${obj.url}" /></td>
 										</td>

@@ -51,3 +51,6 @@ update withdraw w,(select w.id,b.bank_name,b.card_type_name from withdraw w INNE
 
 
 INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('pay_gyf', '1', '1', 'recharge_pay_channel', '支付渠道（国易付:pay_gyf）');
+
+INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('1', 'alipay', '1', 'recharge_offline_off', '线下转账支付宝充值开关（1打开，其他0关闭）');
+INSERT INTO `dictionary` (`name`, `code`, `status`, `biz_code`, `remarke`) VALUES ('1', 'wxpay', '1', 'recharge_offline_off', '线下转账微信支付开关（1打开，其他0关闭）');
