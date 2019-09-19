@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title></title>
+    <script src="js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+    <style>* {
+        margin: 0;
+        padding: 0
+    }
+    .notice {
+        text-align: center;
+        font-size: 16px;
+        padding: 20px 0;
+        color: #ffffff;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        border-bottom: 1px solid #cccccc;
+        background: #ddd;
+    }</style>
+</head>
+<script type="text/javascript" >
+
+    function init(){
+         if(isAndroid()){
+            if(isWeiXin()||isQQ()){
+                $("#div_android").show();
+                $("#div_android").height($(window).height());
+            }else{
+                $("#div_notice").show();
+                location.href = 'http://www.520haolinju.vip/download/app/neighbor.apk';
+            }
+         }else{
+             $("#div_notice").text("暂时不支持IOS设备~");
+             $("#div_notice").show();
+         }
+    }
+    function isWeiXin(){
+        var ua = window.navigator.userAgent.toLowerCase();
+        if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    function isQQ(){
+        var ua = window.navigator.userAgent.toLowerCase();
+        if(ua.match(/qq/i) == 'qq'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+
+    function isAndroid(){
+        var ua = window.navigator.userAgent.toLowerCase();
+        if(ua.match(/android/i) == 'android'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+
+</script>
+<body onload="init()">
+<div id="div_notice" style="display: none;" class="notice">开始下载...</div>
+<div id="div_android" style="display: none;background-color: #9c0528;"><img id="bg_img" style="width:100%;" src="/neighbor/img/wx_android_tips.jpg"></div>
+</body>
+</html>
